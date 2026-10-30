@@ -30,6 +30,9 @@ export function buildSpellCastTargetNote(resistedBy: SpellResistedByEnum): Spell
   if (tooManyTargets) {
     targetNote = localize("RQG.Dialog.SpellCast.SingleTargetOnly");
     targetNoteClass = "warning";
+  } else if (resistedBy === SpellResistedByEnum.ResistanceRollArea && targetCount === 0) {
+    targetNote = localize("RQG.Dialog.SpellCast.AreaUntargeted");
+    targetNoteClass = "hint";
   } else if (spiritCombat && targetCount === 0) {
     targetNote = localize("RQG.Dialog.SpellCast.SpiritCombatUntargeted");
     targetNoteClass = "hint";
