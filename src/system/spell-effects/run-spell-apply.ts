@@ -7,7 +7,6 @@ import {
   type SpellEffectApplied,
   type SpellEffectCast,
   type SpellApplyScope,
-  type SpellBarriers,
 } from "./apply-spell-effect";
 import { spellBehaviorOf, type SpellBehavior } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
@@ -27,12 +26,12 @@ export type ApplySpellBehaviorQueryData = {
 /**
  * Run a spell behavior's `apply` once the target's protective spells let the spell through, on
  * the active GM's client when it is `runAsGm`. Checks for that GM first, so protective spells
- * aren't used up by an Apply that can't run. A spell from a cast card met them when it was cast.
+ * aren't used up by an Apply that can't run. A spell from a card met them when it was cast or reflected.
  */
 export async function runSpellApply(
   behavior: SpellBehavior & Required<Pick<SpellBehavior, "apply">>,
   scope: SpellApplyScope,
-  barriers?: SpellBarriers,
+  barriersChecked = false,
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = scope.spell.name ?? "";
   const gm = behavior.runAsGm && !game.user?.isGM ? game.users?.activeGM : undefined;
@@ -40,8 +39,7 @@ export async function runSpellApply(
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName }));
     return undefined;
   }
-  const intercepted =
-    barriers === "met" ? undefined : await interceptIncomingSpell(scope, barriers === "reflected");
+  const intercepted = barriersChecked ? undefined : await interceptIncomingSpell(scope);
   if (intercepted) {
     return intercepted;
   }
@@ -116,6 +114,8 @@ export type InterceptSpellCastData = {
   rollOptions: { levelUsed?: number; magicPointBoost?: number };
   casterUuid: string;
   casterSuccessLevel: number | undefined;
+  /** Reflected back at its caster, who is then the target. */
+  reflected?: boolean;
 };
 
 async function stoppedTargets(data: InterceptSpellCastData): Promise<string[]> {
@@ -139,7 +139,8 @@ async function stoppedTargets(data: InterceptSpellCastData): Promise<string[]> {
       continue;
     }
     const targetName = (target as { name?: string }).name ?? targetActor.name ?? "";
-    if (await interceptIncomingSpell(spellApplyScope(spell, targetActor, targetName, cast))) {
+    const scope = spellApplyScope(spell, targetActor, targetName, cast);
+    if (await interceptIncomingSpell(scope, !!data.reflected)) {
       stopped.push(targetUuid);
     }
   }

@@ -5,7 +5,7 @@ import type { ResistanceRequestChatMessage } from "../../chat/data-model/resista
 import { spellApplyScope, spellEffectCast } from "./apply-spell-effect";
 import { groupEffectsByHook } from "./incoming-spell";
 import { spellBehaviorForEffect } from "./spell-behavior";
-import { queryActiveGm } from "./run-spell-apply";
+import { interceptSpellCast, queryActiveGm, type InterceptSpellCastData } from "./run-spell-apply";
 import { requestSpellResistance } from "../../data-model/shared/spell-resisted-by";
 import { SpellResistedWithEnum } from "../../data-model/item-data/spell";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
@@ -98,6 +98,14 @@ export async function reflectResistedSpell(request: ResistanceRequestChatMessage
   for (const [onResisted, effects] of groups) {
     const result = await onResisted({ ...scope, effects });
     if (result?.outcome === "reflected") {
+      const stopped = await interceptSpellCast({
+        spellUuid: spellUuid,
+        targetUuids: [casterUuid],
+        rollOptions: castRoll.options as InterceptSpellCastData["rollOptions"],
+        casterUuid: casterUuid,
+        casterSuccessLevel: undefined,
+        reflected: true,
+      });
       await requestSpellResistance({
         targetUuid: casterUuid,
         casterUuid: casterUuid,
@@ -111,6 +119,8 @@ export async function reflectResistedSpell(request: ResistanceRequestChatMessage
           spellUuid: spellUuid,
         },
         reflectedFrom: { messageId: request.id ?? "", reflectorName: targetName },
+        // The caster's own protective spells meet it before they resist
+        intercepted: stopped.includes(casterUuid),
       });
       return;
     }

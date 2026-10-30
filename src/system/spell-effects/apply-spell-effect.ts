@@ -25,9 +25,6 @@ import { castPoints } from "./spell-rules";
 import { isAreaAnchor, spellBehaviorOf } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
 
-/** How a spell already met, or meets, its target's protective spells - see `applySpellEffect`. */
-export type SpellBarriers = "met" | "reflected";
-
 export type SpellEffectCast = {
   casterUuid: string;
   castMessageId: string;
@@ -178,11 +175,8 @@ export async function applySpellEffect(
      * cast at the token - and the effect is marked with the area so leaving it takes it off.
      */
     areaRegion?: string;
-    /**
-     * "met": the target's protective spells already let it through, when it was cast.
-     * "reflected": it bounced back at its own caster, whose protective spells it meets now.
-     */
-    barriers?: SpellBarriers;
+    /** The target's protective spells already let it through, when it was cast or reflected. */
+    barriersChecked?: boolean;
   } = {},
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = spell.name ?? "";
@@ -190,7 +184,7 @@ export async function applySpellEffect(
   const behavior = spellBehaviorOf(spell);
   const apply = options.areaRegion ? undefined : behavior?.apply;
   if (apply) {
-    return runSpellApply({ ...behavior, apply }, scope, options.barriers);
+    return runSpellApply({ ...behavior, apply }, scope, !!options.barriersChecked);
   }
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;
@@ -234,9 +228,7 @@ export async function applySpellEffect(
   }
   // Only once Apply can no longer back out, since a protective spell may use up its effects
   const intercepted =
-    options.areaRegion || options.barriers === "met"
-      ? undefined
-      : await interceptIncomingSpell(scope, options.barriers === "reflected");
+    options.areaRegion || options.barriersChecked ? undefined : await interceptIncomingSpell(scope);
   if (intercepted) {
     return intercepted;
   }

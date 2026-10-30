@@ -164,6 +164,13 @@ export function deriveResistanceRequestTargetOutcome(
   switch (request.state) {
     case "Accepted":
       return { ...base, state: "affected", resolvedBy: "accepted", casterSuccessLevel: undefined };
+    case "Intercepted":
+      return {
+        ...base,
+        state: "unaffected",
+        resolvedBy: "intercepted",
+        casterSuccessLevel: undefined,
+      };
     case "Rolled": {
       // the resistance roll is the caster's, so success means the spell got through
       const overcame =

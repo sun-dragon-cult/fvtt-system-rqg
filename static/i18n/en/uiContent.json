@@ -523,7 +523,8 @@
         "State": {
           "Requested": "Requested",
           "Rolled": "Rolled",
-          "Accepted": "Accepted"
+          "Accepted": "Accepted",
+          "Intercepted": "Intercepted"
         }
       },
       "SkillBehavior": {

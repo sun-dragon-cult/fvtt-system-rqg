@@ -134,6 +134,13 @@ describe("deriveResistanceRequestTargetOutcome", () => {
     });
   });
 
+  it("is unaffected when the target's protective spells stopped it", () => {
+    expect(deriveResistanceRequestTargetOutcome(request("Intercepted"), undefined)).toMatchObject({
+      state: "unaffected",
+      resolvedBy: "intercepted",
+    });
+  });
+
   it("reads the resistance roll as the caster's: success overcomes the target", () => {
     expect(deriveResistanceRequestTargetOutcome(request("Rolled"), Success)).toMatchObject({
       state: "affected",

@@ -2,8 +2,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { reflectResistedSpell } from "./reflect-spell";
 import { spellBehaviorForEffect } from "./spell-behavior";
 import { createResistanceRequest } from "../../applications/resistance-roll-dialog/create-resistance-request";
+import { interceptSpellCast } from "./run-spell-apply";
 
 vi.mock("./spell-behavior", () => ({ spellBehaviorForEffect: vi.fn() }));
+vi.mock("./run-spell-apply", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  interceptSpellCast: vi.fn(async () => []),
+}));
 vi.mock("../../applications/resistance-roll-dialog/create-resistance-request", () => ({
   createResistanceRequest: vi.fn(async () => undefined),
 }));
@@ -89,6 +94,20 @@ describe("reflectResistedSpell", () => {
         },
         reflectedFrom: { messageId: "request", reflectorName: "Harrek" },
       }),
+    );
+  });
+
+  it("lets the caster's own protective spells stop it, before they resist", async () => {
+    onResisted("reflected");
+    vi.mocked(interceptSpellCast).mockResolvedValueOnce(["Scene.s.Token.caster"]);
+
+    await reflectResistedSpell(request());
+
+    expect(interceptSpellCast).toHaveBeenCalledWith(
+      expect.objectContaining({ targetUuids: ["Scene.s.Token.caster"], reflected: true }),
+    );
+    expect(createResistanceRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ intercepted: true }),
     );
   });
 
