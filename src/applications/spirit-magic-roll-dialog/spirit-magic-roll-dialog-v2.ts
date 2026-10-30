@@ -34,6 +34,8 @@ import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepa
 import {
   applySpellCastTargetNote,
   buildSpellCastTargetNote,
+  spellAreaRadius,
+  targetTokensWithin,
 } from "../app-parts/spell-cast-target-note";
 import {
   AUTO_MAGIC_POINT_SOURCE,
@@ -151,6 +153,9 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     id: "spirit-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
+    actions: {
+      targetArea: SpiritMagicRollDialogV2.onTargetArea,
+    },
     form: {
       handler: SpiritMagicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -168,6 +173,19 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       resizable: false,
     },
   };
+
+  /** Target every token within the area spell's radius at the level the form is set to. */
+  private static onTargetArea(this: SpiritMagicRollDialogV2): void {
+    const level = Number(
+      this.element.querySelector<HTMLInputElement>('input[name="levelUsed"]')?.value ?? 0,
+    );
+    const casterToken = this.token ?? this.casterActor.getActiveTokens(false, true)[0];
+    if (!casterToken) {
+      ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
+      return;
+    }
+    targetTokensWithin(casterToken, spellAreaRadius(this.spellItem, level));
+  }
 
   static override PARTS = {
     header: { template: templatePaths.rollHeader },
@@ -211,6 +229,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       targetNote: targetNote.targetNote,
       targetNoteClass: targetNote.targetNoteClass,
       disableRoll: targetNote.tooManyTargets,
+      canTargetArea: spellAreaRadius(this.spellItem, Number(formData.levelUsed)) > 0,
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,

@@ -36,6 +36,8 @@ import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepa
 import {
   applySpellCastTargetNote,
   buildSpellCastTargetNote,
+  spellAreaRadius,
+  targetTokensWithin,
 } from "../app-parts/spell-cast-target-note";
 import {
   AUTO_MAGIC_POINT_SOURCE,
@@ -180,6 +182,9 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     id: "rune-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog"],
+    actions: {
+      targetArea: RuneMagicRollDialogV2.onTargetArea,
+    },
     form: {
       handler: RuneMagicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -198,6 +203,19 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       resizable: false,
     },
   };
+
+  /** Target every token within the area spell's radius at the level the form is set to. */
+  private static onTargetArea(this: RuneMagicRollDialogV2): void {
+    const level = Number(
+      this.element.querySelector<HTMLInputElement>('input[name="levelUsed"]')?.value ?? 0,
+    );
+    const casterToken = this.token ?? this.casterActor.getActiveTokens(false, true)[0];
+    if (!casterToken) {
+      ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
+      return;
+    }
+    targetTokensWithin(casterToken, spellAreaRadius(this.spellItem, level));
+  }
 
   static override PARTS = {
     header: { template: templatePaths.rollHeader },
@@ -268,6 +286,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       targetNote: targetNote.targetNote,
       targetNoteClass: targetNote.targetNoteClass,
       disableRoll: targetNote.tooManyTargets,
+      canTargetArea: spellAreaRadius(this.spellItem, Number(formData.levelUsed)) > 0,
       isStackable: this.spellItem.system.isStackable,
       isOneUse: this.spellItem.system.isOneUse,
       usedRune: usedRune,

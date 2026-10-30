@@ -11,6 +11,9 @@
     <div>
       <span data-target-names>{{targetName}}</span>
       <span data-target-note class="{{targetNoteClass}}" {{#unless targetNote}}hidden{{/unless}}>{{targetNote}}</span>
+      {{#if canTargetArea}}
+        <button type="button" data-action="targetArea">{{localize "RQG.Dialog.SpellCast.TargetInRange"}}</button>
+      {{/if}}
     </div>
 
     <label>

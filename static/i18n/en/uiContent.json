@@ -571,12 +571,14 @@
           "strongerActive": "No effect: an equal or stronger casting is already active",
           "incompatibleActive": "No effect: an incompatible spell is already active",
           "cancelledActive": "Cancelled an opposing spell, so neither remains",
+          "counteractedActive": "No effect: counteracted by a stronger calming spell",
           "intercepted": "No effect: stopped by a protective spell"
         },
         "NotAppliedDetail": {
           "strongerActive": "{effectName} is already active on {parentName}, so {spellName} has no effect.",
           "incompatibleActive": "{spellName} has no effect on {parentName}, which already has the incompatible {effectName}.",
-          "cancelledActive": "{spellName} and {effectName} cancel each other on {parentName}, so neither remains."
+          "cancelledActive": "{spellName} and {effectName} cancel each other on {parentName}, so neither remains.",
+          "counteractedActive": "{effectName} on {parentName} counteracts {spellName}, which is weaker, so it has no effect."
         },
         "AreaResistance": {
           "AffectsUpTo": "Resistance roll {roll}: affects {stat} {value} or lower",
@@ -596,7 +598,8 @@
           "replaces": "{itemName} (replaces {effectName})",
           "strongerActive": "{itemName} (no effect: {effectName} is active)",
           "incompatibleActive": "{itemName} (no effect: incompatible with {effectName})",
-          "cancelledActive": "{itemName} (cancels {effectName})"
+          "cancelledActive": "{itemName} (cancels {effectName})",
+          "counteractedActive": "{itemName} (no effect: {effectName} counteracts it)"
         }
       }
     },
@@ -712,7 +715,9 @@
         "SingleTargetOnly": "only one target",
         "WillAskToCastOnSelf": "will ask to cast on yourself",
         "SpiritCombatUntargeted": "no target: the GM rules on the spirit combat",
-        "AreaUntargeted": "no target: target everyone in range"
+        "AreaUntargeted": "no target: target everyone in range",
+        "TargetInRange": "Target everyone in range",
+        "NoCasterTokenOnScene": "The caster has no token on the viewed scene to measure the range from."
       },
       "SpiritMagicRoll": {
         "Title": "Cast Spirit Magic",
