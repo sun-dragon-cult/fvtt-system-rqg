@@ -251,4 +251,16 @@ describe("decideSpellEffectStacking - counteracting (Harmony, RBM p.62)", () => 
     });
     expect(decideSpellEffectStacking(cast(demoralize, 3), [calm], rule).outcome).toBe("apply");
   });
+
+  it("displaces an effect that is both incompatible and counteracted once", () => {
+    const fanatic = existing(fanaticism, 1);
+    const calming = cast(harmony, 1, [fanaticism], [], [], {
+      points: 2,
+      counteractsSpellRqids: [fanaticism],
+    });
+    expect(decideSpellEffectStacking(calming, [fanatic], "latestDisplaces")).toEqual({
+      outcome: "apply",
+      displaced: [fanatic],
+    });
+  });
 });

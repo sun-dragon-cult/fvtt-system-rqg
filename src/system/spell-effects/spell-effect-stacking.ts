@@ -108,6 +108,9 @@ export function decideSpellEffectStacking(
   }
   return {
     outcome: "apply",
-    displaced: [...conflicts, ...existing.filter((e) => superseded(e) || counteracted(e))],
+    // An effect can be both incompatible and counteracted, and is deleted once
+    displaced: [
+      ...new Set([...conflicts, ...existing.filter((e) => superseded(e) || counteracted(e))]),
+    ],
   };
 }
