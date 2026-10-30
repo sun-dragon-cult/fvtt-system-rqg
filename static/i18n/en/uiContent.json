@@ -541,6 +541,10 @@
         "AlreadyApplied": "This spell effect has already been applied.",
         "NoSpellEffect": "{spellName} has no spell effect to apply.",
         "NeedsActiveGm": "{spellName} needs a GM to be logged in to take effect.",
+        "Damage": {
+          "Strikes": "{spellName} strikes {targetName}",
+          "StrikesIgnoringArmor": "{spellName} strikes {targetName}, ignoring armor"
+        },
         "Summon": {
           "Folder": "Summoned",
           "NoCasterToken": "{spellName}: the caster has no token on a scene to summon next to.",

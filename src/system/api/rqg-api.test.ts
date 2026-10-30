@@ -63,6 +63,7 @@ describe("game.system.api", () => {
           "applyAreaEffect": "function",
           "castPoints": "function",
           "createArea": "function",
+          "dealDamage": "function",
           "effectRemovalCost": "function",
           "list": "function",
           "metersToPixels": "function",
