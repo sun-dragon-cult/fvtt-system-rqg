@@ -2,7 +2,7 @@ import { isValidRqidString } from "../api/rqid-validation";
 import { systemId } from "../config";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
-import { canApplySpell, pickRegistration } from "./spell-behaviour";
+import { canApplySpell, pickRegistration } from "./spell-behavior";
 
 /** The parts of a compendium index entry needed to find the spells that have an effect. */
 export type SpellIndexEntry = {

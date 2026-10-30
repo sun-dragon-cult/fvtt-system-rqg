@@ -1,7 +1,7 @@
 import { resolveActorFromUuid } from "../../applications/resistance-roll-dialog/resistance-roll-shared";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
-import { spellBehaviourForEffect, type IncomingSpellScope } from "./spell-behaviour";
+import { spellBehaviorForEffect, type IncomingSpellScope } from "./spell-behavior";
 
 /**
  * Active effects grouped by a hook of the spell that made them. Spells that share a hook
@@ -41,7 +41,7 @@ export async function interceptIncomingSpell(
   }
   const groups = groupEffectsByHook(
     scope.targetActor.allApplicableEffects() as Iterable<ActiveEffect & { active: boolean }>,
-    (effect) => spellBehaviourForEffect(effect)?.onIncomingSpell,
+    (effect) => spellBehaviorForEffect(effect)?.onIncomingSpell,
   );
   for (const [onIncomingSpell, effects] of groups) {
     const incomingScope: IncomingSpellScope = { ...scope, effects };

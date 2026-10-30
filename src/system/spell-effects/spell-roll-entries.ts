@@ -2,10 +2,10 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import { onRqgHook } from "../fvtt-type-compat";
 import { groupEffectsByHook } from "./incoming-spell";
 import {
-  spellBehaviourForEffect,
+  spellBehaviorForEffect,
   type SpellRollEntries,
   type SpellRollEntryName,
-} from "./spell-behaviour";
+} from "./spell-behavior";
 
 type EntryArgs<N extends SpellRollEntryName> = Omit<
   Parameters<NonNullable<SpellRollEntries[N]>>[0],
@@ -23,14 +23,14 @@ export function runSpellRollEntry<N extends SpellRollEntryName>(
   }
   const groups = groupEffectsByHook(
     actor.allApplicableEffects() as Iterable<ActiveEffect & { active: boolean }>,
-    (effect) => spellBehaviourForEffect(effect)?.[name],
+    (effect) => spellBehaviorForEffect(effect)?.[name],
   );
   for (const [entry, effects] of groups) {
     (entry as (scope: unknown) => void)({ ...args, effects });
   }
 }
 
-/** Spell effects react to rolls through their behaviour, not their own hook listeners (#1170). */
+/** Spell effects react to rolls through their behavior, not their own hook listeners (#1170). */
 export function initSpellRollEntries(): void {
   onRqgHook("rqg.prepareAbilityRoll", (item, options, preparation) =>
     runSpellRollEntry(item.actor as RqgActor | null, "onPrepareAbilityRoll", {

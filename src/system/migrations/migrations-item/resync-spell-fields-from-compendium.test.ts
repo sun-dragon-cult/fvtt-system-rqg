@@ -121,11 +121,11 @@ describe("resyncSpellFieldsFromCompendium", () => {
   it("marks a spell that gets through spell barriers when its compendium spell does", async () => {
     packsContain(
       compendium("i.spirit-magic.dispel-magic", {
-        effectTier: "behaviour",
+        effectTier: "behavior",
         passesSpellBarriers: true,
       }),
     );
-    const copy = spell("i.spirit-magic.dispel-magic", { effectTier: "behaviour" });
+    const copy = spell("i.spirit-magic.dispel-magic", { effectTier: "behavior" });
 
     expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({
       system: { passesSpellBarriers: true },

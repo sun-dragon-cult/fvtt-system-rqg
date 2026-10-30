@@ -97,7 +97,7 @@
         "none",
         "reminder",
         "effect",
-        "behaviour"
+        "behavior"
       ],
       "minLength": 1,
       "default": "none"

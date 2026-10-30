@@ -32,7 +32,7 @@ describe("pickSpellsWithEffects", () => {
     expect(picked.map((entry) => entry.name)).toEqual(["Bladesharp", "Sleep", "Soul Sight"]);
   });
 
-  it("keeps spells without an effect link whose behaviour applies itself", () => {
+  it("keeps spells without an effect link whose behavior applies itself", () => {
     const picked = pickSpellsWithEffects(
       [
         spell("Summon Earth Elemental", "i.rune-magic.summon-earth-elemental", { effectRqid: "" }),
