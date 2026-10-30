@@ -95,9 +95,13 @@ function isOwnedByUser(uuid: string): boolean {
   return !!uuid && !!(fromUuidSync(uuid) as { isOwner?: boolean } | null)?.isOwner;
 }
 
-function targetName(uuid: string): string {
+function targetName(uuid: string, spiritCombat: boolean): string {
   if (!uuid) {
-    return localize("RQG.ChatMessage.SpellCast.SpiritCombat.Opponent");
+    return localize(
+      spiritCombat
+        ? "RQG.ChatMessage.SpellCast.SpiritCombat.Opponent"
+        : "RQG.ChatMessage.SpellCast.NoTarget",
+    );
   }
   return (
     (fromUuidSync(uuid) as { name?: string } | null)?.name ??
@@ -123,8 +127,12 @@ export async function renderSpellCastTargets(
     return {
       applied: effectUuids.length > 0,
       resolved: resolved,
-      // A ruling can't undo an effect that's already on the target, so it stops being offered.
-      canRule: !!game.user?.isGM && !effectUuids.length && !blockedReason,
+      // A ruling can't undo an effect that's already on the target, or overrule a protective spell.
+      canRule:
+        !!game.user?.isGM &&
+        !effectUuids.length &&
+        !blockedReason &&
+        target.resolvedBy !== "intercepted",
       // Why it was blocked tells what's already on the target, so only its owners see it.
       blockedLabel:
         blockedReason && !resolved && isOwner
@@ -134,7 +142,7 @@ export async function renderSpellCastTargets(
       canApply:
         !!spell && target.state === "affected" && !effectUuids.length && !blockedReason && isOwner,
       uuid: target.targetTokenOrActorUuid,
-      name: targetName(target.targetTokenOrActorUuid),
+      name: targetName(target.targetTokenOrActorUuid, !!gateLabels),
       state: target.state,
       stateLabel:
         target.state === "pending" && gateLabels
@@ -160,7 +168,7 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
     return;
   }
   const state = getRequiredDomDataset(clickedButton, "spell-cast-ruling") as SpellTargetRulingState;
-  // "" is a spirit-combat gate's untargeted opponent.
+  // "" is an untargeted opponent.
   const targetUuid = getDomDataset(clickedButton, "target-uuid") ?? "";
   const message = game.messages?.get(getRequiredDomDataset(clickedButton, "message-id"));
   if (!message || !spellTargetRulingState.includes(state) || isEffectSettled(message, targetUuid)) {
@@ -195,7 +203,8 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
 
 /**
  * Settle one target of a `spellCast` card that a later step decides - a GM ruling today, a
- * resolved spirit combat (#958) later. The caller must be able to update the message.
+ * resolved spirit combat (#958) later. A target a protective spell stopped stays stopped. The
+ * caller must be able to update the message.
  */
 export async function settleSpellCastTarget(
   message: ChatMessage,
@@ -204,23 +213,29 @@ export async function settleSpellCastTarget(
   resolvedBy: SpellTargetOutcomeResolvedBy,
 ): Promise<void> {
   const targets = (message.toObject().system as any).targets.map((target: any) =>
-    target.targetTokenOrActorUuid === targetUuid
+    target.targetTokenOrActorUuid === targetUuid && target.resolvedBy !== "intercepted"
       ? { ...target, state: state, resolvedBy: resolvedBy, casterSuccessLevel: null }
       : target,
   );
   await message.update({ system: { targets: targets } } as any);
 }
 
-function ruleOnResistanceRequest(
+async function ruleOnResistanceRequest(
   request: ResistanceRequestChatMessage,
   state: SpellTargetRulingState,
 ): Promise<void> {
   // A spell that takes effect is felt, so the target learns what it was.
-  return answerResistanceRequest(
+  await answerResistanceRequest(
     request,
     { gmRuling: state },
     { revealSpell: state === "affected" },
   );
+  // Resisted by ruling is resisted all the same, so Reflection can still send it back
+  if (state === "unaffected" && request.system.isSpellCast) {
+    // Dynamic import to avoid a circular dependency through rqgItem.ts.
+    const { reflectResistedSpell } = await import("../system/spell-effects/reflect-spell");
+    await reflectResistedSpell(request);
+  }
 }
 
 /** The cast roll's options: level and points spent. */
@@ -277,6 +292,8 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
       castMessageId: message.id ?? "",
       casterSuccessLevel: outcome.casterSuccessLevel,
     }),
+    // Met at cast time, or by a reflected spell as it came back
+    { barriersChecked: true },
   );
   if (!applied) {
     return;

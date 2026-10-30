@@ -22,7 +22,7 @@ import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-projectile";
 import { runSpellApply } from "./run-spell-apply";
 import { castPoints } from "./spell-rules";
-import { spellBehaviorOf } from "./spell-behavior";
+import { isAreaAnchor, spellBehaviorOf } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
 
 export type SpellEffectCast = {
@@ -101,7 +101,8 @@ function linkedRqids(links: readonly { rqid?: string }[] | undefined): string[] 
 function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[] {
   return parent.effects.contents.flatMap((effect: any) => {
     const spell = effect.system?.spell;
-    return spell
+    // A spell area's effect on its caster isn't the spell acting on them
+    return spell && !isAreaAnchor(effect)
       ? [
           {
             id: effect.id ?? "",
@@ -167,13 +168,23 @@ export async function applySpellEffect(
   targetActor: RqgActor,
   targetName: string,
   cast: SpellEffectCast,
+  options: {
+    /**
+     * The Region of a spell area putting its effect on a token inside it: always the template,
+     * since the behavior's `apply` makes the area, protective spells don't stop it - the area isn't
+     * cast at the token - and the effect is marked with the area so leaving it takes it off.
+     */
+    areaRegion?: string;
+    /** The target's protective spells already let it through, when it was cast or reflected. */
+    barriersChecked?: boolean;
+  } = {},
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = spell.name ?? "";
   const scope = spellApplyScope(spell, targetActor, targetName, cast);
   const behavior = spellBehaviorOf(spell);
-  const apply = behavior?.apply;
+  const apply = options.areaRegion ? undefined : behavior?.apply;
   if (apply) {
-    return runSpellApply({ ...behavior, apply }, scope);
+    return runSpellApply({ ...behavior, apply }, scope, !!options.barriersChecked);
   }
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;
@@ -216,7 +227,8 @@ export async function applySpellEffect(
     }
   }
   // Only once Apply can no longer back out, since a protective spell may use up its effects
-  const intercepted = await interceptIncomingSpell(scope);
+  const intercepted =
+    options.areaRegion || options.barriersChecked ? undefined : await interceptIncomingSpell(scope);
   if (intercepted) {
     return intercepted;
   }
@@ -263,6 +275,11 @@ export async function applySpellEffect(
   data.system.spellTarget = null;
   data.system.matchSuspensionToEquippedStatus = true;
   data.system.spell = spellProvenance(spell, cast);
+  if (options.areaRegion) {
+    data.flags = foundry.utils.mergeObject(data.flags ?? {}, {
+      [systemId]: { areaRegion: options.areaRegion },
+    });
+  }
 
   if (stacking.displaced.length) {
     await (parent as RqgItem).deleteEmbeddedDocuments(

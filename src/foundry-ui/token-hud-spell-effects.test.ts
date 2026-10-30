@@ -25,6 +25,8 @@ describe("spellEffectHudEntries", () => {
         itemName: "Broadsword",
         remaining: "1m 20s",
         active: true,
+        automatic: false,
+        description: "",
       },
     ]);
   });
@@ -43,5 +45,30 @@ describe("spellEffectHudEntries", () => {
       ["bladesharp", false],
       ["sleep", true],
     ]);
+  });
+
+  it("takes effect automatically through its changes or its spell's behavior", () => {
+    const entries = spellEffectHudEntries(
+      [
+        effect("bladesharp", { system: { changes: [{ key: "x" }] } }),
+        effect("warding"),
+        effect("befuddle"),
+      ],
+      actor,
+      (e) => e.name === "warding",
+    );
+    expect(entries.map((e) => [e.name, e.automatic])).toEqual([
+      ["befuddle", false],
+      ["bladesharp", true],
+      ["warding", true],
+    ]);
+  });
+
+  it("shows the description as plain text", () => {
+    const [entry] = spellEffectHudEntries(
+      [effect("mobility", { description: "<p>Not automated:  <b>−1</b> strike rank</p>" })],
+      actor,
+    );
+    expect(entry?.description).toBe("Not automated: −1 strike rank");
   });
 });

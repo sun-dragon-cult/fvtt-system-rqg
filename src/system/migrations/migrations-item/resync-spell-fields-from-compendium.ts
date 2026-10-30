@@ -50,8 +50,9 @@ function isDefaultSpellIcon(
 /**
  * Fill a spell's effect link, survey fields, resistedBy, resistedWith, passesSpellBarriers and icon
  * from its compendium spell, matched by rqid (#1086).
- * Only fills what is unset - an empty link, "none", POW, false, or a default icon - so a GM's own
- * choice is never overwritten.
+ * Only fills what is unset - an empty link, "none", false, or a default icon - so a GM's own
+ * choice is never overwritten. POW, resistedWith's default, is a real choice too, so it is only
+ * filled along with resistedBy.
  */
 export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promise<Item.UpdateData> {
   if (itemData.type !== ItemTypeEnum.SpiritMagic && itemData.type !== ItemTypeEnum.RuneMagic) {
@@ -64,7 +65,7 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
   const needsTargetKind = system.targetKind === SpellTargetKindEnum.None;
   const needsEffectTier = system.effectTier === SpellEffectTierEnum.None;
   const needsResistedBy = system.resistedBy === SpellResistedByEnum.None;
-  const needsResistedWith = system.resistedWith === SpellResistedWithEnum.Power;
+  const needsResistedWith = needsResistedBy && system.resistedWith === SpellResistedWithEnum.Power;
   const needsPassesSpellBarriers = !system.passesSpellBarriers;
   const needsImg = isDefaultSpellIcon(itemData.img, spellType);
   if (

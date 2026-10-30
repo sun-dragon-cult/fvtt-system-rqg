@@ -3,6 +3,7 @@ import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
 import { postSpellCastResult, resolveResistedSpellCastTarget } from "../shared/spell-resisted-by";
+import { spellMaxTargets, tokensInSpellArea } from "../../system/spell-effects/spell-area-targets";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { RqgError, localize, assertDocumentSubType } from "../../system/util";
@@ -167,10 +168,13 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       return;
     }
 
+    const areaTokens = tokensInSpellArea(item, rollOptions.levelUsed, options.token, casterActor);
     const resistedSpellTarget = await resolveResistedSpellCastTarget(
       this.resistedBy,
       casterActor,
       item.name ?? undefined,
+      areaTokens,
+      spellMaxTargets(item, rollOptions.levelUsed),
     );
     if (!resistedSpellTarget.proceed) {
       return;

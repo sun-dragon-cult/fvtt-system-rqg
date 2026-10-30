@@ -60,9 +60,13 @@ describe("game.system.api", () => {
           "setRqid": "function",
         },
         "spellEffects": {
+          "applyAreaEffect": "function",
           "castPoints": "function",
+          "createArea": "function",
+          "dealDamage": "function",
           "effectRemovalCost": "function",
           "list": "function",
+          "metersToPixels": "function",
           "removeSpellEffects": "function",
           "summon": "function",
         },

@@ -2,13 +2,19 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { reflectResistedSpell } from "./reflect-spell";
 import { spellBehaviorForEffect } from "./spell-behavior";
 import { createResistanceRequest } from "../../applications/resistance-roll-dialog/create-resistance-request";
+import { interceptSpellCast } from "./run-spell-apply";
 
 vi.mock("./spell-behavior", () => ({ spellBehaviorForEffect: vi.fn() }));
+vi.mock("./run-spell-apply", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  interceptSpellCast: vi.fn(async () => []),
+}));
 vi.mock("../../applications/resistance-roll-dialog/create-resistance-request", () => ({
   createResistanceRequest: vi.fn(async () => undefined),
 }));
 vi.mock("../../applications/resistance-roll-dialog/resistance-roll-shared", () => ({
   resolveCharacteristicSide: vi.fn(() => ({ value: 16, label: "POW", actorName: "Jar-eel" })),
+  resolveCharacteristicLabel: vi.fn(() => "POW"),
 }));
 vi.mock("../util", async (importOriginal) => ({
   ...(await importOriginal<object>()),
@@ -25,9 +31,10 @@ const spell = {
 };
 const target = { name: "Harrek", allApplicableEffects: () => [reflection] };
 
-function request(system: Record<string, unknown> = {}) {
+function request(system: Record<string, unknown> = {}, speaker: Record<string, unknown> = {}) {
   return {
     id: "request",
+    speaker: speaker,
     system: {
       isSpellCast: true,
       reflectedFromMessageId: "",
@@ -58,6 +65,7 @@ describe("reflectResistedSpell", () => {
       "Actor.harrek": target,
     };
     vi.mocked(fromUuid).mockImplementation((async (uuid: string) => documents[uuid]) as any);
+    vi.mocked(fromUuidSync).mockImplementation(((uuid: string) => documents[uuid]) as any);
   });
 
   it("sends a reflected spell back at its caster, with the caster's POW when they cast it", async () => {
@@ -87,6 +95,44 @@ describe("reflectResistedSpell", () => {
         reflectedFrom: { messageId: "request", reflectorName: "Harrek" },
       }),
     );
+  });
+
+  it("lets the caster's own protective spells stop it, before they resist", async () => {
+    onResisted("reflected");
+    vi.mocked(interceptSpellCast).mockResolvedValueOnce(["Scene.s.Token.caster"]);
+
+    await reflectResistedSpell(request());
+
+    expect(interceptSpellCast).toHaveBeenCalledWith(
+      expect.objectContaining({ targetUuids: ["Scene.s.Token.caster"], reflected: true }),
+    );
+    expect(createResistanceRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ intercepted: true }),
+    );
+  });
+
+  it("sends it back at the token a linked caster cast from, not the actor's first token", async () => {
+    onResisted("reflected");
+
+    await reflectResistedSpell(
+      request(
+        { spellCasterUuid: "Actor.tafey" },
+        { scene: "s", token: "tafeyToken", actor: "tafey" },
+      ),
+    );
+
+    expect(createResistanceRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ targetTokenOrActorUuid: "Scene.s.Token.tafeyToken" }),
+    );
+  });
+
+  it("looks nothing up for a target with nothing that reflects", async () => {
+    vi.mocked(spellBehaviorForEffect).mockReturnValue(undefined);
+
+    await reflectResistedSpell(request());
+
+    expect(fromUuid).not.toHaveBeenCalled();
+    expect(createResistanceRequest).not.toHaveBeenCalled();
   });
 
   it("leaves the spell where it is when no effect reflects it", async () => {

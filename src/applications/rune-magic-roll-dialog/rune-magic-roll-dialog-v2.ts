@@ -1,3 +1,4 @@
+import type { DeepPartial } from "fvtt-types/utils";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import { systemId } from "../../system/config";
@@ -33,12 +34,8 @@ import {
   preparedRoll,
 } from "../../rolls/roll-preparation";
 import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepared-roll-view";
-import {
-  applySpellCastTargetNote,
-  buildSpellCastTargetNote,
-  spellAreaRadius,
-  targetTokensWithin,
-} from "../app-parts/spell-cast-target-note";
+import { SpellCastTargets } from "../app-parts/spell-cast-target-note";
+import { onTargetTokenSelectChange } from "../app-parts/target-token-select";
 import {
   AUTO_MAGIC_POINT_SOURCE,
   getAlliedBondActor,
@@ -49,17 +46,30 @@ import { getRunePointSourceOptions, SELF_RUNE_POINT_SOURCE } from "../../system/
 const logger = new RqgLogger("RuneMagicRollDialogV2");
 
 export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
+  protected override async _onRender(
+    context: DeepPartial<any>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
+    await super._onRender(context, options);
+    this.castTargets.open(Number(context["formData"]?.levelUsed));
+  }
+
+  protected override _onClose(
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): void {
+    this.castTargets.close();
+    super._onClose(options);
+  }
+
   protected override onUserTargetsChanged(): void {
-    applySpellCastTargetNote(
-      this.element,
-      buildSpellCastTargetNote(this.spellItem.system.resistedBy),
-    );
+    this.castTargets.targetsChanged(this.element);
   }
 
   protected override getLivePreviewFormBehaviorConfig() {
     return {
       submitButtonSelectorForBlurGuard: "button[data-ability-roll]",
       updateLivePreview: () => this.updateLivePreview(),
+      onCommittedFormChange: (event: Event) => onTargetTokenSelectChange(event),
     };
   }
 
@@ -158,6 +168,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   private spellItem: RuneMagicItem;
   private casterActor: CharacterActor;
   private token: TokenDocument | null | undefined;
+  private castTargets: SpellCastTargets;
 
   /**
    * `casterActor` defaults to the spell's own owner - pass it explicitly when the spell is being
@@ -176,15 +187,13 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     this.spellItem = spellItem;
     this.casterActor = caster;
     this.token = token;
+    this.castTargets = new SpellCastTargets(spellItem, token, caster);
   }
 
   static override DEFAULT_OPTIONS = {
     id: "rune-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog"],
-    actions: {
-      targetArea: RuneMagicRollDialogV2.onTargetArea,
-    },
     form: {
       handler: RuneMagicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -203,19 +212,6 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       resizable: false,
     },
   };
-
-  /** Target every token within the area spell's radius at the level the form is set to. */
-  private static onTargetArea(this: RuneMagicRollDialogV2): void {
-    const level = Number(
-      this.element.querySelector<HTMLInputElement>('input[name="levelUsed"]')?.value ?? 0,
-    );
-    const casterToken = this.token ?? this.casterActor.getActiveTokens(false, true)[0];
-    if (!casterToken) {
-      ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
-      return;
-    }
-    targetTokensWithin(casterToken, spellAreaRadius(this.spellItem, level));
-  }
 
   static override PARTS = {
     header: { template: templatePaths.rollHeader },
@@ -275,7 +271,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const showRunePointSourceMismatchWarning =
       runePointSourceOptions.length === 0 && !!alliedBondActor;
 
-    const targetNote = buildSpellCastTargetNote(this.spellItem.system.resistedBy);
+    const targetNote = this.castTargets.note(Number(formData.levelUsed));
     this.prepared = this.prepareCast(formData);
 
     return {
@@ -285,8 +281,10 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       targetName: targetNote.targetName,
       targetNote: targetNote.targetNote,
       targetNoteClass: targetNote.targetNoteClass,
+      targetOptions: targetNote.targetOptions,
+      selectedTarget: targetNote.selectedTarget,
       disableRoll: targetNote.tooManyTargets,
-      canTargetArea: spellAreaRadius(this.spellItem, Number(formData.levelUsed)) > 0,
+      areaTargets: this.castTargets.areaLabel(Number(formData.levelUsed)),
       isStackable: this.spellItem.system.isStackable,
       isOneUse: this.spellItem.system.isOneUse,
       usedRune: usedRune,
@@ -327,6 +325,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       .object as RuneMagicRollDialogFormData;
     this.updatePreparedRoll(this.prepareCast(formData));
     totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
+    this.castTargets.update(this.element, Number(formData.levelUsed));
   }
 
   private static async onSubmit(

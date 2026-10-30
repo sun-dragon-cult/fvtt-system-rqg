@@ -58,12 +58,26 @@ export const SpellResistedWithEnum = {
 export type SpellResistedWithEnum =
   (typeof SpellResistedWithEnum)[keyof typeof SpellResistedWithEnum];
 
+/** Whether a spell is resisted by a roll on the resistance table, where `resistedWith` counts. */
+export function isResistanceRoll(resistedBy: SpellResistedByEnum | undefined): boolean {
+  return (
+    resistedBy === SpellResistedByEnum.ResistanceRoll ||
+    resistedBy === SpellResistedByEnum.ResistanceRollArea ||
+    resistedBy === SpellResistedByEnum.ResistanceRollPerTarget
+  );
+}
+
 /** Spirit combat is one on one, so these gates are against a single opponent. */
 export function isSpiritCombatGate(resistedBy: SpellResistedByEnum | undefined): boolean {
   return (
     resistedBy === SpellResistedByEnum.SpiritCombatRound ||
     resistedBy === SpellResistedByEnum.SpiritCombatDefeat
   );
+}
+
+/** Whether a spell is resolved against one target only, so it can't be cast at several. */
+export function isSingleTargetGate(resistedBy: SpellResistedByEnum | undefined): boolean {
+  return resistedBy === SpellResistedByEnum.ResistanceRoll || isSpiritCombatGate(resistedBy);
 }
 
 // What a spell's effect attaches to - decides where #1079's Active Effect gets created (or

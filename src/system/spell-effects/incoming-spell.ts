@@ -32,11 +32,15 @@ function isFromOutside(casterUuid: string, targetActor: RqgActor): boolean {
   return !casterUuid || resolveActorFromUuid(casterUuid)?.uuid !== targetActor.uuid;
 }
 
-/** Run the target's protective spells' hooks; the blocked result when one of them stops the spell. */
+/**
+ * Run the target's protective spells' hooks; the blocked result when one of them stops the spell.
+ * A reflected spell comes at its caster from outside, from the one who reflected it.
+ */
 export async function interceptIncomingSpell(
   scope: SpellApplyScope,
+  reflected = false,
 ): Promise<SpellEffectApplied | undefined> {
-  if (!isFromOutside(scope.cast.casterUuid, scope.targetActor)) {
+  if (!reflected && !isFromOutside(scope.cast.casterUuid, scope.targetActor)) {
     return undefined;
   }
   const groups = groupEffectsByHook(

@@ -50,6 +50,14 @@ export function onRqgHook<K extends keyof RqgHooks>(hook: K, fn: RqgHooks[K]): n
   return (Hooks.on as (hook: string, fn: (...args: any[]) => unknown) => number)(hook, fn);
 }
 
+/**
+ * Listen to a core hook whose fvtt-types signature tsc can't match within its depth limit
+ * (updateActiveEffect, once the ActiveEffect schema grew); returns the id for `Hooks.off`.
+ */
+export function onUntypedHook(hook: string, fn: (...args: any[]) => unknown): number {
+  return (Hooks.on as (hook: string, fn: (...args: any[]) => unknown) => number)(hook, fn);
+}
+
 /** Call one of the system's pre hooks (RqgHooks); false when a listener returned false to cancel. */
 export function callRqgPreHook<K extends keyof RqgHooks>(
   hook: K,

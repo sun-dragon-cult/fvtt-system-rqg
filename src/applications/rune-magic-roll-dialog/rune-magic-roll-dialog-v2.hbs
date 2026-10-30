@@ -9,18 +9,14 @@
       {{localize "RQG.Dialog.Common.Target"}}
     </label>
     <div>
-      <span data-target-names>{{targetName}}</span>
-      <span data-target-note class="{{targetNoteClass}}" {{#unless targetNote}}hidden{{/unless}}>{{targetNote}}</span>
-      {{#if canTargetArea}}
-        <button type="button" data-action="targetArea">{{localize "RQG.Dialog.SpellCast.TargetInRange"}}</button>
-      {{/if}}
+      {{> spellCastTarget}}
     </div>
 
     <label>
       {{localize "RQG.Dialog.RuneMagicRoll.LevelUsed"}}
     </label>
     <div>
-      <input type="number" data-dtype="Number" {{#unless isStackable}}readonly{{/unless}} name="levelUsed" value={{formData.levelUsed}}>
+      <input type="number" data-dtype="Number" min="1" {{#unless isStackable}}readonly{{/unless}} name="levelUsed" value={{formData.levelUsed}}>
       {{localize "RQG.Actor.RuneMagic.RunePoints"}}
     </div>
 
@@ -60,7 +56,7 @@
       {{localize "RQG.Dialog.RuneMagicRoll.Boost"}}
     </label>
     <div>
-      <input type="number" data-dtype="Number" name="boost" value={{formData.boost}}>
+      <input type="number" data-dtype="Number" min="0" name="boost" value={{formData.boost}}>
       {{localize "RQG.Actor.Attributes.MagicPoints"}}
     </div>
 

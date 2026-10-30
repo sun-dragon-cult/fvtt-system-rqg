@@ -53,8 +53,12 @@ export type CreateResistanceRequestParams = {
     | undefined;
   /** A hidden cast's whispered spellCast message, whose outcome this card settles. */
   spellCastMessageId?: string | undefined;
+  /** A hidden cast's spell, as its flavor, shown to the target once the spell takes effect. */
+  castFlavor?: string | undefined;
   /** The spell is reflected back at its caster by the target of this request. */
   reflectedFrom?: { messageId: string; reflectorName: string } | undefined;
+  /** The target's protective spells stopped the spell, so there is nothing to resist. */
+  intercepted?: boolean | undefined;
 };
 
 /** Post a resistance-table check as a chat card the recipient answers. Never rolls anything. */
@@ -101,7 +105,7 @@ export async function createResistanceRequest(
   );
 
   const chatSystemData: ResistanceRequestDataSourceData = {
-    state: "Requested",
+    state: params.intercepted ? "Intercepted" : "Requested",
     targetTokenOrActorUuid: params.targetTokenOrActorUuid,
     rollerSide: params.rollerSide,
     activeCharacteristics: rollerIsPassive
@@ -126,7 +130,7 @@ export async function createResistanceRequest(
     resistanceFlavor: spellCast ? resistanceFlavor : "",
     // Only the target is kept in the dark - the rest of the table follows the cast as it would an
     // attack. "" on a standalone request, which has no spell to hide.
-    castFlavor: spellCast ? spellCast.castRoll.flavor : "",
+    castFlavor: spellCast ? spellCast.castRoll.flavor : (params.castFlavor ?? ""),
     spellUuid: spellCast ? spellCast.spellUuid : "",
     spellCastMessageId: params.spellCastMessageId ?? "",
     reflectedFromMessageId: params.reflectedFrom?.messageId ?? "",

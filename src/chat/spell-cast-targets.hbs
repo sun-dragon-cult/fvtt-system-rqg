@@ -2,7 +2,7 @@
   <li class="spell-cast-target {{state}}" data-target-uuid="{{uuid}}">
     <div class="spell-cast-target-summary">
       <span class="spell-cast-target-name">{{name}}</span>
-      <span class="spell-cast-target-state">{{stateLabel}}</span>
+      <span class="spell-cast-target-state">{{#if (eq state "pending")}}<i class="fa-solid fa-hourglass-half" inert></i> {{/if}}{{stateLabel}}</span>
       {{#if canRule}}
         <span class="spell-cast-ruling">
           {{#each @root.rulings}}
@@ -29,14 +29,14 @@
   </li>
 {{/inline}}
 
-{{!-- The decided targets share the result box the combat cards use; pending ones sit below it. --}}
+{{!-- The decided targets share the result box the combat cards use; pending ones get an open one. --}}
 {{#if decided.length}}
   <ul class="spell-cast-targets outcome-description">
     {{#each decided}}{{> targetRow}}{{/each}}
   </ul>
 {{/if}}
 {{#if pending.length}}
-  <ul class="spell-cast-targets">
+  <ul class="spell-cast-targets pending-targets">
     {{#each pending}}{{> targetRow}}{{/each}}
   </ul>
 {{/if}}

@@ -1,10 +1,19 @@
 import { getTargetedTokenNames, localize } from "../../system/util";
-import { spellBehaviorOf } from "../../system/spell-effects/spell-behavior";
-import { RqgLogger } from "../../system/logging/rqg-logger";
+import {
+  casterTokenOnScene,
+  spellAreaRadius,
+  spellMaxTargets,
+} from "../../system/spell-effects/spell-area-targets";
 import type { RqgItem } from "@items/rqg-item.ts";
-import { isSpiritCombatGate, SpellResistedByEnum } from "../../data-model/item-data/spell";
-
-const logger = new RqgLogger("spell-cast-target-note");
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { SpellItem } from "@item-model/spell.ts";
+import { previewSpellArea, type SpellAreaPreview } from "./spell-area-preview";
+import {
+  isSingleTargetGate,
+  isSpiritCombatGate,
+  SpellResistedByEnum,
+} from "../../data-model/item-data/spell";
+import { applyTargetTokenSelect, buildTargetTokenSelect } from "./target-token-select";
 
 export type SpellCastTargetNote = {
   /** Comma-joined target names, or the "nothing targeted" label. */
@@ -15,25 +24,36 @@ export type SpellCastTargetNote = {
   targetNoteClass: string;
   /** More targets than the spell can resolve, so casting is refused before anything is spent. */
   tooManyTargets: boolean;
+  /** A single-target spell picks its target from these; empty for spells that take any number. */
+  targetOptions: SelectOptionData<string>[];
+  selectedTarget: string;
 };
 
 /**
  * What the cast dialog says about the current targets. Only a spell resolved by resistance rolls or
- * gated on spirit combat constrains them - everything else is free to be cast at any number of
- * tokens, or none.
+ * gated on spirit combat, or one that reaches only `maxTargets` at its level, constrains them -
+ * everything else is free to be cast at any number of tokens, or none.
  */
-export function buildSpellCastTargetNote(resistedBy: SpellResistedByEnum): SpellCastTargetNote {
+export function buildSpellCastTargetNote(
+  resistedBy: SpellResistedByEnum,
+  casterToken: foundry.canvas.placeables.Token | undefined,
+  maxTargets: number = Infinity,
+): SpellCastTargetNote {
   const targetNames = getTargetedTokenNames();
   const targetCount = game.user?.targets.size ?? 0;
   const spiritCombat = isSpiritCombatGate(resistedBy);
   const perTarget = resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
-  const constrained = resistedBy === SpellResistedByEnum.ResistanceRoll || spiritCombat;
+  const constrained = isSingleTargetGate(resistedBy);
 
-  const tooManyTargets = constrained && targetCount > 1;
+  const singleTargetOnly = constrained && targetCount > 1;
+  const tooManyTargets = singleTargetOnly || targetCount > maxTargets;
   let targetNote = "";
   let targetNoteClass = "";
-  if (tooManyTargets) {
+  if (singleTargetOnly) {
     targetNote = localize("RQG.Dialog.SpellCast.SingleTargetOnly");
+    targetNoteClass = "warning";
+  } else if (tooManyTargets) {
+    targetNote = localize("RQG.Dialog.SpellCast.TooManyTargets", { count: String(maxTargets) });
     targetNoteClass = "warning";
   } else if (resistedBy === SpellResistedByEnum.ResistanceRollArea && targetCount === 0) {
     targetNote = localize("RQG.Dialog.SpellCast.AreaUntargeted");
@@ -42,15 +62,19 @@ export function buildSpellCastTargetNote(resistedBy: SpellResistedByEnum): Spell
     targetNote = localize("RQG.Dialog.SpellCast.SpiritCombatUntargeted");
     targetNoteClass = "hint";
   } else if ((constrained || perTarget) && targetCount === 0) {
-    targetNote = localize("RQG.Dialog.SpellCast.WillAskToCastOnSelf");
+    targetNote = localize("RQG.Dialog.SpellCast.Untargeted");
     targetNoteClass = "hint";
   }
+
+  const targetSelect = constrained ? buildTargetTokenSelect(casterToken) : undefined;
 
   return {
     targetName: targetNames || localize("RQG.Dialog.Common.NoTarget"),
     targetNote: targetNote,
     targetNoteClass: targetNoteClass,
     tooManyTargets: tooManyTargets,
+    targetOptions: targetSelect?.options ?? [],
+    selectedTarget: targetSelect?.selected ?? "",
   };
 }
 
@@ -68,61 +92,85 @@ export function applySpellCastTargetNote(element: HTMLElement, note: SpellCastTa
     noteElement.hidden = !note.targetNote;
   }
 
+  applyTargetTokenSelect(element, { options: note.targetOptions, selected: note.selectedTarget });
+
   const rollButton = element.querySelector<HTMLButtonElement>("button[data-ability-roll]");
   if (rollButton) {
     rollButton.disabled = note.tooManyTargets;
   }
 }
 
-/**
- * How far around the caster an area spell cast at `level` reaches, from its behavior's
- * `areaRadius`; 0 when it has none or the module's code fails.
- */
-export function spellAreaRadius(spell: RqgItem, level: number): number {
-  const areaRadius = spellBehaviorOf(spell)?.areaRadius;
-  if (!areaRadius) {
-    return 0;
+/** What a spell centered on its caster reaches at `level`, which the cast targets; "" otherwise. */
+export function spellAreaTargetsLabel(
+  spell: RqgItem,
+  level: number,
+  casterToken: foundry.canvas.placeables.Token | undefined,
+): string {
+  const meters = spellAreaRadius(spell, level);
+  if (meters <= 0) {
+    return "";
   }
-  try {
-    const radius = Number(areaRadius(level));
-    return Number.isFinite(radius) && radius > 0 ? radius : 0;
-  } catch (error) {
-    logger.error(
-      localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: spell.name ?? "" }),
-      undefined,
-      error,
-    );
-    return 0;
-  }
+  return localize(
+    casterToken
+      ? "RQG.Dialog.SpellCast.EveryoneInRange"
+      : "RQG.Dialog.SpellCast.EveryoneInRangeNoToken",
+    { meters: String(meters) },
+  );
 }
 
 /**
- * Target every token on the caster's scene within `radius` metres of the caster, the caster
- * included, by the scene's own grid scale.
+ * A cast dialog's targets at the level it is set to: the Target row's note, and for a spell centered
+ * on its caster the area's preview on the canvas and its label.
  */
-export function targetTokensWithin(casterToken: TokenDocument, radius: number): void {
-  const caster = casterToken.object;
-  if (!caster || !canvas?.ready || casterToken.parent !== canvas.scene) {
-    ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
-    return;
+export class SpellCastTargets {
+  private preview: SpellAreaPreview | undefined;
+  private level = 0;
+
+  constructor(
+    private readonly spell: SpellItem,
+    private readonly token: TokenDocument | null | undefined,
+    private readonly casterActor: RqgActor,
+  ) {}
+
+  casterToken(): foundry.canvas.placeables.Token | undefined {
+    return casterTokenOnScene(this.token, this.casterActor);
   }
-  const grid = canvas.grid!;
-  const units = canvas.scene?.grid.units ?? "";
-  const metresPerUnit = /^(ft|feet|foot)\.?$/i.test(units)
-    ? 0.3048
-    : /^(yd|yds|yards?)\.?$/i.test(units)
-      ? 0.9144
-      : 1;
-  const radiusInSceneUnits = radius / metresPerUnit;
-  // Straight-line distance between token centres, in scene distance units
-  const distance = (token: Token) =>
-    (Math.hypot(token.center.x - caster.center.x, token.center.y - caster.center.y) / grid.size) *
-    grid.distance;
-  const inRange = (canvas.tokens?.placeables ?? []).filter(
-    (token) => token.visible && distance(token) <= radiusInSceneUnits,
-  );
-  canvas.tokens?.setTargets(
-    inRange.flatMap((token) => (token.id ? [token.id] : [])),
-    { mode: "replace" },
-  );
+
+  note(level: number): SpellCastTargetNote {
+    this.level = level;
+    return buildSpellCastTargetNote(
+      this.spell.system.resistedBy,
+      this.casterToken(),
+      spellMaxTargets(this.spell, level),
+    );
+  }
+
+  areaLabel(level: number): string {
+    return spellAreaTargetsLabel(this.spell, level, this.casterToken());
+  }
+
+  /** Call from the dialog's _onRender; the preview is made once and kept across re-renders. */
+  open(level: number): void {
+    this.preview ??= previewSpellArea(this.spell, this.token, this.casterActor, level);
+  }
+
+  /** The dialog's level changed. */
+  update(element: HTMLElement, level: number): void {
+    this.preview?.update(level);
+    const labelElement = element.querySelector<HTMLElement>("[data-area-targets]");
+    if (labelElement) {
+      labelElement.textContent = this.areaLabel(level);
+    }
+    applySpellCastTargetNote(element, this.note(level));
+  }
+
+  /** The user's targets changed. */
+  targetsChanged(element: HTMLElement): void {
+    applySpellCastTargetNote(element, this.note(this.level));
+  }
+
+  close(): void {
+    this.preview?.destroy();
+    this.preview = undefined;
+  }
 }

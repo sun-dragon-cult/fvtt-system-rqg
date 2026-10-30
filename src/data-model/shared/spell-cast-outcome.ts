@@ -2,7 +2,7 @@ import { safeFromJSON } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { calculateAbilitySuccessLevel } from "../../rolls/ability-roll/calculate-ability-success-level";
 import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula";
-import { isSpiritCombatGate, SpellResistedByEnum } from "../item-data/spell";
+import { SpellResistedByEnum } from "../item-data/spell";
 
 import Roll = foundry.dice.Roll;
 
@@ -54,29 +54,27 @@ export type AreaResistance = {
 };
 
 /**
- * The highest value an area resistance roll overcomes: "all" on 5 or less, "none" on 96 or more,
- * otherwise by the resistance table. RBM's Inviolable reads the table the other way round; this
- * follows Harmony and every other resistance roll.
+ * The highest value an area resistance roll overcomes: "all" on 5 or less, "none" on 96 or more or
+ * below the lowest value a target can have, otherwise by the resistance table. RBM's Inviolable
+ * reads the table the other way round; this follows Harmony and every other resistance roll.
  */
 export function areaResistanceThreshold(
   casterValue: number,
   roll: number,
+  lowestValue: number,
 ): number | "all" | "none" {
   if (roll <= 5) {
     return "all";
   }
-  if (roll >= 96) {
-    return "none";
-  }
-  return casterValue + Math.floor((50 - roll) / 5);
+  const threshold = casterValue + Math.floor((50 - roll) / 5);
+  return roll >= 96 || threshold < lowestValue ? "none" : threshold;
 }
 
 /**
  * The per-target outcomes known the moment the cast roll lands. Anything a later step decides - a
  * resistance roll, a GM ruling - starts as pending. Nothing targeted means a self cast only for
- * `none` and the single and per-target resistance rolls (whose caster confirmed it); an area spell
- * without targets has no target yet, not the caster, and a spirit-combat gate is against an
- * untargeted opponent.
+ * `none`; a resisted spell is against an untargeted opponent the GM rules on - for an area spell,
+ * whoever the GM says it reaches, as the caster had no token to measure from.
  */
 export function buildCastTargetOutcomes(params: {
   castSuccessLevel: AbilitySuccessLevelEnum;
@@ -84,17 +82,14 @@ export function buildCastTargetOutcomes(params: {
   targets: SpellCastTarget[];
   casterTokenOrActorUuid: string;
   areaResistance?: AreaResistance | undefined;
+  /** Targets whose protective spells stopped the spell as it was cast. */
+  stoppedTargetUuids?: readonly string[] | undefined;
 }): SpellTargetOutcome[] {
   const { castSuccessLevel, resistedBy, casterTokenOrActorUuid } = params;
-  const defaultsToSelf =
-    resistedBy === SpellResistedByEnum.None ||
-    resistedBy === SpellResistedByEnum.ResistanceRoll ||
-    resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
-  const untargeted: SpellCastTarget[] = defaultsToSelf
-    ? [{ tokenUuid: casterTokenOrActorUuid, isCaster: true }]
-    : isSpiritCombatGate(resistedBy)
-      ? [{ tokenUuid: "", isCaster: false }]
-      : [];
+  const untargeted: SpellCastTarget[] =
+    resistedBy === SpellResistedByEnum.None
+      ? [{ tokenUuid: casterTokenOrActorUuid, isCaster: true }]
+      : [{ tokenUuid: "", isCaster: false }];
   const targets = params.targets.length ? params.targets : untargeted;
   const castSucceeded = castSuccessLevel <= AbilitySuccessLevelEnum.Success;
 
@@ -111,6 +106,9 @@ export function buildCastTargetOutcomes(params: {
 
     if (!castSucceeded) {
       return settled("unaffected", "castFailed");
+    }
+    if (params.stoppedTargetUuids?.includes(target.tokenUuid)) {
+      return settled("unaffected", "intercepted");
     }
     const area = params.areaResistance;
     const targetValue = area?.targetValues[target.tokenUuid];
@@ -166,6 +164,13 @@ export function deriveResistanceRequestTargetOutcome(
   switch (request.state) {
     case "Accepted":
       return { ...base, state: "affected", resolvedBy: "accepted", casterSuccessLevel: undefined };
+    case "Intercepted":
+      return {
+        ...base,
+        state: "unaffected",
+        resolvedBy: "intercepted",
+        casterSuccessLevel: undefined,
+      };
     case "Rolled": {
       // the resistance roll is the caster's, so success means the spell got through
       const overcame =

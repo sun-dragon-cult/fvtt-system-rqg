@@ -35,38 +35,22 @@ describe("buildCastTargetOutcomes", () => {
     ]);
   });
 
-  it("defaults to the caster for a resistanceRoll spell, whose caster confirmed the self cast", () => {
-    expect(build(Success, SpellResistedByEnum.ResistanceRoll, [])[0]).toMatchObject({
-      targetTokenOrActorUuid: caster,
-      state: "affected",
-      resolvedBy: "selfCast",
-    });
+  it.each([
+    SpellResistedByEnum.ResistanceRoll,
+    SpellResistedByEnum.ResistanceRollArea,
+    SpellResistedByEnum.ResistanceRollPerTarget,
+    SpellResistedByEnum.SpiritCombatRound,
+    SpellResistedByEnum.SpiritCombatDefeat,
+  ])("leaves an untargeted %s cast's opponent pending, for the GM to rule on", (mode) => {
+    expect(build(Success, mode, [])).toEqual([
+      {
+        targetTokenOrActorUuid: "",
+        state: "pending",
+        resolvedBy: undefined,
+        casterSuccessLevel: undefined,
+      },
+    ]);
   });
-
-  it("records no targets for an untargeted resistanceRollArea cast, rather than hitting the caster", () => {
-    expect(build(Success, SpellResistedByEnum.ResistanceRollArea, [])).toEqual([]);
-  });
-
-  it("defaults to the caster for a resistanceRollPerTarget spell, whose caster confirmed the self cast", () => {
-    expect(build(Success, SpellResistedByEnum.ResistanceRollPerTarget, [])[0]).toMatchObject({
-      targetTokenOrActorUuid: caster,
-      resolvedBy: "selfCast",
-    });
-  });
-
-  it.each([SpellResistedByEnum.SpiritCombatRound, SpellResistedByEnum.SpiritCombatDefeat])(
-    "leaves an untargeted %s cast's opponent pending, for the GM to rule on",
-    (mode) => {
-      expect(build(Success, mode, [])).toEqual([
-        {
-          targetTokenOrActorUuid: "",
-          state: "pending",
-          resolvedBy: undefined,
-          casterSuccessLevel: undefined,
-        },
-      ]);
-    },
-  );
 
   it("marks an untargeted spirit-combat gate unaffected when the cast failed", () => {
     expect(build(Failure, SpellResistedByEnum.SpiritCombatRound, [])).toMatchObject([
@@ -83,6 +67,24 @@ describe("buildCastTargetOutcomes", () => {
     expect(outcomes.map((o) => [o.state, o.resolvedBy])).toEqual([
       ["unaffected", "castFailed"],
       ["unaffected", "castFailed"],
+    ]);
+  });
+
+  it("settles a target its protective spells stopped as unaffected, before any resistance", () => {
+    const outcomes = buildCastTargetOutcomes({
+      castSuccessLevel: Success,
+      resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
+      targets: [
+        { tokenUuid: "Token.a", isCaster: false },
+        { tokenUuid: "Token.b", isCaster: false },
+      ],
+      casterTokenOrActorUuid: caster,
+      stoppedTargetUuids: ["Token.a"],
+    });
+
+    expect(outcomes.map((o) => [o.state, o.resolvedBy, o.casterSuccessLevel])).toEqual([
+      ["unaffected", "intercepted", Success],
+      ["pending", undefined, undefined],
     ]);
   });
 
@@ -129,6 +131,13 @@ describe("deriveResistanceRequestTargetOutcome", () => {
     expect(deriveResistanceRequestTargetOutcome(request("Accepted"), undefined)).toMatchObject({
       state: "affected",
       resolvedBy: "accepted",
+    });
+  });
+
+  it("is unaffected when the target's protective spells stopped it", () => {
+    expect(deriveResistanceRequestTargetOutcome(request("Intercepted"), undefined)).toMatchObject({
+      state: "unaffected",
+      resolvedBy: "intercepted",
     });
   });
 
@@ -265,13 +274,21 @@ describe("getSpellCastOutcome", () => {
 describe("areaResistanceThreshold", () => {
   it("reads the roll on the resistance table, like Harmony's example (RBM p.62)", () => {
     // POW 14 rolling 42: everyone with POW 15 or less
-    expect(areaResistanceThreshold(14, 42)).toBe(15);
-    expect(areaResistanceThreshold(15, 50)).toBe(15);
-    expect(areaResistanceThreshold(15, 51)).toBe(14);
+    expect(areaResistanceThreshold(14, 42, 1)).toBe(15);
+    expect(areaResistanceThreshold(15, 50, 1)).toBe(15);
+    expect(areaResistanceThreshold(15, 51, 1)).toBe(14);
   });
 
   it("affects everyone on 5 or less, and no one on 96 or more", () => {
-    expect(areaResistanceThreshold(10, 5)).toBe("all");
-    expect(areaResistanceThreshold(10, 96)).toBe("none");
+    expect(areaResistanceThreshold(10, 5, 1)).toBe("all");
+    expect(areaResistanceThreshold(10, 96, 1)).toBe("none");
+  });
+
+  it("affects no one when the threshold is below the lowest value a target can have", () => {
+    // POW 8 rolling 95: "POW -1 or lower"
+    expect(areaResistanceThreshold(8, 95, 1)).toBe("none");
+    // POW 8 rolling 90 reaches 0: no one has POW 0, but a target can have 0 magic points
+    expect(areaResistanceThreshold(8, 90, 1)).toBe("none");
+    expect(areaResistanceThreshold(8, 90, 0)).toBe(0);
   });
 });

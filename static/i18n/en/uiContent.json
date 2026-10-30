@@ -26,7 +26,8 @@
       "spellCast": "Spell Cast"
     },
     "RegionBehavior": {
-      "clickableScripts": "Click to Execute Script"
+      "clickableScripts": "Click to Execute Script",
+      "spellArea": "Spell Area"
     }
   },
   "COMBAT": {
@@ -522,7 +523,8 @@
         "State": {
           "Requested": "Requested",
           "Rolled": "Rolled",
-          "Accepted": "Accepted"
+          "Accepted": "Accepted",
+          "Intercepted": "Intercepted"
         }
       },
       "SkillBehavior": {
@@ -532,12 +534,17 @@
       },
       "SpellCast": {
         "UnknownTarget": "Unknown target",
+        "NoTarget": "No target",
         "ApplyEffect": "Apply",
         "Applied": "Applied",
         "Resolved": "Done",
         "AlreadyApplied": "This spell effect has already been applied.",
         "NoSpellEffect": "{spellName} has no spell effect to apply.",
         "NeedsActiveGm": "{spellName} needs a GM to be logged in to take effect.",
+        "Damage": {
+          "Strikes": "{spellName} strikes {targetName}",
+          "StrikesIgnoringArmor": "{spellName} strikes {targetName}, ignoring armor"
+        },
         "Summon": {
           "Folder": "Summoned",
           "NoCasterToken": "{spellName}: the caster has no token on a scene to summon next to.",
@@ -556,6 +563,7 @@
         "Reason": {
           "castOnly": "cast roll",
           "castFailed": "cast failed",
+          "intercepted": "stopped by a protective spell",
           "selfCast": "cast on self",
           "accepted": "accepted",
           "resistanceOvercame": "resistance roll overcame",
@@ -707,16 +715,20 @@
           "active": "Active side",
           "passive": "Resisting side"
         },
-        "CastOnSelfTitle": "No Target Selected",
-        "CastOnSelfContent": "No target selected. Cast <b>{spellName}</b> on yourself? Casting on yourself counts as accepting the spell, so there is no resistance roll.",
-        "CastOnSelf": "Cast on self"
+        "NoTargetTitle": "No Target Selected",
+        "NoTargetContent": "No target selected. Cast <b>{spellName}</b> without a target? There is no resistance roll, and the GM rules what the spell does. To cast it on yourself, pick yourself as the target.",
+        "NoTargetNoTokenContent": "No target selected. Cast <b>{spellName}</b> without a target, so the GM rules what the spell does, or on yourself, which counts as accepting it?",
+        "CastWithoutTarget": "Cast without target",
+        "CastOnSelf": "Cast on yourself"
       },
       "SpellCast": {
         "SingleTargetOnly": "only one target",
-        "WillAskToCastOnSelf": "will ask to cast on yourself",
+        "TooManyTargets": "at most {count} targets at this level",
+        "Untargeted": "no target: the GM rules the effect, after you confirm",
         "SpiritCombatUntargeted": "no target: the GM rules on the spirit combat",
-        "AreaUntargeted": "no target: target everyone in range",
-        "TargetInRange": "Target everyone in range",
+        "AreaUntargeted": "no target: target everyone in the area",
+        "EveryoneInRange": "everyone within {meters} m, the caster included",
+        "EveryoneInRangeNoToken": "everyone within {meters} m: the caster has no token, so the GM rules who it reaches",
         "NoCasterTokenOnScene": "The caster has no token on the viewed scene to measure the range from."
       },
       "SpiritMagicRoll": {
@@ -778,6 +790,8 @@
         "Caster": "Caster",
         "Target": "Target",
         "NoTarget": "No target selected",
+        "TargetSelf": "{name} (yourself)",
+        "TargetAtDistance": "{name} ({meters} m)",
         "AttackingActor": "Attacker",
         "DefendingActor": "Defender",
         "TargetedToken": "targeted token",
@@ -1634,6 +1648,14 @@
         "FumbleTableMissing": "The fumble table \"{fumbleTableName}\" is missing."
       }
     },
+    "SpellArea": {
+      "Place": "{spellName}: click where its area goes. Right-click or Escape cancels.",
+      "PlaceInRange": "{spellName}: click where its area goes, within range. Right-click or Escape cancels.",
+      "PlaceCorners": "{spellName}: click the {corners} corners of its area, at most {maxArea} m². Right-click takes back a corner, Escape cancels.",
+      "OutOfRange": "{spellName}: the whole area must be within range of the caster.",
+      "OutOfSight": "{spellName}: the caster must be able to see the center of the area.",
+      "TooLarge": "{spellName}: that area is {area} m², more than the {maxArea} m² the spell covers."
+    },
     "Region": {
       "ClickableScripts": {
         "ShowPointerOnHover": {
@@ -1669,6 +1691,7 @@
       "Warn": {
         "TargetOneTokenOnly": "Please target one token only",
         "ResistedSpellSingleTargetOnly": "{spellName} currently supports a single target — select one or clear your targets.",
+        "SpellTooManyTargets": "{spellName} reaches at most {count} targets at this level — target fewer, or cast it at a higher level.",
         "NotOwnerOfResistanceRequest": "This resistance request is not yours to answer.",
         "ResistanceRequestAlreadyAnswered": "This resistance request has already been answered."
       }
@@ -1885,6 +1908,8 @@
     "TokenHud": {
       "SpellEffectOn": "On {itemName}",
       "SpellEffectRemaining": "{remaining} left",
+      "SpellEffectAutomatic": "Has automated effects",
+      "SpellEffectMarker": "Only marks the spell while it lasts",
       "SpellEffectControls": "Click to open, right-click to remove",
       "RemoveSpellEffectTitle": "Remove {effectName}",
       "RemoveSpellEffectContent": "Are you sure you want to remove {effectName}?",

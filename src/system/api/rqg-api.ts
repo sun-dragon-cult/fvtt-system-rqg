@@ -1,4 +1,5 @@
 import type { ItemTypeEnum } from "@item-model/item-types.ts";
+import { applyAreaEffect, createArea } from "../spell-effects/spell-area";
 import {
   DEFAULT_RQID_BATCH_ITEM_TYPES,
   RqidBatchEditor,
@@ -7,8 +8,10 @@ import { chooseWounds } from "../../items/hit-location-item/hit-location-heal-wo
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { applyDefaultWorldMigrations } from "../migrations/migrate-world";
 import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
+import { metersToPixels } from "../spell-effects/scene-distance";
 import { castPoints, effectRemovalCost, listSpellEffects } from "../spell-effects/spell-rules";
 import { summon } from "../spell-effects/summon";
+import { dealSpellDamage } from "../spell-effects/spell-damage";
 import * as query from "./api-query";
 import * as rolls from "./api-rolls";
 import { openDataModelRepairDialog } from "./data-model-repair";
@@ -70,6 +73,10 @@ export function createRqgApi() {
       castPoints,
       effectRemovalCost,
       summon,
+      dealDamage: dealSpellDamage,
+      createArea,
+      applyAreaEffect,
+      metersToPixels,
     },
   };
 }
