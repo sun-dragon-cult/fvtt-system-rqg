@@ -39,8 +39,11 @@ export function encodeCharacteristics(names: (keyof Characteristics)[]): string 
   return names.join("+");
 }
 
-export function decodeCharacteristics(value: string): (keyof Characteristics)[] {
-  return value ? (value.split("+") as (keyof Characteristics)[]) : [];
+/** What a resistance side can put up: a characteristic, or current magic points (Turn Undead). */
+export type ResistanceStat = keyof Characteristics | "magicPoints";
+
+export function decodeCharacteristics(value: string): ResistanceStat[] {
+  return value ? (value.split("+") as ResistanceStat[]) : [];
 }
 
 // Includes the three characteristic combos the resistance table uses (knockback, grapple-throw);
@@ -145,13 +148,19 @@ export function resolveActorFromUuid(uuid: string): RqgActor | undefined {
   return (doc instanceof TokenDocument ? doc.actor : doc) as RqgActor | undefined;
 }
 
-export function resolveCharacteristicValue(actor: RqgActor, name: keyof Characteristics): number {
+export function resolveCharacteristicValue(actor: RqgActor, name: ResistanceStat): number {
+  if (name === "magicPoints") {
+    return (actor.system as CharacterActor["system"]).attributes?.magicPoints?.value ?? 0;
+  }
   const characteristics = (actor.system as unknown as { characteristics: Characteristics })
     .characteristics;
   return characteristics?.[name]?.value ?? 0;
 }
 
-export function resolveCharacteristicLabel(name: keyof Characteristics): string {
+export function resolveCharacteristicLabel(name: ResistanceStat): string {
+  if (name === "magicPoints") {
+    return localize("RQG.Actor.Attributes.MagicPoints");
+  }
   return localize(`RQG.Actor.Characteristics.${name}`);
 }
 

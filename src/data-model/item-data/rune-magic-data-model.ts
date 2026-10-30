@@ -383,6 +383,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     await postSpellCastResult({
       target: resistedSpellTarget,
       resistedBy: this.resistedBy,
+      resistedWith: this.resistedWith,
       castRoll: runeMagicRoll,
       casterActor: casterActor,
       casterToken: options.token,

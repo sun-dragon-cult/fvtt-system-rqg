@@ -35,6 +35,7 @@ import {
   SpellDurationEnum,
   SpellConcentrationEnum,
   SpellResistedByEnum,
+  SpellResistedWithEnum,
   SpellTargetKindEnum,
   SpellEffectTierEnum,
 } from "../src/data-model/item-data/spell";
@@ -179,6 +180,7 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   ],
   "RQG.Item.Spell.RangeEnum.": [...Object.values(SpellRangeEnum).filter(Boolean), "undefined"],
   "RQG.Item.Spell.ResistedByEnum.": [...Object.values(SpellResistedByEnum)],
+  "RQG.Item.Spell.ResistedWithEnum.": [...Object.values(SpellResistedWithEnum)],
   "RQG.Item.Spell.TargetKindEnum.": [...Object.values(SpellTargetKindEnum)],
   "RQG.Item.Spell.EffectTierEnum.": [...Object.values(SpellEffectTierEnum)],
 

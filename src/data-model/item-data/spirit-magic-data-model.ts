@@ -196,6 +196,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     await postSpellCastResult({
       target: resistedSpellTarget,
       resistedBy: this.resistedBy,
+      resistedWith: this.resistedWith,
       castRoll: spiritMagicRoll,
       casterActor: casterActor,
       casterToken: options.token,
