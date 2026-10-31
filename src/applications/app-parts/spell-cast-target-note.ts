@@ -12,10 +12,10 @@ import {
   isSingleTargetGate,
   isSpiritCombatGate,
   SpellResistedByEnum,
-  SpellTargetKindEnum,
+  castsOnCasterOnly,
+  isTokenTargetKind,
 } from "../../data-model/item-data/spell";
 import { applyTargetTokenSelect, buildTargetTokenSelect } from "./target-token-select";
-import { castsOnCasterOnly } from "../../data-model/shared/spell-cast-record";
 
 export type SpellCastTargetNote = {
   /** Comma-joined target names, or the "nothing targeted" label. */
@@ -30,13 +30,6 @@ export type SpellCastTargetNote = {
   targetOptions: SelectOptionData<string>[];
   selectedTarget: string;
 };
-
-const tokenTargetKinds: readonly string[] = [
-  SpellTargetKindEnum.Creature,
-  SpellTargetKindEnum.Spirit,
-  SpellTargetKindEnum.HitLocation,
-  SpellTargetKindEnum.SpellOrEffect,
-];
 
 /**
  * What the cast dialog says about the current targets. A spell resolved by resistance rolls or
@@ -91,8 +84,7 @@ export function buildSpellCastTargetNote(
 
   const showPicker =
     constrained ||
-    (tokenTargetKinds.includes(targetKind) &&
-      resistedBy !== SpellResistedByEnum.ResistanceRollArea);
+    (isTokenTargetKind(targetKind) && resistedBy !== SpellResistedByEnum.ResistanceRollArea);
   const targetSelect = showPicker ? buildTargetTokenSelect(casterToken) : undefined;
 
   return {

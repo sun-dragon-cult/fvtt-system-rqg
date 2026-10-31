@@ -2,7 +2,8 @@ import { spellEffectSettledReasons } from "../../active-effect/data-model/spell-
 import {
   SpellResistedByEnum,
   SpellResistedWithEnum,
-  SpellTargetKindEnum,
+  castsOnCasterOnly,
+  isCasterKindWhenUntargeted,
   isSpiritCombatGate,
 } from "../item-data/spell";
 import {
@@ -16,7 +17,7 @@ const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foun
 
 /**
  * Where a target of a cast has got to (#1224). `targeted`, `resistance` and `affected` can wait for
- * input; the others are passed through at once.
+ * input, `applied` and `settled` are final, and the others are passed through at once.
  */
 export const spellCastStages = [
   "targeted",
@@ -29,6 +30,21 @@ export const spellCastStages = [
   "settled",
 ] as const;
 export type SpellCastStage = (typeof spellCastStages)[number];
+
+/** Whether nothing more happens to an entry. */
+export function isEntryDone(entry: Pick<SpellCastEntry, "stage">): boolean {
+  return entry.stage === "applied" || entry.stage === "settled";
+}
+
+/** Whether an entry can move on without input, e.g. one left waiting while no GM was logged in. */
+export function canEntryMoveOn(entry: Pick<SpellCastEntry, "stage" | "actorUuid">): boolean {
+  return (
+    entry.stage === "crossing" ||
+    entry.stage === "barriers" ||
+    entry.stage === "resisted" ||
+    (entry.stage === "targeted" && !!entry.actorUuid)
+  );
+}
 
 /** One target of a cast: an actor, with the token it was targeted on if it has one. */
 export type SpellCastEntry = {
@@ -147,10 +163,10 @@ export function entryTargetUuid(entry: Pick<SpellCastEntry, "actorUuid" | "token
   return entry.tokenUuid || entry.actorUuid;
 }
 
-export function newSpellCastEntry(
-  id: string,
-  target: Pick<SpellCastEntry, "actorUuid" | "tokenUuid" | "isCaster">,
-): SpellCastEntry {
+/** A token or actor the spell was cast at. */
+export type SpellCastTarget = Pick<SpellCastEntry, "actorUuid" | "tokenUuid" | "isCaster">;
+
+export function newSpellCastEntry(id: string, target: SpellCastTarget): SpellCastEntry {
   return {
     id: id,
     actorUuid: target.actorUuid,
@@ -167,27 +183,11 @@ export function newSpellCastEntry(
   };
 }
 
-/** A token or actor the spell was cast at. */
-export type SpellCastTarget = Pick<SpellCastEntry, "actorUuid" | "tokenUuid" | "isCaster">;
-
-/** Spells cast with no target that can only mean the caster or the caster's weapon. */
-const casterTargetKinds: readonly string[] = [SpellTargetKindEnum.Self, SpellTargetKindEnum.Weapon];
-/** Unresisted spells that go on their caster whatever is targeted, e.g. a summon. */
-const casterOnlyTargetKinds: readonly string[] = [
-  SpellTargetKindEnum.Self,
-  SpellTargetKindEnum.Creates,
-];
-
-/** Whether a spell goes on its caster whatever is targeted. */
-export function castsOnCasterOnly(targetKind: string, resistedBy: SpellResistedByEnum): boolean {
-  return casterOnlyTargetKinds.includes(targetKind) && resistedBy === SpellResistedByEnum.None;
-}
-
 /**
- * The entries a cast starts with. An unresisted self or creates spell always goes on its caster. With nothing
- * targeted, an unresisted spell, or one that can only go on its caster (`targetKind` self or
- * weapon), goes on the caster; any other gets one untargeted entry for the GM to assign actors to,
- * or rule on. A failed cast settles them all.
+ * The entries a cast starts with. An unresisted self or creates spell always goes on its caster.
+ * With nothing targeted, an unresisted spell, or one that can only go on its caster (`targetKind`
+ * self or weapon), goes on the caster; any other gets one untargeted entry for the GM to assign
+ * actors to, or rule on. A failed cast settles them all.
  */
 export function buildSpellCastEntries(params: {
   castSucceeded: boolean;
@@ -199,7 +199,7 @@ export function buildSpellCastEntries(params: {
 }): SpellCastEntry[] {
   const { castSucceeded, resistedBy, targetKind, caster, newId } = params;
   const untargeted: SpellCastTarget =
-    (resistedBy === SpellResistedByEnum.None || casterTargetKinds.includes(targetKind)) &&
+    (resistedBy === SpellResistedByEnum.None || isCasterKindWhenUntargeted(targetKind)) &&
     !isSpiritCombatGate(resistedBy)
       ? { ...caster, isCaster: true }
       : { actorUuid: "", tokenUuid: "", isCaster: false };

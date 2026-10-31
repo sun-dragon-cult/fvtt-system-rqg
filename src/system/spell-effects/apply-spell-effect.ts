@@ -1,4 +1,4 @@
-import { formatNameList, isDocumentSubType, localize } from "../util";
+import { formatListByUserLanguage, isDocumentSubType, localize } from "../util";
 import { Rqid } from "../api/rqid-api";
 import { RQG_CONFIG, systemId } from "../config";
 import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
@@ -141,7 +141,7 @@ function pickerLabel(item: RqgItem, stacking: SpellEffectStacking): string {
   if (stacking.outcome === "cancel") {
     return localize("RQG.ChatMessage.SpellCast.TargetOption.cancelledActive", {
       itemName: itemName,
-      effectName: formatNameList(stacking.cancelled.map((effect) => effect.name)),
+      effectName: formatListByUserLanguage(stacking.cancelled.map((effect) => effect.name)),
     });
   }
   if (stacking.outcome === "blocked") {
@@ -251,7 +251,7 @@ export async function applySpellEffect(
     ui.notifications?.info(
       localize("RQG.ChatMessage.SpellCast.NotAppliedDetail.cancelledActive", {
         spellName: spellName,
-        effectName: formatNameList(stacking.cancelled.map((effect) => effect.name)),
+        effectName: formatListByUserLanguage(stacking.cancelled.map((effect) => effect.name)),
         parentName: parent.name ?? "",
       }),
     );

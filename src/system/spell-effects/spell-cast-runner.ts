@@ -7,8 +7,11 @@ import {
   type SpellCastInput,
 } from "../../data-model/shared/spell-cast-advance";
 import {
+  canEntryMoveOn,
   entryTargetUuid,
+  isEntryDone,
   isSpellCastRecordMessage,
+  spellCastRecordFields,
   type SpellCastEntry,
   type SpellCastRecord,
 } from "../../data-model/shared/spell-cast-record";
@@ -83,21 +86,14 @@ function runQueued(data: AdvanceSpellCastData): Promise<void> {
   return next;
 }
 
+const recordKeys = ["spellUuid", ...Object.keys(spellCastRecordFields())];
+
+/** A copy of the cast record a message holds, safe to change. */
 function recordOf(message: RecordMessage): SpellCastRecord {
-  const s = message.system;
-  return {
-    spellUuid: s.spellUuid,
-    casterActorUuid: s.casterActorUuid,
-    casterTokenUuid: s.casterTokenUuid,
-    casterPower: s.casterPower,
-    castSuccessLevel: s.castSuccessLevel ?? null,
-    resistedBy: s.resistedBy,
-    resistedWith: s.resistedWith,
-    castRollMode: s.castRollMode,
-    castOptions: { ...s.castOptions },
-    areaRoll: s.areaRoll ? { ...s.areaRoll } : null,
-    targets: (s.targets ?? []).map((entry: SpellCastEntry) => ({ ...entry })),
-  };
+  const system = message.system;
+  return foundry.utils.deepClone(
+    Object.fromEntries(recordKeys.map((key) => [key, system[key]])),
+  ) as SpellCastRecord;
 }
 
 /** The cast as a spell effect records it, for one entry of the record. */
@@ -115,8 +111,9 @@ export function recordCast(
   });
 }
 
-async function targetOf(
-  entry: SpellCastEntry,
+/** An entry's target: its token if it has one, that token's actor, and the name chat text uses. */
+export async function targetOf(
+  entry: Pick<SpellCastEntry, "actorUuid" | "tokenUuid">,
 ): Promise<{ actor: RqgActor | null; name: string; token: TokenDocument | null }> {
   const document = await fromUuid(entryTargetUuid(entry));
   const token = document instanceof TokenDocument ? document : null;
@@ -152,8 +149,7 @@ async function advanceOnGm(data: AdvanceSpellCastData): Promise<void> {
     return;
   }
   const record = recordOf(message);
-  const done = (e: SpellCastEntry) => e.stage === "settled" || e.stage === "applied";
-  if (isLateAnswer(record, data) || (!data.inputs.length && record.targets.every(done))) {
+  if (isLateAnswer(record, data) || (!data.inputs.length && record.targets.every(isEntryDone))) {
     return;
   }
   const spell = (await fromUuid(record.spellUuid)) as RqgItem | null;
@@ -302,6 +298,11 @@ async function writeAdvance(
     if (!Object.keys(patch).length && !revealSpell) {
       continue;
     }
+    // The card's own content doesn't show the record, so its targets alone need no re-render
+    if (!revealSpell && !answer && Object.keys(patch).every((key) => key === "targets")) {
+      await request.update({ system: patch } as any);
+      continue;
+    }
     const update = await resistanceRequestUpdate(request, patch, {
       revealSpell: revealSpell,
       whisper: answer?.whisper,
@@ -322,14 +323,11 @@ export async function resumeSpellCasts(): Promise<void> {
   if (!game.users?.activeGM?.isSelf) {
     return;
   }
-  const passing = ["crossing", "barriers", "resisted"];
   const waiting = (game.messages?.contents ?? []).filter((message) => {
     const targets = isSpellCastRecordMessage(message as any)
       ? ((message.system as any).targets as SpellCastEntry[])
       : [];
-    return targets.some(
-      (e) => passing.includes(e.stage) || (e.stage === "targeted" && !!e.actorUuid),
-    );
+    return targets.some(canEntryMoveOn);
   });
   for (const message of waiting) {
     await advanceSpellCast(message.id ?? "");

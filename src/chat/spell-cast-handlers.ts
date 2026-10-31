@@ -4,8 +4,7 @@ import { getResistanceRequestTargetOutcome } from "../data-model/shared/spell-ca
 import { canApplySpell } from "../system/spell-effects/spell-behavior";
 import { Rqid } from "../system/api/rqid-api";
 import { applySpellEffect } from "../system/spell-effects/apply-spell-effect";
-import { advanceSpellCast, recordCast } from "../system/spell-effects/spell-cast-runner";
-import type { RqgActor } from "@actors/rqg-actor.ts";
+import { advanceSpellCast, recordCast, targetOf } from "../system/spell-effects/spell-cast-runner";
 import type { RqgItem } from "@items/rqg-item.ts";
 import {
   spellTargetRulingState,
@@ -241,15 +240,10 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
     return;
   }
 
-  const targetDoc = await fromUuid(targetUuid);
-  const targetActor = (
-    targetDoc instanceof TokenDocument ? targetDoc.actor : targetDoc
-  ) as RqgActor | null;
+  const { actor: targetActor, name } = await targetOf(entry);
   if (!targetActor) {
     return;
   }
-  // The token's own name, as the rest of the chat text uses.
-  const name = (targetDoc as { name?: string } | null)?.name ?? targetActor.name ?? "";
   const cast = recordCast(record.system as any, record.id ?? "", spell, entry);
   const applied = await applySpellEffect(spell, targetActor, name, cast);
   if (!applied) {

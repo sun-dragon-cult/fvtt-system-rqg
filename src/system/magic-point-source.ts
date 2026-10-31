@@ -1,7 +1,7 @@
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
 import type { PhysicalItem } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import { formatNameList, isDocumentSubType, localize } from "./util";
+import { formatListByUserLanguage, isDocumentSubType, localize } from "./util";
 import { magicPointStorageOrderFlag } from "../data-model/shared/rqg-document-flags";
 import { systemId } from "./config";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data";
@@ -724,7 +724,9 @@ export async function confirmBoundSpiritDrain(
   if (draining.length === 0) {
     return { proceed: true, avoidRelease: false };
   }
-  const spiritNames = formatNameList(draining.map(({ spiritActor }) => spiritActor.name ?? ""));
+  const spiritNames = formatListByUserLanguage(
+    draining.map(({ spiritActor }) => spiritActor.name ?? ""),
+  );
   const choice = await foundry.applications.api.DialogV2.wait({
     window: { title: localize("RQG.Item.Gear.BoundSpiritDrainConfirmTitle") },
     content: `<p>${localize("RQG.Item.Gear.BoundSpiritDrainConfirmContent", { spiritNames })}</p>`,

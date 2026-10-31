@@ -28,7 +28,6 @@ globalThis.game = {
   i18n: {
     format: vi.fn((key, data = {}) => `${key} + ${Object.entries(data).join()}`),
     localize: vi.fn((key) => key),
-    getListFormatter: () => new Intl.ListFormat("en"),
     translations: {},
     _fallback: {},
   },

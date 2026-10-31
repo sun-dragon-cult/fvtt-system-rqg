@@ -28,7 +28,7 @@ export function groupEffectsByHook<T extends { active: boolean }, F>(
  * ticked has no caster and counts as cast by someone else.
  */
 function isFromOutside(cast: SpellEffectCast, targetActor: RqgActor): boolean {
-  return !cast.casterActorUuid || cast.casterActorUuid !== targetActor.uuid;
+  return cast.casterActorUuid !== targetActor.uuid;
 }
 
 /**

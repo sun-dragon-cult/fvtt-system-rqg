@@ -106,7 +106,7 @@ export async function submitResistanceAnswer(
  * `revealSpell` lifts the concealment a combined cast card puts on the target - the spell took
  * effect, so they now know what it was. Shared so Resist and Accept can't drift apart.
  */
-export async function answerResistanceRequest(
+async function answerResistanceRequest(
   requestChatMessage: ResistanceRequestChatMessage,
   systemPatch: Record<string, unknown>,
   options: ResistanceRequestUpdateOptions,

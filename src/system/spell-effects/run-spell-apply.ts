@@ -1,4 +1,4 @@
-import { localize } from "../util";
+import { hasActiveGm, localize } from "../util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import {
@@ -29,11 +29,10 @@ export async function runSpellApply(
   scope: SpellApplyScope,
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = scope.spell.name ?? "";
-  const gm = behavior.runAsGm && !game.user?.isGM ? game.users?.activeGM : undefined;
-  if (behavior.runAsGm && !game.user?.isGM && !gm) {
-    ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName }));
+  if (behavior.runAsGm && !game.user?.isGM && !hasActiveGm(spellName)) {
     return undefined;
   }
+  const gm = behavior.runAsGm && !game.user?.isGM ? game.users?.activeGM : undefined;
   if (!gm) {
     return behavior.apply(scope);
   }
@@ -58,11 +57,10 @@ export async function queryActiveGm<Q extends RqgQuery>(
   spellName: string,
 ): Promise<Awaited<ReturnType<CONFIG.Queries[Q]>> | undefined> {
   const gm = game.users?.activeGM;
-  const needsGm = localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName });
-  if (!gm) {
-    ui.notifications?.warn(needsGm);
+  if (!hasActiveGm(spellName) || !gm) {
     return undefined;
   }
+  const needsGm = localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName });
   try {
     return (await gm.query(name, data as any)) as Awaited<ReturnType<CONFIG.Queries[Q]>>;
   } catch (error) {

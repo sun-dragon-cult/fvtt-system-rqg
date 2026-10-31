@@ -147,12 +147,12 @@ function applyInput(record: SpellCastRecord, input: SpellCastInput, env: SpellCa
       if (entry.actorUuid || entry.stage !== "targeted" || !input.targets.length) {
         return;
       }
-      const assigned = input.targets.map((target, i) => ({
-        ...newSpellCastEntry(i === 0 ? entry.id : env.newId(), {
+      const assigned = input.targets.map((target, i) =>
+        newSpellCastEntry(i === 0 ? entry.id : env.newId(), {
           ...target,
           isCaster: target.actorUuid === record.casterActorUuid,
         }),
-      }));
+      );
       record.targets.splice(index, 1, ...assigned);
       return;
     }

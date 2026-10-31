@@ -993,14 +993,9 @@ export function hasActiveGm(spellName: string): boolean {
   return false;
 }
 
-/** Names joined as a list in the world's language, e.g. "A, B and C" or "A, B och C". */
-export function formatNameList(names: string[]): string {
-  return game.i18n?.getListFormatter().format(names) ?? names.join(", ");
-}
-
 /** The names of the user's current targets, for showing what a roll is aimed at. */
 export function getTargetedTokenNames(): string {
-  return formatNameList(
+  return formatListByUserLanguage(
     [...(game.user?.targets ?? [])].map((token) => token.document?.name ?? "").filter(isTruthy),
   );
 }
