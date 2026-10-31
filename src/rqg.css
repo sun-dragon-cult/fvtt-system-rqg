@@ -1154,6 +1154,10 @@
           background: var(--rqg-color-main);
           border-color: var(--rqg-color-main);
 
+          & i {
+            font-size: 1.25em;
+          }
+
           &:hover {
             background: color-mix(in srgb, var(--rqg-color-main) 80%, #fff);
             box-shadow: 0 0 0.3em var(--color-shadow-primary);
