@@ -1,4 +1,4 @@
-import { getDomDataset, getRequiredDomDataset, localize } from "../system/util";
+import { getDomDataset, getRequiredDomDataset, hasActiveGm, localize } from "../system/util";
 import { templatePaths } from "../system/load-handlebars-templates";
 import { getResistanceRequestTargetOutcome } from "../data-model/shared/spell-cast-outcome";
 import { canApplySpell } from "../system/spell-effects/spell-behavior";
@@ -158,7 +158,12 @@ export async function renderSpellCastTargets(message: ChatMessage): Promise<stri
       applied: row.effectUuids.length > 0,
       resolved: resolved,
       // A ruling can't undo an effect that's already on the target, or overrule a protective spell.
-      canRule: !!game.user?.isGM && !!record && !settled && row.resolvedBy !== "intercepted",
+      canRule:
+        !!game.user?.isGM &&
+        !!record &&
+        !settled &&
+        row.resolvedBy !== "intercepted" &&
+        row.resolvedBy !== "reflected",
       // Why it was blocked tells what's already on the target, so only its owners see it.
       blockedLabel:
         row.blockedReason && !resolved && isOwner
@@ -232,7 +237,7 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.AlreadyApplied"));
     return;
   }
-  if (entry.stage !== "affected") {
+  if (entry.stage !== "affected" || !hasActiveGm(spell.name ?? "")) {
     return;
   }
 

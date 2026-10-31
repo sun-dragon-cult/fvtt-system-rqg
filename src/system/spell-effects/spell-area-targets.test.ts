@@ -38,4 +38,9 @@ describe("spellMaxTargets", () => {
     expect(spellMaxTargets(cast("none"), 1)).toBe(Infinity);
     expect(spellMaxTargets(cast("area"), 1)).toBe(Infinity);
   });
+
+  it("allows any number for a spell centered on its caster, which takes everyone in its area", () => {
+    vi.mocked(spellBehaviorOf).mockReturnValue({ areaRadius: () => 3 });
+    expect(spellMaxTargets(cast("creature"), 1)).toBe(Infinity);
+  });
 });

@@ -152,7 +152,8 @@ async function advanceOnGm(data: AdvanceSpellCastData): Promise<void> {
     return;
   }
   const record = recordOf(message);
-  if (isLateAnswer(record, data)) {
+  const done = (e: SpellCastEntry) => e.stage === "settled" || e.stage === "applied";
+  if (isLateAnswer(record, data) || (!data.inputs.length && record.targets.every(done))) {
     return;
   }
   const spell = (await fromUuid(record.spellUuid)) as RqgItem | null;
@@ -169,9 +170,7 @@ async function advanceOnGm(data: AdvanceSpellCastData): Promise<void> {
     }
     return actors.get(key)!;
   };
-  for (const entry of record.targets.filter((e) => e.actorUuid)) {
-    await target(entry);
-  }
+  await Promise.all(record.targets.filter((e) => e.actorUuid).map(target));
 
   const env: SpellCastAdvanceEnv = {
     crossAreas: async (entries) => {
@@ -247,6 +246,9 @@ async function advanceOnGm(data: AdvanceSpellCastData): Promise<void> {
   };
 
   const next = await advanceSpellCastRecord(record, data.inputs, env);
+  if (!data.requestPatch && foundry.utils.objectsEqual(next.targets, record.targets)) {
+    return;
+  }
   await writeAdvance(message, next, data);
 }
 
@@ -281,6 +283,15 @@ async function writeAdvance(
     const ruling = rulings.get(entry.id);
     if (ruling) {
       patch["gmRuling"] = ruling;
+    }
+    // A hidden cast's target only sees the request card, so it shows the applied result too
+    if (
+      entry.stage === "applied" &&
+      !request.system.appliedEffectUuids?.length &&
+      !request.system.effectBlockedReason
+    ) {
+      patch["appliedEffectUuids"] = entry.effectUuids;
+      patch["effectBlockedReason"] = entry.effectBlockedReason;
     }
     if (isRecord) {
       patch["targets"] = next.targets;

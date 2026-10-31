@@ -981,12 +981,24 @@ export function getActorLinkDecoration(actor: RqgActor | Actor | null | undefine
   }
 }
 
-/** Comma-joined names of the user's current targets, for showing what a roll is aimed at. */
+/**
+ * Whether a GM is logged in to record a spell's answer or effect; warns when not. Ask before
+ * rolling or applying anything, so nothing happens that the cast's record would then miss.
+ */
+export function hasActiveGm(spellName: string): boolean {
+  if (game.users?.activeGM) {
+    return true;
+  }
+  ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName }));
+  return false;
+}
+
 /** Names joined as a list in the world's language, e.g. "A, B and C" or "A, B och C". */
 export function formatNameList(names: string[]): string {
   return game.i18n?.getListFormatter().format(names) ?? names.join(", ");
 }
 
+/** The names of the user's current targets, for showing what a roll is aimed at. */
 export function getTargetedTokenNames(): string {
   return formatNameList(
     [...(game.user?.targets ?? [])].map((token) => token.document?.name ?? "").filter(isTruthy),

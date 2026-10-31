@@ -110,6 +110,13 @@ describe("advanceSpellCastRecord", () => {
     expect(held.targets[0]).toMatchObject({ stage: "settled", state: "unaffected" });
   });
 
+  it("asks only once when no request card could be made", async () => {
+    const e = env({ requestResistance: vi.fn(async () => "") });
+    const next = await advanceSpellCastRecord(record(SpellResistedByEnum.ResistanceRoll), [], e);
+    expect(e.requestResistance).toHaveBeenCalledOnce();
+    expect(next.targets[0]).toMatchObject({ stage: "resistance", requestMessageId: "" });
+  });
+
   it("sends a held spell back at its caster as a new entry that meets their defenses first", async () => {
     const e = env({ reflects: vi.fn(async () => true) });
     const asked = await advanceSpellCastRecord(record(SpellResistedByEnum.ResistanceRoll), [], e);
@@ -161,6 +168,22 @@ describe("advanceSpellCastRecord", () => {
     );
     expect(next.targets[0]!.resolvedBy).toBe("reflected");
     expect(next.targets).toHaveLength(2);
+  });
+
+  it("won't overrule a reflection, which already sent the spell back", async () => {
+    const e = env({ reflects: vi.fn(async () => true) });
+    const asked = await advanceSpellCastRecord(record(SpellResistedByEnum.ResistanceRoll), [], e);
+    const reflected = await advanceSpellCastRecord(
+      asked,
+      [{ kind: "resistance", entryId: "a", result: "held" }],
+      e,
+    );
+    const ruled = await advanceSpellCastRecord(
+      reflected,
+      [{ kind: "ruling", entryId: "a", state: "affected" }],
+      e,
+    );
+    expect(ruled.targets[0]).toMatchObject({ state: "unaffected", resolvedBy: "reflected" });
   });
 
   it("won't overrule a protective spell or an applied effect", async () => {

@@ -53,9 +53,21 @@ export async function advanceSpellCastRecord(
   for (const input of inputs) {
     applyInput(next, input, env);
   }
+  // Each entry is asked once per advance, even when no card could be made
+  const asked = new Set<string>();
+  const once: SpellCastAdvanceEnv = {
+    ...env,
+    requestResistance: async (entry) => {
+      if (asked.has(entry.id)) {
+        return "";
+      }
+      asked.add(entry.id);
+      return env.requestResistance(entry);
+    },
+  };
   // Each pass moves every entry at least one stage or stops; a reflection adds an entry
   let passes = 0;
-  while (passes++ < 20 && (await advanceOnce(next, env))) {
+  while (passes++ < 20 && (await advanceOnce(next, once))) {
     // keep going until every entry waits for input or is done
   }
   return next;
@@ -97,8 +109,12 @@ function applyInput(record: SpellCastRecord, input: SpellCastInput, env: SpellCa
       return;
     }
     case "ruling": {
-      // An applied effect stays, and a protective spell's stop isn't overruled
-      if (entry.stage === "applied" || entry.resolvedBy === "intercepted") {
+      // An applied effect stays, and a protective spell's stop or reflection isn't overruled
+      if (
+        entry.stage === "applied" ||
+        entry.resolvedBy === "intercepted" ||
+        entry.resolvedBy === "reflected"
+      ) {
         return;
       }
       if (input.state === "affected") {
@@ -242,6 +258,7 @@ async function resist(
   if (entry.requestMessageId) {
     return false;
   }
+  // No card (e.g. a module cancelled it) leaves the entry for the GM to rule on
   entry.requestMessageId = await env.requestResistance(entry);
-  return true;
+  return !!entry.requestMessageId;
 }

@@ -20,6 +20,7 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 import { areaResistanceThreshold } from "./spell-cast-outcome";
 import {
   buildSpellCastEntries,
+  entryTargetUuid,
   type SpellCastRecord,
   type SpellCastTarget,
 } from "./spell-cast-record";
@@ -215,8 +216,8 @@ export async function postSpellCastResult(params: {
   const { spellUuid: _spellUuid, ...recordFields } = record;
   const message = combined
     ? await requestSpellResistance({
-        targetUuid: only.tokenUuid || only.actorUuid,
-        casterUuid: caster.tokenUuid || caster.actorUuid,
+        targetUuid: entryTargetUuid(only),
+        casterUuid: entryTargetUuid(caster),
         resistedWith: resistedWith,
         rollMode: castRollMode,
         frozenValue: casterPower,
@@ -225,7 +226,7 @@ export async function postSpellCastResult(params: {
         waiting: true,
         spellCast: {
           castRoll,
-          casterTokenOrActorUuid: caster.tokenUuid || caster.actorUuid,
+          casterTokenOrActorUuid: entryTargetUuid(caster),
           spellUuid,
         },
       })

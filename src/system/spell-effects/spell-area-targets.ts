@@ -25,13 +25,18 @@ const multiTargetResistedBy: readonly string[] = [
 ];
 
 /**
- * How many tokens a spell cast at `level` can be cast at: its behavior's count, else one for a
- * spell cast at a creature or thing that isn't resisted per target or across an area, else any.
+ * How many tokens a spell cast at `level` can be cast at: its behavior's count, else any for a
+ * spell centered on its caster, else one for a spell cast at a creature or thing that isn't
+ * resisted per target or across an area, else any.
  */
 export function spellMaxTargets(spell: RqgItem, level: number): number {
-  const declared = spellBehaviorOf(spell)?.maxTargets?.(level);
+  const behavior = spellBehaviorOf(spell);
+  const declared = behavior?.maxTargets?.(level);
   if (declared !== undefined) {
     return declared;
+  }
+  if ((behavior?.areaRadius?.(level) ?? 0) > 0) {
+    return Infinity;
   }
   const { targetKind, resistedBy } = spell.system as { targetKind?: string; resistedBy?: string };
   return singleTargetKinds.includes(targetKind ?? "") &&

@@ -6,6 +6,7 @@ import type {
 } from "./respond-to-resistance-request-dialog-data.types.ts";
 import {
   getSpeakerDisplayName,
+  hasActiveGm,
   localize,
   normalizeOtherModifierDescriptionForRoll,
 } from "../../system/util";
@@ -353,6 +354,15 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     // Hiding the button in the DOM isn't a permission check - match the Accept handler's.
     if (!game.user?.isGM && !actor.isOwner) {
       ui.notifications?.warn(localize("RQG.Notification.Warn.NotOwnerOfResistanceRequest"));
+      return;
+    }
+
+    const system = requestChatMessage!.system;
+    if (
+      system.isSpellCast &&
+      system.entryId &&
+      !hasActiveGm((fromUuidSync(system.spellUuid) as { name?: string } | null)?.name ?? "")
+    ) {
       return;
     }
 

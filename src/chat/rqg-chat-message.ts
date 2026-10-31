@@ -59,11 +59,11 @@ export class RqgChatMessage extends ChatMessage {
     super._onUpdate(data, options, userId);
 
     // A request card shows its entry off the cast record, so a record update makes it stale.
-    if (this.type === "spellCast" || (this.system as any)?.targets?.length) {
-      for (const request of game.messages?.contents ?? []) {
-        if ((request.system as any)?.spellCastMessageId === this.id) {
-          void ui.chat?.updateMessage(request as ChatMessage.Implementation);
-        }
+    const targets: { requestMessageId?: string }[] = (this.system as any)?.targets ?? [];
+    for (const { requestMessageId } of targets) {
+      const request = requestMessageId ? game.messages?.get(requestMessageId) : undefined;
+      if (request && request.id !== this.id) {
+        void ui.chat?.updateMessage(request as ChatMessage.Implementation);
       }
     }
   }
