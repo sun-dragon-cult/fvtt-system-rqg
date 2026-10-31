@@ -92,12 +92,13 @@ export async function resolveResistedSpellCastTarget(
     const offerSelf = !casterTokenOnScene(undefined, casterActor);
     const choice = await foundry.applications.api.DialogV2.wait({
       window: { title: localize("RQG.Dialog.ResistanceRequest.NoTargetTitle") },
-      content: localize(
+      // In a <p>, or the dialog's flex layout puts the bold spell name on a line of its own
+      content: `<p>${localize(
         offerSelf
           ? "RQG.Dialog.ResistanceRequest.NoTargetNoTokenContent"
           : "RQG.Dialog.ResistanceRequest.NoTargetContent",
         { spellName: spellName ?? "" },
-      ),
+      )}</p>`,
       buttons: [
         {
           action: "withoutTarget",
@@ -239,7 +240,8 @@ export async function postSpellCastResult(params: {
   if (message?.id) {
     // Dynamic import to avoid a circular dependency through rqgItem.ts.
     const { advanceSpellCast } = await import("../../system/spell-effects/spell-cast-runner");
-    await advanceSpellCast(message.id);
+    // Not awaited: the cast is done once its card is posted, the GM's runner reports its own errors
+    void advanceSpellCast(message.id);
   }
 }
 
