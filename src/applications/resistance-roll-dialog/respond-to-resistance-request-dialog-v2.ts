@@ -6,6 +6,7 @@ import type {
 } from "./respond-to-resistance-request-dialog-data.types.ts";
 import {
   getSpeakerDisplayName,
+  hasActiveGm,
   localize,
   normalizeOtherModifierDescriptionForRoll,
 } from "../../system/util";
@@ -35,7 +36,7 @@ import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { ResistanceRequestChatMessage } from "../../chat/data-model/resistance-request-chat-message.types.ts";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
-import { answerResistanceRequest } from "../../chat/resistance-request-handlers";
+import { submitResistanceAnswer } from "../../chat/resistance-request-handlers";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 
 const logger = new RqgLogger("RespondToResistanceRequestDialogV2");
@@ -356,6 +357,15 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       return;
     }
 
+    const system = requestChatMessage!.system;
+    if (
+      system.isSpellCast &&
+      system.entryId &&
+      !hasActiveGm((fromUuidSync(system.spellUuid) as { name?: string } | null)?.name ?? "")
+    ) {
+      return;
+    }
+
     const rollMode = resolveRollModeFromForm(form);
     const options: ResistanceRollOptions = {
       activeValue: sides.activeValue,
@@ -395,20 +405,16 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
 
     // A spell that lands is felt, so the target learns what it was. One they turned aside stays
     // a mystery, so only an overcome reveals it.
-    await answerResistanceRequest(
+    await submitResistanceAnswer(
       requestChatMessage!,
       {
         state: "Rolled",
         resistanceRoll: roll.toJSON(),
       },
       { revealSpell: activeOvercame, whisper: whisper, blind: blind },
+      activeOvercame ? "overcame" : "held",
+      roll.successLevel,
     );
-
-    if (!activeOvercame && requestChatMessage!.system.isSpellCast) {
-      // Dynamic import to avoid a circular dependency through rqgItem.ts.
-      const { reflectResistedSpell } = await import("../../system/spell-effects/reflect-spell");
-      await reflectResistedSpell(requestChatMessage!);
-    }
 
     await creditResistanceRollPowExperience(
       actor,

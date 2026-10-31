@@ -1,26 +1,24 @@
-import { getDomDataset, getRequiredDomDataset, localize, safeFromJSON } from "../system/util";
+import { getDomDataset, getRequiredDomDataset, hasActiveGm, localize } from "../system/util";
 import { templatePaths } from "../system/load-handlebars-templates";
-import {
-  getResistanceRequestTargetOutcome,
-  getSpellCastOutcome,
-  type SpellTargetOutcome,
-} from "../data-model/shared/spell-cast-outcome";
+import { getResistanceRequestTargetOutcome } from "../data-model/shared/spell-cast-outcome";
 import { canApplySpell } from "../system/spell-effects/spell-behavior";
 import { Rqid } from "../system/api/rqid-api";
-import { applySpellEffect, spellEffectCast } from "../system/spell-effects/apply-spell-effect";
-import { updateChatMessage } from "../sockets/socketable-requests";
-import type { RqgActor } from "@actors/rqg-actor.ts";
+import { applySpellEffect } from "../system/spell-effects/apply-spell-effect";
+import { advanceSpellCast, recordCast, targetOf } from "../system/spell-effects/spell-cast-runner";
 import type { RqgItem } from "@items/rqg-item.ts";
 import {
   spellTargetRulingState,
   type SpellTargetOutcomeResolvedBy,
+  type SpellTargetOutcomeState,
   type SpellTargetRulingState,
 } from "../data-model/shared/spell-cast-outcome.defs";
 import { SpellResistedByEnum } from "@item-model/spell.ts";
-import type { ResistanceRequestChatMessage } from "./data-model/resistance-request-chat-message.types.ts";
-import { answerResistanceRequest } from "./resistance-request-handlers";
-
-import Roll = foundry.dice.Roll;
+import {
+  entryTargetUuid,
+  isSpellCastRecordMessage,
+  spellCastRecordMessageOf,
+  type SpellCastEntry,
+} from "../data-model/shared/spell-cast-record";
 
 const rulingIcons: Record<SpellTargetRulingState, string> = {
   affected: "fa-solid fa-check",
@@ -51,44 +49,75 @@ const spiritCombatLabels: Partial<
   },
 };
 
-function reasonKey(target: SpellTargetOutcome): string | undefined {
-  if (target.resolvedBy === "resistanceRoll") {
-    return target.state === "affected" ? "resistanceOvercame" : "resistanceHeld";
+/** One target row, read off the cast record or, where that isn't visible, the request card. */
+type TargetRow = {
+  entryId: string;
+  targetUuid: string;
+  state: SpellTargetOutcomeState;
+  resolvedBy: SpellTargetOutcomeResolvedBy | null | undefined;
+  effectUuids: string[];
+  blockedReason: string;
+};
+
+function reasonKey(row: TargetRow): string | undefined {
+  if (row.resolvedBy === "resistanceRoll") {
+    return row.state === "affected" ? "resistanceOvercame" : "resistanceHeld";
   }
-  return target.resolvedBy;
+  return row.resolvedBy ?? undefined;
 }
 
-/** The spell effects already applied to a target from this card. */
-/** What Apply did for one target - effect uuids, or why the spell couldn't take effect. */
-function appliedEffect(
-  message: ChatMessage,
-  targetUuid: string,
-): { effectUuids: string[]; blockedReason: string } {
-  const system = message.system as any;
-  const record =
-    message.type === "spellCast"
-      ? system.targets.find((t: any) => t.targetTokenOrActorUuid === targetUuid)
-      : { effectUuids: system.appliedEffectUuids, effectBlockedReason: system.effectBlockedReason };
+function entryRow(entry: SpellCastEntry): TargetRow {
   return {
-    effectUuids: record?.effectUuids ?? [],
-    blockedReason: record?.effectBlockedReason ?? "",
+    entryId: entry.id,
+    targetUuid: entryTargetUuid(entry),
+    state: entry.state,
+    resolvedBy: entry.resolvedBy,
+    effectUuids: entry.effectUuids,
+    blockedReason: entry.effectBlockedReason,
   };
+}
+
+/**
+ * The rows a card shows: every entry of the record it holds, or the one entry a request card
+ * answers for. A hidden cast's record is whispered to the GMs, so its anonymous request card reads
+ * its own answer instead.
+ */
+function targetRows(message: ChatMessage): TargetRow[] {
+  const system = message.system as any;
+  if (isSpellCastRecordMessage(message as any)) {
+    return (system.targets as SpellCastEntry[]).map(entryRow);
+  }
+  const record = spellCastRecordMessageOf(message as any);
+  const entry = (record?.system as any)?.targets?.find(
+    (e: SpellCastEntry) => e.id === system.entryId,
+  );
+  if (entry) {
+    return [entryRow(entry)];
+  }
+  const outcome = getResistanceRequestTargetOutcome(message as any);
+  return outcome.state === "pending"
+    ? []
+    : [
+        {
+          entryId: system.entryId ?? "",
+          targetUuid: outcome.targetTokenOrActorUuid,
+          state: outcome.state,
+          resolvedBy: outcome.resolvedBy,
+          effectUuids: system.appliedEffectUuids ?? [],
+          blockedReason: system.effectBlockedReason ?? "",
+        },
+      ];
 }
 
 /** The spell a card can apply an effect from. A hidden cast's anonymous request names no spell. */
 function applicableSpell(message: ChatMessage): RqgItem | undefined {
-  const spellUuid = (message.system as any).spellUuid as string | undefined;
+  const record = spellCastRecordMessageOf(message as any) ?? message;
+  const spellUuid = (record.system as any).spellUuid as string | undefined;
   const spell = spellUuid ? (fromUuidSync(spellUuid) as RqgItem | null) : undefined;
   return spell &&
     canApplySpell(Rqid.getDocumentFlag(spell)?.id, (spell.system as any).effectRqidLink)
     ? spell
     : undefined;
-}
-
-/** Applied, or blocked by what was already on the target - Apply is used up either way. */
-function isEffectSettled(message: ChatMessage, targetUuid: string): boolean {
-  const { effectUuids, blockedReason } = appliedEffect(message, targetUuid);
-  return effectUuids.length > 0 || !!blockedReason;
 }
 
 function isOwnedByUser(uuid: string): boolean {
@@ -110,44 +139,43 @@ function targetName(uuid: string, spiritCombat: boolean): string {
 }
 
 /** Target outcome rows, the same on every card that decides a spell. */
-export async function renderSpellCastTargets(
-  targets: SpellTargetOutcome[],
-  message: ChatMessage,
-): Promise<string> {
+export async function renderSpellCastTargets(message: ChatMessage): Promise<string> {
+  const rows = targetRows(message);
+  if (!rows.length) {
+    return "";
+  }
   const spell = applicableSpell(message);
-  const gateLabels =
-    message.type === "spellCast"
-      ? spiritCombatLabels[(message.system as any).resistedBy as SpellResistedByEnum]
-      : undefined;
-  const rows = targets.map((target) => {
-    const reason = reasonKey(target);
-    const { effectUuids, blockedReason } = appliedEffect(message, target.targetTokenOrActorUuid);
-    const isOwner = isOwnedByUser(target.targetTokenOrActorUuid);
-    const resolved = blockedReason === "resolved";
+  const record = spellCastRecordMessageOf(message as any);
+  const gateLabels = spiritCombatLabels[(record?.system as any)?.resistedBy as SpellResistedByEnum];
+  const viewRows = rows.map((row) => {
+    const reason = reasonKey(row);
+    const isOwner = isOwnedByUser(row.targetUuid);
+    const resolved = row.blockedReason === "resolved";
+    const settled = row.effectUuids.length > 0 || !!row.blockedReason;
     return {
-      applied: effectUuids.length > 0,
+      entryId: row.entryId,
+      applied: row.effectUuids.length > 0,
       resolved: resolved,
       // A ruling can't undo an effect that's already on the target, or overrule a protective spell.
       canRule:
         !!game.user?.isGM &&
-        !effectUuids.length &&
-        !blockedReason &&
-        target.resolvedBy !== "intercepted",
+        !!record &&
+        !settled &&
+        row.resolvedBy !== "intercepted" &&
+        row.resolvedBy !== "reflected",
       // Why it was blocked tells what's already on the target, so only its owners see it.
       blockedLabel:
-        blockedReason && !resolved && isOwner
-          ? localize(`RQG.ChatMessage.SpellCast.NotApplied.${blockedReason}`)
+        row.blockedReason && !resolved && isOwner
+          ? localize(`RQG.ChatMessage.SpellCast.NotApplied.${row.blockedReason}`)
           : "",
       // Only the target's owner applies it, so a hostile target's items are listed to the GM alone.
-      canApply:
-        !!spell && target.state === "affected" && !effectUuids.length && !blockedReason && isOwner,
-      uuid: target.targetTokenOrActorUuid,
-      name: targetName(target.targetTokenOrActorUuid, !!gateLabels),
-      state: target.state,
+      canApply: !!spell && !!record && row.state === "affected" && !settled && isOwner,
+      name: targetName(row.targetUuid, !!gateLabels),
+      state: row.state,
       stateLabel:
-        target.state === "pending" && gateLabels
+        row.state === "pending" && gateLabels
           ? localize(gateLabels.pending)
-          : localize(`RQG.ChatMessage.SpellCast.State.${target.state}`),
+          : localize(`RQG.ChatMessage.SpellCast.State.${row.state}`),
       reasonLabel: reason ? localize(`RQG.ChatMessage.SpellCast.Reason.${reason}`) : "",
     };
   });
@@ -157,9 +185,20 @@ export async function renderSpellCastTargets(
       icon: rulingIcons[state],
       label: localize(gateLabels?.ruling[state] ?? `RQG.ChatMessage.SpellCast.Ruling.${state}`),
     })),
-    decided: rows.filter((row) => row.state !== "pending"),
-    pending: rows.filter((row) => row.state === "pending"),
+    decided: viewRows.filter((row) => row.state !== "pending"),
+    pending: viewRows.filter((row) => row.state === "pending"),
   });
+}
+
+/** The record a clicked row belongs to, and its entry. */
+function clickedEntry(
+  clickedButton: HTMLButtonElement,
+): { record: ChatMessage; entry: SpellCastEntry } | undefined {
+  const message = game.messages?.get(getRequiredDomDataset(clickedButton, "message-id"));
+  const record = spellCastRecordMessageOf(message as any) as ChatMessage | undefined;
+  const entryId = getDomDataset(clickedButton, "entry-id") || (message?.system as any)?.entryId;
+  const entry = (record?.system as any)?.targets?.find((e: SpellCastEntry) => e.id === entryId);
+  return record && entry ? { record, entry } : undefined;
 }
 
 /** GM override of whether a spell took effect on one target, for any resistedBy mode. */
@@ -168,158 +207,59 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
     return;
   }
   const state = getRequiredDomDataset(clickedButton, "spell-cast-ruling") as SpellTargetRulingState;
-  // "" is an untargeted opponent.
-  const targetUuid = getDomDataset(clickedButton, "target-uuid") ?? "";
-  const message = game.messages?.get(getRequiredDomDataset(clickedButton, "message-id"));
-  if (!message || !spellTargetRulingState.includes(state) || isEffectSettled(message, targetUuid)) {
+  const clicked = clickedEntry(clickedButton);
+  if (!clicked || !spellTargetRulingState.includes(state)) {
     return;
   }
-
-  if (message.type === "resistanceRequest") {
-    await ruleOnResistanceRequest(message as ResistanceRequestChatMessage, state);
-    return;
-  }
-  if (message.type !== "spellCast") {
-    return;
-  }
-
-  // A hidden cast's target is settled on its request card, so rule there and both cards agree.
-  const linkedRequest = game.messages?.find(
-    (m) =>
-      m.type === "resistanceRequest" &&
-      (m as ResistanceRequestChatMessage).system.spellCastMessageId === message.id &&
-      (m as ResistanceRequestChatMessage).system.targetTokenOrActorUuid === targetUuid,
-  );
-  if (linkedRequest) {
-    if (isEffectSettled(linkedRequest, targetUuid)) {
-      return;
-    }
-    await ruleOnResistanceRequest(linkedRequest as ResistanceRequestChatMessage, state);
-    return;
-  }
-
-  await settleSpellCastTarget(message, targetUuid, state, "gmRuling");
+  await advanceSpellCast(clicked.record.id ?? "", [
+    { kind: "ruling", entryId: clicked.entry.id, state: state },
+  ]);
 }
 
 /**
- * Settle one target of a `spellCast` card that a later step decides - a GM ruling today, a
- * resolved spirit combat (#958) later. A target a protective spell stopped stays stopped. The
- * caller must be able to update the message.
+ * Apply a spell to a target it took effect on, once. Runs on the client of whoever clicked (the
+ * target's owner, who picks the weapon or the wounds), then the cast record notes what it did.
  */
-export async function settleSpellCastTarget(
-  message: ChatMessage,
-  targetUuid: string,
-  state: SpellTargetRulingState,
-  resolvedBy: SpellTargetOutcomeResolvedBy,
-): Promise<void> {
-  const targets = (message.toObject().system as any).targets.map((target: any) =>
-    target.targetTokenOrActorUuid === targetUuid && target.resolvedBy !== "intercepted"
-      ? { ...target, state: state, resolvedBy: resolvedBy, casterSuccessLevel: null }
-      : target,
-  );
-  await message.update({ system: { targets: targets } } as any);
-}
-
-async function ruleOnResistanceRequest(
-  request: ResistanceRequestChatMessage,
-  state: SpellTargetRulingState,
-): Promise<void> {
-  // A spell that takes effect is felt, so the target learns what it was.
-  await answerResistanceRequest(
-    request,
-    { gmRuling: state },
-    { revealSpell: state === "affected" },
-  );
-  // Resisted by ruling is resisted all the same, so Reflection can still send it back
-  if (state === "unaffected" && request.system.isSpellCast) {
-    // Dynamic import to avoid a circular dependency through rqgItem.ts.
-    const { reflectResistedSpell } = await import("../system/spell-effects/reflect-spell");
-    await reflectResistedSpell(request);
-  }
-}
-
-/** The cast roll's options: level and points spent. */
-function castRollOptions(message: ChatMessage): Record<string, any> {
-  const castRoll =
-    message.type === "spellCast"
-      ? message.rolls[0]
-      : safeFromJSON<Roll>(Roll, (message.system as any).castRoll);
-  return (castRoll?.options ?? {}) as Record<string, any>;
-}
-
-/** Apply a spell's Active Effect to a target the spell took effect on, once. */
 export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): Promise<void> {
-  const targetUuid = getRequiredDomDataset(clickedButton, "target-uuid");
-  const message = game.messages?.get(getRequiredDomDataset(clickedButton, "message-id"));
-  const spell = message ? applicableSpell(message) : undefined;
-  if (!message || !spell || !isOwnedByUser(targetUuid)) {
+  const clicked = clickedEntry(clickedButton);
+  const spell = clicked ? applicableSpell(clicked.record) : undefined;
+  if (!clicked || !spell) {
     return;
   }
-  const outcome =
-    message.type === "spellCast"
-      ? getSpellCastOutcome(message as any)?.targets.find(
-          (t) => t.targetTokenOrActorUuid === targetUuid,
-        )
-      : getResistanceRequestTargetOutcome(message as any);
-  if (outcome?.state !== "affected") {
+  const { record, entry } = clicked;
+  const targetUuid = entryTargetUuid(entry);
+  if (!isOwnedByUser(targetUuid)) {
     return;
   }
   // A stale card can still show the button after someone else applied it.
-  if (isEffectSettled(message, targetUuid)) {
+  if (entry.stage === "applied") {
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.AlreadyApplied"));
     return;
   }
+  if (entry.stage !== "affected" || !hasActiveGm(spell.name ?? "")) {
+    return;
+  }
 
-  const targetDoc = await fromUuid(targetUuid);
-  const targetActor = (
-    targetDoc instanceof TokenDocument ? targetDoc.actor : targetDoc
-  ) as RqgActor | null;
+  const { actor: targetActor, name } = await targetOf(entry);
   if (!targetActor) {
     return;
   }
-
-  // The token's own name, as the rest of the chat text uses.
-  const targetName = (targetDoc as { name?: string } | null)?.name ?? targetActor.name ?? "";
-  const applied = await applySpellEffect(
-    spell,
-    targetActor,
-    targetName,
-    spellEffectCast(spell, castRollOptions(message), {
-      casterUuid:
-        (message.system as any).casterTokenOrActorUuid ??
-        (message.system as any).spellCasterUuid ??
-        "",
-      castMessageId: message.id ?? "",
-      casterSuccessLevel: outcome.casterSuccessLevel,
-    }),
-    // Met at cast time, or by a reflected spell as it came back
-    { barriersChecked: true },
-  );
+  const cast = recordCast(record.system as any, record.id ?? "", spell, entry);
+  const applied = await applySpellEffect(spell, targetActor, name, cast);
   if (!applied) {
     return;
   }
-
-  const effectUuids = applied.outcome === "applied" ? applied.effectUuids : [];
-  const effectBlockedReason =
-    applied.outcome === "blocked"
-      ? applied.reason
-      : applied.outcome === "resolved"
-        ? "resolved"
-        : "";
-  const systemPatch =
-    message.type === "spellCast"
-      ? {
-          targets: (message.toObject().system as any).targets.map((target: any) =>
-            target.targetTokenOrActorUuid === targetUuid
-              ? { ...target, effectUuids: effectUuids, effectBlockedReason: effectBlockedReason }
-              : target,
-          ),
-        }
-      : { appliedEffectUuids: effectUuids, effectBlockedReason: effectBlockedReason };
-  // A target's owner may be neither the author nor a GM, so the author's client records it.
-  if (game.user?.isGM || message.isAuthor) {
-    await message.update({ system: systemPatch } as any);
-  } else {
-    await updateChatMessage(message, { system: systemPatch } as any);
-  }
+  await advanceSpellCast(record.id ?? "", [
+    {
+      kind: "applied",
+      entryId: entry.id,
+      effectUuids: applied.outcome === "applied" ? applied.effectUuids : [],
+      blockedReason:
+        applied.outcome === "blocked"
+          ? applied.reason
+          : applied.outcome === "resolved"
+            ? "resolved"
+            : "",
+    },
+  ]);
 }

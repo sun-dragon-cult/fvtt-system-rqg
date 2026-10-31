@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { matchesSpellEffectRemovalFilter } from "./remove-spell-effects";
 
-const bladesharp4 = { spellRqid: "i.spirit-magic.bladesharp", casterUuid: "Actor.a", level: 4 };
+const bladesharp4 = {
+  spellRqid: "i.spirit-magic.bladesharp",
+  casterActorUuid: "Actor.a",
+  level: 4,
+};
 
 describe("matchesSpellEffectRemovalFilter", () => {
   it("matches every spell effect with an empty filter", () => {
@@ -15,7 +19,9 @@ describe("matchesSpellEffectRemovalFilter", () => {
     expect(
       matchesSpellEffectRemovalFilter(bladesharp4, { spellRqid: "i.spirit-magic.dullblade" }),
     ).toBe(false);
-    expect(matchesSpellEffectRemovalFilter(bladesharp4, { casterUuid: "Actor.b" })).toBe(false);
+    expect(matchesSpellEffectRemovalFilter(bladesharp4, { casterActorUuid: "Actor.b" })).toBe(
+      false,
+    );
     expect(matchesSpellEffectRemovalFilter(bladesharp4, { maxLevel: 4 })).toBe(true);
     expect(matchesSpellEffectRemovalFilter(bladesharp4, { maxLevel: 3 })).toBe(false);
   });
@@ -24,7 +30,7 @@ describe("matchesSpellEffectRemovalFilter", () => {
     expect(
       matchesSpellEffectRemovalFilter(bladesharp4, {
         spellRqid: "i.spirit-magic.bladesharp",
-        casterUuid: "Actor.b",
+        casterActorUuid: "Actor.b",
       }),
     ).toBe(false);
   });

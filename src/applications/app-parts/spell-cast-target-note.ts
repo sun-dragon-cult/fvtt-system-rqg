@@ -12,6 +12,8 @@ import {
   isSingleTargetGate,
   isSpiritCombatGate,
   SpellResistedByEnum,
+  castsOnCasterOnly,
+  isTokenTargetKind,
 } from "../../data-model/item-data/spell";
 import { applyTargetTokenSelect, buildTargetTokenSelect } from "./target-token-select";
 
@@ -30,22 +32,36 @@ export type SpellCastTargetNote = {
 };
 
 /**
- * What the cast dialog says about the current targets. Only a spell resolved by resistance rolls or
- * gated on spirit combat, or one that reaches only `maxTargets` at its level, constrains them -
- * everything else is free to be cast at any number of tokens, or none.
+ * What the cast dialog says about the current targets. A spell resolved by resistance rolls or
+ * gated on spirit combat, or one limited to `maxTargets` (one for most, see spellMaxTargets),
+ * constrains them; any other may be cast at any number of tokens, or none. A spell cast at a token
+ * gets a picker for one target. A spell that goes on its caster whatever is targeted names the
+ * caster.
  */
 export function buildSpellCastTargetNote(
   resistedBy: SpellResistedByEnum,
+  targetKind: string,
   casterToken: foundry.canvas.placeables.Token | undefined,
   maxTargets: number = Infinity,
+  casterName: string = "",
 ): SpellCastTargetNote {
+  if (castsOnCasterOnly(targetKind, resistedBy)) {
+    return {
+      targetName: casterName,
+      targetNote: "",
+      targetNoteClass: "",
+      tooManyTargets: false,
+      targetOptions: [],
+      selectedTarget: "",
+    };
+  }
   const targetNames = getTargetedTokenNames();
   const targetCount = game.user?.targets.size ?? 0;
   const spiritCombat = isSpiritCombatGate(resistedBy);
   const perTarget = resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
   const constrained = isSingleTargetGate(resistedBy);
 
-  const singleTargetOnly = constrained && targetCount > 1;
+  const singleTargetOnly = (constrained || maxTargets === 1) && targetCount > 1;
   const tooManyTargets = singleTargetOnly || targetCount > maxTargets;
   let targetNote = "";
   let targetNoteClass = "";
@@ -66,7 +82,10 @@ export function buildSpellCastTargetNote(
     targetNoteClass = "hint";
   }
 
-  const targetSelect = constrained ? buildTargetTokenSelect(casterToken) : undefined;
+  const showPicker =
+    constrained ||
+    (isTokenTargetKind(targetKind) && resistedBy !== SpellResistedByEnum.ResistanceRollArea);
+  const targetSelect = showPicker ? buildTargetTokenSelect(casterToken) : undefined;
 
   return {
     targetName: targetNames || localize("RQG.Dialog.Common.NoTarget"),
@@ -78,8 +97,15 @@ export function buildSpellCastTargetNote(
   };
 }
 
-/** Keep a rendered cast dialog's target row and Roll button in step with the canvas. */
-export function applySpellCastTargetNote(element: HTMLElement, note: SpellCastTargetNote): void {
+/**
+ * Keep a rendered cast dialog's target row and Roll button in step with the canvas. `select: false`
+ * leaves the target picker alone, for changes that can't alter its options.
+ */
+export function applySpellCastTargetNote(
+  element: HTMLElement,
+  note: SpellCastTargetNote,
+  { select = true }: { select?: boolean } = {},
+): void {
   const nameElement = element.querySelector<HTMLElement>("[data-target-names]");
   if (nameElement) {
     nameElement.textContent = note.targetName;
@@ -92,7 +118,9 @@ export function applySpellCastTargetNote(element: HTMLElement, note: SpellCastTa
     noteElement.hidden = !note.targetNote;
   }
 
-  applyTargetTokenSelect(element, { options: note.targetOptions, selected: note.selectedTarget });
+  if (select) {
+    applyTargetTokenSelect(element, { options: note.targetOptions, selected: note.selectedTarget });
+  }
 
   const rollButton = element.querySelector<HTMLButtonElement>("button[data-ability-roll]");
   if (rollButton) {
@@ -140,8 +168,10 @@ export class SpellCastTargets {
     this.level = level;
     return buildSpellCastTargetNote(
       this.spell.system.resistedBy,
+      this.spell.system.targetKind,
       this.casterToken(),
       spellMaxTargets(this.spell, level),
+      this.casterActor.name ?? "",
     );
   }
 
@@ -154,14 +184,17 @@ export class SpellCastTargets {
     this.preview ??= previewSpellArea(this.spell, this.token, this.casterActor, level);
   }
 
-  /** The dialog's level changed. */
+  /**
+   * The dialog's form changed. Runs on `input`, before the target picker's own `change`, so it must
+   * not rebuild the picker: that would undo the pick before it is read.
+   */
   update(element: HTMLElement, level: number): void {
     this.preview?.update(level);
     const labelElement = element.querySelector<HTMLElement>("[data-area-targets]");
     if (labelElement) {
       labelElement.textContent = this.areaLabel(level);
     }
-    applySpellCastTargetNote(element, this.note(level));
+    applySpellCastTargetNote(element, this.note(level), { select: false });
   }
 
   /** The user's targets changed. */

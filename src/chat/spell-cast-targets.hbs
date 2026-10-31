@@ -1,5 +1,5 @@
 {{#*inline "targetRow"}}
-  <li class="spell-cast-target {{state}}" data-target-uuid="{{uuid}}">
+  <li class="spell-cast-target {{state}}" data-entry-id="{{entryId}}">
     <div class="spell-cast-target-summary">
       <span class="spell-cast-target-name">{{name}}</span>
       <span class="spell-cast-target-state">{{#if (eq state "pending")}}<i class="fa-solid fa-hourglass-half" inert></i> {{/if}}{{stateLabel}}</span>
@@ -14,7 +14,6 @@
       {{/if}}
     </div>
     <div class="spell-cast-target-detail">
-      <span class="spell-cast-target-reason">{{reasonLabel}}</span>
       {{#if applied}}
         <span class="spell-cast-applied">{{localize "RQG.ChatMessage.SpellCast.Applied"}}</span>
       {{else if resolved}}
@@ -22,9 +21,10 @@
       {{else if blockedLabel}}
         <span class="spell-cast-not-applied">{{blockedLabel}}</span>
       {{else if canApply}}
-        <button type="button" class="spell-cast-apply"
-                data-apply-spell-effect>{{localize "RQG.ChatMessage.SpellCast.ApplyEffect"}}</button>
+        <button type="button" class="spell-cast-apply rqg-primary"
+                data-apply-spell-effect><i class="fa-solid fa-sparkles" inert></i> {{localize "RQG.ChatMessage.SpellCast.ApplyEffect"}}</button>
       {{/if}}
+      <span class="spell-cast-target-reason">{{reasonLabel}}</span>
     </div>
   </li>
 {{/inline}}

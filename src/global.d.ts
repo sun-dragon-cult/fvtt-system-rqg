@@ -16,10 +16,8 @@ import type { TokenRulerSettingsType } from "./applications/settings/token-ruler
 import type { RqgChatMessageDataSource } from "./chat/data-model/combat-chat-message.types.ts";
 import type { RqgActor } from "./actors/rqg-actor.ts";
 import type { RqgItem } from "./items/rqg-item.ts";
-import type {
-  ApplySpellBehaviorQueryData,
-  InterceptSpellCastData,
-} from "./system/spell-effects/run-spell-apply.ts";
+import type { ApplySpellBehaviorQueryData } from "./system/spell-effects/run-spell-apply.ts";
+import type { AdvanceSpellCastData } from "./system/spell-effects/spell-cast-runner.ts";
 import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
 import type { SpellBehaviorRegistry } from "./system/spell-effects/spell-behavior.ts";
 import type { SkillBehaviorRegistry } from "./system/skill-behaviors/skill-behavior.ts";
@@ -224,11 +222,10 @@ declare global {
       "rqg.applySpellBehavior": (
         data: ApplySpellBehaviorQueryData,
       ) => Promise<SpellEffectApplied | undefined>;
-      "rqg.reflectResistedSpell": (data: { requestId: string }) => Promise<void>;
       "rqg.createSpellArea": (
         data: CreateSpellAreaQueryData,
       ) => Promise<SpellEffectApplied | undefined>;
-      "rqg.interceptSpellCast": (data: InterceptSpellCastData) => Promise<string[]>;
+      "rqg.advanceSpellCast": (data: AdvanceSpellCastData) => Promise<void>;
     }
 
     // Declare the RQG custom "Norse" font so it can be assigned to

@@ -1,6 +1,5 @@
-import { resolveActorFromUuid } from "../../applications/resistance-roll-dialog/resistance-roll-shared";
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
+import type { SpellEffectApplied, SpellApplyScope, SpellEffectCast } from "./apply-spell-effect";
 import { spellBehaviorForEffect, type IncomingSpellScope } from "./spell-behavior";
 
 /**
@@ -28,8 +27,8 @@ export function groupEffectsByHook<T extends { active: boolean }, F>(
  * don't stop spells it casts itself (Core Q&A). One put on from the token HUD without "Cast by"
  * ticked has no caster and counts as cast by someone else.
  */
-function isFromOutside(casterUuid: string, targetActor: RqgActor): boolean {
-  return !casterUuid || resolveActorFromUuid(casterUuid)?.uuid !== targetActor.uuid;
+function isFromOutside(cast: SpellEffectCast, targetActor: RqgActor): boolean {
+  return cast.casterActorUuid !== targetActor.uuid;
 }
 
 /**
@@ -40,7 +39,7 @@ export async function interceptIncomingSpell(
   scope: SpellApplyScope,
   reflected = false,
 ): Promise<SpellEffectApplied | undefined> {
-  if (!reflected && !isFromOutside(scope.cast.casterUuid, scope.targetActor)) {
+  if (!reflected && !isFromOutside(scope.cast, scope.targetActor)) {
     return undefined;
   }
   const groups = groupEffectsByHook(

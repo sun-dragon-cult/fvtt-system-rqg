@@ -72,6 +72,8 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
     }
 
     element.addEventListener("pointerdown", (event) => this.onPointerDownForBlurGuard(event));
+    // A blur's change comes before the click; without one the guard would eat the next real change
+    element.addEventListener("click", () => (this._skipNextChangeRerender = false));
     element.addEventListener("input", () => this.onLivePreviewInput());
     this._livePreviewHandlersBoundTo = element;
   }

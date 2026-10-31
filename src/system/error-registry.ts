@@ -99,6 +99,10 @@ const REGISTRY = {
     code: "RQG-B0014",
     message: "The spells on a fired missile could not be spent",
   },
+  spellCastNotAdvanced: {
+    code: "RQG-B0015",
+    message: "A spell cast could not be advanced",
+  },
 
   // ============================================================================
   // world — RQG-W00NN — misconfiguration or a missing reference; GM/user can fix it

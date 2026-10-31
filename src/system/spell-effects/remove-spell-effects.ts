@@ -4,11 +4,11 @@ import type { RqgItem } from "@items/rqg-item.ts";
 /** Which spell effects to remove. Every given field must match; an empty filter matches them all. */
 export type SpellEffectRemovalFilter = {
   spellRqid?: string;
-  casterUuid?: string;
+  casterActorUuid?: string;
   maxLevel?: number;
 };
 
-type SpellProvenance = { spellRqid?: string; casterUuid?: string; level?: number };
+type SpellProvenance = { spellRqid?: string; casterActorUuid?: string; level?: number };
 
 export function matchesSpellEffectRemovalFilter(
   spell: SpellProvenance,
@@ -16,7 +16,7 @@ export function matchesSpellEffectRemovalFilter(
 ): boolean {
   return (
     (filter.spellRqid === undefined || spell.spellRqid === filter.spellRqid) &&
-    (filter.casterUuid === undefined || spell.casterUuid === filter.casterUuid) &&
+    (filter.casterActorUuid === undefined || spell.casterActorUuid === filter.casterActorUuid) &&
     (filter.maxLevel === undefined || (spell.level ?? 0) <= filter.maxLevel)
   );
 }
