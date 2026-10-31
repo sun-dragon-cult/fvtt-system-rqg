@@ -1032,6 +1032,24 @@
         border: 9px double white;
       }
 
+      /* A card's next step: at most one per viewer, so it stands out from optional buttons */
+      & button.rqg-primary {
+        font-size: var(--font-size-13);
+        font-weight: bold;
+        color: #fff;
+        background: var(--rqg-color-main);
+        border-color: var(--rqg-color-main);
+
+        & i {
+          font-size: 1.25em;
+        }
+
+        &:hover {
+          background: color-mix(in srgb, var(--rqg-color-main) 80%, #fff);
+          box-shadow: 0 0 0.3em var(--color-shadow-primary);
+        }
+      }
+
       & button:disabled {
         color: var(--color-text-dark-inactive);
         cursor: progress;
@@ -1141,27 +1159,10 @@
           }
         }
 
-        /* The row's next step, so it stands out from the optional ruling buttons */
         & button.spell-cast-apply {
           width: auto;
           flex: 0 0 auto;
-          height: 1.8rem;
-          min-height: 0;
           padding: 0 0.8rem;
-          font-size: var(--font-size-13);
-          font-weight: bold;
-          color: #fff;
-          background: var(--rqg-color-main);
-          border-color: var(--rqg-color-main);
-
-          & i {
-            font-size: 1.25em;
-          }
-
-          &:hover {
-            background: color-mix(in srgb, var(--rqg-color-main) 80%, #fff);
-            box-shadow: 0 0 0.3em var(--color-shadow-primary);
-          }
         }
 
         & .spell-cast-applied,
