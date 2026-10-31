@@ -982,11 +982,15 @@ export function getActorLinkDecoration(actor: RqgActor | Actor | null | undefine
 }
 
 /** Comma-joined names of the user's current targets, for showing what a roll is aimed at. */
+/** Names joined as a list in the world's language, e.g. "A, B and C" or "A, B och C". */
+export function formatNameList(names: string[]): string {
+  return game.i18n?.getListFormatter().format(names) ?? names.join(", ");
+}
+
 export function getTargetedTokenNames(): string {
-  return [...(game.user?.targets ?? [])]
-    .map((token) => token.document?.name ?? "")
-    .filter(isTruthy)
-    .join(", ");
+  return formatNameList(
+    [...(game.user?.targets ?? [])].map((token) => token.document?.name ?? "").filter(isTruthy),
+  );
 }
 
 export function warnIfMultipleTargets(): void {
