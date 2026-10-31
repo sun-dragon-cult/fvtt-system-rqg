@@ -454,7 +454,7 @@ the DEX/SIZ badges above.
 
 `primary-button` (`button.rqg-primary` in chat cards) marks a card's next
 step: Defend, Roll Damage, Apply Damage, Roll Fumble, and Apply on a spell
-cast target row. It has a `primary` fill, white bold text and a leading icon,
+cast target row. It has a `primary` fill, white text and a leading icon,
 at the card's normal button height. Each viewer should see at most one per
 card, so it never goes on equal choices like Resist / Accept, and optional
 actions (the GM ruling buttons) stay plain.

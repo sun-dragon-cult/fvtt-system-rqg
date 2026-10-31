@@ -1035,7 +1035,6 @@
       /* A card's next step: at most one per viewer, so it stands out from optional buttons */
       & button.rqg-primary {
         font-size: var(--font-size-13);
-        font-weight: bold;
         color: #fff;
         background: var(--rqg-color-main);
         border-color: var(--rqg-color-main);
