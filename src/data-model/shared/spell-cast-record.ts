@@ -174,9 +174,9 @@ export type SpellCastTarget = Pick<SpellCastEntry, "actorUuid" | "tokenUuid" | "
 const casterTargetKinds: readonly string[] = [SpellTargetKindEnum.Self, SpellTargetKindEnum.Weapon];
 
 /**
- * The entries a cast starts with. With nothing targeted, a spell that can only go on its caster
- * (`targetKind` self or weapon) goes on them; any other gets one untargeted entry for the GM to
- * assign actors to, or rule on. A failed cast settles them all.
+ * The entries a cast starts with. With nothing targeted, an unresisted spell, or one that can only
+ * go on its caster (`targetKind` self or weapon), goes on the caster; any other gets one untargeted
+ * entry for the GM to assign actors to, or rule on. A failed cast settles them all.
  */
 export function buildSpellCastEntries(params: {
   castSucceeded: boolean;
@@ -188,7 +188,8 @@ export function buildSpellCastEntries(params: {
 }): SpellCastEntry[] {
   const { castSucceeded, resistedBy, targetKind, caster, newId } = params;
   const untargeted: SpellCastTarget =
-    casterTargetKinds.includes(targetKind) && !isSpiritCombatGate(resistedBy)
+    (resistedBy === SpellResistedByEnum.None || casterTargetKinds.includes(targetKind)) &&
+    !isSpiritCombatGate(resistedBy)
       ? { ...caster, isCaster: true }
       : { actorUuid: "", tokenUuid: "", isCaster: false };
   const targets = params.targets.length ? params.targets : [untargeted];

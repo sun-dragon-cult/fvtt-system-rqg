@@ -401,7 +401,7 @@ describe("postSpellCastResult", () => {
     }
   });
 
-  it("puts an untargeted self spell on its caster, and leaves any other for the GM", async () => {
+  it("puts an untargeted unresisted spell on its caster, and leaves a resisted one for the GM", async () => {
     const self = await post({
       resistedBy: SpellResistedByEnum.None,
       targetKind: "self",
@@ -414,7 +414,7 @@ describe("postSpellCastResult", () => {
     });
 
     const creature = await post({
-      resistedBy: SpellResistedByEnum.None,
+      resistedBy: SpellResistedByEnum.ResistanceRoll,
       target: { proceed: true, targets: [] },
     });
     expect(postedRecord(creature).targets[0]).toMatchObject({ actorUuid: "", isCaster: false });

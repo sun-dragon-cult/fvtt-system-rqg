@@ -283,8 +283,15 @@ describe("buildSpellCastEntries", () => {
     expect(build("weapon")[0]).toMatchObject({ tokenUuid: "Scene.s.Token.c", isCaster: true });
   });
 
-  it("leaves any other untargeted spell for the GM to assign", () => {
-    expect(build("creature")[0]).toMatchObject({ actorUuid: "", isCaster: false });
+  it("puts any untargeted unresisted spell on its caster", () => {
+    expect(build("spellOrEffect")[0]).toMatchObject({ actorUuid: "Actor.c", isCaster: true });
+  });
+
+  it("leaves any other untargeted resisted spell for the GM to assign", () => {
+    expect(build("creature", SpellResistedByEnum.ResistanceRoll)[0]).toMatchObject({
+      actorUuid: "",
+      isCaster: false,
+    });
     expect(build("self", SpellResistedByEnum.SpiritCombatRound)[0]!.actorUuid).toBe("");
   });
 
