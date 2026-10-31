@@ -45,7 +45,7 @@
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:ui": "playwright test --ui",
     "tsgo": "tsgo",
-    "typecheck": "tsc -noEmit"
+    "typecheck": "tsgo --noEmit --checkers 2"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
