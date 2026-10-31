@@ -2,7 +2,7 @@ import { safeFromJSON } from "../util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { ResistanceRequestChatMessage } from "../../chat/data-model/resistance-request-chat-message.types.ts";
-import { spellApplyScope, spellEffectCast } from "./apply-spell-effect";
+import { casterUuidsOf, spellApplyScope, spellEffectCast } from "./apply-spell-effect";
 import { groupEffectsByHook } from "./incoming-spell";
 import { spellBehaviorForEffect } from "./spell-behavior";
 import { interceptSpellCast, queryActiveGm, type InterceptSpellCastData } from "./run-spell-apply";
@@ -90,7 +90,7 @@ export async function reflectResistedSpell(request: ResistanceRequestChatMessage
     targetActor,
     targetName,
     spellEffectCast(spell, castRoll.options, {
-      casterUuid: casterUuid,
+      ...casterUuidsOf(casterUuid),
       castMessageId: system.spellCastMessageId || (request.id ?? ""),
       casterSuccessLevel: undefined,
     }),

@@ -26,7 +26,10 @@ import { isAreaAnchor, spellBehaviorOf } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
 
 export type SpellEffectCast = {
-  casterUuid: string;
+  /** The caster's actor; a token's own actor when an unlinked token cast it. "" without a caster. */
+  casterActorUuid: string;
+  /** The token the caster cast from; "" when they cast without one. */
+  casterTokenUuid: string;
   castMessageId: string;
   level: number;
   magicPointsSpent: number;
@@ -61,7 +64,10 @@ export type SpellEffectDuration = { value: number; units: string };
 export function spellEffectCast(
   spell: RqgItem,
   rollOptions: Record<string, unknown>,
-  cast: Pick<SpellEffectCast, "casterUuid" | "castMessageId" | "casterSuccessLevel">,
+  cast: Pick<
+    SpellEffectCast,
+    "casterActorUuid" | "casterTokenUuid" | "castMessageId" | "casterSuccessLevel"
+  >,
 ): SpellEffectCast {
   const level = Number(rollOptions["levelUsed"] ?? 0);
   const boost = Number(rollOptions["magicPointBoost"] ?? 0);
@@ -72,6 +78,21 @@ export function spellEffectCast(
     magicPointsSpent: isRuneMagic ? boost : level + boost,
     runePointsSpent: isRuneMagic ? level : 0,
   };
+}
+
+type CasterUuids = Pick<SpellEffectCast, "casterActorUuid" | "casterTokenUuid">;
+
+/** The caster's token if they cast from one, else their actor; "" without a caster. */
+export function casterDocumentUuid(cast: CasterUuids): string {
+  return cast.casterTokenUuid || cast.casterActorUuid;
+}
+
+/** The caster's actor and token uuids, from a token's uuid or an actor's. */
+export function casterUuidsOf(uuid: string): CasterUuids {
+  const document = uuid ? fromUuidSync(uuid) : null;
+  return document instanceof TokenDocument
+    ? { casterActorUuid: document.actor?.uuid ?? "", casterTokenUuid: document.uuid ?? "" }
+    : { casterActorUuid: uuid, casterTokenUuid: "" };
 }
 
 export function spellApplyScope(

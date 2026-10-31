@@ -2,6 +2,7 @@ import { localize } from "../util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import {
+  casterUuidsOf,
   spellApplyScope,
   spellEffectCast,
   type SpellEffectApplied,
@@ -124,7 +125,7 @@ async function stoppedTargets(data: InterceptSpellCastData): Promise<string[]> {
     return [];
   }
   const cast = spellEffectCast(spell, data.rollOptions, {
-    casterUuid: data.casterUuid,
+    ...casterUuidsOf(data.casterUuid),
     castMessageId: "",
     casterSuccessLevel: data.casterSuccessLevel,
   });

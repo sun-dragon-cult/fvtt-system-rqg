@@ -7,7 +7,11 @@ import {
 } from "../data-model/shared/spell-cast-outcome";
 import { canApplySpell } from "../system/spell-effects/spell-behavior";
 import { Rqid } from "../system/api/rqid-api";
-import { applySpellEffect, spellEffectCast } from "../system/spell-effects/apply-spell-effect";
+import {
+  applySpellEffect,
+  casterUuidsOf,
+  spellEffectCast,
+} from "../system/spell-effects/apply-spell-effect";
 import { updateChatMessage } from "../sockets/socketable-requests";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -285,10 +289,11 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
     targetActor,
     targetName,
     spellEffectCast(spell, castRollOptions(message), {
-      casterUuid:
+      ...casterUuidsOf(
         (message.system as any).casterTokenOrActorUuid ??
-        (message.system as any).spellCasterUuid ??
-        "",
+          (message.system as any).spellCasterUuid ??
+          "",
+      ),
       castMessageId: message.id ?? "",
       casterSuccessLevel: outcome.casterSuccessLevel,
     }),
