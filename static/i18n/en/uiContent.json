@@ -521,10 +521,10 @@
         "Resist": "Resist",
         "Accept": "Accept",
         "State": {
+          "Waiting": "Waiting",
           "Requested": "Requested",
           "Rolled": "Rolled",
-          "Accepted": "Accepted",
-          "Intercepted": "Intercepted"
+          "Accepted": "Accepted"
         }
       },
       "SkillBehavior": {
@@ -568,7 +568,8 @@
           "accepted": "accepted",
           "resistanceOvercame": "resistance roll overcame",
           "resistanceHeld": "resistance roll held",
-          "gmRuling": "GM ruling"
+          "gmRuling": "GM ruling",
+          "reflected": "sent back at its caster"
         },
         "Ruling": {
           "affected": "GM ruling: the spell takes effect",

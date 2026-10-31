@@ -1,59 +1,15 @@
-import { spellEffectSettledReasons } from "../../active-effect/data-model/spell-effect.defs";
-import { SpellResistedByEnum } from "../../data-model/item-data/spell";
-import {
-  spellTargetOutcomeResolvedBy,
-  spellTargetOutcomeState,
-} from "../../data-model/shared/spell-cast-outcome.defs";
+import { spellCastRecordFields } from "../../data-model/shared/spell-cast-record";
 
-const { ArrayField, NumberField, SchemaField, StringField } = foundry.data.fields;
+const { StringField } = foundry.data.fields;
 
 const spellCastChatMessageSchema = {
   spellUuid: new StringField({ blank: true, nullable: false, required: true, initial: "" }),
-  casterTokenOrActorUuid: new StringField({
-    blank: true,
-    nullable: false,
-    required: true,
-    initial: "",
-  }),
-  castSuccessLevel: new NumberField({ integer: true, nullable: true, initial: null }),
-  resistedBy: new StringField({
-    blank: false,
-    nullable: false,
-    initial: SpellResistedByEnum.None,
-    choices: Object.values(SpellResistedByEnum),
-  }),
-  targets: new ArrayField(
-    new SchemaField({
-      targetTokenOrActorUuid: new StringField({ blank: true, nullable: false, required: true }),
-      state: new StringField({
-        blank: false,
-        nullable: false,
-        initial: spellTargetOutcomeState[0],
-        choices: [...spellTargetOutcomeState],
-      }),
-      resolvedBy: new StringField({
-        blank: false,
-        nullable: true,
-        initial: null,
-        choices: [...spellTargetOutcomeResolvedBy],
-      }),
-      casterSuccessLevel: new NumberField({ integer: true, nullable: true, initial: null }),
-      // The spell effects applied to this target, so Apply only runs once.
-      effectUuids: new ArrayField(new StringField({ blank: false, nullable: false })),
-      // Set instead when Apply found the spell couldn't take effect there; "" otherwise.
-      effectBlockedReason: new StringField({
-        blank: true,
-        nullable: false,
-        initial: "",
-        choices: ["", ...spellEffectSettledReasons],
-      }),
-    }),
-  ),
+  ...spellCastRecordFields(),
 } as const;
 
 type spellCastDataType = typeof spellCastChatMessageSchema;
 
-/** A spell cast and its per-target outcome (#1078) - read it through `getSpellCastOutcome`. */
+/** A spell cast and how far each of its targets has got (#1224); see `SpellCastRecord`. */
 export class SpellCastChatMessageData extends foundry.abstract.TypeDataModel<
   spellCastDataType,
   any

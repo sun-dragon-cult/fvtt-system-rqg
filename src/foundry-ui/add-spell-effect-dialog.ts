@@ -1,5 +1,10 @@
 import { localize } from "../system/util";
-import { applySpellEffect, spellEffectCast } from "../system/spell-effects/apply-spell-effect";
+import {
+  applySpellEffect,
+  spellApplyScope,
+  spellEffectCast,
+} from "../system/spell-effects/apply-spell-effect";
+import { interceptIncomingSpell } from "../system/spell-effects/incoming-spell";
 import { compendiumSpellsWithEffects } from "../system/spell-effects/spells-with-effects";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
@@ -137,21 +142,20 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
   }
   // An unboosted cast at the picked level, so the spell's strength counts against Countermagic. A
   // spell the target cast on itself isn't stopped by its own protective spells.
-  const applied = await applySpellEffect(
+  const cast = spellEffectCast(
     spell,
-    actor,
-    targetName,
-    spellEffectCast(
-      spell,
-      { levelUsed: Math.max(0, Math.trunc(Number(picked.level) || 0)) },
-      {
-        casterActorUuid: picked.selfCast ? (actor.uuid ?? "") : "",
-        casterTokenUuid: picked.selfCast ? (actor.token?.uuid ?? "") : "",
-        castMessageId: "",
-        casterSuccessLevel: undefined,
-      },
-    ),
+    { levelUsed: Math.max(0, Math.trunc(Number(picked.level) || 0)) },
+    {
+      casterActorUuid: picked.selfCast ? (actor.uuid ?? "") : "",
+      casterTokenUuid: picked.selfCast ? (actor.token?.uuid ?? "") : "",
+      castMessageId: "",
+      casterSuccessLevel: undefined,
+    },
   );
+  // With no cast card, the spell meets the target's protective spells here, as a cast's would
+  const applied =
+    (await interceptIncomingSpell(spellApplyScope(spell, actor, targetName, cast))) ??
+    (await applySpellEffect(spell, actor, targetName, cast));
   // A cancellation, a spell behavior (e.g. Dispel Magic) or a protective effect used up by the spell
   // (e.g. Countermagic) removes effects, so the palette changes then too.
   return (

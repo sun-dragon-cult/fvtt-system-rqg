@@ -201,6 +201,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       target: resistedSpellTarget,
       resistedBy: this.resistedBy,
       resistedWith: this.resistedWith,
+      targetKind: this.targetKind,
       castRoll: spiritMagicRoll,
       casterActor: casterActor,
       casterToken: options.token,

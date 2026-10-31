@@ -4,7 +4,7 @@
   {{/if}}
   {{#if castRoll}}
     {{> spellCastRollRow hiddenFromUuid=spellHiddenFromUuid casterUuid=spellCasterUuid}}
-    {{#if (and resistanceFlavor (not (eq state 'Intercepted')))}}
+    {{#if resistanceFlavor}}
       <div class="resistance-request-flavor">{{{resistanceFlavor}}}</div>
     {{/if}}
   {{/if}}

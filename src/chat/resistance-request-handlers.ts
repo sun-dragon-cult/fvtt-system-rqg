@@ -59,7 +59,46 @@ export async function handleAcceptResistanceRequest(
   }
 
   // Accepting lets the spell take effect, so the target learns what they let through.
-  await answerResistanceRequest(requestChatMessage, { state: "Accepted" }, { revealSpell: true });
+  await submitResistanceAnswer(
+    requestChatMessage,
+    { state: "Accepted" },
+    { revealSpell: true },
+    "accepted",
+  );
+}
+
+/**
+ * Answer a resistance request. A spell's goes to its cast record on the active GM's client, which
+ * writes the answer on the card, settles the target and lets Reflection act; any other request is
+ * written here.
+ */
+export async function submitResistanceAnswer(
+  requestChatMessage: ResistanceRequestChatMessage,
+  systemPatch: Record<string, unknown>,
+  options: ResistanceRequestUpdateOptions,
+  result: "accepted" | "overcame" | "held",
+  casterSuccessLevel?: number,
+): Promise<void> {
+  const system = requestChatMessage.system;
+  // The combined card holds its own cast record
+  const recordId = system.targets?.length ? requestChatMessage.id : system.spellCastMessageId;
+  if (!system.isSpellCast || !system.entryId || !recordId) {
+    await answerResistanceRequest(requestChatMessage, systemPatch, options);
+    return;
+  }
+  activateChatTab();
+  // Dynamic import to avoid a circular dependency through rqgItem.ts.
+  const { advanceSpellCast } = await import("../system/spell-effects/spell-cast-runner");
+  await advanceSpellCast(
+    recordId,
+    [{ kind: "resistance", entryId: system.entryId, result, casterSuccessLevel }],
+    {
+      messageId: requestChatMessage.id ?? "",
+      system: systemPatch,
+      whisper: options.whisper,
+      blind: options.blind,
+    },
+  );
 }
 
 /**
@@ -70,8 +109,30 @@ export async function handleAcceptResistanceRequest(
 export async function answerResistanceRequest(
   requestChatMessage: ResistanceRequestChatMessage,
   systemPatch: Record<string, unknown>,
-  options: { revealSpell: boolean; whisper?: string[]; blind?: boolean },
+  options: ResistanceRequestUpdateOptions,
 ): Promise<void> {
+  const messageData = await resistanceRequestUpdate(requestChatMessage, systemPatch, options);
+  activateChatTab();
+  // A GM may update any message, and needn't wait on an author who might be offline.
+  if (game.user?.isGM) {
+    await requestChatMessage.update(messageData as ChatMessage.UpdateData);
+  } else {
+    await updateChatMessage(requestChatMessage, messageData);
+  }
+}
+
+export type ResistanceRequestUpdateOptions = {
+  revealSpell: boolean;
+  whisper?: string[] | undefined;
+  blind?: boolean | undefined;
+};
+
+/** A resistance request's whole message data with `systemPatch` applied and its card re-rendered. */
+export async function resistanceRequestUpdate(
+  requestChatMessage: ResistanceRequestChatMessage,
+  systemPatch: Record<string, unknown>,
+  options: ResistanceRequestUpdateOptions,
+): Promise<ReturnType<ResistanceRequestChatMessage["toObject"]>> {
   const messageData = requestChatMessage.toObject();
   foundry.utils.mergeObject(
     messageData,
@@ -89,12 +150,5 @@ export async function answerResistanceRequest(
     templatePaths.resistanceRequestChatMessage,
     messageData.system,
   );
-
-  activateChatTab();
-  // A GM may update any message, and needn't wait on an author who might be offline.
-  if (game.user?.isGM) {
-    await requestChatMessage.update(messageData as ChatMessage.UpdateData);
-  } else {
-    await updateChatMessage(requestChatMessage, messageData);
-  }
+  return messageData;
 }

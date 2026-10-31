@@ -23,7 +23,6 @@ import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-
 import { runSpellApply } from "./run-spell-apply";
 import { castPoints } from "./spell-rules";
 import { isAreaAnchor, spellBehaviorOf } from "./spell-behavior";
-import { interceptIncomingSpell } from "./incoming-spell";
 
 export type SpellEffectCast = {
   /** The caster's actor; a token's own actor when an unlinked token cast it. "" without a caster. */
@@ -85,14 +84,6 @@ type CasterUuids = Pick<SpellEffectCast, "casterActorUuid" | "casterTokenUuid">;
 /** The caster's token if they cast from one, else their actor; "" without a caster. */
 export function casterDocumentUuid(cast: CasterUuids): string {
   return cast.casterTokenUuid || cast.casterActorUuid;
-}
-
-/** The caster's actor and token uuids, from a token's uuid or an actor's. */
-export function casterUuidsOf(uuid: string): CasterUuids {
-  const document = uuid ? fromUuidSync(uuid) : null;
-  return document instanceof TokenDocument
-    ? { casterActorUuid: document.actor?.uuid ?? "", casterTokenUuid: document.uuid ?? "" }
-    : { casterActorUuid: uuid, casterTokenUuid: "" };
 }
 
 export function spellApplyScope(
@@ -182,7 +173,9 @@ function temporalDuration(spell: RqgItem): SpellEffectDuration | undefined {
  * spell effect, so every one carries its provenance. A spell whose behavior has `apply` runs that
  * instead and returns what it returns. Warns and returns undefined when the spell has
  * no template or the target has nothing it can attach to, and returns "blocked" when the same or an
- * incompatible spell already there keeps it from taking effect, or when it cancels one. Run on a client that owns the target.
+ * incompatible spell already there keeps it from taking effect, or when it cancels one. Run on a
+ * client that owns the target. The target's protective spells have met the spell already: on a
+ * cast card when it was cast or reflected, from the token HUD before this is called.
  */
 export async function applySpellEffect(
   spell: RqgItem,
@@ -196,8 +189,6 @@ export async function applySpellEffect(
      * cast at the token - and the effect is marked with the area so leaving it takes it off.
      */
     areaRegion?: string;
-    /** The target's protective spells already let it through, when it was cast or reflected. */
-    barriersChecked?: boolean;
   } = {},
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = spell.name ?? "";
@@ -205,7 +196,7 @@ export async function applySpellEffect(
   const behavior = spellBehaviorOf(spell);
   const apply = options.areaRegion ? undefined : behavior?.apply;
   if (apply) {
-    return runSpellApply({ ...behavior, apply }, scope, !!options.barriersChecked);
+    return runSpellApply({ ...behavior, apply }, scope);
   }
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;
@@ -246,12 +237,6 @@ export async function applySpellEffect(
     if (!parent) {
       return undefined;
     }
-  }
-  // Only once Apply can no longer back out, since a protective spell may use up its effects
-  const intercepted =
-    options.areaRegion || options.barriersChecked ? undefined : await interceptIncomingSpell(scope);
-  if (intercepted) {
-    return intercepted;
   }
   if (isDocumentSubType<WeaponItem>(parent, ItemTypeEnum.Weapon)) {
     parent = await splitOffProjectile(parent);

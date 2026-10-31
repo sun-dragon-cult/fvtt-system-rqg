@@ -753,6 +753,7 @@ globalThis.foundry = {
     setProperty: vi.fn((...args) => setProperty(...args)),
     getType: vi.fn((...args) => mockGetType(...args)),
     expandObject: vi.fn((...args) => expandObject(...args)),
+    randomID: vi.fn(() => Math.random().toString(36).slice(2, 18)),
   },
   abstract: {
     Document: MockDocument,

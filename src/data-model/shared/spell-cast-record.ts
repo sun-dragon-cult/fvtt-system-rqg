@@ -64,8 +64,8 @@ export type SpellCastRecord = {
   castSuccessLevel: number | null;
   resistedBy: SpellResistedByEnum;
   resistedWith: SpellResistedWithEnum;
-  /** A GM's hidden cast: its requests name neither the caster nor the spell. */
-  hidden: boolean;
+  /** The cast's roll mode; a hidden one's requests name neither the caster nor the spell. */
+  castRollMode: string;
   castOptions: { levelUsed: number; magicPointBoost: number };
   /** The caster's one d100 for a spell resisted by area. */
   areaRoll: { roll: number; casterValue: number } | null;
@@ -91,7 +91,7 @@ export function spellCastRecordFields() {
       initial: SpellResistedWithEnum.Power,
       choices: Object.values(SpellResistedWithEnum),
     }),
-    hidden: new BooleanField({ nullable: false, initial: false }),
+    castRollMode: new StringField({ blank: true, nullable: false, initial: "public" }),
     castOptions: new SchemaField({
       levelUsed: new NumberField({ nullable: false, initial: 0 }),
       magicPointBoost: new NumberField({ nullable: false, initial: 0 }),

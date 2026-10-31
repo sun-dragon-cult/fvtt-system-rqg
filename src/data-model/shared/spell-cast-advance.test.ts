@@ -19,7 +19,7 @@ function record(resistedBy: SpellResistedByEnum, targets = [target("a")]): Spell
     castSuccessLevel: Success,
     resistedBy: resistedBy,
     resistedWith: SpellResistedWithEnum.Power,
-    hidden: false,
+    castRollMode: "public",
     castOptions: { levelUsed: 1, magicPointBoost: 0 },
     areaRoll: null,
     targets: targets,
@@ -159,7 +159,7 @@ describe("advanceSpellCastRecord", () => {
       [{ kind: "ruling", entryId: "a", state: "unaffected" }],
       e,
     );
-    expect(next.targets[0].resolvedBy).toBe("reflected");
+    expect(next.targets[0]!.resolvedBy).toBe("reflected");
     expect(next.targets).toHaveLength(2);
   });
 
@@ -174,7 +174,7 @@ describe("advanceSpellCastRecord", () => {
       [{ kind: "ruling", entryId: "a", state: "affected" }],
       env(),
     );
-    expect(ruled.targets[0].resolvedBy).toBe("intercepted");
+    expect(ruled.targets[0]!.resolvedBy).toBe("intercepted");
 
     const affected = await advanceSpellCastRecord(record(SpellResistedByEnum.None), [], env());
     const applied = await advanceSpellCastRecord(
@@ -198,7 +198,7 @@ describe("advanceSpellCastRecord", () => {
       [{ kind: "ruling", entryId: "a", state: "unaffected" }],
       env(),
     );
-    expect(late.targets[0].stage).toBe("applied");
+    expect(late.targets[0]!.stage).toBe("applied");
   });
 
   it("settles every target of an area spell from the caster's one roll, the caster included", async () => {
@@ -227,7 +227,7 @@ describe("advanceSpellCastRecord", () => {
       newSpellCastEntry("u", { actorUuid: "", tokenUuid: "", isCaster: false }),
     ]);
     const waiting = await advanceSpellCastRecord(untargeted, [], env());
-    expect(waiting.targets[0].stage).toBe("targeted");
+    expect(waiting.targets[0]!.stage).toBe("targeted");
   });
 
   it("lets the GM assign actors to an untargeted entry, which then goes on like a targeted one", async () => {
@@ -257,14 +257,18 @@ describe("advanceSpellCastRecord", () => {
   it("leaves the record it was given unchanged", async () => {
     const original = record(SpellResistedByEnum.None);
     await advanceSpellCastRecord(original, [], env());
-    expect(original.targets[0].stage).toBe("targeted");
+    expect(original.targets[0]!.stage).toBe("targeted");
   });
 });
 
 describe("buildSpellCastEntries", () => {
   const caster = { actorUuid: "Actor.c", tokenUuid: "Scene.s.Token.c" };
   let n = 0;
-  const build = (targetKind: string, resistedBy = SpellResistedByEnum.None, castSucceeded = true) =>
+  const build = (
+    targetKind: string,
+    resistedBy: SpellResistedByEnum = SpellResistedByEnum.None,
+    castSucceeded = true,
+  ) =>
     buildSpellCastEntries({
       castSucceeded,
       resistedBy,
@@ -281,7 +285,7 @@ describe("buildSpellCastEntries", () => {
 
   it("leaves any other untargeted spell for the GM to assign", () => {
     expect(build("creature")[0]).toMatchObject({ actorUuid: "", isCaster: false });
-    expect(build("self", SpellResistedByEnum.SpiritCombatRound)[0].actorUuid).toBe("");
+    expect(build("self", SpellResistedByEnum.SpiritCombatRound)[0]!.actorUuid).toBe("");
   });
 
   it("settles every entry of a failed cast", () => {

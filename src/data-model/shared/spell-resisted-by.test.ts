@@ -2,12 +2,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { postSpellCastResult, resolveResistedSpellCastTarget } from "./spell-resisted-by";
 import { SpellResistedByEnum, SpellResistedWithEnum } from "../item-data/spell";
 import { createResistanceRequest } from "../../applications/resistance-roll-dialog/create-resistance-request";
-import { interceptSpellCast } from "../../system/spell-effects/run-spell-apply";
+import { advanceSpellCast } from "../../system/spell-effects/spell-cast-runner";
 
 // postSpellCastResult reaches these through dynamic imports; stubbing them keeps the routing
 // assertions on the card that would be built rather than on ChatMessage.create.
 vi.mock("../../applications/resistance-roll-dialog/create-resistance-request", () => ({
-  createResistanceRequest: vi.fn(async () => undefined),
+  createResistanceRequest: vi.fn(async () => ({ id: "combined" })),
 }));
 vi.mock("../../applications/resistance-roll-dialog/resistance-roll-shared", () => ({
   resolveCharacteristicSide: vi.fn((_uuid: string) => ({
@@ -23,8 +23,8 @@ vi.mock("../../applications/resistance-roll-dialog/resistance-roll-shared", () =
   ),
 }));
 
-vi.mock("../../system/spell-effects/run-spell-apply", () => ({
-  interceptSpellCast: vi.fn(async () => []),
+vi.mock("../../system/spell-effects/spell-cast-runner", () => ({
+  advanceSpellCast: vi.fn(async () => {}),
 }));
 
 // DialogV2 has no shared mock in test/setup/foundryMockFunctions.js - the zero-target branch is the
@@ -80,8 +80,8 @@ describe("resolveResistedSpellCastTarget", () => {
     expect(result).toEqual({
       proceed: true,
       targets: [
-        { tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
-        { tokenUuid: "Scene.s.Token.Actor.b", isCaster: false },
+        { actorUuid: "Actor.a", tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
+        { actorUuid: "Actor.b", tokenUuid: "Scene.s.Token.Actor.b", isCaster: false },
       ],
     });
     expect(ui.notifications?.warn).not.toHaveBeenCalled();
@@ -101,8 +101,8 @@ describe("resolveResistedSpellCastTarget", () => {
     expect(result).toEqual({
       proceed: true,
       targets: [
-        { tokenUuid: "Scene.s.Token.Actor.caster", isCaster: true },
-        { tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
+        { actorUuid: "Actor.caster", tokenUuid: "Scene.s.Token.Actor.caster", isCaster: true },
+        { actorUuid: "Actor.a", tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
       ],
     });
   });
@@ -155,7 +155,7 @@ describe("resolveResistedSpellCastTarget", () => {
 
     expect(result).toEqual({
       proceed: true,
-      targets: [{ tokenUuid: "Scene.s.Token.victim", isCaster: false }],
+      targets: [{ actorUuid: "Actor.victim", tokenUuid: "Scene.s.Token.victim", isCaster: false }],
     });
   });
 
@@ -169,7 +169,9 @@ describe("resolveResistedSpellCastTarget", () => {
     );
 
     expect(result.proceed).toBe(true);
-    expect(result.targets).toEqual([{ tokenUuid: "Scene.s.Token.caster", isCaster: true }]);
+    expect(result.targets).toEqual([
+      { actorUuid: "Actor.caster", tokenUuid: "Scene.s.Token.caster", isCaster: true },
+    ]);
   });
 
   it("asks to confirm a cast with nothing targeted, which then has no target to resist", async () => {
@@ -196,7 +198,7 @@ describe("resolveResistedSpellCastTarget", () => {
     expect(offeredActions()).toEqual(["withoutTarget", "self", "cancel"]);
     expect(result).toEqual({
       proceed: true,
-      targets: [{ tokenUuid: "Actor.caster", isCaster: true }],
+      targets: [{ actorUuid: "Actor.caster", tokenUuid: "", isCaster: true }],
     });
   });
 
@@ -252,8 +254,8 @@ describe("resolveResistedSpellCastTarget", () => {
     expect(result).toEqual({
       proceed: true,
       targets: [
-        { tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
-        { tokenUuid: "Scene.s.Token.Actor.b", isCaster: false },
+        { actorUuid: "Actor.a", tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
+        { actorUuid: "Actor.b", tokenUuid: "Scene.s.Token.Actor.b", isCaster: false },
       ],
     });
     expect(ui.notifications?.warn).not.toHaveBeenCalled();
@@ -298,10 +300,11 @@ describe("resolveResistedSpellCastTarget", () => {
 describe("postSpellCastResult", () => {
   const casterActor = { uuid: "Actor.caster", name: "Vasana" } as any;
   const casterToken = { uuid: "Scene.s.Token.caster" } as any;
+  const victim = { actorUuid: "Actor.victim", tokenUuid: "Scene.s.Token.victim", isCaster: false };
 
   function fakeCastRoll(rollMode: string, successLevel: number) {
     return {
-      options: { rollMode: rollMode },
+      options: { rollMode: rollMode, levelUsed: 2, magicPointBoost: 1 },
       successLevel: successLevel,
       flavor: "Demoralize",
       postToChat: vi.fn(async () => ({ id: "castMessage" })),
@@ -309,17 +312,13 @@ describe("postSpellCastResult", () => {
     } as any;
   }
 
-  const resisted = {
-    proceed: true,
-    targets: [{ tokenUuid: "Scene.s.Token.victim", isCaster: false }],
-  };
-
   async function post(overrides: Record<string, unknown> = {}) {
     const castRoll = (overrides["castRoll"] as any) ?? fakeCastRoll("public", 2);
     await postSpellCastResult({
-      target: resisted,
+      target: { proceed: true, targets: [victim] },
       resistedBy: SpellResistedByEnum.ResistanceRoll,
       resistedWith: SpellResistedWithEnum.Power,
+      targetKind: "creature",
       castRoll: castRoll,
       casterActor: casterActor,
       casterToken: casterToken,
@@ -329,301 +328,96 @@ describe("postSpellCastResult", () => {
     return castRoll;
   }
 
+  function postedRecord(castRoll: any) {
+    return castRoll.postToChat.mock.calls[0][0].system;
+  }
+
   beforeEach(() => {
     vi.clearAllMocks();
     (globalThis as any).game.user = { isGM: true };
   });
 
-  function postedCastMessage(castRoll: any) {
-    return castRoll.postToChat.mock.calls[0][0];
-  }
-
-  it("posts a spellCast message with every target unaffected when the cast failed", async () => {
-    const castRoll = await post({ castRoll: fakeCastRoll("public", 4) });
-
-    expect(castRoll.postToChat).toHaveBeenCalledOnce();
-    expect(createResistanceRequest).not.toHaveBeenCalled();
-    expect(postedCastMessage(castRoll)).toEqual({
-      type: "spellCast",
-      content: "<div></div>",
-      system: {
-        spellUuid: "Actor.caster.Item.spell",
-        casterTokenOrActorUuid: "Scene.s.Token.caster",
-        castSuccessLevel: 4,
-        resistedBy: SpellResistedByEnum.ResistanceRoll,
-        targets: [
-          {
-            targetTokenOrActorUuid: "Scene.s.Token.victim",
-            state: "unaffected",
-            resolvedBy: "castFailed",
-            casterSuccessLevel: 4,
-          },
-        ],
-      },
-    });
-  });
-
-  it("posts a spellCast message for a self cast, since casting on yourself is accepting", async () => {
-    const castRoll = await post({
-      target: {
-        proceed: true,
-        targets: [{ tokenUuid: "Scene.s.Token.caster", isCaster: true }],
-      },
-    });
-
-    expect(createResistanceRequest).not.toHaveBeenCalled();
-    expect(postedCastMessage(castRoll).system.targets).toEqual([
-      {
-        targetTokenOrActorUuid: "Scene.s.Token.caster",
-        state: "affected",
-        resolvedBy: "selfCast",
-        casterSuccessLevel: 2,
-      },
-    ]);
-  });
-
-  it("marks every target affected for a spell that is not resisted at all", async () => {
-    const castRoll = await post({
-      resistedBy: SpellResistedByEnum.None,
-      target: {
-        proceed: true,
-        targets: [
-          { tokenUuid: "Scene.s.Token.a", isCaster: false },
-          { tokenUuid: "Scene.s.Token.b", isCaster: false },
-        ],
-      },
-    });
-
-    expect(createResistanceRequest).not.toHaveBeenCalled();
-    expect(
-      postedCastMessage(castRoll).system.targets.map((t: any) => [t.state, t.resolvedBy]),
-    ).toEqual([
-      ["affected", "castOnly"],
-      ["affected", "castOnly"],
-    ]);
-  });
-
-  it("posts the cast and one linked request per target for a per-target spell", async () => {
-    const castRoll = await post({
-      resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
-      resistedWith: SpellResistedWithEnum.MagicPoints,
-      target: {
-        proceed: true,
-        targets: [
-          { tokenUuid: "Scene.s.Token.a", isCaster: false },
-          { tokenUuid: "Scene.s.Token.caster", isCaster: true },
-          { tokenUuid: "Scene.s.Token.b", isCaster: false },
-        ],
-      },
-    });
-
-    expect(
-      postedCastMessage(castRoll).system.targets.map((t: any) => [
-        t.targetTokenOrActorUuid,
-        t.state,
-      ]),
-    ).toEqual([
-      ["Scene.s.Token.a", "pending"],
-      ["Scene.s.Token.caster", "affected"],
-      ["Scene.s.Token.b", "pending"],
-    ]);
-    const requests = vi.mocked(createResistanceRequest).mock.calls.map((call) => call[0]);
-    expect(requests.map((r) => r.targetTokenOrActorUuid)).toEqual([
-      "Scene.s.Token.a",
-      "Scene.s.Token.b",
-    ]);
-    for (const request of requests) {
-      expect(request).toMatchObject({
-        spellCast: undefined,
-        spellCastMessageId: "castMessage",
-        rollerCharacteristics: "magicPoints",
-        passiveLabel: "MP",
-        frozenCharacteristics: "power",
-        frozenActorName: "Vasana",
-        rollMode: "public",
-      });
-    }
-  });
-
-  it("meets the targets' protective spells once, with the cast's points, the caster excluded", async () => {
-    await post({
-      castRoll: {
-        ...fakeCastRoll("public", 2),
-        options: { rollMode: "public", levelUsed: 2, magicPointBoost: 1 },
-      },
-      resistedBy: SpellResistedByEnum.None,
-      target: {
-        proceed: true,
-        targets: [
-          { tokenUuid: "Scene.s.Token.a", isCaster: false },
-          { tokenUuid: "Scene.s.Token.caster", isCaster: true },
-        ],
-      },
-    });
-
-    expect(interceptSpellCast).toHaveBeenCalledExactlyOnceWith({
-      spellUuid: "Actor.caster.Item.spell",
-      targetUuids: ["Scene.s.Token.a"],
-      rollOptions: { levelUsed: 2, magicPointBoost: 1 },
-      casterUuid: "Scene.s.Token.caster",
-      casterSuccessLevel: 2,
-    });
-  });
-
-  it("asks a target its protective spells stopped for no resistance roll", async () => {
-    vi.mocked(interceptSpellCast).mockResolvedValueOnce(["Scene.s.Token.victim"]);
-
-    const castRoll = await post();
-
-    expect(createResistanceRequest).not.toHaveBeenCalled();
-    expect(postedCastMessage(castRoll).system.targets).toEqual([
-      {
-        targetTokenOrActorUuid: "Scene.s.Token.victim",
-        state: "unaffected",
-        resolvedBy: "intercepted",
-        casterSuccessLevel: 2,
-      },
-    ]);
-  });
-
-  it("asks only the targets that weren't stopped for a per-target resistance roll", async () => {
-    vi.mocked(interceptSpellCast).mockResolvedValueOnce(["Scene.s.Token.a"]);
-
-    await post({
-      resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
-      target: {
-        proceed: true,
-        targets: [
-          { tokenUuid: "Scene.s.Token.a", isCaster: false },
-          { tokenUuid: "Scene.s.Token.b", isCaster: false },
-        ],
-      },
-    });
-
-    expect(
-      vi.mocked(createResistanceRequest).mock.calls.map((call) => call[0].targetTokenOrActorUuid),
-    ).toEqual(["Scene.s.Token.b"]);
-  });
-
-  it("meets no protective spells when the cast failed", async () => {
-    await post({ castRoll: fakeCastRoll("public", 4) });
-
-    expect(interceptSpellCast).not.toHaveBeenCalled();
-  });
-
-  it("asks for no resistance roll when a per-target cast fails", async () => {
-    await post({
-      castRoll: fakeCastRoll("public", 4),
-      resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
-      target: {
-        proceed: true,
-        targets: [{ tokenUuid: "Scene.s.Token.a", isCaster: false }],
-      },
-    });
-
-    expect(createResistanceRequest).not.toHaveBeenCalled();
-  });
-
-  it("settles an area spell's targets, the caster's own included, by one resistance roll", async () => {
-    (globalThis as any).foundry.dice ??= {};
-    (globalThis as any).foundry.dice.Roll = class {
-      total = 42;
-      async evaluate() {
-        return this;
-      }
-    };
-    const castRoll = await post({
-      resistedBy: SpellResistedByEnum.ResistanceRollArea,
-      target: {
-        proceed: true,
-        targets: [
-          { tokenUuid: "Scene.s.Token.a", isCaster: false },
-          { tokenUuid: "Scene.s.Token.strong", isCaster: false },
-          { tokenUuid: "Scene.s.Token.caster", isCaster: true },
-        ],
-      },
-    });
-
-    // POW 14 rolling 42 overcomes POW 15 or lower (RBM Harmony example)
-    expect(
-      postedCastMessage(castRoll).system.targets.map((t: any) => [
-        t.targetTokenOrActorUuid,
-        t.state,
-        t.resolvedBy,
-      ]),
-    ).toEqual([
-      ["Scene.s.Token.a", "affected", "resistanceRoll"],
-      ["Scene.s.Token.strong", "unaffected", "resistanceRoll"],
-      ["Scene.s.Token.caster", "affected", "resistanceRoll"],
-    ]);
-    expect(createResistanceRequest).not.toHaveBeenCalled();
-  });
-
-  it("records the resistedBy mode on the cast message, so the card can word the GM ruling", async () => {
-    const castRoll = await post({
-      resistedBy: SpellResistedByEnum.SpiritCombatRound,
-      target: { proceed: true, targets: [] },
-    });
-
-    const system = postedCastMessage(castRoll).system;
-    expect(system.resistedBy).toBe(SpellResistedByEnum.SpiritCombatRound);
-    expect(system.targets).toMatchObject([{ targetTokenOrActorUuid: "", state: "pending" }]);
-  });
-
-  it("builds one public combined card carrying the cast roll, without posting it separately", async () => {
+  it("builds one public combined card holding the record, waiting for the protective spells", async () => {
     const castRoll = await post();
 
     expect(castRoll.postToChat).not.toHaveBeenCalled();
-    expect(createResistanceRequest).toHaveBeenCalledOnce();
     const request = vi.mocked(createResistanceRequest).mock.calls[0]![0];
     expect(request).toMatchObject({
       targetTokenOrActorUuid: "Scene.s.Token.victim",
-      rollerSide: "passive",
-      rollerCharacteristics: "power",
+      frozenValue: 15,
       rollMode: "public",
-      allowVoluntaryAccept: true,
-      isSpellCast: true,
-      // The card names and is spoken by the caster - only the spell itself is concealed.
-      frozenActorName: "Vasana",
-      frozenTokenOrActorUuid: "Scene.s.Token.caster",
+      waiting: true,
+      spellCast: { casterTokenOrActorUuid: "Scene.s.Token.caster" },
     });
-    expect(request.spellCast).toEqual({
-      castRoll: castRoll,
-      casterTokenOrActorUuid: "Scene.s.Token.caster",
-      spellUuid: "Actor.caster.Item.spell",
+    expect(request.record).toMatchObject({
+      casterActorUuid: "Actor.caster",
+      casterTokenUuid: "Scene.s.Token.caster",
+      castOptions: { levelUsed: 2, magicPointBoost: 1 },
+      targets: [{ id: request.entryId, actorUuid: "Actor.victim", stage: "targeted" }],
     });
-    expect(request.spellCastMessageId).toBeUndefined();
-    // The spell's name must never reach the responder dialog's title.
-    expect(request.description).toBeUndefined();
+    expect(advanceSpellCast).toHaveBeenCalledWith("combined");
   });
 
-  it("splits a GM's hidden cast into a whispered roll and an anonymous request card", async () => {
-    const castRoll = await post({ castRoll: fakeCastRoll("gm", 2) });
+  it("posts a spellCast record for a failed cast, every target settled, and advances it", async () => {
+    const castRoll = await post({ castRoll: fakeCastRoll("public", 4) });
 
-    expect(castRoll.postToChat).toHaveBeenCalledOnce();
-    expect(postedCastMessage(castRoll).system.targets[0].state).toBe("pending");
-    const request = vi.mocked(createResistanceRequest).mock.calls[0]![0];
-    expect(request.spellCast).toBeUndefined();
-    // the anonymous card settles the whispered cast message's outcome
-    expect(request.spellCastMessageId).toBe("castMessage");
-    expect(request.frozenActorName).toBeUndefined();
-    expect(request.frozenTokenOrActorUuid).toBeUndefined();
-    // "self" would hide the request from the very person who has to answer it.
-    expect(request.rollMode).toBe("gm");
-    // kept for when the spell takes effect, which reveals what it was
-    expect(request.castFlavor).toBe("Demoralize");
+    expect(postedRecord(castRoll).targets).toEqual([
+      expect.objectContaining({ stage: "settled", state: "unaffected", resolvedBy: "castFailed" }),
+    ]);
+    expect(createResistanceRequest).not.toHaveBeenCalled();
+    expect(advanceSpellCast).toHaveBeenCalledWith("castMessage");
   });
 
-  it("keeps a blind cast's request blind", async () => {
-    await post({ castRoll: fakeCastRoll("blind", 2) });
+  it("leaves a hidden or per-target cast's request cards to the runner", async () => {
+    const hidden = await post({ castRoll: fakeCastRoll("gm", 2) });
+    expect(postedRecord(hidden).castRollMode).toBe("gm");
 
-    expect(vi.mocked(createResistanceRequest).mock.calls[0]![0].rollMode).toBe("blind");
+    const perTarget = await post({
+      resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
+      target: {
+        proceed: true,
+        targets: [victim, { ...victim, actorUuid: "Actor.b", tokenUuid: "Scene.s.Token.b" }],
+      },
+    });
+    expect(postedRecord(perTarget).targets).toHaveLength(2);
+    expect(createResistanceRequest).not.toHaveBeenCalled();
   });
 
-  it("whispers the request rather than hiding it when the GM casts to themselves", async () => {
-    await post({ castRoll: fakeCastRoll("self", 2) });
+  it("rolls the caster's one d100 for an area spell, for the runner to read each target against", async () => {
+    const dice = (globalThis as any).foundry.dice;
+    (globalThis as any).foundry.dice = {
+      Roll: class {
+        total = 42;
+        async evaluate() {
+          return this;
+        }
+      },
+    };
+    try {
+      const castRoll = await post({ resistedBy: SpellResistedByEnum.ResistanceRollArea });
+      expect(postedRecord(castRoll).areaRoll).toEqual({ roll: 42, casterValue: 15 });
+    } finally {
+      (globalThis as any).foundry.dice = dice;
+    }
+  });
 
-    expect(vi.mocked(createResistanceRequest).mock.calls[0]![0].rollMode).toBe("gm");
+  it("puts an untargeted self spell on its caster, and leaves any other for the GM", async () => {
+    const self = await post({
+      resistedBy: SpellResistedByEnum.None,
+      targetKind: "self",
+      target: { proceed: true, targets: [] },
+    });
+    expect(postedRecord(self).targets[0]).toMatchObject({
+      actorUuid: "Actor.caster",
+      tokenUuid: "Scene.s.Token.caster",
+      isCaster: true,
+    });
+
+    const creature = await post({
+      resistedBy: SpellResistedByEnum.None,
+      target: { proceed: true, targets: [] },
+    });
+    expect(postedRecord(creature).targets[0]).toMatchObject({ actorUuid: "", isCaster: false });
   });
 
   it("forces a player's cast public, so the target can answer the card", async () => {
@@ -631,9 +425,6 @@ describe("postSpellCastResult", () => {
     const castRoll = await post({ castRoll: fakeCastRoll("gm", 2) });
 
     expect(castRoll.options.rollMode).toBe("public");
-    expect(castRoll.postToChat).not.toHaveBeenCalled();
-    const request = vi.mocked(createResistanceRequest).mock.calls[0]![0];
-    expect(request.rollMode).toBe("public");
-    expect(request.spellCast).toBeDefined();
+    expect(vi.mocked(createResistanceRequest).mock.calls[0]![0].rollMode).toBe("public");
   });
 });
