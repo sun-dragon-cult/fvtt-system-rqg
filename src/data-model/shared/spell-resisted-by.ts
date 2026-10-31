@@ -61,10 +61,14 @@ export async function resolveResistedSpellCastTarget(
   const proceed: ResistedSpellTarget = { proceed: true, targets: castTargets };
   if (targets.length > maxTargets) {
     ui.notifications?.warn(
-      localize("RQG.Notification.Warn.SpellTooManyTargets", {
-        spellName: spellName ?? "",
-        count: String(maxTargets),
-      }),
+      maxTargets === 1
+        ? localize("RQG.Notification.Warn.ResistedSpellSingleTargetOnly", {
+            spellName: spellName ?? "",
+          })
+        : localize("RQG.Notification.Warn.SpellTooManyTargets", {
+            spellName: spellName ?? "",
+            count: String(maxTargets),
+          }),
     );
     return { proceed: false, targets: castTargets };
   }

@@ -3,15 +3,41 @@ import { spellBehaviorOf } from "./spell-behavior";
 import { metersToPixels } from "./scene-distance";
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
+import { SpellResistedByEnum, SpellTargetKindEnum } from "../../data-model/item-data/spell";
 
 /** How far around the caster an area spell cast at `level` reaches, from its behavior; 0 if none. */
 export function spellAreaRadius(spell: RqgItem, level: number): number {
   return spellBehaviorOf(spell)?.areaRadius?.(level) ?? 0;
 }
 
-/** How many tokens a spell cast at `level` can be cast at, from its behavior; Infinity if any. */
+/** Spells cast at one creature or thing, unless their behavior says more (RBM p.8, Core p.258). */
+const singleTargetKinds: readonly string[] = [
+  SpellTargetKindEnum.Creature,
+  SpellTargetKindEnum.Spirit,
+  SpellTargetKindEnum.HitLocation,
+  SpellTargetKindEnum.Weapon,
+  SpellTargetKindEnum.Object,
+  SpellTargetKindEnum.SpellOrEffect,
+];
+const multiTargetResistedBy: readonly string[] = [
+  SpellResistedByEnum.ResistanceRollArea,
+  SpellResistedByEnum.ResistanceRollPerTarget,
+];
+
+/**
+ * How many tokens a spell cast at `level` can be cast at: its behavior's count, else one for a
+ * spell cast at a creature or thing that isn't resisted per target or across an area, else any.
+ */
 export function spellMaxTargets(spell: RqgItem, level: number): number {
-  return spellBehaviorOf(spell)?.maxTargets?.(level) ?? Infinity;
+  const declared = spellBehaviorOf(spell)?.maxTargets?.(level);
+  if (declared !== undefined) {
+    return declared;
+  }
+  const { targetKind, resistedBy } = spell.system as { targetKind?: string; resistedBy?: string };
+  return singleTargetKinds.includes(targetKind ?? "") &&
+    !multiTargetResistedBy.includes(resistedBy ?? "")
+    ? 1
+    : Infinity;
 }
 
 /** The caster's token on the viewed scene, which a spell centered on its caster is measured from. */

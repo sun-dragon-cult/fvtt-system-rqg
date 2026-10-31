@@ -39,11 +39,11 @@ const tokenTargetKinds: readonly string[] = [
 ];
 
 /**
- * What the cast dialog says about the current targets. Only a spell resolved by resistance rolls or
- * gated on spirit combat, or one that reaches only `maxTargets` at its level, constrains them -
- * everything else is free to be cast at any number of tokens, or none. A spell cast at a token gets
- * a picker for one target; several can still be targeted on the canvas. A spell that goes on its
- * caster whatever is targeted names the caster.
+ * What the cast dialog says about the current targets. A spell resolved by resistance rolls or
+ * gated on spirit combat, or one limited to `maxTargets` (one for most, see spellMaxTargets),
+ * constrains them; any other may be cast at any number of tokens, or none. A spell cast at a token
+ * gets a picker for one target. A spell that goes on its caster whatever is targeted names the
+ * caster.
  */
 export function buildSpellCastTargetNote(
   resistedBy: SpellResistedByEnum,
@@ -68,7 +68,7 @@ export function buildSpellCastTargetNote(
   const perTarget = resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
   const constrained = isSingleTargetGate(resistedBy);
 
-  const singleTargetOnly = constrained && targetCount > 1;
+  const singleTargetOnly = (constrained || maxTargets === 1) && targetCount > 1;
   const tooManyTargets = singleTargetOnly || targetCount > maxTargets;
   let targetNote = "";
   let targetNoteClass = "";
