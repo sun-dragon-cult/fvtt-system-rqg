@@ -14,7 +14,6 @@
       {{/if}}
     </div>
     <div class="spell-cast-target-detail">
-      <span class="spell-cast-target-reason">{{reasonLabel}}</span>
       {{#if applied}}
         <span class="spell-cast-applied">{{localize "RQG.ChatMessage.SpellCast.Applied"}}</span>
       {{else if resolved}}
@@ -25,6 +24,7 @@
         <button type="button" class="spell-cast-apply rqg-primary"
                 data-apply-spell-effect><i class="fa-solid fa-sparkles" inert></i> {{localize "RQG.ChatMessage.SpellCast.ApplyEffect"}}</button>
       {{/if}}
+      <span class="spell-cast-target-reason">{{reasonLabel}}</span>
     </div>
   </li>
 {{/inline}}

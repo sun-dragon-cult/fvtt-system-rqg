@@ -1125,9 +1125,10 @@
           margin-top: 0.2rem;
         }
 
-        /* Never shrinks, so a long not-applied label wraps below it rather than squeezing it. */
+        /* Never shrinks, so beside a long not-applied label it wraps to its own line instead. */
         & .spell-cast-target-reason {
           flex: 1 0 auto;
+          text-align: right;
           color: var(--color-text-secondary);
           font-size: var(--font-size-11);
         }
