@@ -12,6 +12,7 @@ import {
   isSingleTargetGate,
   isSpiritCombatGate,
   SpellResistedByEnum,
+  SpellTargetKindEnum,
 } from "../../data-model/item-data/spell";
 import { applyTargetTokenSelect, buildTargetTokenSelect } from "./target-token-select";
 
@@ -29,13 +30,22 @@ export type SpellCastTargetNote = {
   selectedTarget: string;
 };
 
+const tokenTargetKinds: readonly string[] = [
+  SpellTargetKindEnum.Creature,
+  SpellTargetKindEnum.Spirit,
+  SpellTargetKindEnum.HitLocation,
+  SpellTargetKindEnum.SpellOrEffect,
+];
+
 /**
  * What the cast dialog says about the current targets. Only a spell resolved by resistance rolls or
  * gated on spirit combat, or one that reaches only `maxTargets` at its level, constrains them -
- * everything else is free to be cast at any number of tokens, or none.
+ * everything else is free to be cast at any number of tokens, or none. A spell cast at a token gets
+ * a picker for one target; several can still be targeted on the canvas.
  */
 export function buildSpellCastTargetNote(
   resistedBy: SpellResistedByEnum,
+  targetKind: string,
   casterToken: foundry.canvas.placeables.Token | undefined,
   maxTargets: number = Infinity,
 ): SpellCastTargetNote {
@@ -66,7 +76,11 @@ export function buildSpellCastTargetNote(
     targetNoteClass = "hint";
   }
 
-  const targetSelect = constrained ? buildTargetTokenSelect(casterToken) : undefined;
+  const showPicker =
+    constrained ||
+    (tokenTargetKinds.includes(targetKind) &&
+      resistedBy !== SpellResistedByEnum.ResistanceRollArea);
+  const targetSelect = showPicker ? buildTargetTokenSelect(casterToken) : undefined;
 
   return {
     targetName: targetNames || localize("RQG.Dialog.Common.NoTarget"),
@@ -149,6 +163,7 @@ export class SpellCastTargets {
     this.level = level;
     return buildSpellCastTargetNote(
       this.spell.system.resistedBy,
+      this.spell.system.targetKind,
       this.casterToken(),
       spellMaxTargets(this.spell, level),
     );
