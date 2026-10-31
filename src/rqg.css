@@ -1117,12 +1117,17 @@
           gap: 0.4rem;
         }
 
+        /* Closer to its own name than to the next row, so each target reads as one group */
         & .spell-cast-target-detail {
           display: flex;
           flex-wrap: wrap;
           align-items: center;
           gap: 0.4rem;
-          margin-top: 0.2rem;
+          margin: 0.05rem 0 0.3rem;
+        }
+
+        &:last-child .spell-cast-target-detail {
+          margin-bottom: 0;
         }
 
         /* Never shrinks, so beside a long not-applied label it wraps to its own line instead. */
