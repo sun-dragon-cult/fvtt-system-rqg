@@ -9,6 +9,7 @@ export const spellTargetOutcomeResolvedBy = [
   "accepted",
   "resistanceRoll",
   "gmRuling",
+  "reflected",
 ] as const;
 export type SpellTargetOutcomeResolvedBy = (typeof spellTargetOutcomeResolvedBy)[number];
 
