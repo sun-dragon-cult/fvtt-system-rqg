@@ -268,12 +268,13 @@ describe("buildSpellCastEntries", () => {
     targetKind: string,
     resistedBy: SpellResistedByEnum = SpellResistedByEnum.None,
     castSucceeded = true,
+    targets: { actorUuid: string; tokenUuid: string; isCaster: boolean }[] = [],
   ) =>
     buildSpellCastEntries({
       castSucceeded,
       resistedBy,
       targetKind,
-      targets: [],
+      targets,
       caster,
       newId: () => `e${n++}`,
     });
@@ -285,6 +286,18 @@ describe("buildSpellCastEntries", () => {
 
   it("puts any untargeted unresisted spell on its caster", () => {
     expect(build("spellOrEffect")[0]).toMatchObject({ actorUuid: "Actor.c", isCaster: true });
+  });
+
+  it("puts an unresisted self or creates spell on its caster even with a target", () => {
+    const other = [{ actorUuid: "Actor.x", tokenUuid: "", isCaster: false }];
+    expect(build("creates", SpellResistedByEnum.None, true, other)).toMatchObject([
+      { actorUuid: "Actor.c", isCaster: true },
+    ]);
+    expect(build("self", SpellResistedByEnum.None, true, other)[0]!.isCaster).toBe(true);
+    expect(build("creates", SpellResistedByEnum.SpiritCombatRound, true, other)[0]!.actorUuid).toBe(
+      "Actor.x",
+    );
+    expect(build("creature", SpellResistedByEnum.None, true, other)[0]!.actorUuid).toBe("Actor.x");
   });
 
   it("leaves any other untargeted resisted spell for the GM to assign", () => {

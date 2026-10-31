@@ -172,11 +172,17 @@ export type SpellCastTarget = Pick<SpellCastEntry, "actorUuid" | "tokenUuid" | "
 
 /** Spells cast with no target that can only mean the caster or the caster's weapon. */
 const casterTargetKinds: readonly string[] = [SpellTargetKindEnum.Self, SpellTargetKindEnum.Weapon];
+/** Unresisted spells that go on their caster whatever is targeted, e.g. a summon. */
+const casterOnlyTargetKinds: readonly string[] = [
+  SpellTargetKindEnum.Self,
+  SpellTargetKindEnum.Creates,
+];
 
 /**
- * The entries a cast starts with. With nothing targeted, an unresisted spell, or one that can only
- * go on its caster (`targetKind` self or weapon), goes on the caster; any other gets one untargeted
- * entry for the GM to assign actors to, or rule on. A failed cast settles them all.
+ * The entries a cast starts with. An unresisted self or creates spell always goes on its caster. With nothing
+ * targeted, an unresisted spell, or one that can only go on its caster (`targetKind` self or
+ * weapon), goes on the caster; any other gets one untargeted entry for the GM to assign actors to,
+ * or rule on. A failed cast settles them all.
  */
 export function buildSpellCastEntries(params: {
   castSucceeded: boolean;
@@ -192,7 +198,11 @@ export function buildSpellCastEntries(params: {
     !isSpiritCombatGate(resistedBy)
       ? { ...caster, isCaster: true }
       : { actorUuid: "", tokenUuid: "", isCaster: false };
-  const targets = params.targets.length ? params.targets : [untargeted];
+  const targets =
+    params.targets.length &&
+    !(casterOnlyTargetKinds.includes(targetKind) && resistedBy === SpellResistedByEnum.None)
+      ? params.targets
+      : [untargeted];
   return targets.map((target) => {
     const entry = newSpellCastEntry(newId(), target);
     return castSucceeded
