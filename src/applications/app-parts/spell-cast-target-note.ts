@@ -15,6 +15,7 @@ import {
   SpellTargetKindEnum,
 } from "../../data-model/item-data/spell";
 import { applyTargetTokenSelect, buildTargetTokenSelect } from "./target-token-select";
+import { castsOnCasterOnly } from "../../data-model/shared/spell-cast-record";
 
 export type SpellCastTargetNote = {
   /** Comma-joined target names, or the "nothing targeted" label. */
@@ -41,14 +42,26 @@ const tokenTargetKinds: readonly string[] = [
  * What the cast dialog says about the current targets. Only a spell resolved by resistance rolls or
  * gated on spirit combat, or one that reaches only `maxTargets` at its level, constrains them -
  * everything else is free to be cast at any number of tokens, or none. A spell cast at a token gets
- * a picker for one target; several can still be targeted on the canvas.
+ * a picker for one target; several can still be targeted on the canvas. A spell that goes on its
+ * caster whatever is targeted names the caster.
  */
 export function buildSpellCastTargetNote(
   resistedBy: SpellResistedByEnum,
   targetKind: string,
   casterToken: foundry.canvas.placeables.Token | undefined,
   maxTargets: number = Infinity,
+  casterName: string = "",
 ): SpellCastTargetNote {
+  if (castsOnCasterOnly(targetKind, resistedBy)) {
+    return {
+      targetName: casterName,
+      targetNote: "",
+      targetNoteClass: "",
+      tooManyTargets: false,
+      targetOptions: [],
+      selectedTarget: "",
+    };
+  }
   const targetNames = getTargetedTokenNames();
   const targetCount = game.user?.targets.size ?? 0;
   const spiritCombat = isSpiritCombatGate(resistedBy);
@@ -166,6 +179,7 @@ export class SpellCastTargets {
       this.spell.system.targetKind,
       this.casterToken(),
       spellMaxTargets(this.spell, level),
+      this.casterActor.name ?? "",
     );
   }
 

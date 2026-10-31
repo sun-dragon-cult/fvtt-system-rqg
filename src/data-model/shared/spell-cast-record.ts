@@ -178,6 +178,11 @@ const casterOnlyTargetKinds: readonly string[] = [
   SpellTargetKindEnum.Creates,
 ];
 
+/** Whether a spell goes on its caster whatever is targeted. */
+export function castsOnCasterOnly(targetKind: string, resistedBy: SpellResistedByEnum): boolean {
+  return casterOnlyTargetKinds.includes(targetKind) && resistedBy === SpellResistedByEnum.None;
+}
+
 /**
  * The entries a cast starts with. An unresisted self or creates spell always goes on its caster. With nothing
  * targeted, an unresisted spell, or one that can only go on its caster (`targetKind` self or
@@ -199,8 +204,7 @@ export function buildSpellCastEntries(params: {
       ? { ...caster, isCaster: true }
       : { actorUuid: "", tokenUuid: "", isCaster: false };
   const targets =
-    params.targets.length &&
-    !(casterOnlyTargetKinds.includes(targetKind) && resistedBy === SpellResistedByEnum.None)
+    params.targets.length && !castsOnCasterOnly(targetKind, resistedBy)
       ? params.targets
       : [untargeted];
   return targets.map((target) => {
