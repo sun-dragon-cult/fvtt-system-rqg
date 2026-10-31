@@ -313,6 +313,24 @@ export async function resumeSpellCasts(): Promise<void> {
   }
 }
 
+/**
+ * Give an untargeted entry of a cast its actors, one entry each, which then go on like targeted
+ * ones (#1219 builds the GM's picker on this).
+ */
+export async function assignSpellCastTargets(
+  messageId: string,
+  entryId: string,
+  targets: { actorUuid: string; tokenUuid?: string }[],
+): Promise<void> {
+  await advanceSpellCast(messageId, [
+    {
+      kind: "assign",
+      entryId: entryId,
+      targets: targets.map((t) => ({ actorUuid: t.actorUuid, tokenUuid: t.tokenUuid ?? "" })),
+    },
+  ]);
+}
+
 export function initAdvanceSpellCastQuery(): void {
   CONFIG.queries["rqg.advanceSpellCast"] = (data: AdvanceSpellCastData) => runQueued(data);
   Hooks.once("ready", () => void resumeSpellCasts());
