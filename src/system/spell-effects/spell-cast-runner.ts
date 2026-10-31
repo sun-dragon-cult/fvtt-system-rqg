@@ -137,12 +137,24 @@ function castRollOf(message: RecordMessage): SpiritMagicRoll | RuneMagicRoll | u
   return roll as SpiritMagicRoll | RuneMagicRoll | undefined;
 }
 
+/** A resistance answer for an entry that was already answered, e.g. Resist on two clients at once. */
+function isLateAnswer(record: SpellCastRecord, data: AdvanceSpellCastData): boolean {
+  return data.inputs.some(
+    (input) =>
+      input.kind === "resistance" &&
+      record.targets.find((e) => e.id === input.entryId)?.stage !== "resistance",
+  );
+}
+
 async function advanceOnGm(data: AdvanceSpellCastData): Promise<void> {
   const message = game.messages?.get(data.messageId) as RecordMessage | undefined;
   if (!message || !isSpellCastRecordMessage(message as any)) {
     return;
   }
   const record = recordOf(message);
+  if (isLateAnswer(record, data)) {
+    return;
+  }
   const spell = (await fromUuid(record.spellUuid)) as RqgItem | null;
   // Dynamic imports to avoid a circular dependency through rqgItem.ts.
   const [{ requestSpellResistance }, { resolveCharacteristicValue }] = await Promise.all([
