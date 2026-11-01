@@ -61,11 +61,7 @@ export type SpellAreaScope = {
   crossed: boolean;
 };
 
-/**
- * What a spell's `onSpellAcross` runs with - part of the public API. It runs on the active GM's
- * client when `incomingSpell` is cast from outside the area at `targets`, the tokens inside it that
- * it was cast at, once per cast, before their protective spells meet it.
- */
+/** What any Region behavior's `onSpellAcross` runs with. */
 export type SpellAcrossRegionScope = {
   region: RegionDocument;
   behavior: RegionBehavior;
@@ -74,6 +70,11 @@ export type SpellAcrossRegionScope = {
   targets: TokenDocument[];
 };
 
+/**
+ * What a spell's `onSpellAcross` runs with - part of the public API. It runs on the active GM's
+ * client when `incomingSpell` is cast from outside the area at `targets`, the tokens inside it that
+ * it was cast at, once per cast, before their protective spells meet it.
+ */
 export type SpellAcrossScope = {
   spell: RqgItem;
   cast: SpellEffectCast;

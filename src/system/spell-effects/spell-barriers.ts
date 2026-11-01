@@ -137,6 +137,21 @@ function effectLayers(actor: RqgActor, cast: SpellEffectCast): Layer[] {
   return layers;
 }
 
+/** A Region behavior's barrier; a module's getter that throws gives none. */
+function regionBarrierOf(behavior: RegionBehavior, regionName: string): RegionBarrier | undefined {
+  try {
+    const barrier = (behavior.system as { barrier?: RegionBarrier } | undefined)?.barrier;
+    return barrier && isFinitePriority(barrier.priority) ? barrier : undefined;
+  } catch (error) {
+    logger.error(
+      localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: regionName }),
+      undefined,
+      error,
+    );
+    return undefined;
+  }
+}
+
 /** The layers of the Regions the target is in and the caster isn't. */
 function regionLayers(
   target: TokenDocument | undefined,
@@ -152,8 +167,8 @@ function regionLayers(
       continue;
     }
     for (const behavior of region.behaviors ?? []) {
-      const barrier = behavior.disabled ? undefined : (behavior.system as any)?.barrier;
-      if (!barrier || !isFinitePriority(barrier.priority)) {
+      const barrier = behavior.disabled ? undefined : regionBarrierOf(behavior, region.name ?? "");
+      if (!barrier) {
         continue;
       }
       const strength = guardedStrength(region.name ?? "", () => barrier.strength(cast, target));
@@ -190,7 +205,9 @@ export async function meetBarriers(
   for (const layer of walk.usedUp) {
     await layer.use?.();
   }
-  const { stoppedBy, usedUp } = walk;
+  // A Region's layer has no effect to remove, so nothing was used up
+  const usedUp = walk.usedUp.filter((layer) => layer.use);
+  const { stoppedBy } = walk;
   if (stoppedBy) {
     const key = usedUp.includes(stoppedBy)
       ? "RQG.Notification.Info.SpellBarrierStoppedUsedUp"
