@@ -67,8 +67,7 @@ describe("getSpellCastOutcome", () => {
   };
   const system = {
     spellUuid: "Actor.c.Item.spell",
-    casterActorUuid: "Actor.c",
-    casterTokenUuid: caster,
+    caster: { actorUuid: "Actor.c", tokenUuid: caster },
     castSuccessLevel: Success,
   };
 

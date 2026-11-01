@@ -12,6 +12,7 @@ import {
   type SpellTargetOutcomeResolvedBy,
   type SpellTargetOutcomeState,
 } from "./spell-cast-outcome.defs";
+import { actorRefField, actorRefFields, type ActorRef } from "./actor-ref";
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -46,13 +47,12 @@ export function canEntryMoveOn(entry: Pick<SpellCastEntry, "stage" | "actorUuid"
   );
 }
 
-/** One target of a cast: an actor, with the token it was targeted on if it has one. */
-export type SpellCastEntry = {
+/**
+ * One target of a cast: an actor, with the token it was targeted on if it has one. `actorUuid` is
+ * "" for an untargeted entry waiting for the GM to assign actors.
+ */
+export type SpellCastEntry = ActorRef & {
   id: string;
-  /** "" for an untargeted entry waiting for the GM to assign actors. */
-  actorUuid: string;
-  /** "" when the target has no token. */
-  tokenUuid: string;
   isCaster: boolean;
   stage: SpellCastStage;
   state: SpellTargetOutcomeState;
@@ -73,8 +73,7 @@ export type SpellCastEntry = {
  */
 export type SpellCastRecord = {
   spellUuid: string;
-  casterActorUuid: string;
-  casterTokenUuid: string;
+  caster: ActorRef;
   /** The caster's POW when they cast it, which a reflected spell attacks them with. */
   casterPower: number;
   castSuccessLevel: number | null;
@@ -91,8 +90,7 @@ export type SpellCastRecord = {
 /** The record's fields, shared by the `spellCast` and `resistanceRequest` message models. */
 export function spellCastRecordFields() {
   return {
-    casterActorUuid: new StringField({ blank: true, nullable: false, initial: "" }),
-    casterTokenUuid: new StringField({ blank: true, nullable: false, initial: "" }),
+    caster: actorRefField(),
     casterPower: new NumberField({ nullable: false, initial: 0 }),
     castSuccessLevel: new NumberField({ integer: true, nullable: true, initial: null }),
     resistedBy: new StringField({
@@ -122,8 +120,7 @@ export function spellCastRecordFields() {
     targets: new ArrayField(
       new SchemaField({
         id: new StringField({ blank: false, nullable: false, required: true }),
-        actorUuid: new StringField({ blank: true, nullable: false, initial: "" }),
-        tokenUuid: new StringField({ blank: true, nullable: false, initial: "" }),
+        ...actorRefFields(),
         isCaster: new BooleanField({ nullable: false, initial: false }),
         stage: new StringField({
           blank: false,
@@ -158,11 +155,6 @@ export function spellCastRecordFields() {
   };
 }
 
-/** The uuid to look the target up by: its token if it has one, else its actor. */
-export function entryTargetUuid(entry: Pick<SpellCastEntry, "actorUuid" | "tokenUuid">): string {
-  return entry.tokenUuid || entry.actorUuid;
-}
-
 /** A token or actor the spell was cast at. */
 export type SpellCastTarget = Pick<SpellCastEntry, "actorUuid" | "tokenUuid" | "isCaster">;
 
@@ -194,7 +186,7 @@ export function buildSpellCastEntries(params: {
   resistedBy: SpellResistedByEnum;
   targetKind: string;
   targets: readonly SpellCastTarget[];
-  caster: { actorUuid: string; tokenUuid: string };
+  caster: ActorRef;
   newId: () => string;
 }): SpellCastEntry[] {
   const { castSucceeded, resistedBy, targetKind, caster, newId } = params;

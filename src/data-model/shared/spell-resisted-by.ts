@@ -20,10 +20,10 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 import { areaResistanceThreshold } from "./spell-cast-outcome";
 import {
   buildSpellCastEntries,
-  entryTargetUuid,
   type SpellCastRecord,
   type SpellCastTarget,
 } from "./spell-cast-record";
+import { actorRefUuid } from "./actor-ref";
 
 /** Outcome of the pre-cast target check, threaded to {@link postSpellCastResult}. */
 export type ResistedSpellTarget = {
@@ -191,8 +191,7 @@ export async function postSpellCastResult(params: {
       : null;
   const record: SpellCastRecord = {
     spellUuid: spellUuid,
-    casterActorUuid: caster.actorUuid,
-    casterTokenUuid: caster.tokenUuid,
+    caster: caster,
     casterPower: casterPower,
     castSuccessLevel: castRoll.successLevel ?? null,
     resistedBy: resistedBy,
@@ -216,8 +215,8 @@ export async function postSpellCastResult(params: {
   const { spellUuid: _spellUuid, ...recordFields } = record;
   const message = combined
     ? await requestSpellResistance({
-        targetUuid: entryTargetUuid(only),
-        casterUuid: entryTargetUuid(caster),
+        targetUuid: actorRefUuid(only),
+        casterUuid: actorRefUuid(caster),
         resistedWith: resistedWith,
         rollMode: castRollMode,
         frozenValue: casterPower,
@@ -226,7 +225,7 @@ export async function postSpellCastResult(params: {
         waiting: true,
         spellCast: {
           castRoll,
-          casterTokenOrActorUuid: entryTargetUuid(caster),
+          casterTokenOrActorUuid: actorRefUuid(caster),
           spellUuid,
         },
       })

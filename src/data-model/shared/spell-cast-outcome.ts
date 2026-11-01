@@ -1,10 +1,7 @@
 import { safeFromJSON } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
-import {
-  entryTargetUuid,
-  isSpellCastRecordMessage,
-  type SpellCastEntry,
-} from "./spell-cast-record";
+import { isSpellCastRecordMessage, type SpellCastEntry } from "./spell-cast-record";
+import { actorRefUuid, type ActorRef } from "./actor-ref";
 
 import Roll = foundry.dice.Roll;
 
@@ -36,8 +33,7 @@ export interface SpellTargetOutcome {
  */
 export interface SpellCastOutcome {
   spellUuid: string;
-  casterActorUuid: string;
-  casterTokenUuid: string;
+  caster: ActorRef;
   castSuccessLevel: AbilitySuccessLevelEnum | undefined;
   targets: (SpellTargetOutcome & { entryId: string })[];
 }
@@ -126,12 +122,11 @@ export function getSpellCastOutcome(message: OutcomeMessage): SpellCastOutcome |
   const system = message.system;
   return {
     spellUuid: system.spellUuid,
-    casterActorUuid: system.casterActorUuid,
-    casterTokenUuid: system.casterTokenUuid,
+    caster: { actorUuid: system.caster.actorUuid, tokenUuid: system.caster.tokenUuid },
     castSuccessLevel: system.castSuccessLevel ?? undefined,
     targets: (system.targets as SpellCastEntry[]).map((entry) => ({
       entryId: entry.id,
-      targetTokenOrActorUuid: entryTargetUuid(entry),
+      targetTokenOrActorUuid: actorRefUuid(entry),
       state: entry.state,
       resolvedBy: entry.resolvedBy ?? undefined,
       casterSuccessLevel: (entry.casterSuccessLevel ?? undefined) as

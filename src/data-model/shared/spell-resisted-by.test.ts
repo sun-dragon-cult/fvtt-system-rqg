@@ -350,8 +350,7 @@ describe("postSpellCastResult", () => {
       spellCast: { casterTokenOrActorUuid: "Scene.s.Token.caster" },
     });
     expect(request.record).toMatchObject({
-      casterActorUuid: "Actor.caster",
-      casterTokenUuid: "Scene.s.Token.caster",
+      caster: { actorUuid: "Actor.caster", tokenUuid: "Scene.s.Token.caster" },
       castOptions: { levelUsed: 2, magicPointBoost: 1 },
       targets: [{ id: request.entryId, actorUuid: "Actor.victim", stage: "targeted" }],
     });

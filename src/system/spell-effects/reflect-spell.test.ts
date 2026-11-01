@@ -13,8 +13,7 @@ const spell = {
 };
 const target = { name: "Harrek", allApplicableEffects: () => [reflection] } as any;
 const cast = {
-  casterActorUuid: "Actor.c",
-  casterTokenUuid: "Scene.s.Token.c",
+  caster: { actorUuid: "Actor.c", tokenUuid: "Scene.s.Token.c" },
   castMessageId: "cast",
   level: 2,
   magicPointsSpent: 3,

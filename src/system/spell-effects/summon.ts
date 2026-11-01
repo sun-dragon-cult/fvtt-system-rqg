@@ -3,12 +3,12 @@ import { systemId } from "../config";
 import { Rqid } from "../api/rqid-api";
 import { tokenOfDocument } from "./spell-across";
 import {
-  casterDocumentUuid,
   spellProvenance,
   type SpellEffectApplied,
   type SpellEffectDuration,
   type SpellApplyScope,
 } from "./apply-spell-effect";
+import { actorRefUuid } from "../../data-model/shared/actor-ref";
 
 type GridRect = { col: number; row: number; w: number; h: number };
 
@@ -46,8 +46,8 @@ export function nearestFreeCell(
 /** The token to summon next to: the caster's, or without a caster (token HUD "+") the target's. */
 export async function summonerToken(scope: SpellApplyScope): Promise<TokenDocument | undefined> {
   return tokenOfDocument(
-    casterDocumentUuid(scope.cast)
-      ? await fromUuid(casterDocumentUuid(scope.cast))
+    actorRefUuid(scope.cast.caster)
+      ? await fromUuid(actorRefUuid(scope.cast.caster))
       : scope.targetActor,
   );
 }

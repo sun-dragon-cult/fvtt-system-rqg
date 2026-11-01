@@ -150,7 +150,7 @@ function applyInput(record: SpellCastRecord, input: SpellCastInput, env: SpellCa
       const assigned = input.targets.map((target, i) =>
         newSpellCastEntry(i === 0 ? entry.id : env.newId(), {
           ...target,
-          isCaster: target.actorUuid === record.casterActorUuid,
+          isCaster: target.actorUuid === record.caster.actorUuid,
         }),
       );
       record.targets.splice(index, 1, ...assigned);
@@ -198,8 +198,7 @@ async function stepOnce(record: SpellCastRecord, env: SpellCastStepEnv): Promise
       settle(entry, "unaffected", "reflected", entry.casterSuccessLevel);
       record.targets.push({
         ...newSpellCastEntry(env.newId(), {
-          actorUuid: record.casterActorUuid,
-          tokenUuid: record.casterTokenUuid,
+          ...record.caster,
           isCaster: true,
         }),
         stage: "barriers",

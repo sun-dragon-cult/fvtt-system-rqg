@@ -3,7 +3,7 @@ import { matchesSpellEffectRemovalFilter } from "./remove-spell-effects";
 
 const bladesharp4 = {
   spellRqid: "i.spirit-magic.bladesharp",
-  casterActorUuid: "Actor.a",
+  caster: { actorUuid: "Actor.a" },
   level: 4,
 };
 
@@ -19,6 +19,7 @@ describe("matchesSpellEffectRemovalFilter", () => {
     expect(
       matchesSpellEffectRemovalFilter(bladesharp4, { spellRqid: "i.spirit-magic.dullblade" }),
     ).toBe(false);
+    expect(matchesSpellEffectRemovalFilter(bladesharp4, { casterActorUuid: "Actor.a" })).toBe(true);
     expect(matchesSpellEffectRemovalFilter(bladesharp4, { casterActorUuid: "Actor.b" })).toBe(
       false,
     );

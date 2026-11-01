@@ -15,6 +15,7 @@ import {
 } from "./spell-effect-stacking";
 import type { SpellEffectBlockedReason } from "../../active-effect/data-model/spell-effect.defs";
 import { SpellDurationEnum } from "../../data-model/item-data/spell";
+import type { ActorRef } from "../../data-model/shared/actor-ref";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -25,10 +26,8 @@ import { castPoints } from "./spell-rules";
 import { isAreaAnchor, spellBehaviorOf } from "./spell-behavior";
 
 export type SpellEffectCast = {
-  /** The caster's actor; a token's own actor when an unlinked token cast it. "" without a caster. */
-  casterActorUuid: string;
-  /** The token the caster cast from; "" when they cast without one. */
-  casterTokenUuid: string;
+  /** Who cast it, and the token they cast from; both "" without a caster. */
+  caster: ActorRef;
   castMessageId: string;
   level: number;
   magicPointsSpent: number;
@@ -63,10 +62,7 @@ export type SpellEffectDuration = { value: number; units: string };
 export function spellEffectCast(
   spell: RqgItem,
   rollOptions: Record<string, unknown>,
-  cast: Pick<
-    SpellEffectCast,
-    "casterActorUuid" | "casterTokenUuid" | "castMessageId" | "casterSuccessLevel"
-  >,
+  cast: Pick<SpellEffectCast, "caster" | "castMessageId" | "casterSuccessLevel">,
 ): SpellEffectCast {
   const level = Number(rollOptions["levelUsed"] ?? 0);
   const boost = Number(rollOptions["magicPointBoost"] ?? 0);
@@ -77,13 +73,6 @@ export function spellEffectCast(
     magicPointsSpent: isRuneMagic ? boost : level + boost,
     runePointsSpent: isRuneMagic ? level : 0,
   };
-}
-
-type CasterUuids = Pick<SpellEffectCast, "casterActorUuid" | "casterTokenUuid">;
-
-/** The caster's token if they cast from one, else their actor; "" without a caster. */
-export function casterDocumentUuid(cast: CasterUuids): string {
-  return cast.casterTokenUuid || cast.casterActorUuid;
 }
 
 export function spellApplyScope(

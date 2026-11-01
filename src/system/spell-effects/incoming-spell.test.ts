@@ -34,7 +34,7 @@ describe("groupEffectsByHook", () => {
 describe("interceptIncomingSpell", () => {
   const caster = { uuid: "Actor.caster", allApplicableEffects: () => [{ active: true }] };
   const scope = {
-    cast: { casterActorUuid: "Actor.caster", casterTokenUuid: "" },
+    cast: { caster: { actorUuid: "Actor.caster", tokenUuid: "" } },
     targetActor: caster,
   } as any;
 

@@ -14,11 +14,11 @@ import {
 } from "../data-model/shared/spell-cast-outcome.defs";
 import { SpellResistedByEnum } from "@item-model/spell.ts";
 import {
-  entryTargetUuid,
   isSpellCastRecordMessage,
   spellCastRecordMessageOf,
   type SpellCastEntry,
 } from "../data-model/shared/spell-cast-record";
+import { actorRefUuid } from "../data-model/shared/actor-ref";
 
 const rulingIcons: Record<SpellTargetRulingState, string> = {
   affected: "fa-solid fa-check",
@@ -69,7 +69,7 @@ function reasonKey(row: TargetRow): string | undefined {
 function entryRow(entry: SpellCastEntry): TargetRow {
   return {
     entryId: entry.id,
-    targetUuid: entryTargetUuid(entry),
+    targetUuid: actorRefUuid(entry),
     state: entry.state,
     resolvedBy: entry.resolvedBy,
     effectUuids: entry.effectUuids,
@@ -227,7 +227,7 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
     return;
   }
   const { record, entry } = clicked;
-  const targetUuid = entryTargetUuid(entry);
+  const targetUuid = actorRefUuid(entry);
   if (!isOwnedByUser(targetUuid)) {
     return;
   }

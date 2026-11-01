@@ -146,8 +146,9 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
     spell,
     { levelUsed: Math.max(0, Math.trunc(Number(picked.level) || 0)) },
     {
-      casterActorUuid: picked.selfCast ? (actor.uuid ?? "") : "",
-      casterTokenUuid: picked.selfCast ? (actor.token?.uuid ?? "") : "",
+      caster: picked.selfCast
+        ? { actorUuid: actor.uuid ?? "", tokenUuid: actor.token?.uuid ?? "" }
+        : { actorUuid: "", tokenUuid: "" },
       castMessageId: "",
       casterSuccessLevel: undefined,
     },

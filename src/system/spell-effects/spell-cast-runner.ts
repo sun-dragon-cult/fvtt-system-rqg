@@ -8,21 +8,16 @@ import {
 } from "../../data-model/shared/spell-cast-step";
 import {
   canEntryMoveOn,
-  entryTargetUuid,
   isEntryDone,
   isSpellCastRecordMessage,
   spellCastRecordFields,
   type SpellCastEntry,
   type SpellCastRecord,
 } from "../../data-model/shared/spell-cast-record";
+import { actorRefUuid } from "../../data-model/shared/actor-ref";
 import { SpellResistedWithEnum } from "../../data-model/item-data/spell";
 import type { ResistanceRequestChatMessage } from "../../chat/data-model/resistance-request-chat-message.types.ts";
-import {
-  casterDocumentUuid,
-  spellApplyScope,
-  spellEffectCast,
-  type SpellEffectCast,
-} from "./apply-spell-effect";
+import { spellApplyScope, spellEffectCast, type SpellEffectCast } from "./apply-spell-effect";
 import { castAcrossSpellAreas } from "./spell-across";
 import { interceptIncomingSpell } from "./incoming-spell";
 import { reflectsSpell } from "./reflect-spell";
@@ -104,8 +99,7 @@ export function recordCast(
   entry?: SpellCastEntry,
 ): SpellEffectCast {
   return spellEffectCast(spell, record.castOptions, {
-    casterActorUuid: record.casterActorUuid,
-    casterTokenUuid: record.casterTokenUuid,
+    caster: record.caster,
     castMessageId: messageId,
     casterSuccessLevel: entry?.casterSuccessLevel ?? record.castSuccessLevel ?? undefined,
   });
@@ -115,7 +109,7 @@ export function recordCast(
 export async function targetOf(
   entry: Pick<SpellCastEntry, "actorUuid" | "tokenUuid">,
 ): Promise<{ actor: RqgActor | null; name: string; token: TokenDocument | null }> {
-  const document = await fromUuid(entryTargetUuid(entry));
+  const document = await fromUuid(actorRefUuid(entry));
   const token = document instanceof TokenDocument ? document : null;
   const actor = (token ? token.actor : document) as RqgActor | null;
   return {
@@ -160,7 +154,7 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
   ]);
   const actors = new Map<string, Awaited<ReturnType<typeof targetOf>>>();
   const target = async (entry: SpellCastEntry) => {
-    const key = entryTargetUuid(entry);
+    const key = actorRefUuid(entry);
     if (!actors.has(key)) {
       actors.set(key, await targetOf(entry));
     }
@@ -174,7 +168,7 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
         await castAcrossSpellAreas(
           spell,
           recordCast(record, message.id ?? "", spell),
-          entries.map(entryTargetUuid),
+          entries.map(actorRefUuid),
         );
       }
     },
@@ -192,7 +186,7 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
       return !!(await interceptIncomingSpell(scope, !!entry.reflectedFromId));
     },
     areaTargetValue: (entry) => {
-      const actor = actors.get(entryTargetUuid(entry))?.actor;
+      const actor = actors.get(actorRefUuid(entry))?.actor;
       return actor ? resolveCharacteristicValue(actor, record.resistedWith) : undefined;
     },
     requestResistance: async (entry) => {
@@ -205,8 +199,8 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
         : undefined;
       const castRoll = castRollOf(message);
       const request = await requestSpellResistance({
-        targetUuid: entryTargetUuid(entry),
-        casterUuid: casterDocumentUuid(record),
+        targetUuid: actorRefUuid(entry),
+        casterUuid: actorRefUuid(record.caster),
         // A reflected spell attacks its caster's POW with their POW when they cast it (RBM p.71)
         resistedWith: reflectedFrom ? SpellResistedWithEnum.Power : record.resistedWith,
         rollMode: record.castRollMode,
@@ -219,7 +213,7 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
           reflectedFrom && castRoll
             ? {
                 castRoll: castRoll,
-                casterTokenOrActorUuid: casterDocumentUuid(record),
+                casterTokenOrActorUuid: actorRefUuid(record.caster),
                 spellUuid: record.spellUuid,
               }
             : undefined,

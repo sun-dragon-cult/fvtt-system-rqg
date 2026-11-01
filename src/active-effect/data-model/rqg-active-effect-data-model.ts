@@ -1,5 +1,6 @@
 import { rqidLinkArraySchemaField } from "../../data-model/shared/rqid-link-field";
 import { spellTargetConditionOps, spellTargetOnNoMatch } from "./spell-effect.defs";
+import { actorRefField } from "../../data-model/shared/actor-ref";
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -9,8 +10,7 @@ export function spellProvenanceFields() {
     spellRqid: new StringField({ blank: true, nullable: false, initial: "" }),
     spellName: new StringField({ blank: true, nullable: false, initial: "" }),
     spellUuid: new StringField({ blank: true, nullable: false, initial: "" }),
-    casterActorUuid: new StringField({ blank: true, nullable: false, initial: "" }),
-    casterTokenUuid: new StringField({ blank: true, nullable: false, initial: "" }),
+    caster: actorRefField(),
     castMessageId: new StringField({ blank: true, nullable: false, initial: "" }),
     level: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
     magicPointsSpent: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),

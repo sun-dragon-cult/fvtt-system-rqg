@@ -8,7 +8,7 @@ export type SpellEffectRemovalFilter = {
   maxLevel?: number;
 };
 
-type SpellProvenance = { spellRqid?: string; casterActorUuid?: string; level?: number };
+type SpellProvenance = { spellRqid?: string; caster?: { actorUuid?: string }; level?: number };
 
 export function matchesSpellEffectRemovalFilter(
   spell: SpellProvenance,
@@ -16,7 +16,7 @@ export function matchesSpellEffectRemovalFilter(
 ): boolean {
   return (
     (filter.spellRqid === undefined || spell.spellRqid === filter.spellRqid) &&
-    (filter.casterActorUuid === undefined || spell.casterActorUuid === filter.casterActorUuid) &&
+    (filter.casterActorUuid === undefined || spell.caster?.actorUuid === filter.casterActorUuid) &&
     (filter.maxLevel === undefined || (spell.level ?? 0) <= filter.maxLevel)
   );
 }
