@@ -20,6 +20,7 @@ import type {
 } from "../../rolls/roll-method-options";
 import type { RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
+import type { SpellNotAppliedReason } from "../../data-model/shared/spell-cast-step";
 import type { SpellAcrossScope, SpellAreaScope } from "./spell-area";
 import type { SpellBarrier, SpellAreaBarrier } from "./spell-barriers";
 
@@ -41,6 +42,15 @@ export type MissileFiredScope = {
   projectile: WeaponItem;
   attack: AttackHookData & { chatMessage: ChatMessage };
   effects: ActiveEffect[];
+};
+
+/**
+ * The scope `onNotApplied` runs with, on the active GM's client, once per target the spell did not
+ * take effect on. `cast.casterSuccessLevel` tells a fumbled cast from a plain failure.
+ */
+export type SpellNotAppliedScope = SpellApplyScope & {
+  /** The cast roll failed, the target's resistance held, or a protective spell stopped it. */
+  reason: SpellNotAppliedReason;
 };
 
 /** The scope `onEnd` runs with, on the active GM's client, when a spell effect expires or is deleted. */
@@ -122,6 +132,13 @@ export type SpellBehavior = SpellRollEntries & {
    * posted and before the spell is spent: Multimissile adds its magical missiles here.
    */
   onMissileFired?(scope: MissileFiredScope): Promise<void>;
+  /**
+   * Runs on the active GM's client for each target the spell did not take effect on, because the
+   * cast failed or fumbled, the target's resistance held (unless it sent the spell back at its
+   * caster), or a protective spell stopped it. A GM ruling that a target is unaffected doesn't
+   * run it.
+   */
+  onNotApplied?(scope: SpellNotAppliedScope): Promise<void>;
   /** Runs when one of the spell's effects expires or is deleted. */
   onEnd?(scope: SpellEndScope): Promise<void>;
   /** Run `apply` on the active GM's client, e.g. because it creates tokens, which players may not. */
@@ -218,6 +235,7 @@ type HookKind =
   | "apply"
   | "onIncomingSpell"
   | "onResisted"
+  | "onNotApplied"
   | "onEnd"
   | "onAreaEnter"
   | "onAreaExit"
@@ -229,6 +247,7 @@ const guardedHooks: Record<HookKind, WeakMap<object, (scope: any) => Promise<any
   apply: new WeakMap(),
   onIncomingSpell: new WeakMap(),
   onResisted: new WeakMap(),
+  onNotApplied: new WeakMap(),
   onEnd: new WeakMap(),
   onAreaEnter: new WeakMap(),
   onAreaExit: new WeakMap(),
@@ -352,6 +371,7 @@ function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavio
       (scope) => scope.effects[0]?.name ?? "",
     ),
     onResisted: guarded("onResisted", behavior.onResisted, (scope) => scope.effects[0]?.name ?? ""),
+    onNotApplied: guarded("onNotApplied", behavior.onNotApplied, (scope) => scope.spell.name ?? ""),
     onEnd: guarded("onEnd", behavior.onEnd, (scope) => scope.effect.name ?? ""),
     onAreaEnter: guarded("onAreaEnter", behavior.onAreaEnter, (scope) => scope.spell.name ?? ""),
     onAreaExit: guarded("onAreaExit", behavior.onAreaExit, (scope) => scope.spell.name ?? ""),

@@ -361,7 +361,7 @@ describe("postSpellCastResult", () => {
     const castRoll = await post({ castRoll: fakeCastRoll("public", 4) });
 
     expect(postedRecord(castRoll).targets).toEqual([
-      expect.objectContaining({ stage: "settled", state: "unaffected", resolvedBy: "castFailed" }),
+      expect.objectContaining({ stage: "failed", state: "unaffected", resolvedBy: "castFailed" }),
     ]);
     expect(createResistanceRequest).not.toHaveBeenCalled();
     expect(continueSpellCast).toHaveBeenCalledWith("castMessage");

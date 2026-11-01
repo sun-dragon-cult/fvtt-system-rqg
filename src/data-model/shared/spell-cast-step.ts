@@ -25,6 +25,9 @@ export type SpellCastInput =
   | { kind: "applied"; entryId: string; effectUuids: string[]; blockedReason: string }
   | { kind: "assign"; entryId: string; targets: Omit<SpellCastTarget, "isCaster">[] };
 
+/** Why a spell did not take effect on a target, as its `onNotApplied` hook is told. */
+export type SpellNotAppliedReason = "castFailed" | "resisted" | "blocked";
+
 /** What the runner needs from the world, so the stages can be tested without Foundry. */
 export type SpellCastStepEnv = {
   /** Run the spell areas crossed on the way to these entries, once per area. */
@@ -35,6 +38,8 @@ export type SpellCastStepEnv = {
   areaTargetValue(entry: SpellCastEntry): number | undefined;
   /** Give the entry a resistance request card to answer on, and return that card's id. */
   requestResistance(entry: SpellCastEntry): Promise<string>;
+  /** Tell the spell it did not take effect on the entry's target. */
+  notApplied(entry: SpellCastEntry, reason: SpellNotAppliedReason): Promise<void>;
   /** Whether one of the entry's spell effects sends the spell back at its caster. */
   reflects(entry: SpellCastEntry): Promise<boolean>;
   newId(): string;
@@ -165,6 +170,12 @@ async function stepOnce(record: SpellCastRecord, env: SpellCastStepEnv): Promise
   const at = (stage: SpellCastEntry["stage"]) => record.targets.filter((e) => e.stage === stage);
 
   // An untargeted entry waits here for the GM to assign actors
+  for (const entry of at("failed")) {
+    entry.stage = "settled";
+    await env.notApplied(entry, "castFailed");
+    changed = true;
+  }
+
   for (const entry of at("targeted").filter((e) => e.actorUuid)) {
     // A target's own defenses don't stop a spell it casts on itself (Core Q&A)
     entry.stage = entry.isCaster ? "resistance" : "crossing";
@@ -181,6 +192,7 @@ async function stepOnce(record: SpellCastRecord, env: SpellCastStepEnv): Promise
   for (const entry of at("barriers")) {
     if (await env.barrierStops(entry)) {
       settle(entry, "unaffected", "intercepted");
+      await env.notApplied(entry, "blocked");
     } else {
       entry.stage = "resistance";
     }
@@ -206,6 +218,7 @@ async function stepOnce(record: SpellCastRecord, env: SpellCastStepEnv): Promise
       });
     } else {
       settle(entry, "unaffected", resolvedBy, entry.casterSuccessLevel);
+      await env.notApplied(entry, "resisted");
     }
     changed = true;
   }
@@ -230,12 +243,11 @@ async function resist(
       computeResistanceTargetChance(record.areaRoll.casterValue, value),
       record.areaRoll.roll,
     );
-    settle(
-      entry,
-      level <= AbilitySuccessLevelEnum.Success ? "affected" : "unaffected",
-      "resistanceRoll",
-      level,
-    );
+    const held = level > AbilitySuccessLevelEnum.Success;
+    settle(entry, held ? "unaffected" : "affected", "resistanceRoll", level);
+    if (held) {
+      await env.notApplied(entry, "resisted");
+    }
     return true;
   }
   // Casting on yourself is accepting the spell (Core p.242)
