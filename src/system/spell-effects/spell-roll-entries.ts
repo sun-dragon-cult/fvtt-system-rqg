@@ -61,6 +61,7 @@ export function initSpellRollEntries(): void {
       { weapon, attack, preparation },
       weaponEffects,
     );
+    runSpellRollEntry(attack.target, "onPrepareAttackAgainst", { weapon, attack, preparation });
   });
   onRqgHook("rqg.prepareDefence", (defender, defence, preparation) =>
     runSpellRollEntry(defender, "onPrepareDefence", { defender, defence, preparation }),
