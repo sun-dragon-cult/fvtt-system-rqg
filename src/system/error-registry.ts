@@ -115,9 +115,9 @@ const REGISTRY = {
     code: "RQG-W0002",
     message: "RQG.Dialog.Attack.WeaponNotEmbedded",
   },
-  noWeaponToAttackWith: {
+  weaponHasNoLinkedSkill: {
     code: "RQG-W0003",
-    message: "RQG.Dialog.Attack.NoWeaponToAttackWith",
+    message: "RQG.Dialog.Attack.WeaponHasNoLinkedSkill",
   },
   weaponHasNoOwner: {
     code: "RQG-W0004",
