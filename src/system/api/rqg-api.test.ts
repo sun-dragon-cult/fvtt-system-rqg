@@ -72,6 +72,7 @@ describe("game.system.api", () => {
           "effectRemovalCost": "function",
           "list": "function",
           "metersToPixels": "function",
+          "postMagicMissiles": "function",
           "removeSpellEffects": "function",
           "summon": "function",
         },

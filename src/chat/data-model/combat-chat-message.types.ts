@@ -19,6 +19,8 @@ export interface CombatDataSourceData {
   attackExtraDamage: string | undefined;
   /** Magic damage of the fired projectile, recorded on firing since its spells are spent then. */
   attackProjectileDamage: string;
+  /** A magical missile of Multimissile: it can't impale or crush, only the original can. */
+  attackIsMagicMissile: boolean;
   attackDamageBonus: string | undefined;
   actorDamagedApplied: boolean;
   weaponDamageApplied: boolean;

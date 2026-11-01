@@ -4,9 +4,20 @@ import {
   exportedForTesting,
   getDamageDegree,
   getMasterOpponentModifier,
+  magicMissileDamageDegree,
 } from "./combat-calculations";
+import { DamageDegree } from "./combat-calculations.defs";
 import { AbilitySuccessLevelEnum } from "../rolls/ability-roll/ability-roll.defs";
 import { RqgError } from "./util";
+
+describe("magicMissileDamageDegree", () => {
+  it("turns a special into normal damage for a magical missile only", () => {
+    expect(magicMissileDamageDegree(DamageDegree.Special, true)).toBe(DamageDegree.Normal);
+    expect(magicMissileDamageDegree(DamageDegree.Special, false)).toBe(DamageDegree.Special);
+    expect(magicMissileDamageDegree(DamageDegree.MaxSpecial, true)).toBe(DamageDegree.MaxSpecial);
+    expect(magicMissileDamageDegree(DamageDegree.None, true)).toBe(DamageDegree.None);
+  });
+});
 
 describe("getDamageDegree", () => {
   it("should return the correct damage degree for parry", () => {

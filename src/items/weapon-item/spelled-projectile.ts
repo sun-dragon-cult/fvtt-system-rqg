@@ -5,6 +5,9 @@ import { splitFromProjectileIdFlag } from "../../data-model/shared/rqg-document-
 import { onRqgHook, onUntypedHook } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
+import { groupEffectsByHook } from "../../system/spell-effects/incoming-spell";
+import { spellBehaviorForEffect } from "../../system/spell-effects/spell-behavior";
+import type { AttackHookData } from "../../rolls/roll-method-options";
 
 const logger = new RqgLogger("SpelledProjectile");
 
@@ -121,14 +124,31 @@ export function firedMissilesSettled(): Promise<unknown> {
   return pendingSpends;
 }
 
+/** Run the fired missile's `onMissileFired` entries, each once for the effects sharing it. */
+async function runMissileFiredEntries(
+  weapon: WeaponItem,
+  projectile: WeaponItem,
+  attack: AttackHookData & { chatMessage: ChatMessage },
+): Promise<void> {
+  const groups = groupEffectsByHook(
+    spellEffects(projectile) as (ActiveEffect & { active: boolean })[],
+    (effect) => spellBehaviorForEffect(effect)?.onMissileFired,
+  );
+  for (const [entry, effects] of groups) {
+    await entry({ weapon, projectile, attack, effects });
+  }
+}
+
 export function initSpelledProjectiles(): void {
   // A fired missile's spells are spent (#1110)
   onRqgHook("rqg.attack", (weapon, attack) => {
     const projectile = attack.projectile;
     if (projectile && projectile !== weapon) {
-      const spent = spendProjectileSpells(projectile).catch((error: unknown) =>
-        logger.error(ERR.projectileSpellsNotSpent, { projectile: projectile.uuid }, error),
-      );
+      const spent = runMissileFiredEntries(weapon, projectile, attack)
+        .then(() => spendProjectileSpells(projectile))
+        .catch((error: unknown) =>
+          logger.error(ERR.projectileSpellsNotSpent, { projectile: projectile.uuid }, error),
+        );
       pendingSpends = Promise.all([pendingSpends, spent]);
     }
   });
