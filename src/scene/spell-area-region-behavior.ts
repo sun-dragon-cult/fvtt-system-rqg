@@ -3,10 +3,12 @@ import { Rqid } from "../system/api/rqid-api";
 import { spellProvenanceFields } from "../active-effect/data-model/rqg-active-effect-data-model";
 import {
   removeAreaEffects,
+  type SpellAcrossRegionScope,
   type SpellAcrossScope,
   type SpellAreaScope,
 } from "../system/spell-effects/spell-area";
 import type { SpellEffectCast } from "../system/spell-effects/apply-spell-effect";
+import type { RegionBarrier } from "../system/spell-effects/spell-barriers";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 
@@ -61,6 +63,18 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
     [CONST.REGION_EVENTS.TOKEN_EXIT]: onToken("onAreaExit", false),
   } as any;
 
+  /** The layer the spell's area gives the tokens inside it (`areaBarrier`). */
+  get barrier(): RegionBarrier | undefined {
+    const areaBarrier = spellBehavior(this.spell.spellRqid)?.areaBarrier;
+    return (
+      areaBarrier && {
+        priority: areaBarrier.priority,
+        usedUp: areaBarrier.usedUp,
+        strength: (cast) => areaBarrier.strength(this.areaCast(), cast),
+      }
+    );
+  }
+
   async dispatch(hook: AreaHook, token: TokenDocument, crossed: boolean): Promise<void> {
     const region = this.region;
     const actor = token?.actor as RqgActor | null | undefined;
@@ -92,24 +106,19 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
   }
 
   /** `incomingSpell` cast from outside the area at `targets` inside it. */
-  async spellAcross(
-    incomingSpell: RqgItem,
-    incomingCast: SpellEffectCast,
-    targets: TokenDocument[],
-  ): Promise<void> {
-    const region = this.region;
+  async onSpellAcross(across: SpellAcrossRegionScope): Promise<void> {
     const run = spellBehavior(this.spell.spellRqid)?.onSpellAcross;
-    const spell = run && region ? await this.areaSpell() : null;
+    const spell = run ? await this.areaSpell() : null;
     if (!run || !spell) {
       return;
     }
     const scope: SpellAcrossScope = {
       spell: spell,
       cast: this.areaCast(),
-      region: region as RegionDocument,
-      incomingSpell: incomingSpell,
-      incomingCast: incomingCast,
-      targets: targets,
+      region: across.region,
+      incomingSpell: across.incomingSpell,
+      incomingCast: across.incomingCast,
+      targets: across.targets,
     };
     await run(scope);
   }

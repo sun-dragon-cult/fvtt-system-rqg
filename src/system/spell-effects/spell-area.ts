@@ -66,6 +66,14 @@ export type SpellAreaScope = {
  * client when `incomingSpell` is cast from outside the area at `targets`, the tokens inside it that
  * it was cast at, once per cast, before their protective spells meet it.
  */
+export type SpellAcrossRegionScope = {
+  region: RegionDocument;
+  behavior: RegionBehavior;
+  incomingSpell: RqgItem;
+  incomingCast: SpellEffectCast;
+  targets: TokenDocument[];
+};
+
 export type SpellAcrossScope = {
   spell: RqgItem;
   cast: SpellEffectCast;

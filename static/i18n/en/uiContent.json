@@ -1673,6 +1673,11 @@
       }
     },
     "Notification": {
+      "Info": {
+        "SpellBarrierStopped": "{barrier} stopped {spellName}.",
+        "SpellBarrierStoppedUsedUp": "{barrier} stopped {spellName} and is used up.",
+        "SpellBarrierBrokeThrough": "{spellName} broke through {barrier}, which is used up."
+      },
       "Error": {
         "GMOnlyOperation": "This operation is only allowed for GMs",
         "ResistanceRequestTargetNotFound": "Could not find who this resistance request is for.",

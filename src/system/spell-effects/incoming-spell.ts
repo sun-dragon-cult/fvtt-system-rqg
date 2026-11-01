@@ -1,6 +1,9 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { SpellEffectApplied, SpellApplyScope, SpellEffectCast } from "./apply-spell-effect";
 import { spellBehaviorForEffect, type IncomingSpellScope } from "./spell-behavior";
+import { meetBarriers } from "./spell-barriers";
+import { actorRefUuid } from "../../data-model/shared/actor-ref";
+import { tokenOfDocument, tokenOfUuid } from "./spell-across";
 
 /**
  * Active effects grouped by a hook of the spell that made them. Spells that share a hook
@@ -32,15 +35,30 @@ function isFromOutside(cast: SpellEffectCast, targetActor: RqgActor): boolean {
 }
 
 /**
- * Run the target's protective spells' hooks; the blocked result when one of them stops the spell.
- * A reflected spell comes at its caster from outside, from the one who reflected it.
+ * Meet the target's barriers, then run its protective spells' hooks; the blocked result when one
+ * of them stops the spell. A reflected spell comes at its caster from outside, from the one who
+ * reflected it. Spells that pass barriers (Dismiss Magic) skip the barriers.
  */
 export async function interceptIncomingSpell(
   scope: SpellApplyScope,
   reflected = false,
+  targetToken?: TokenDocument,
 ): Promise<SpellEffectApplied | undefined> {
   if (!reflected && !isFromOutside(scope.cast, scope.targetActor)) {
     return undefined;
+  }
+  if (!scope.spell.system?.passesSpellBarriers) {
+    const casterToken = reflected ? undefined : tokenOfUuid(actorRefUuid(scope.cast.caster));
+    const stopped = await meetBarriers(
+      scope.spell.name ?? "",
+      scope.cast,
+      scope.targetActor,
+      targetToken ?? tokenOfDocument(scope.targetActor),
+      casterToken,
+    );
+    if (stopped) {
+      return { outcome: "blocked", reason: "intercepted" };
+    }
   }
   const groups = groupEffectsByHook(
     scope.targetActor.allApplicableEffects() as Iterable<ActiveEffect & { active: boolean }>,

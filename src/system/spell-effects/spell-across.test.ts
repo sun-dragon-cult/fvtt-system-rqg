@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { crossedAreas } from "./spell-across";
 
-const area = (name: string) => ({ name, behaviors: [{ type: "spellArea", system: {} }] }) as any;
+const area = (name: string, type = "spellArea") =>
+  ({ name, behaviors: [{ type, system: { onSpellAcross: async () => {} } }] }) as any;
 const plainRegion = { name: "door", behaviors: [{ type: "teleportToken", system: {} }] } as any;
+const taint = area("taint", "chaosTaint");
 const at = (name: string, ...regions: unknown[]) => ({ name, regions: new Set(regions) }) as any;
 
 describe("crossedAreas", () => {
@@ -21,6 +23,16 @@ describe("crossedAreas", () => {
   it("skips areas the caster is inside, and Regions that aren't spell areas", () => {
     const crossed = crossedAreas(at("caster", ward), [at("a", ward, plainRegion)]);
     expect(crossed.size).toBe(0);
+  });
+
+  it("asks the behaviors of any type, not only spell areas", () => {
+    const crossed = crossedAreas(at("caster"), [at("a", taint)]);
+    expect([...crossed.keys()]).toEqual([taint]);
+  });
+
+  it("skips disabled behaviors", () => {
+    const off = { name: "off", behaviors: [{ disabled: true, system: { onSpellAcross() {} } }] };
+    expect(crossedAreas(at("caster"), [at("a", off)]).size).toBe(0);
   });
 
   it("counts a caster with no token on the scene as outside", () => {

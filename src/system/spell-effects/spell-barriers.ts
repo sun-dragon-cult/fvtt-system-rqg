@@ -1,0 +1,205 @@
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { SpellEffectCast } from "./apply-spell-effect";
+import { castPoints } from "./spell-rules";
+import { guardModuleCall, spellBehaviorForEffect } from "./spell-behavior";
+import { localize } from "../util";
+import { RqgLogger } from "../logging/rqg-logger";
+
+const logger = new RqgLogger("spell-barriers");
+
+/** The priorities of the system's own layers, with gaps so modules can go between them. */
+export const barrierPriorities = { area: 100, countermagic: 200, shield: 300 } as const;
+
+/**
+ * What a protective spell or Region gives to the layers an incoming spell must get through. A lower
+ * priority is met first (further out). Part of the public API.
+ */
+export type BarrierLayer = {
+  priority: number;
+  /** A spell of at most this many points is stopped (see `castPoints`). */
+  strength: number;
+  /** "countermagic": gone within 1 point of the spell, broken by one 2+ points stronger. */
+  usedUp: "never" | "countermagic";
+};
+
+/** The barrier of a spell behavior, which judges its effect against the incoming cast. */
+export type SpellBarrier = {
+  priority: number;
+  strength(effect: ActiveEffect, cast: SpellEffectCast): number;
+  usedUp: BarrierLayer["usedUp"];
+  /** Called instead of deleting the effect when this barrier is used up. */
+  onUsedUp?(effect: ActiveEffect): Promise<void>;
+};
+
+/** The barrier of a Region behavior, for spells cast from outside the Region. */
+export type RegionBarrier = {
+  priority: number;
+  strength(cast: SpellEffectCast): number;
+  usedUp: BarrierLayer["usedUp"];
+};
+
+/** The barrier of a spell's area: the area's cast against the incoming one. */
+export type SpellAreaBarrier = {
+  priority: number;
+  strength(areaCast: SpellEffectCast, incomingCast: SpellEffectCast): number;
+  usedUp: BarrierLayer["usedUp"];
+};
+
+type Layer = BarrierLayer & { name: string; use?: () => Promise<void> };
+
+export type BarrierWalk = {
+  /** The layer that stopped the spell, if any. */
+  stoppedBy?: Layer;
+  /** The used up layers, in the order they were met. */
+  usedUp: Layer[];
+};
+
+/**
+ * Walk the layers from the lowest priority up, each met at the spell's full strength. Layers of
+ * equal priority are one: only the strongest counts.
+ */
+export function walkBarriers(layers: readonly Layer[], points: number): BarrierWalk {
+  const byPriority = new Map<number, Layer>();
+  for (const layer of layers) {
+    const best = byPriority.get(layer.priority);
+    if (!best || layer.strength > best.strength) {
+      byPriority.set(layer.priority, layer);
+    }
+  }
+  const usedUp: Layer[] = [];
+  for (const priority of [...byPriority.keys()].sort((a, b) => a - b)) {
+    const layer = byPriority.get(priority)!;
+    if (layer.usedUp === "countermagic") {
+      if (points <= layer.strength - 2) {
+        return { stoppedBy: layer, usedUp };
+      }
+      usedUp.push(layer);
+      if (points <= layer.strength + 1) {
+        return { stoppedBy: layer, usedUp };
+      }
+    } else if (points <= layer.strength) {
+      return { stoppedBy: layer, usedUp };
+    }
+  }
+  return { usedUp };
+}
+
+/** A module's strength, 0 when it throws or isn't a number, so one broken barrier stops nothing. */
+function guardedStrength(name: string, strength: () => unknown): number {
+  try {
+    const value = Number(strength());
+    return Number.isFinite(value) ? value : 0;
+  } catch (error) {
+    logger.error(
+      localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: name }),
+      undefined,
+      error,
+    );
+    return 0;
+  }
+}
+
+function isFinitePriority(priority: unknown): priority is number {
+  return typeof priority === "number" && Number.isFinite(priority);
+}
+
+/** The layers the target's own protective spells give. */
+function effectLayers(actor: RqgActor, cast: SpellEffectCast): Layer[] {
+  const layers: Layer[] = [];
+  for (const effect of actor.allApplicableEffects() as Iterable<
+    ActiveEffect & { active: boolean }
+  >) {
+    const barrier = effect.active ? spellBehaviorForEffect(effect)?.barrier : undefined;
+    if (!barrier || !isFinitePriority(barrier.priority)) {
+      continue;
+    }
+    const strength = guardedStrength(effect.name ?? "", () => barrier.strength(effect, cast));
+    if (strength > 0) {
+      layers.push({
+        priority: barrier.priority,
+        strength: strength,
+        usedUp: barrier.usedUp,
+        name: effect.name ?? "",
+        use: async () => {
+          if (barrier.onUsedUp) {
+            await guardModuleCall(
+              () =>
+                localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: effect.name }),
+              () => barrier.onUsedUp!(effect),
+            );
+          } else {
+            await effect.delete();
+          }
+        },
+      });
+    }
+  }
+  return layers;
+}
+
+/** The layers of the Regions the target is in and the caster isn't. */
+function regionLayers(
+  target: TokenDocument | undefined,
+  caster: TokenDocument | undefined,
+  cast: SpellEffectCast,
+): Layer[] {
+  const layers: Layer[] = [];
+  for (const region of target?.regions ?? []) {
+    if (caster?.regions?.has(region)) {
+      continue;
+    }
+    for (const behavior of region.behaviors ?? []) {
+      const barrier = behavior.disabled ? undefined : (behavior.system as any)?.barrier;
+      if (!barrier || !isFinitePriority(barrier.priority)) {
+        continue;
+      }
+      const strength = guardedStrength(region.name ?? "", () => barrier.strength(cast));
+      if (strength > 0) {
+        layers.push({
+          priority: barrier.priority,
+          strength: strength,
+          usedUp: barrier.usedUp,
+          name: region.name ?? "",
+        });
+      }
+    }
+  }
+  return layers;
+}
+
+/**
+ * Meet the incoming spell with the target's barriers: its protective spells' and its Regions'.
+ * Removes the used up ones, tells the table what happened, and says whether the spell was stopped.
+ * `casterToken` is where the spell comes from; undefined counts as outside every Region.
+ */
+export async function meetBarriers(
+  spellName: string,
+  cast: SpellEffectCast,
+  targetActor: RqgActor,
+  targetToken: TokenDocument | undefined,
+  casterToken: TokenDocument | undefined,
+): Promise<boolean> {
+  const layers = [
+    ...effectLayers(targetActor, cast),
+    ...regionLayers(targetToken, casterToken, cast),
+  ];
+  const walk = walkBarriers(layers, castPoints(cast));
+  for (const layer of walk.usedUp) {
+    await layer.use?.();
+  }
+  const { stoppedBy, usedUp } = walk;
+  if (stoppedBy) {
+    const key = usedUp.includes(stoppedBy)
+      ? "RQG.Notification.Info.SpellBarrierStoppedUsedUp"
+      : "RQG.Notification.Info.SpellBarrierStopped";
+    ui.notifications?.info(localize(key, { spellName, barrier: stoppedBy.name }));
+  } else if (usedUp.length) {
+    ui.notifications?.info(
+      localize("RQG.Notification.Info.SpellBarrierBrokeThrough", {
+        spellName,
+        barrier: usedUp.map((l) => l.name).join(", "),
+      }),
+    );
+  }
+  return !!stoppedBy;
+}
