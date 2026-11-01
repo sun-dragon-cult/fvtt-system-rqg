@@ -369,9 +369,10 @@ export class RqgItem extends Item {
     usage: UsageType | undefined,
     damageDegree: DamageDegree,
     damageType: DamageType,
+    damageOverride = "",
   ): string | undefined {
     assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
-    return this.system.getDamageFormula(usage, damageDegree, damageType);
+    return this.system.getDamageFormula(usage, damageDegree, damageType, damageOverride);
   }
 
   /**

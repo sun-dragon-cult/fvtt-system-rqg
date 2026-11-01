@@ -130,8 +130,10 @@ async function runMissileFiredEntries(
   projectile: WeaponItem,
   attack: AttackHookData & { chatMessage: ChatMessage },
 ): Promise<void> {
+  // The missile's spells, and the launcher's (Sureshot)
+  const items = projectile === weapon ? [weapon] : [projectile, weapon];
   const groups = groupEffectsByHook(
-    spellEffects(projectile) as (ActiveEffect & { active: boolean })[],
+    items.flatMap(spellEffects) as (ActiveEffect & { active: boolean })[],
     (effect) => spellBehaviorForEffect(effect)?.onMissileFired,
   );
   for (const [entry, effects] of groups) {
@@ -143,9 +145,9 @@ export function initSpelledProjectiles(): void {
   // A fired missile's spells are spent (#1110)
   onRqgHook("rqg.attack", (weapon, attack) => {
     const projectile = attack.projectile;
-    if (projectile && projectile !== weapon) {
+    if (projectile) {
       const spent = runMissileFiredEntries(weapon, projectile, attack)
-        .then(() => spendProjectileSpells(projectile))
+        .then(() => (projectile !== weapon ? spendProjectileSpells(projectile) : undefined))
         .catch((error: unknown) =>
           logger.error(ERR.projectileSpellsNotSpent, { projectile: projectile.uuid }, error),
         );

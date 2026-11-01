@@ -115,6 +115,12 @@ function defineWeaponSchema() {
         melee: usageEffectMultiplierSchemaField(),
         missile: usageEffectMultiplierSchemaField(),
       }),
+      // Firearrow's damage replaces the missile's own
+      override: new SchemaField({
+        missile: new SchemaField({
+          damage: new StringField({ blank: true, nullable: false, initial: "", persisted: false }),
+        }),
+      }),
     }),
     usage: new SchemaField({
       oneHand: usageSchemaField(),
@@ -254,6 +260,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
     usage: UsageType | undefined,
     damageDegree: DamageDegree,
     damageTypeArg: DamageType,
+    damageOverride = "",
   ): string | undefined {
     if (!usage) {
       return undefined;
@@ -277,8 +284,12 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
     }
 
     const effectGroup = usage === "missile" ? "missile" : "melee";
-    const { damageFormula, damageBonusPlaceholder } =
-      getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
+    const normalized = getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
+    const { damageBonusPlaceholder } = normalized;
+    const damageFormula =
+      damageOverride ||
+      (effectGroup === "missile" ? this.effect.override.missile.damage : "") ||
+      normalized.damageFormula;
     const magicDamagePart = this.getMagicDamageFormula(effectGroup, damageFormula);
 
     if (damageDegree === "normal") {

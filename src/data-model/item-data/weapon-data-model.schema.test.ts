@@ -130,4 +130,17 @@ describe("WeaponDataModel.getDamageFormula magic damage", () => {
       expect(formula(0, "maxSpecial", "impale")).not.toContain("MagicDamage");
     });
   });
+
+  it("replaces the weapon dice with an override, keeping the damage bonus placeholder", () => {
+    const result = WeaponDataModel.prototype.getDamageFormula.call(
+      weapon(0),
+      "oneHand",
+      "normal",
+      "impale" as any,
+      "3d6",
+    )!;
+    expect(result).toMatch(/^3d6\[RQG\.Roll\.DamageRoll\.WeaponDamage/);
+    expect(result).not.toContain("1d8");
+    expect(result.match(/db/g)).toHaveLength(1);
+  });
 });

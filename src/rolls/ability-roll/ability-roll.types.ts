@@ -5,6 +5,8 @@ export type Modifier = { description: string; value: number };
 export type AbilityRollOptions = Partial<Roll.Options> & {
   naturalSkill: number; // Unmodified chance
   modifiers?: Modifier[];
+  /** Anything but 96-00 hits, as for Sureshot. Critical, special and fumble still follow the skill. */
+  sureHit?: boolean;
   /** Alternative roll heading, used instead of flavor */
   heading?: string;
   abilityName?: string; // Skill name

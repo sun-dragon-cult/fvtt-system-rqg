@@ -1,5 +1,5 @@
 import { AbilitySuccessLevelEnum } from "./ability-roll.defs";
-import { calculateAbilitySuccessLevel } from "./calculate-ability-success-level";
+import { applySureHit, calculateAbilitySuccessLevel } from "./calculate-ability-success-level";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 describe("Evaluate Ability Roll Success Levels", () => {
@@ -60,5 +60,22 @@ describe("Evaluate Ability Roll Success Levels", () => {
       const successLevel = calculateAbilitySuccessLevel(targetChance, roll);
       expect(successLevel).toBe(expectedSuccessLevel);
     });
+  });
+});
+
+describe("applySureHit", () => {
+  const level = (roll: number, sureHit: boolean, chance = 40) =>
+    applySureHit(calculateAbilitySuccessLevel(chance, roll), roll, sureHit);
+
+  it("turns a failure into a success unless the roll is 96-00", () => {
+    expect(level(80, true)).toBe(AbilitySuccessLevelEnum.Success);
+    expect(level(80, false)).toBe(AbilitySuccessLevelEnum.Failure);
+    expect(level(96, true)).toBe(AbilitySuccessLevelEnum.Failure);
+    expect(level(100, true)).toBe(AbilitySuccessLevelEnum.Fumble);
+  });
+
+  it("leaves a critical and a special to the skill", () => {
+    expect(level(1, true)).toBe(AbilitySuccessLevelEnum.Critical);
+    expect(level(8, true)).toBe(AbilitySuccessLevelEnum.Special);
   });
 });

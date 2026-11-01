@@ -639,6 +639,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const attackDamageBonus = attackChatMessage?.system.attackDamageBonus ?? "";
     const attackExtraDamage = attackChatMessage?.system.attackExtraDamage ?? "";
     const attackProjectileDamage = attackChatMessage?.system.attackProjectileDamage ?? "";
+    const attackDamageOverride = attackChatMessage?.system.attackDamageOverride ?? "";
     const defendDamageBonus = defendingActor?.system?.attributes?.damageBonus ?? "";
     const attackingWeaponDamageType = (attackChatMessage?.system.attackCombatManeuver.damageType ??
       "") as DamageType;
@@ -673,6 +674,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       attackingWeaponDamageType,
       parryingWeaponDamageType ?? "parry",
       attackChatMessage?.system.attackIsMagicMissile ?? false,
+      attackDamageOverride,
     );
 
     const outcomeDescription = getBasicOutcomeDescription(

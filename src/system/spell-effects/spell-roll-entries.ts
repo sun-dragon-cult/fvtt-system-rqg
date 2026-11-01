@@ -12,17 +12,22 @@ type EntryArgs<N extends SpellRollEntryName> = Omit<
   "effects"
 >;
 
-/** Run a roll entry for the actor's spell effects. */
+/**
+ * Run a roll entry for the actor's spell effects, and for `extraEffects`, such as the spells on the
+ * weapon that makes the attack.
+ */
 export function runSpellRollEntry<N extends SpellRollEntryName>(
   actor: RqgActor | null | undefined,
   name: N,
   args: EntryArgs<N>,
+  extraEffects: Iterable<ActiveEffect> = [],
 ): void {
   if (!actor) {
     return;
   }
+  const effects = new Set<ActiveEffect>([...actor.allApplicableEffects(), ...extraEffects]);
   const groups = groupEffectsByHook(
-    actor.allApplicableEffects() as Iterable<ActiveEffect & { active: boolean }>,
+    effects as Iterable<ActiveEffect & { active: boolean }>,
     (effect) => spellBehaviorForEffect(effect)?.[name],
   );
   for (const [entry, effects] of groups) {
@@ -45,9 +50,18 @@ export function initSpellRollEntries(): void {
   onRqgHook("rqg.prepareSpellCast", (spell, caster, options, preparation) =>
     runSpellRollEntry(caster, "onPrepareSpellCast", { spell, caster, options, preparation }),
   );
-  onRqgHook("rqg.prepareAttack", (weapon, attack, preparation) =>
-    runSpellRollEntry(attack.attacker, "onPrepareAttack", { weapon, attack, preparation }),
-  );
+  onRqgHook("rqg.prepareAttack", (weapon, attack, preparation) => {
+    // The spells on the weapon and the missile act on its attacks too, e.g. Sureshot
+    const weaponEffects = [weapon, attack.projectile]
+      .filter((item, i, items) => item && items.indexOf(item) === i)
+      .flatMap((item) => [...(item?.effects ?? [])]);
+    runSpellRollEntry(
+      attack.attacker,
+      "onPrepareAttack",
+      { weapon, attack, preparation },
+      weaponEffects,
+    );
+  });
   onRqgHook("rqg.prepareDefence", (defender, defence, preparation) =>
     runSpellRollEntry(defender, "onPrepareDefence", { defender, defence, preparation }),
   );
