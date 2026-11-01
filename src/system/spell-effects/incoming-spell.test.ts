@@ -81,4 +81,11 @@ describe("interceptIncomingSpell barriers", () => {
     expect(await interceptIncomingSpell(scopeFor({ passesSpellBarriers: true }))).toBeUndefined();
     expect(meetBarriers).not.toHaveBeenCalled();
   });
+
+  it("meets the barriers at the token the spell is cast at", async () => {
+    meetBarriers.mockClear();
+    const targetToken = { name: "second token" };
+    await interceptIncomingSpell({ ...scopeFor({}), targetToken });
+    expect((meetBarriers.mock.calls[0] as unknown[])[3]).toBe(targetToken);
+  });
 });

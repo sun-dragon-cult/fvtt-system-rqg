@@ -51,6 +51,8 @@ export type SpellApplyScope = {
   spell: RqgItem;
   targetActor: RqgActor;
   targetName: string;
+  /** The token the spell is cast at; undefined when only the actor is known. */
+  targetToken?: TokenDocument | undefined;
   cast: SpellEffectCast;
   /** What Apply gives the effect of a Temporal spell, undefined for other durations. */
   duration: SpellEffectDuration | undefined;
@@ -80,8 +82,9 @@ export function spellApplyScope(
   targetActor: RqgActor,
   targetName: string,
   cast: SpellEffectCast,
+  targetToken?: TokenDocument,
 ): SpellApplyScope {
-  return { spell, targetActor, targetName, cast, duration: temporalDuration(spell) };
+  return { spell, targetActor, targetName, targetToken, cast, duration: temporalDuration(spell) };
 }
 
 /** What a spell effect records about the cast that made it, as `system.spell`. */

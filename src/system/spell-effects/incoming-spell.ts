@@ -42,13 +42,12 @@ function isFromOutside(cast: SpellEffectCast, targetActor: RqgActor): boolean {
 export async function interceptIncomingSpell(
   scope: SpellApplyScope,
   reflected = false,
-  targetToken?: TokenDocument,
 ): Promise<SpellEffectApplied | undefined> {
   if (!reflected && !isFromOutside(scope.cast, scope.targetActor)) {
     return undefined;
   }
   if (!scope.spell.system?.passesSpellBarriers) {
-    const token = targetToken ?? tokenOfDocument(scope.targetActor);
+    const token = scope.targetToken ?? tokenOfDocument(scope.targetActor);
     // Only Regions need to know where the spell comes from
     const casterToken =
       reflected || !token?.regions?.size ? undefined : tokenOfUuid(actorRefUuid(scope.cast.caster));

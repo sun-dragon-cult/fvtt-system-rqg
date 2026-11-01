@@ -182,12 +182,9 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
         actor,
         name,
         recordCast(record, message.id ?? "", spell),
-      );
-      return !!(await interceptIncomingSpell(
-        scope,
-        !!entry.reflectedFromId,
         entry.tokenUuid ? tokenOfUuid(entry.tokenUuid) : undefined,
-      ));
+      );
+      return !!(await interceptIncomingSpell(scope, !!entry.reflectedFromId));
     },
     areaTargetValue: (entry) => {
       const actor = actors.get(actorRefUuid(entry))?.actor;

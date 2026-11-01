@@ -108,7 +108,13 @@ export class RqgTokenHud {
     button.addEventListener("click", async (event) => {
       event.preventDefault();
       const { addSpellEffectFromHud } = await import("./add-spell-effect-dialog");
-      if (await addSpellEffectFromHud(actor, hud.document?.name ?? actor.name ?? "")) {
+      if (
+        await addSpellEffectFromHud(
+          actor,
+          hud.document?.name ?? actor.name ?? "",
+          hud.document ?? undefined,
+        )
+      ) {
         void hud.render();
       }
     });
