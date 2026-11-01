@@ -4,6 +4,8 @@ import type { Modifier } from "./ability-roll/ability-roll.types";
 export type RollPreparation = {
   /** Why the roll isn't allowed. The dialog shows it and can't roll, and the roll is refused. */
   forbidden?: string;
+  /** Spirit magic only: the most the spell may be cast at, above its learned level, when spells are combined. */
+  maxLevel?: number;
 };
 
 /** What a roll dialog shows from the `rqg.prepare…` hooks. */
@@ -11,6 +13,7 @@ export type PreparedRoll = {
   /** The modifiers the hooks added. */
   modifiers: Modifier[];
   forbidden?: string;
+  maxLevel?: number;
 };
 
 /** Warn with the reason when a `rqg.prepare…` hook forbade the roll. */
@@ -28,7 +31,11 @@ export function preparedRoll(
   ownCount: number,
   preparation: RollPreparation,
 ): PreparedRoll {
-  return { modifiers: (modifiers ?? []).slice(ownCount), forbidden: preparation.forbidden };
+  return {
+    modifiers: (modifiers ?? []).slice(ownCount),
+    forbidden: preparation.forbidden,
+    maxLevel: preparation.maxLevel,
+  };
 }
 
 export function preparedModifierTotal(prepared: PreparedRoll | undefined): number {
