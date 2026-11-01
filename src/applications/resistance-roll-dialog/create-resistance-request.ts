@@ -11,6 +11,8 @@ import { resolveResistanceRequestVisibility } from "./resistance-roll-shared.ts"
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll.ts";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll.ts";
 
+import type { SpellCastRecord } from "../../data-model/shared/spell-cast-record";
+
 type SpellCastRoll = SpiritMagicRoll | RuneMagicRoll;
 
 export type CreateResistanceRequestParams = {
@@ -57,8 +59,12 @@ export type CreateResistanceRequestParams = {
   castFlavor?: string | undefined;
   /** The spell is reflected back at its caster by the target of this request. */
   reflectedFrom?: { messageId: string; reflectorName: string } | undefined;
-  /** The target's protective spells stopped the spell, so there is nothing to resist. */
-  intercepted?: boolean | undefined;
+  /** The entry of the cast record this card answers for. */
+  entryId?: string | undefined;
+  /** The cast record, when this is the combined card of an open single-target cast. */
+  record?: Omit<SpellCastRecord, "spellUuid"> | undefined;
+  /** Not answerable yet: the combined card waits for the target's protective spells first. */
+  waiting?: boolean | undefined;
 };
 
 /** Post a resistance-table check as a chat card the recipient answers. Never rolls anything. */
@@ -105,7 +111,7 @@ export async function createResistanceRequest(
   );
 
   const chatSystemData: ResistanceRequestDataSourceData = {
-    state: params.intercepted ? "Intercepted" : "Requested",
+    state: params.waiting ? "Waiting" : "Requested",
     targetTokenOrActorUuid: params.targetTokenOrActorUuid,
     rollerSide: params.rollerSide,
     activeCharacteristics: rollerIsPassive
@@ -141,7 +147,9 @@ export async function createResistanceRequest(
     gmRuling: "",
     appliedEffectUuids: [],
     effectBlockedReason: "",
-  };
+    entryId: params.entryId ?? "",
+    ...params.record,
+  } as ResistanceRequestDataSourceData;
 
   const content = await foundry.applications.handlebars.renderTemplate(
     templatePaths.resistanceRequestChatMessage,

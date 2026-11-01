@@ -33,7 +33,10 @@ describe("groupEffectsByHook", () => {
 
 describe("interceptIncomingSpell", () => {
   const caster = { uuid: "Actor.caster", allApplicableEffects: () => [{ active: true }] };
-  const scope = { cast: { casterUuid: "Actor.caster" }, targetActor: caster } as any;
+  const scope = {
+    cast: { casterActorUuid: "Actor.caster", casterTokenUuid: "" },
+    targetActor: caster,
+  } as any;
 
   it("lets a spell its target cast on themselves past their own protective spells", async () => {
     expect(await interceptIncomingSpell(scope)).toBeUndefined();

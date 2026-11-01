@@ -179,6 +179,8 @@ components:
   sr-button:
     backgroundColor: "{colors.sr-button-bg}"
     rounded: "{rounded.md}"
+  primary-button:
+    backgroundColor: "{colors.primary}"
   unassigned-rune-magic-slot:
     backgroundColor: "{colors.unassigned-rm-bg}"
     textColor: "{colors.unassigned-rm-text}"
@@ -449,6 +451,13 @@ onto the sheet. `warning-highlight` is the encumbrance-overload outline/fill
 (`.warning` in `rqg.css`, V1 and V2 both). `sr-button` (themed —
 `sr-button-bg`) is the strike-rank action button background, distinct from
 the DEX/SIZ badges above.
+
+`primary-button` (`button.rqg-primary` in chat cards) marks a card's next
+step: Defend, Roll Damage, Apply Damage, Roll Fumble, Resist (or a lone
+resistance Roll), and Apply on a spell cast target row. It has a `primary` fill, white text and a leading icon,
+at the card's normal button height. Each viewer should see at most one per
+card. Between two choices it goes on the common one (Resist, not Accept), and
+optional actions (the GM ruling buttons) stay plain.
 
 ### Sheet state overlays
 

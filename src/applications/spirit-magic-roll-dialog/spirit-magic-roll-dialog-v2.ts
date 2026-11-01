@@ -168,7 +168,8 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     form: {
       handler: SpiritMagicRollDialogV2.onSubmit,
       submitOnChange: false,
-      closeOnSubmit: true,
+      // Closed by onSubmit once the cast rolls, so cancelling e.g. the no-target prompt goes back
+      closeOnSubmit: false,
     },
     position: {
       width: "auto" as const,
@@ -263,6 +264,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   }
 
   private static async onSubmit(
+    this: SpiritMagicRollDialogV2,
     _event: SubmitEvent | Event,
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
@@ -320,6 +322,9 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    await spellItem.system.cast(casterActor, { ...options, skipDialog: true });
+    const roll = await spellItem.system.cast(casterActor, { ...options, skipDialog: true });
+    if (roll) {
+      await this.close({ submitted: true });
+    }
   }
 }

@@ -105,6 +105,43 @@ export const SpellTargetKindEnum = {
 } as const;
 export type SpellTargetKindEnum = (typeof SpellTargetKindEnum)[keyof typeof SpellTargetKindEnum];
 
+const tokenTargetKinds: readonly string[] = [
+  SpellTargetKindEnum.Creature,
+  SpellTargetKindEnum.Spirit,
+  SpellTargetKindEnum.HitLocation,
+  SpellTargetKindEnum.SpellOrEffect,
+];
+const oneTargetKinds: readonly string[] = [
+  ...tokenTargetKinds,
+  SpellTargetKindEnum.Weapon,
+  SpellTargetKindEnum.Object,
+];
+const casterKindsWhenUntargeted: readonly string[] = [
+  SpellTargetKindEnum.Self,
+  SpellTargetKindEnum.Weapon,
+];
+const casterOnlyKinds: readonly string[] = [SpellTargetKindEnum.Self, SpellTargetKindEnum.Creates];
+
+/** A spell cast at a token, so the cast dialog offers a picker for it. */
+export function isTokenTargetKind(targetKind: string): boolean {
+  return tokenTargetKinds.includes(targetKind);
+}
+
+/** A spell cast at one creature or thing, unless its behavior says more (RBM p.8, Core p.258). */
+export function isOneTargetKind(targetKind: string): boolean {
+  return oneTargetKinds.includes(targetKind);
+}
+
+/** With nothing targeted, a spell that can only mean its caster or the caster's weapon. */
+export function isCasterKindWhenUntargeted(targetKind: string): boolean {
+  return casterKindsWhenUntargeted.includes(targetKind);
+}
+
+/** An unresisted spell that goes on its caster whatever is targeted, e.g. a summon. */
+export function castsOnCasterOnly(targetKind: string, resistedBy: SpellResistedByEnum): boolean {
+  return casterOnlyKinds.includes(targetKind) && resistedBy === SpellResistedByEnum.None;
+}
+
 // How much of #1079's application machinery a spell's effect goes through. Data on the spell, not
 // a code branch - most spells are not `behavior`. See #1079 for the mechanism behind each tier.
 export const SpellEffectTierEnum = {

@@ -1,4 +1,4 @@
-import { isDocumentSubType, localize } from "../util";
+import { formatListByUserLanguage, isDocumentSubType, localize } from "../util";
 import { Rqid } from "../api/rqid-api";
 import { RQG_CONFIG, systemId } from "../config";
 import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
@@ -23,10 +23,12 @@ import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-
 import { runSpellApply } from "./run-spell-apply";
 import { castPoints } from "./spell-rules";
 import { isAreaAnchor, spellBehaviorOf } from "./spell-behavior";
-import { interceptIncomingSpell } from "./incoming-spell";
 
 export type SpellEffectCast = {
-  casterUuid: string;
+  /** The caster's actor; a token's own actor when an unlinked token cast it. "" without a caster. */
+  casterActorUuid: string;
+  /** The token the caster cast from; "" when they cast without one. */
+  casterTokenUuid: string;
   castMessageId: string;
   level: number;
   magicPointsSpent: number;
@@ -61,7 +63,10 @@ export type SpellEffectDuration = { value: number; units: string };
 export function spellEffectCast(
   spell: RqgItem,
   rollOptions: Record<string, unknown>,
-  cast: Pick<SpellEffectCast, "casterUuid" | "castMessageId" | "casterSuccessLevel">,
+  cast: Pick<
+    SpellEffectCast,
+    "casterActorUuid" | "casterTokenUuid" | "castMessageId" | "casterSuccessLevel"
+  >,
 ): SpellEffectCast {
   const level = Number(rollOptions["levelUsed"] ?? 0);
   const boost = Number(rollOptions["magicPointBoost"] ?? 0);
@@ -72,6 +77,13 @@ export function spellEffectCast(
     magicPointsSpent: isRuneMagic ? boost : level + boost,
     runePointsSpent: isRuneMagic ? level : 0,
   };
+}
+
+type CasterUuids = Pick<SpellEffectCast, "casterActorUuid" | "casterTokenUuid">;
+
+/** The caster's token if they cast from one, else their actor; "" without a caster. */
+export function casterDocumentUuid(cast: CasterUuids): string {
+  return cast.casterTokenUuid || cast.casterActorUuid;
 }
 
 export function spellApplyScope(
@@ -129,7 +141,7 @@ function pickerLabel(item: RqgItem, stacking: SpellEffectStacking): string {
   if (stacking.outcome === "cancel") {
     return localize("RQG.ChatMessage.SpellCast.TargetOption.cancelledActive", {
       itemName: itemName,
-      effectName: stacking.cancelled.map((effect) => effect.name).join(", "),
+      effectName: formatListByUserLanguage(stacking.cancelled.map((effect) => effect.name)),
     });
   }
   if (stacking.outcome === "blocked") {
@@ -161,7 +173,9 @@ function temporalDuration(spell: RqgItem): SpellEffectDuration | undefined {
  * spell effect, so every one carries its provenance. A spell whose behavior has `apply` runs that
  * instead and returns what it returns. Warns and returns undefined when the spell has
  * no template or the target has nothing it can attach to, and returns "blocked" when the same or an
- * incompatible spell already there keeps it from taking effect, or when it cancels one. Run on a client that owns the target.
+ * incompatible spell already there keeps it from taking effect, or when it cancels one. Run on a
+ * client that owns the target. The target's protective spells have met the spell already: on a
+ * cast card when it was cast or reflected, from the token HUD before this is called.
  */
 export async function applySpellEffect(
   spell: RqgItem,
@@ -175,8 +189,6 @@ export async function applySpellEffect(
      * cast at the token - and the effect is marked with the area so leaving it takes it off.
      */
     areaRegion?: string;
-    /** The target's protective spells already let it through, when it was cast or reflected. */
-    barriersChecked?: boolean;
   } = {},
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = spell.name ?? "";
@@ -184,7 +196,7 @@ export async function applySpellEffect(
   const behavior = spellBehaviorOf(spell);
   const apply = options.areaRegion ? undefined : behavior?.apply;
   if (apply) {
-    return runSpellApply({ ...behavior, apply }, scope, !!options.barriersChecked);
+    return runSpellApply({ ...behavior, apply }, scope);
   }
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;
@@ -226,12 +238,6 @@ export async function applySpellEffect(
       return undefined;
     }
   }
-  // Only once Apply can no longer back out, since a protective spell may use up its effects
-  const intercepted =
-    options.areaRegion || options.barriersChecked ? undefined : await interceptIncomingSpell(scope);
-  if (intercepted) {
-    return intercepted;
-  }
   if (isDocumentSubType<WeaponItem>(parent, ItemTypeEnum.Weapon)) {
     parent = await splitOffProjectile(parent);
   }
@@ -245,7 +251,7 @@ export async function applySpellEffect(
     ui.notifications?.info(
       localize("RQG.ChatMessage.SpellCast.NotAppliedDetail.cancelledActive", {
         spellName: spellName,
-        effectName: stacking.cancelled.map((effect) => effect.name).join(", "),
+        effectName: formatListByUserLanguage(stacking.cancelled.map((effect) => effect.name)),
         parentName: parent.name ?? "",
       }),
     );

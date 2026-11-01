@@ -1,4 +1,5 @@
 import type { SpellTargetRulingState } from "../../data-model/shared/spell-cast-outcome.defs";
+import type { SpellCastRecord } from "../../data-model/shared/spell-cast-record";
 import type { SpellEffectSettledReason } from "../../active-effect/data-model/spell-effect.defs";
 import type {
   resistanceRequestRollerSide,
@@ -69,7 +70,11 @@ export interface ResistanceRequestDataSourceData {
   resistanceRoll: string | object | undefined; // JSONField can be string or parsed object
 }
 
-export interface ResistanceRequestDataPropertiesData extends ResistanceRequestDataSourceData {}
+export interface ResistanceRequestDataPropertiesData
+  extends ResistanceRequestDataSourceData, Partial<Omit<SpellCastRecord, "spellUuid">> {
+  /** The entry of the cast record this card answers for; "" on a request that isn't a spell's. */
+  entryId?: string;
+}
 
 export interface ResistanceRequestDataSource {
   type: "resistanceRequest";

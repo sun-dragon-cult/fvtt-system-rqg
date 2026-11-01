@@ -1,122 +1,13 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
   areaResistanceThreshold,
-  buildCastTargetOutcomes,
   deriveResistanceRequestTargetOutcome,
   getSpellCastOutcome,
 } from "./spell-cast-outcome";
-import { SpellResistedByEnum } from "../item-data/spell";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 
 const { Critical, Success, Failure } = AbilitySuccessLevelEnum;
 const caster = "Scene.s.Token.caster";
-
-describe("buildCastTargetOutcomes", () => {
-  const build = (
-    castSuccessLevel: AbilitySuccessLevelEnum,
-    resistedBy: SpellResistedByEnum,
-    targets: { tokenUuid: string; isCaster: boolean }[],
-  ) =>
-    buildCastTargetOutcomes({
-      castSuccessLevel,
-      resistedBy,
-      targets,
-      casterTokenOrActorUuid: caster,
-    });
-
-  it("defaults to the caster, cast on themselves, when nothing is targeted", () => {
-    expect(build(Success, SpellResistedByEnum.None, [])).toEqual([
-      {
-        targetTokenOrActorUuid: caster,
-        state: "affected",
-        resolvedBy: "selfCast",
-        casterSuccessLevel: Success,
-      },
-    ]);
-  });
-
-  it.each([
-    SpellResistedByEnum.ResistanceRoll,
-    SpellResistedByEnum.ResistanceRollArea,
-    SpellResistedByEnum.ResistanceRollPerTarget,
-    SpellResistedByEnum.SpiritCombatRound,
-    SpellResistedByEnum.SpiritCombatDefeat,
-  ])("leaves an untargeted %s cast's opponent pending, for the GM to rule on", (mode) => {
-    expect(build(Success, mode, [])).toEqual([
-      {
-        targetTokenOrActorUuid: "",
-        state: "pending",
-        resolvedBy: undefined,
-        casterSuccessLevel: undefined,
-      },
-    ]);
-  });
-
-  it("marks an untargeted spirit-combat gate unaffected when the cast failed", () => {
-    expect(build(Failure, SpellResistedByEnum.SpiritCombatRound, [])).toMatchObject([
-      { targetTokenOrActorUuid: "", state: "unaffected", resolvedBy: "castFailed" },
-    ]);
-  });
-
-  it("marks every target unaffected when the cast failed, whatever resists it", () => {
-    const outcomes = build(Failure, SpellResistedByEnum.ResistanceRoll, [
-      { tokenUuid: "Token.a", isCaster: false },
-      { tokenUuid: caster, isCaster: true },
-    ]);
-
-    expect(outcomes.map((o) => [o.state, o.resolvedBy])).toEqual([
-      ["unaffected", "castFailed"],
-      ["unaffected", "castFailed"],
-    ]);
-  });
-
-  it("settles a target its protective spells stopped as unaffected, before any resistance", () => {
-    const outcomes = buildCastTargetOutcomes({
-      castSuccessLevel: Success,
-      resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
-      targets: [
-        { tokenUuid: "Token.a", isCaster: false },
-        { tokenUuid: "Token.b", isCaster: false },
-      ],
-      casterTokenOrActorUuid: caster,
-      stoppedTargetUuids: ["Token.a"],
-    });
-
-    expect(outcomes.map((o) => [o.state, o.resolvedBy, o.casterSuccessLevel])).toEqual([
-      ["unaffected", "intercepted", Success],
-      ["pending", undefined, undefined],
-    ]);
-  });
-
-  it("marks an unresisted spell's targets affected, the caster's own token as a self cast", () => {
-    const outcomes = build(Critical, SpellResistedByEnum.None, [
-      { tokenUuid: "Token.a", isCaster: false },
-      { tokenUuid: caster, isCaster: true },
-    ]);
-
-    expect(outcomes.map((o) => [o.state, o.resolvedBy, o.casterSuccessLevel])).toEqual([
-      ["affected", "castOnly", Critical],
-      ["affected", "selfCast", Critical],
-    ]);
-  });
-
-  it.each([
-    SpellResistedByEnum.ResistanceRoll,
-    SpellResistedByEnum.ResistanceRollArea,
-    SpellResistedByEnum.ResistanceRollPerTarget,
-    SpellResistedByEnum.SpiritCombatRound,
-    SpellResistedByEnum.SpiritCombatDefeat,
-  ])("leaves another target pending under %s, for a later step to settle", (resistedBy) => {
-    expect(build(Success, resistedBy, [{ tokenUuid: "Token.a", isCaster: false }])).toEqual([
-      {
-        targetTokenOrActorUuid: "Token.a",
-        state: "pending",
-        resolvedBy: undefined,
-        casterSuccessLevel: undefined,
-      },
-    ]);
-  });
-});
 
 describe("deriveResistanceRequestTargetOutcome", () => {
   const request = (state: string) => ({ state, targetTokenOrActorUuid: "Token.a" });
@@ -131,13 +22,6 @@ describe("deriveResistanceRequestTargetOutcome", () => {
     expect(deriveResistanceRequestTargetOutcome(request("Accepted"), undefined)).toMatchObject({
       state: "affected",
       resolvedBy: "accepted",
-    });
-  });
-
-  it("is unaffected when the target's protective spells stopped it", () => {
-    expect(deriveResistanceRequestTargetOutcome(request("Intercepted"), undefined)).toMatchObject({
-      state: "unaffected",
-      resolvedBy: "intercepted",
     });
   });
 
@@ -167,39 +51,56 @@ describe("deriveResistanceRequestTargetOutcome", () => {
 });
 
 describe("getSpellCastOutcome", () => {
-  beforeAll(() => {
-    // serialized rolls in these fixtures carry their success level directly
-    (foundry.dice.Roll as any).fromData = (data: { successLevel?: number }) => ({
-      successLevel: data.successLevel,
-    });
-    (foundry.utils as any).deepClone ??= structuredClone;
-  });
-
-  const pendingTarget = {
-    targetTokenOrActorUuid: "Token.a",
-    state: "pending",
-    resolvedBy: null,
-    casterSuccessLevel: null,
+  const entry = {
+    id: "e1",
+    actorUuid: "Actor.a",
+    tokenUuid: "Scene.s.Token.a",
+    isCaster: false,
+    stage: "affected",
+    state: "affected",
+    resolvedBy: "resistanceRoll",
+    casterSuccessLevel: Critical,
+    effectUuids: [],
+    effectBlockedReason: "",
+    reflectedFromId: "",
+    requestMessageId: "",
   };
-  const castMessage = (targets: unknown[]) => ({
-    id: "cast",
-    type: "spellCast",
-    system: {
-      spellUuid: "Actor.c.Item.spell",
-      casterTokenOrActorUuid: caster,
-      castSuccessLevel: Success,
-      targets,
-    },
-  });
+  const system = {
+    spellUuid: "Actor.c.Item.spell",
+    casterActorUuid: "Actor.c",
+    casterTokenUuid: caster,
+    castSuccessLevel: Success,
+  };
 
-  it("reads a spellCast message, turning stored nulls into undefined", () => {
-    expect(getSpellCastOutcome(castMessage([pendingTarget]), [])).toEqual({
-      spellUuid: "Actor.c.Item.spell",
-      casterTokenOrActorUuid: caster,
-      castSuccessLevel: Success,
+  it("reads each target off the cast record, by token when it has one", () => {
+    const untargeted = {
+      ...entry,
+      id: "e2",
+      actorUuid: "",
+      tokenUuid: "",
+      state: "pending",
+      resolvedBy: null,
+      casterSuccessLevel: null,
+    };
+    expect(
+      getSpellCastOutcome({
+        id: "cast",
+        type: "spellCast",
+        system: { ...system, targets: [entry, untargeted] },
+      }),
+    ).toEqual({
+      ...system,
       targets: [
         {
-          targetTokenOrActorUuid: "Token.a",
+          entryId: "e1",
+          targetTokenOrActorUuid: "Scene.s.Token.a",
+          state: "affected",
+          resolvedBy: "resistanceRoll",
+          casterSuccessLevel: Critical,
+        },
+        {
+          entryId: "e2",
+          targetTokenOrActorUuid: "",
           state: "pending",
           resolvedBy: undefined,
           casterSuccessLevel: undefined,
@@ -208,66 +109,20 @@ describe("getSpellCastOutcome", () => {
     });
   });
 
-  it("settles a hidden cast's pending target from the resistance request linked to it", () => {
-    const request = {
-      id: "request",
+  it("reads the combined card's record too, but not a request card that only answers", () => {
+    const combined = {
+      id: "c",
       type: "resistanceRequest",
-      system: {
-        state: "Rolled",
-        targetTokenOrActorUuid: "Token.a",
-        spellCastMessageId: "cast",
-        resistanceRoll: { successLevel: Failure },
-      },
+      system: { ...system, targets: [entry] },
     };
-
-    expect(getSpellCastOutcome(castMessage([pendingTarget]), [request])?.targets).toEqual([
-      {
-        targetTokenOrActorUuid: "Token.a",
-        state: "unaffected",
-        resolvedBy: "resistanceRoll",
-        casterSuccessLevel: Failure,
-      },
-    ]);
-  });
-
-  it("reads the combined cast + resistance card as a single-target cast", () => {
-    const combinedCard = {
-      id: "combined",
+    expect(getSpellCastOutcome(combined)?.targets).toHaveLength(1);
+    const answering = {
+      id: "r",
       type: "resistanceRequest",
-      system: {
-        state: "Accepted",
-        targetTokenOrActorUuid: "Token.a",
-        isSpellCast: true,
-        castRoll: { successLevel: Critical },
-        spellUuid: "Actor.c.Item.spell",
-        spellCasterUuid: caster,
-      },
+      system: { targets: [], entryId: "e1" },
     };
-
-    expect(getSpellCastOutcome(combinedCard, [])).toEqual({
-      spellUuid: "Actor.c.Item.spell",
-      casterTokenOrActorUuid: caster,
-      castSuccessLevel: Critical,
-      targets: [
-        {
-          targetTokenOrActorUuid: "Token.a",
-          state: "affected",
-          resolvedBy: "accepted",
-          casterSuccessLevel: undefined,
-        },
-      ],
-    });
-  });
-
-  it("has no outcome for a hidden cast's anonymous request, or any other message", () => {
-    const anonymousRequest = {
-      id: "request",
-      type: "resistanceRequest",
-      system: { isSpellCast: true, castRoll: undefined, spellCastMessageId: "cast" },
-    };
-
-    expect(getSpellCastOutcome(anonymousRequest, [])).toBeUndefined();
-    expect(getSpellCastOutcome({ id: "x", type: "base", system: {} }, [])).toBeUndefined();
+    expect(getSpellCastOutcome(answering)).toBeUndefined();
+    expect(getSpellCastOutcome({ id: "x", type: "combat", system: {} })).toBeUndefined();
   });
 });
 

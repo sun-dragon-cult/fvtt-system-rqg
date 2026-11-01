@@ -1,5 +1,5 @@
 import type { RqgItem } from "@items/rqg-item.ts";
-import type { SpellEffectCast } from "./apply-spell-effect";
+import { casterDocumentUuid, type SpellEffectCast } from "./apply-spell-effect";
 import type { SpellAreaRegionBehavior } from "../../scene/spell-area-region-behavior";
 
 type AreaToken = { regions?: Set<RegionDocument> | null };
@@ -51,7 +51,7 @@ export async function castAcrossSpellAreas(
   targetUuids: readonly string[],
 ): Promise<void> {
   const targets = targetUuids.flatMap((uuid) => tokenOf(uuid) ?? []);
-  for (const [region, crossedTargets] of crossedAreas(tokenOf(cast.casterUuid), targets)) {
+  for (const [region, crossedTargets] of crossedAreas(tokenOf(casterDocumentUuid(cast)), targets)) {
     await spellAreaBehavior(region)?.spellAcross(spell, cast, crossedTargets);
   }
 }
