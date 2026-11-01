@@ -1,11 +1,26 @@
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { SpellEffectCast } from "./apply-spell-effect";
 import { actorRefUuid } from "../../data-model/shared/actor-ref";
+import { guardSpellBehavior } from "./spell-behavior";
+import type { SpellAcrossRegionScope } from "./spell-area";
 import type { SpellAreaRegionBehavior } from "../../scene/spell-area-region-behavior";
 
 type AreaToken = { regions?: Set<RegionDocument> | null };
 
-/** The spell areas a spell cast at `targets` crosses: those holding a target but not the caster. */
+type AcrossHandler = (scope: SpellAcrossRegionScope) => Promise<void>;
+
+/** The behaviors of a Region that want to know about spells cast across it. */
+function acrossBehaviors(region: RegionDocument): RegionBehavior[] {
+  return Array.from(region.behaviors ?? []).filter(
+    (behavior: RegionBehavior) =>
+      !behavior.disabled && typeof (behavior.system as any)?.onSpellAcross === "function",
+  );
+}
+
+/**
+ * The Regions a spell cast at `targets` crosses: those holding a target but not the caster, with a
+ * behavior that has an `onSpellAcross`.
+ */
 export function crossedAreas<T extends AreaToken>(
   caster: AreaToken | undefined,
   targets: readonly T[],
@@ -13,7 +28,7 @@ export function crossedAreas<T extends AreaToken>(
   const crossed = new Map<RegionDocument, T[]>();
   for (const target of targets) {
     for (const region of target.regions ?? []) {
-      if (caster?.regions?.has(region) || !spellAreaBehavior(region)) {
+      if (caster?.regions?.has(region) || !acrossBehaviors(region).length) {
         continue;
       }
       crossed.set(region, [...(crossed.get(region) ?? []), target]);
@@ -38,24 +53,35 @@ export function tokenOfDocument(document: unknown): TokenDocument | undefined {
     TokenDocument | undefined;
 }
 
-function tokenOf(uuid: string): TokenDocument | undefined {
+export function tokenOfUuid(uuid: string): TokenDocument | undefined {
   return tokenOfDocument(uuid ? fromUuidSync(uuid) : null);
 }
 
 /**
- * Run `onSpellAcross` of every spell area the spell crosses on its way from its caster to its
- * targets, once per area. On the active GM's client, as the cast meets its targets' defenses.
+ * Run `onSpellAcross` of every behavior of every Region the spell crosses on its way from its
+ * caster to its targets, once per behavior. On the active GM's client, as the cast meets its
+ * targets' defenses.
  */
 export async function castAcrossSpellAreas(
   spell: RqgItem,
   cast: SpellEffectCast,
   targetUuids: readonly string[],
 ): Promise<void> {
-  const targets = targetUuids.flatMap((uuid) => tokenOf(uuid) ?? []);
+  const targets = targetUuids.flatMap((uuid) => tokenOfUuid(uuid) ?? []);
   for (const [region, crossedTargets] of crossedAreas(
-    tokenOf(actorRefUuid(cast.caster)),
+    tokenOfUuid(actorRefUuid(cast.caster)),
     targets,
   )) {
-    await spellAreaBehavior(region)?.spellAcross(spell, cast, crossedTargets);
+    for (const behavior of acrossBehaviors(region)) {
+      await guardSpellBehavior(region.name ?? "", () =>
+        (behavior.system as unknown as { onSpellAcross: AcrossHandler }).onSpellAcross({
+          region: region,
+          behavior: behavior,
+          incomingSpell: spell,
+          incomingCast: cast,
+          targets: crossedTargets,
+        }),
+      );
+    }
   }
 }

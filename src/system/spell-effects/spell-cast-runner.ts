@@ -18,7 +18,7 @@ import { actorRefUuid } from "../../data-model/shared/actor-ref";
 import { SpellResistedWithEnum } from "../../data-model/item-data/spell";
 import type { ResistanceRequestChatMessage } from "../../chat/data-model/resistance-request-chat-message.types.ts";
 import { spellApplyScope, spellEffectCast, type SpellEffectCast } from "./apply-spell-effect";
-import { castAcrossSpellAreas } from "./spell-across";
+import { castAcrossSpellAreas, tokenOfUuid } from "./spell-across";
 import { interceptIncomingSpell } from "./incoming-spell";
 import { reflectsSpell } from "./reflect-spell";
 import { queryActiveGm } from "./run-spell-apply";
@@ -182,6 +182,7 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
         actor,
         name,
         recordCast(record, message.id ?? "", spell),
+        entry.tokenUuid ? tokenOfUuid(entry.tokenUuid) : undefined,
       );
       return !!(await interceptIncomingSpell(scope, !!entry.reflectedFromId));
     },

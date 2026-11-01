@@ -61,6 +61,15 @@ export type SpellAreaScope = {
   crossed: boolean;
 };
 
+/** What any Region behavior's `onSpellAcross` runs with. */
+export type SpellAcrossRegionScope = {
+  region: RegionDocument;
+  behavior: RegionBehavior;
+  incomingSpell: RqgItem;
+  incomingCast: SpellEffectCast;
+  targets: TokenDocument[];
+};
+
 /**
  * What a spell's `onSpellAcross` runs with - part of the public API. It runs on the active GM's
  * client when `incomingSpell` is cast from outside the area at `targets`, the tokens inside it that

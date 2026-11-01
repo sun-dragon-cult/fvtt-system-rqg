@@ -79,7 +79,11 @@ function moveSelection(form: HTMLFormElement, step: 1 | -1): void {
  * Stacking, durations and the target's protective effects work as for a cast by someone else, or
  * by the target itself when "Cast by" is ticked.
  */
-export async function addSpellEffectFromHud(actor: RqgActor, targetName: string): Promise<boolean> {
+export async function addSpellEffectFromHud(
+  actor: RqgActor,
+  targetName: string,
+  targetToken?: TokenDocument,
+): Promise<boolean> {
   const spells = await compendiumSpellsWithEffects();
   if (!spells.length) {
     ui.notifications?.warn(localize("RQG.TokenHud.NoSpellsWithEffects"));
@@ -155,7 +159,7 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
   );
   // With no cast card, the spell meets the target's protective spells here, as a cast's would
   const applied =
-    (await interceptIncomingSpell(spellApplyScope(spell, actor, targetName, cast))) ??
+    (await interceptIncomingSpell(spellApplyScope(spell, actor, targetName, cast, targetToken))) ??
     (await applySpellEffect(spell, actor, targetName, cast));
   // A cancellation, a spell behavior (e.g. Dispel Magic) or a protective effect used up by the spell
   // (e.g. Countermagic) removes effects, so the palette changes then too.

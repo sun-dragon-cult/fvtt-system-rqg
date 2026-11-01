@@ -61,6 +61,11 @@ describe("game.system.api", () => {
         },
         "spellEffects": {
           "applyAreaEffect": "function",
+          "barrierPriorities": {
+            "area": 100,
+            "countermagic": 200,
+            "shield": 300,
+          },
           "castPoints": "function",
           "createArea": "function",
           "dealDamage": "function",

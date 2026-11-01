@@ -9,6 +9,7 @@ import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.d
 import { applyDefaultWorldMigrations } from "../migrations/migrate-world";
 import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
 import { metersToPixels } from "../spell-effects/scene-distance";
+import { barrierPriorities } from "../spell-effects/spell-barriers";
 import { castPoints, effectRemovalCost, listSpellEffects } from "../spell-effects/spell-rules";
 import { summon } from "../spell-effects/summon";
 import { dealSpellDamage } from "../spell-effects/spell-damage";
@@ -71,6 +72,7 @@ export function createRqgApi() {
       list: listSpellEffects,
       removeSpellEffects,
       castPoints,
+      barrierPriorities,
       effectRemovalCost,
       summon,
       dealDamage: dealSpellDamage,

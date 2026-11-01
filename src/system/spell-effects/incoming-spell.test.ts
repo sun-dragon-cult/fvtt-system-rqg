@@ -5,6 +5,14 @@ const stopAll = vi.fn(async () => ({ outcome: "stopped" as const }));
 vi.mock("./spell-behavior", () => ({
   spellBehaviorForEffect: () => ({ onIncomingSpell: stopAll }),
 }));
+const meetBarriers = vi.fn(async () => false);
+vi.mock("./spell-barriers", () => ({
+  meetBarriers: (...args: unknown[]) => meetBarriers(...(args as [])),
+}));
+vi.mock("./spell-across", () => ({
+  tokenOfDocument: () => undefined,
+  tokenOfUuid: () => undefined,
+}));
 vi.mock("../../applications/resistance-roll-dialog/resistance-roll-shared", () => ({
   resolveActorFromUuid: (uuid: string) => ({ uuid }),
 }));
@@ -34,6 +42,7 @@ describe("groupEffectsByHook", () => {
 describe("interceptIncomingSpell", () => {
   const caster = { uuid: "Actor.caster", allApplicableEffects: () => [{ active: true }] };
   const scope = {
+    spell: { name: "Fireblade", system: {} },
     cast: { caster: { actorUuid: "Actor.caster", tokenUuid: "" } },
     targetActor: caster,
   } as any;
@@ -47,5 +56,36 @@ describe("interceptIncomingSpell", () => {
       outcome: "blocked",
       reason: "intercepted",
     });
+  });
+});
+
+describe("interceptIncomingSpell barriers", () => {
+  const target = { uuid: "Actor.target", allApplicableEffects: () => [] };
+  const scopeFor = (system: object) =>
+    ({
+      spell: { name: "Fireblade", system },
+      cast: { caster: { actorUuid: "Actor.caster", tokenUuid: "" } },
+      targetActor: target,
+    }) as any;
+
+  it("blocks a spell the barriers stop", async () => {
+    meetBarriers.mockResolvedValueOnce(true);
+    expect(await interceptIncomingSpell(scopeFor({}))).toEqual({
+      outcome: "blocked",
+      reason: "intercepted",
+    });
+  });
+
+  it("doesn't meet the barriers with a spell that passes them", async () => {
+    meetBarriers.mockClear();
+    expect(await interceptIncomingSpell(scopeFor({ passesSpellBarriers: true }))).toBeUndefined();
+    expect(meetBarriers).not.toHaveBeenCalled();
+  });
+
+  it("meets the barriers at the token the spell is cast at", async () => {
+    meetBarriers.mockClear();
+    const targetToken = { name: "second token" };
+    await interceptIncomingSpell({ ...scopeFor({}), targetToken });
+    expect((meetBarriers.mock.calls[0] as unknown[])[3]).toBe(targetToken);
   });
 });

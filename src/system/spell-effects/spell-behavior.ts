@@ -17,6 +17,7 @@ import type { DefenceHookData, PrepareAttackData } from "../../rolls/roll-method
 import type { RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 import type { SpellAcrossScope, SpellAreaScope } from "./spell-area";
+import type { SpellBarrier, SpellAreaBarrier } from "./spell-barriers";
 
 const logger = new RqgLogger("spell-behavior");
 
@@ -75,6 +76,16 @@ export type SpellBehavior = SpellRollEntries & {
   /** Runs for a spell's effects when another spell is applied to their actor from outside. */
   onIncomingSpell?(scope: IncomingSpellScope): Promise<{ outcome: "stopped" | "pass" }>;
   /**
+   * The layer this spell's effects give against spells cast at their actor from outside. The
+   * layers are walked before `onIncomingSpell` runs; see `spellEffects.barrierPriorities`.
+   */
+  barrier?: SpellBarrier;
+  /**
+   * The layer this spell's area gives the tokens inside it against spells cast from outside the
+   * area (a ward). It is met like any Region barrier.
+   */
+  areaBarrier?: SpellAreaBarrier;
+  /**
    * Runs for a spell's effects when their actor's resistance roll held against a spell, on the
    * client that rolled. "reflected" sends the spell back at its caster (Reflection).
    */
@@ -106,6 +117,8 @@ export type SpellBehavior = SpellRollEntries & {
 
 const actingHookNames = [
   ...spellRollEntryNames,
+  "barrier",
+  "areaBarrier",
   "onIncomingSpell",
   "onResisted",
   "onAreaEnter",
@@ -324,6 +337,8 @@ function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavio
       behavior.onSpellAcross,
       (scope) => scope.spell.name ?? "",
     ),
+    barrier: behavior.barrier,
+    areaBarrier: behavior.areaBarrier,
     runAsGm: behavior.runAsGm,
     areaRadius: guardedAreaRadius(behavior.areaRadius, spellRqid),
     maxTargets: guardedLevelNumber(behavior.maxTargets, spellRqid, Infinity),
