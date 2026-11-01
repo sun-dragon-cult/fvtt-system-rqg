@@ -1658,6 +1658,12 @@
       "OutOfSight": "{spellName}: the caster must be able to see the center of the area.",
       "TooLarge": "{spellName}: that area is {area} m², more than the {maxArea} m² the spell covers."
     },
+    "SpellLocation": {
+      "Pick": "{spellName}: click the place. Right-click or Escape cancels.",
+      "PickInRange": "{spellName}: click the place, within range. Right-click or Escape cancels.",
+      "OutOfRange": "{spellName}: that place is out of range of the caster.",
+      "OutOfSight": "{spellName}: the caster must be able to see that place."
+    },
     "Region": {
       "ClickableScripts": {
         "ShowPointerOnHover": {
