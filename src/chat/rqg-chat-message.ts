@@ -15,11 +15,6 @@ import {
   renderSpellCastTargets,
 } from "./spell-cast-handlers";
 import { handleApplySkillBehavior, renderSkillBehaviorTargets } from "./skill-behavior-handlers";
-import {
-  getResistanceRequestTargetOutcome,
-  getSpellCastOutcome,
-  type SpellTargetOutcome,
-} from "../data-model/shared/spell-cast-outcome";
 import { AbilityRoll } from "../rolls/ability-roll/ability-roll";
 import { isFoundryElementInstanceOf, localize, safeFromJSON } from "../system/util";
 import { DamageRoll } from "../rolls/damage-roll/damage-roll";
@@ -63,15 +58,13 @@ export class RqgChatMessage extends ChatMessage {
 
     super._onUpdate(data, options, userId);
 
-    // A hidden cast's target row is read off this request, so its cast message is now stale.
-    const spellCastMessageId = this.isResistanceRequestMessage()
-      ? this.system.spellCastMessageId
-      : "";
-    const spellCastMessage = spellCastMessageId
-      ? game.messages?.get(spellCastMessageId)
-      : undefined;
-    if (spellCastMessage) {
-      void ui.chat?.updateMessage(spellCastMessage as ChatMessage.Implementation);
+    // A request card shows its entry off the cast record, so a record update makes it stale.
+    const targets: { requestMessageId?: string }[] = (this.system as any)?.targets ?? [];
+    for (const { requestMessageId } of targets) {
+      const request = requestMessageId ? game.messages?.get(requestMessageId) : undefined;
+      if (request && request.id !== this.id) {
+        void ui.chat?.updateMessage(request as ChatMessage.Implementation);
+      }
     }
   }
 
@@ -254,9 +247,8 @@ export class RqgChatMessage extends ChatMessage {
     });
   }
 
-  /** A spell's target rows are derived at render time, so a linked card's answer shows here too. */
+  /** A spell's target rows are rendered from the cast record each time the card is shown. */
   async #enrichSpellCastCard(html: HTMLElement): Promise<void> {
-    let targets: SpellTargetOutcome[] = [];
     if (this.type === "spellCast") {
       // Unlike the combined card, the cast roll lives in `rolls` rather than system data.
       const castRoll = this.rolls[0];
@@ -264,16 +256,12 @@ export class RqgChatMessage extends ChatMessage {
       if (castRoll && rollSlot) {
         rollSlot.innerHTML = await castRoll.render({ isPrivate: !!this.blind && !game.user?.isGM });
       }
-      targets = getSpellCastOutcome(this as any)?.targets ?? [];
-    } else if (this.isResistanceRequestMessage() && this.system.isSpellCast) {
-      targets = [getResistanceRequestTargetOutcome(this as any)].filter(
-        (target) => target.state !== "pending",
-      );
+    } else if (!(this.isResistanceRequestMessage() && this.system.isSpellCast)) {
+      return;
     }
-
     const targetsSlot = html.querySelector<HTMLElement>("[data-spell-cast-targets]");
-    if (targetsSlot && targets.length) {
-      targetsSlot.innerHTML = await renderSpellCastTargets(targets, this);
+    if (targetsSlot) {
+      targetsSlot.innerHTML = await renderSpellCastTargets(this);
     }
   }
 

@@ -388,6 +388,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       target: resistedSpellTarget,
       resistedBy: this.resistedBy,
       resistedWith: this.resistedWith,
+      targetKind: this.targetKind,
       castRoll: runeMagicRoll,
       casterActor: casterActor,
       casterToken: options.token,

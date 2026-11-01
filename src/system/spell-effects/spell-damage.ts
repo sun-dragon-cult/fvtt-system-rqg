@@ -4,6 +4,7 @@ import { DamageRoll } from "../../rolls/damage-roll/damage-roll";
 import { HitLocationRoll } from "../../rolls/hit-location-roll/hit-location-roll";
 import { tokenOfDocument } from "./spell-across";
 import type { SpellApplyScope } from "./apply-spell-effect";
+import { actorRefUuid } from "../../data-model/shared/actor-ref";
 import type { DamageResult } from "@actors/rqg-actor.ts";
 
 /**
@@ -16,7 +17,8 @@ export async function dealSpellDamage(
   options: { formula: string; armorPoints?: number },
 ): Promise<DamageResult> {
   const { spell, targetActor, targetName, cast } = scope;
-  const caster = cast.casterUuid ? await fromUuid(cast.casterUuid) : null;
+  const casterUuid = actorRefUuid(cast.caster);
+  const caster = casterUuid ? await fromUuid(casterUuid) : null;
   const casterToken = tokenOfDocument(caster);
   const speaker = getSpeakerCompat({
     token: casterToken ?? undefined,

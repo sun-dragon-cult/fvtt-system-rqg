@@ -27,9 +27,9 @@ export class RqgTokenHud {
       actor,
       (effect) => actsWhileActive(spellBehaviorForEffect(effect)),
     );
-    // Players see what's on their token; only the GM adds, opens or removes a spell effect.
-    const isGM = !!game.user?.isGM;
-    if (!entries.length && !isGM) {
+    // The token's owners add, open and remove spell effects, so players can take this off the GM.
+    const canEdit = !!actor.isOwner;
+    if (!entries.length && !canEdit) {
       return;
     }
 
@@ -39,11 +39,11 @@ export class RqgTokenHud {
         "effect-control",
         "rqg-spell-effect",
         entry.active ? "active" : "",
-        isGM ? "" : "read-only",
+        canEdit ? "" : "read-only",
       ].filterJoin(" ");
       icon.src = entry.img;
-      icon.dataset["tooltipHtml"] = RqgTokenHud.spellEffectTooltip(entry, isGM);
-      if (!isGM) {
+      icon.dataset["tooltipHtml"] = RqgTokenHud.spellEffectTooltip(entry, canEdit);
+      if (!canEdit) {
         return icon;
       }
       // Not a core data-action, so these drive their own listeners, like the resistance button.
@@ -89,7 +89,7 @@ export class RqgTokenHud {
     divider.className = "rqg-spell-effects-divider";
     palette.prepend(
       ...icons,
-      ...(isGM ? [RqgTokenHud.addSpellEffectButton(hud, actor)] : []),
+      ...(canEdit ? [RqgTokenHud.addSpellEffectButton(hud, actor)] : []),
       divider,
     );
   }
@@ -115,7 +115,7 @@ export class RqgTokenHud {
     return button;
   }
 
-  private static spellEffectTooltip(entry: SpellEffectHudEntry, isGM: boolean): string {
+  private static spellEffectTooltip(entry: SpellEffectHudEntry, canEdit: boolean): string {
     const escape = foundry.utils.escapeHTML;
     return [
       `<strong>${escape(entry.name)}</strong>`,
@@ -131,7 +131,7 @@ export class RqgTokenHud {
         ),
       ),
       entry.description ? escape(entry.description) : "",
-      isGM ? escape(localize("RQG.TokenHud.SpellEffectControls")) : "",
+      canEdit ? escape(localize("RQG.TokenHud.SpellEffectControls")) : "",
     ]
       .filter((line) => !!line)
       .join("<br>");

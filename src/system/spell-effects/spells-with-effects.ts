@@ -52,7 +52,8 @@ export async function compendiumSpellsWithEffects(): Promise<RqgItem[]> {
   const lang = game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
   const candidates: (SpellIndexEntry & { _id: string; pack: CompendiumCollection.Any })[] = [];
   for (const pack of game.packs ?? []) {
-    if (pack.documentName !== "Item") {
+    // A player may not read a pack hidden from them
+    if (pack.documentName !== "Item" || !pack.visible) {
       continue;
     }
     const index = await pack.getIndex({ fields: ["system.effectRqidLink"] as any });

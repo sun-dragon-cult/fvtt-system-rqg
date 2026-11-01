@@ -4,7 +4,7 @@
   {{/if}}
   {{#if castRoll}}
     {{> spellCastRollRow hiddenFromUuid=spellHiddenFromUuid casterUuid=spellCasterUuid}}
-    {{#if (and resistanceFlavor (not (eq state 'Intercepted')))}}
+    {{#if resistanceFlavor}}
       <div class="resistance-request-flavor">{{{resistanceFlavor}}}</div>
     {{/if}}
   {{/if}}
@@ -13,15 +13,15 @@
     {{!-- "Resist" only reads as a choice next to Accept; alone it is just the roll. --}}
     <div class="flexrow gap1rem" data-only-owner-visible-uuid="{{targetTokenOrActorUuid}}">
       {{#if allowVoluntaryAccept}}
-        <button class="resistance-request-roll"
-                data-roll-resistance-request>{{localize "RQG.ChatMessage.ResistanceRequest.Resist"}}
+        <button class="resistance-request-roll rqg-primary"
+                data-roll-resistance-request><i class="fas fa-shield-halved" inert></i> {{localize "RQG.ChatMessage.ResistanceRequest.Resist"}}
         </button>
         <button class="resistance-request-accept"
                 data-accept-resistance-request>{{localize "RQG.ChatMessage.ResistanceRequest.Accept"}}
         </button>
       {{else}}
-        <button class="resistance-request-roll"
-                data-roll-resistance-request>{{localize "RQG.ChatMessage.ResistanceRequest.Roll"}}
+        <button class="resistance-request-roll rqg-primary"
+                data-roll-resistance-request><i class="fas fa-dice" inert></i> {{localize "RQG.ChatMessage.ResistanceRequest.Roll"}}
         </button>
       {{/if}}
     </div>

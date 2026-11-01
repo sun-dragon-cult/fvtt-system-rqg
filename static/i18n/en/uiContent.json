@@ -521,10 +521,10 @@
         "Resist": "Resist",
         "Accept": "Accept",
         "State": {
+          "Waiting": "Waiting",
           "Requested": "Requested",
           "Rolled": "Rolled",
-          "Accepted": "Accepted",
-          "Intercepted": "Intercepted"
+          "Accepted": "Accepted"
         }
       },
       "SkillBehavior": {
@@ -568,7 +568,8 @@
           "accepted": "accepted",
           "resistanceOvercame": "resistance roll overcame",
           "resistanceHeld": "resistance roll held",
-          "gmRuling": "GM ruling"
+          "gmRuling": "GM ruling",
+          "reflected": "sent back at its caster"
         },
         "Ruling": {
           "affected": "GM ruling: the spell takes effect",
@@ -1276,18 +1277,18 @@
         },
         "TargetKind": "Target Kind",
         "TargetKindEnum": {
-          "none": "None (not yet automated)",
-          "self": "Self / caster (not yet automated)",
-          "creature": "A creature (not yet automated)",
-          "spirit": "A spirit / undead entity (not yet automated)",
-          "weapon": "A weapon (not yet automated)",
-          "object": "A non-weapon object (not yet automated)",
-          "hitLocation": "A hit location (not yet automated)",
-          "area": "An area of ground (not yet automated)",
-          "radius": "A filtered radius around the caster (not yet automated)",
-          "spellOrEffect": "Another spell or effect (not yet automated)",
-          "creates": "Nothing - the spell creates something (not yet automated)",
-          "ritual": "A social/ritual state (not yet automated)"
+          "none": "None",
+          "self": "Self / caster",
+          "creature": "A creature",
+          "spirit": "A spirit / undead entity",
+          "weapon": "A weapon",
+          "object": "A non-weapon object",
+          "hitLocation": "A hit location",
+          "area": "An area of ground",
+          "radius": "A filtered radius around the caster",
+          "spellOrEffect": "Another spell or effect",
+          "creates": "Nothing - the spell creates something",
+          "ritual": "A social/ritual state"
         },
         "EffectTier": "Effect Tier",
         "PassesSpellBarriers": "Gets through Countermagic and Shield",

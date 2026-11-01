@@ -5,6 +5,7 @@ import {
 import { enumChoices } from "../../data-model/shared/enum-choices";
 import { spellTargetRulingState } from "../../data-model/shared/spell-cast-outcome.defs";
 import { spellEffectSettledReasons } from "../../active-effect/data-model/spell-effect.defs";
+import { spellCastRecordFields } from "../../data-model/shared/spell-cast-record";
 
 const { ArrayField, BooleanField, NumberField, StringField, DocumentUUIDField, JSONField } =
   foundry.data.fields;
@@ -137,6 +138,10 @@ const resistanceRequestChatMessageSchema = {
     required: false,
     initial: undefined,
   }),
+  // The entry of the cast record this card answers for; "" on a request that isn't a spell's.
+  entryId: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
+  // The cast record itself, on the combined card of an open single-target cast; no targets otherwise.
+  ...spellCastRecordFields(),
 } as const;
 
 type resistanceRequestDataType = typeof resistanceRequestChatMessageSchema;
