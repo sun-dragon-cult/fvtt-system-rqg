@@ -70,7 +70,7 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
       areaBarrier && {
         priority: areaBarrier.priority,
         usedUp: areaBarrier.usedUp,
-        strength: (cast) => areaBarrier.strength(this.areaCast(), cast),
+        strength: (cast, target) => areaBarrier.strength(this.areaCast(), cast, target),
       }
     );
   }

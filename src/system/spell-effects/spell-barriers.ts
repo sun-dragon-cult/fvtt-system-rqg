@@ -34,14 +34,14 @@ export type SpellBarrier = {
 /** The barrier of a Region behavior, for spells cast from outside the Region. */
 export type RegionBarrier = {
   priority: number;
-  strength(cast: SpellEffectCast): number;
+  strength(cast: SpellEffectCast, target: TokenDocument): number;
   usedUp: BarrierLayer["usedUp"];
 };
 
 /** The barrier of a spell's area: the area's cast against the incoming one. */
 export type SpellAreaBarrier = {
   priority: number;
-  strength(areaCast: SpellEffectCast, incomingCast: SpellEffectCast): number;
+  strength(areaCast: SpellEffectCast, incomingCast: SpellEffectCast, target: TokenDocument): number;
   usedUp: BarrierLayer["usedUp"];
 };
 
@@ -144,7 +144,10 @@ function regionLayers(
   cast: SpellEffectCast,
 ): Layer[] {
   const layers: Layer[] = [];
-  for (const region of target?.regions ?? []) {
+  if (!target) {
+    return layers;
+  }
+  for (const region of target.regions ?? []) {
     if (caster?.regions?.has(region)) {
       continue;
     }
@@ -153,7 +156,7 @@ function regionLayers(
       if (!barrier || !isFinitePriority(barrier.priority)) {
         continue;
       }
-      const strength = guardedStrength(region.name ?? "", () => barrier.strength(cast));
+      const strength = guardedStrength(region.name ?? "", () => barrier.strength(cast, target));
       if (strength > 0) {
         layers.push({
           priority: barrier.priority,
