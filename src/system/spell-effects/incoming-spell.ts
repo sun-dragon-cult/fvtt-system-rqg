@@ -48,12 +48,15 @@ export async function interceptIncomingSpell(
     return undefined;
   }
   if (!scope.spell.system?.passesSpellBarriers) {
-    const casterToken = reflected ? undefined : tokenOfUuid(actorRefUuid(scope.cast.caster));
+    const token = targetToken ?? tokenOfDocument(scope.targetActor);
+    // Only Regions need to know where the spell comes from
+    const casterToken =
+      reflected || !token?.regions?.size ? undefined : tokenOfUuid(actorRefUuid(scope.cast.caster));
     const stopped = await meetBarriers(
       scope.spell.name ?? "",
       scope.cast,
       scope.targetActor,
-      targetToken ?? tokenOfDocument(scope.targetActor),
+      token,
       casterToken,
     );
     if (stopped) {

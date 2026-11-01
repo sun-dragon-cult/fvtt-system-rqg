@@ -1,8 +1,7 @@
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { SpellEffectCast } from "./apply-spell-effect";
 import { actorRefUuid } from "../../data-model/shared/actor-ref";
-import { guardModuleCall } from "./spell-behavior";
-import { localize } from "../util";
+import { guardSpellBehavior } from "./spell-behavior";
 import type { SpellAcrossRegionScope } from "./spell-area";
 import type { SpellAreaRegionBehavior } from "../../scene/spell-area-region-behavior";
 
@@ -12,7 +11,7 @@ type AcrossHandler = (scope: SpellAcrossRegionScope) => Promise<void>;
 
 /** The behaviors of a Region that want to know about spells cast across it. */
 function acrossBehaviors(region: RegionDocument): RegionBehavior[] {
-  return (region.behaviors?.contents ?? Array.from(region.behaviors ?? [])).filter(
+  return Array.from(region.behaviors ?? []).filter(
     (behavior: RegionBehavior) =>
       !behavior.disabled && typeof (behavior.system as any)?.onSpellAcross === "function",
   );
@@ -60,7 +59,8 @@ export function tokenOfUuid(uuid: string): TokenDocument | undefined {
 
 /**
  * Run `onSpellAcross` of every behavior of every Region the spell crosses on its way from its
- * caster to its targets, once per behavior. On the active GM's client, as the cast meets its targets' defenses.
+ * caster to its targets, once per behavior. On the active GM's client, as the cast meets its
+ * targets' defenses.
  */
 export async function castAcrossSpellAreas(
   spell: RqgItem,
@@ -73,16 +73,14 @@ export async function castAcrossSpellAreas(
     targets,
   )) {
     for (const behavior of acrossBehaviors(region)) {
-      await guardModuleCall(
-        () => localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: region.name }),
-        () =>
-          (behavior.system as unknown as { onSpellAcross: AcrossHandler }).onSpellAcross({
-            region: region,
-            behavior: behavior,
-            incomingSpell: spell,
-            incomingCast: cast,
-            targets: crossedTargets,
-          }),
+      await guardSpellBehavior(region.name ?? "", () =>
+        (behavior.system as unknown as { onSpellAcross: AcrossHandler }).onSpellAcross({
+          region: region,
+          behavior: behavior,
+          incomingSpell: spell,
+          incomingCast: cast,
+          targets: crossedTargets,
+        }),
       );
     }
   }

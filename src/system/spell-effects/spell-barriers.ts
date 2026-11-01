@@ -1,7 +1,7 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { SpellEffectCast } from "./apply-spell-effect";
 import { castPoints } from "./spell-rules";
-import { guardModuleCall, spellBehaviorForEffect } from "./spell-behavior";
+import { guardSpellBehavior, spellBehaviorForEffect } from "./spell-behavior";
 import { localize } from "../util";
 import { RqgLogger } from "../logging/rqg-logger";
 
@@ -14,38 +14,35 @@ export const barrierPriorities = { area: 100, countermagic: 200, shield: 300 } a
  * What a protective spell or Region gives to the layers an incoming spell must get through. A lower
  * priority is met first (further out). Part of the public API.
  */
-export type BarrierLayer = {
+type BarrierBase = {
   priority: number;
-  /** A spell of at most this many points is stopped (see `castPoints`). */
-  strength: number;
   /** "countermagic": gone within 1 point of the spell, broken by one 2+ points stronger. */
   usedUp: "never" | "countermagic";
 };
 
 /** The barrier of a spell behavior, which judges its effect against the incoming cast. */
-export type SpellBarrier = {
-  priority: number;
+export type SpellBarrier = BarrierBase & {
+  /** A spell of at most this many points is stopped (see `castPoints`). */
   strength(effect: ActiveEffect, cast: SpellEffectCast): number;
-  usedUp: BarrierLayer["usedUp"];
   /** Called instead of deleting the effect when this barrier is used up. */
   onUsedUp?(effect: ActiveEffect): Promise<void>;
 };
 
 /** The barrier of a Region behavior, for spells cast from outside the Region. */
-export type RegionBarrier = {
-  priority: number;
+export type RegionBarrier = BarrierBase & {
   strength(cast: SpellEffectCast, target: TokenDocument): number;
-  usedUp: BarrierLayer["usedUp"];
 };
 
 /** The barrier of a spell's area: the area's cast against the incoming one. */
-export type SpellAreaBarrier = {
-  priority: number;
+export type SpellAreaBarrier = BarrierBase & {
   strength(areaCast: SpellEffectCast, incomingCast: SpellEffectCast, target: TokenDocument): number;
-  usedUp: BarrierLayer["usedUp"];
 };
 
-type Layer = BarrierLayer & { name: string; use?: () => Promise<void> };
+type Layer = BarrierBase & {
+  strength: number;
+  name: string;
+  use?: () => Promise<void>;
+};
 
 export type BarrierWalk = {
   /** The layer that stopped the spell, if any. */
@@ -122,11 +119,7 @@ function effectLayers(actor: RqgActor, cast: SpellEffectCast): Layer[] {
         name: effect.name ?? "",
         use: async () => {
           if (barrier.onUsedUp) {
-            await guardModuleCall(
-              () =>
-                localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: effect.name }),
-              () => barrier.onUsedUp!(effect),
-            );
+            await guardSpellBehavior(effect.name ?? "", () => barrier.onUsedUp!(effect));
           } else {
             await effect.delete();
           }
@@ -202,9 +195,7 @@ export async function meetBarriers(
     ...regionLayers(targetToken, casterToken, cast),
   ];
   const walk = walkBarriers(layers, castPoints(cast));
-  for (const layer of walk.usedUp) {
-    await layer.use?.();
-  }
+  await Promise.all(walk.usedUp.map((layer) => layer.use?.()));
   // A Region's layer has no effect to remove, so nothing was used up
   const usedUp = walk.usedUp.filter((layer) => layer.use);
   const { stoppedBy } = walk;
