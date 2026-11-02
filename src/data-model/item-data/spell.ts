@@ -110,11 +110,7 @@ const tokenTargetKinds: readonly string[] = [
   SpellTargetKindEnum.Spirit,
   SpellTargetKindEnum.HitLocation,
   SpellTargetKindEnum.SpellOrEffect,
-];
-const oneTargetKinds: readonly string[] = [
-  ...tokenTargetKinds,
-  SpellTargetKindEnum.Weapon,
-  SpellTargetKindEnum.Object,
+  SpellTargetKindEnum.Weapon, // the weapon of the token picked, or the caster's own
 ];
 const casterKindsWhenUntargeted: readonly string[] = [
   SpellTargetKindEnum.Self,
@@ -129,7 +125,7 @@ export function isTokenTargetKind(targetKind: string): boolean {
 
 /** A spell cast at one creature or thing, unless its behavior says more (RBM p.8, Core p.258). */
 export function isOneTargetKind(targetKind: string): boolean {
-  return oneTargetKinds.includes(targetKind);
+  return isTokenTargetKind(targetKind) || targetKind === SpellTargetKindEnum.Object;
 }
 
 /** With nothing targeted, a spell that can only mean its caster or the caster's weapon. */
