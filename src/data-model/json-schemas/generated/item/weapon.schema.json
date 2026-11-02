@@ -261,12 +261,35 @@
             "melee",
             "missile"
           ]
+        },
+        "override": {
+          "type": "object",
+          "properties": {
+            "missile": {
+              "type": "object",
+              "properties": {
+                "damage": {
+                  "type": "string",
+                  "default": ""
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "damage"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "missile"
+          ]
         }
       },
       "additionalProperties": false,
       "required": [
         "add",
-        "multiply"
+        "multiply",
+        "override"
       ]
     },
     "usage": {
