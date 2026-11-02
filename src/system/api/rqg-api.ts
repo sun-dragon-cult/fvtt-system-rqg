@@ -1,3 +1,4 @@
+import { pickSpellLocation, moveTokenNear } from "../spell-effects/pick-spell-location";
 import type { ItemTypeEnum } from "@item-model/item-types.ts";
 import { applyAreaEffect, createArea } from "../spell-effects/spell-area";
 import {
@@ -79,6 +80,8 @@ export function createRqgApi() {
       summon,
       dealDamage: dealSpellDamage,
       createArea,
+      pickLocation: pickSpellLocation,
+      moveTokenNear,
       applyAreaEffect,
       metersToPixels,
       postMagicMissiles: (scope: MissileFiredScope, count: number) =>

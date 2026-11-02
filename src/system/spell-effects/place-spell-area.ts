@@ -29,23 +29,11 @@ export async function placeSpellArea(
     ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
     return undefined;
   }
-  const grid = canvas.scene.grid;
-  const origin = casterObject.center;
-  const reach =
-    rangeMeters === undefined
-      ? Infinity
-      : Math.max(0, metersToPixels(rangeMeters, grid) - metersToPixels(areaExtent(shape), grid));
-  const inRange = (point: Point) => Math.hypot(point.x - origin.x, point.y - origin.y) <= reach;
-  const ranged = Number.isFinite(reach);
-  const sight =
-    ranged && reach > 0
-      ? CONFIG.Canvas.polygonBackends.sight.create(origin, {
-          type: "sight",
-          radius: reach,
-          source: casterObject.vision ?? undefined,
-        } as any)
-      : undefined;
-  const inSight = (point: Point) => !sight || sight.contains(point.x, point.y);
+  const { origin, reach, ranged, sight, inRange, inSight } = spellReach(
+    casterObject,
+    rangeMeters,
+    areaExtent(shape),
+  );
   // Core placement would otherwise switch to the Regions layer, where the corner clicks don't land
   if (!canvas.tokens!.active) {
     canvas.tokens!.activate();
@@ -62,8 +50,54 @@ export async function placeSpellArea(
   }
 }
 
+/**
+ * What a spell cast from a token reaches: the origin, and whether a point is within range (the
+ * whole area of `extentMeters` around it, RBM p.4) and in the caster's sight (RBM p.6). Without a
+ * range, anywhere is in reach.
+ */
+export function spellReach(
+  casterObject: foundry.canvas.placeables.Token,
+  rangeMeters: number | undefined,
+  extentMeters: number,
+): {
+  origin: Point;
+  reach: number;
+  ranged: boolean;
+  sight: PIXI.Polygon | undefined;
+  inRange: (point: Point) => boolean;
+  inSight: (point: Point) => boolean;
+} {
+  const grid = canvas!.scene!.grid;
+  const origin = casterObject.center;
+  const reach =
+    rangeMeters === undefined
+      ? Infinity
+      : Math.max(0, metersToPixels(rangeMeters, grid) - metersToPixels(extentMeters, grid));
+  const ranged = Number.isFinite(reach);
+  const sight =
+    ranged && reach > 0
+      ? CONFIG.Canvas.polygonBackends.sight.create(origin, {
+          type: "sight",
+          radius: reach,
+          source: casterObject.vision ?? undefined,
+        } as any)
+      : undefined;
+  return {
+    origin,
+    reach,
+    ranged,
+    sight,
+    inRange: (point) => Math.hypot(point.x - origin.x, point.y - origin.y) <= reach,
+    inSight: (point) => !sight || sight.contains(point.x, point.y),
+  };
+}
+
 /** The range ring, with the scene dimmed outside where the area may go: in sight when given. */
-function drawReach(origin: Point, reach: number, sight: PIXI.Polygon | undefined): PIXI.Graphics {
+export function drawReach(
+  origin: Point,
+  reach: number,
+  sight: PIXI.Polygon | undefined,
+): PIXI.Graphics {
   const graphics = new PIXI.Graphics()
     .beginFill(0x000000, 0.4)
     .drawShape(canvas!.dimensions!.rect)
