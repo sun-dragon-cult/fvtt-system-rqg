@@ -48,6 +48,7 @@ export type CharacterActor = RqgActor & {
     effect: {
       multiply: { healingRate: number };
       add: {
+        strikeRank: number;
         magicPoints: { max: number };
         hitPoints: { max: number };
         skillCategoryModifiers: SkillCategories;

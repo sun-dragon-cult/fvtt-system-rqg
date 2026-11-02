@@ -723,6 +723,10 @@
         "add": {
           "type": "object",
           "properties": {
+            "strikeRank": {
+              "type": "integer",
+              "default": 0
+            },
             "magicPoints": {
               "type": "object",
               "properties": {
@@ -820,6 +824,7 @@
           },
           "additionalProperties": false,
           "required": [
+            "strikeRank",
             "magicPoints",
             "hitPoints",
             "skillCategoryModifiers"
