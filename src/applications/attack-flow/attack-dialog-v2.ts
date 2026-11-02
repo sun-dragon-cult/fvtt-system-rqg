@@ -303,7 +303,11 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     if (!selectedUsageType) {
       this.close();
-      return logger.throw(ERR.noWeaponToAttackWith, { weaponItem: this.weaponItem?.id });
+      // Usages are only offered when they link a skill, so none left means no usage has one
+      return logger.throw(ERR.weaponHasNoLinkedSkill, {
+        weaponItem: this.weaponItem?.id,
+        weaponName: this.weaponItem?.name,
+      });
     }
 
     formData.usageType = selectedUsageType;
