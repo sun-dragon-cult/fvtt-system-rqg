@@ -144,6 +144,14 @@ function defineCharacterSchema() {
     }),
 
     effect: new SchemaField({
+      multiply: new SchemaField({
+        healingRate: new NumberField({
+          integer: true,
+          nullable: false,
+          initial: 1,
+          persisted: false,
+        }),
+      }),
       add: new SchemaField({
         magicPoints: new SchemaField({
           max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
@@ -361,7 +369,8 @@ export class CharacterDataModel extends RqgActorDataModel<
     system.attributes.dexStrikeRank = characteristicDerived.dexStrikeRank;
     system.attributes.sizStrikeRank = characteristicDerived.sizStrikeRank;
     system.attributes.damageBonus = characteristicDerived.damageBonus;
-    system.attributes.healingRate = characteristicDerived.healingRate;
+    system.attributes.healingRate =
+      characteristicDerived.healingRate * system.effect.multiply.healingRate;
     system.attributes.spiritCombatDamage = characteristicDerived.spiritCombatDamage;
 
     // Calculate resource max values with effects deltas

@@ -55,4 +55,16 @@ describe("runSpellRollEntry", () => {
     runSpellRollEntry(undefined, "onPrepareAttack", {} as any);
     expect(entry).not.toHaveBeenCalled();
   });
+
+  it("runs an attacked-side entry for the target's effects", () => {
+    const entry = vi.fn();
+    behaviors({ sunbright: { onPrepareAttackAgainst: entry } });
+    const sunbright = effect("sunbright");
+
+    runSpellRollEntry(actorWith(sunbright), "onPrepareAttackAgainst", {} as any);
+    runSpellRollEntry(actorWith(sunbright), "onPrepareAttack", {} as any);
+
+    expect(entry).toHaveBeenCalledOnce();
+    expect(entry).toHaveBeenCalledWith(expect.objectContaining({ effects: [sunbright] }));
+  });
 });

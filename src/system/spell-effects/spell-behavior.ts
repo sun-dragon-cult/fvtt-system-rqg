@@ -78,6 +78,8 @@ export type SpellRollEntries = {
     options: SpiritMagicRollOptions | RuneMagicRollOptions;
   }>;
   onPrepareAttack?: RollEntry<{ weapon: WeaponItem; attack: PrepareAttackData }>;
+  /** Runs for the attack's target instead of the attacker, such as Sunbright's penalty to hit. */
+  onPrepareAttackAgainst?: RollEntry<{ weapon: WeaponItem; attack: PrepareAttackData }>;
   onPrepareDefence?: RollEntry<{ defender: RqgActor; defence: DefenceHookData }>;
 };
 
@@ -88,6 +90,7 @@ export const spellRollEntryNames = [
   "onPrepareCharacteristicRoll",
   "onPrepareSpellCast",
   "onPrepareAttack",
+  "onPrepareAttackAgainst",
   "onPrepareDefence",
 ] as const satisfies readonly SpellRollEntryName[];
 
@@ -281,6 +284,7 @@ const guardedRollEntries: Record<SpellRollEntryName, WeakMap<object, RollEntry<a
   onPrepareCharacteristicRoll: new WeakMap(),
   onPrepareSpellCast: new WeakMap(),
   onPrepareAttack: new WeakMap(),
+  onPrepareAttackAgainst: new WeakMap(),
   onPrepareDefence: new WeakMap(),
 };
 

@@ -20,6 +20,7 @@ function buildSystem() {
       hitPoints: { max: 0 },
     },
     effect: {
+      multiply: { healingRate: 1 },
       add: {
         magicPoints: { max: 0 },
         hitPoints: { max: 0 },
@@ -207,5 +208,21 @@ describe("CharacterDataModel.prepareDerivedData", () => {
     expect(preparedModel.baseSkillCategoryModifiers.magic).toBe(expectedBase.magic);
     expect(preparedModel.attributes.magicPoints.max).toBe(system.characteristics.power.value);
     expect(preparedModel.attributes.hitPoints.max).toBe(expectedHitPoints);
+  });
+
+  it("multiplies the healing rate by the effects' factor", () => {
+    const model = new CharacterDataModel({});
+    const system = buildSystem();
+    Object.assign(model as object, system);
+    model.prepareDerivedData();
+    const normal = (model as unknown as { attributes: { healingRate: number } }).attributes
+      .healingRate;
+
+    system.effect.multiply.healingRate = 8;
+    model.prepareDerivedData();
+    const trance = (model as unknown as { attributes: { healingRate: number } }).attributes
+      .healingRate;
+
+    expect(trance).toBe(normal * 8);
   });
 });
