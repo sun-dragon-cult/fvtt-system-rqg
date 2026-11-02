@@ -13,7 +13,11 @@ import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.t
 import type { CharacteristicRollOptions } from "../../rolls/characteristic-roll/characteristic-roll.types";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
-import type { DefenceHookData, PrepareAttackData } from "../../rolls/roll-method-options";
+import type {
+  AttackHookData,
+  DefenceHookData,
+  PrepareAttackData,
+} from "../../rolls/roll-method-options";
 import type { RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 import type { SpellAcrossScope, SpellAreaScope } from "./spell-area";
@@ -27,6 +31,17 @@ const logger = new RqgLogger("spell-behavior");
  * (Countermagic, then Shield) can be decided together.
  */
 export type IncomingSpellScope = SpellApplyScope & { effects: ActiveEffect[] };
+
+/**
+ * The scope `onMissileFired` runs with, on the attacking client, for the spells on a missile just
+ * fired. `effects` are the missile's active effects sharing that hook.
+ */
+export type MissileFiredScope = {
+  weapon: WeaponItem;
+  projectile: WeaponItem;
+  attack: AttackHookData & { chatMessage: ChatMessage };
+  effects: ActiveEffect[];
+};
 
 /** The scope `onEnd` runs with, on the active GM's client, when a spell effect expires or is deleted. */
 export type SpellEndScope = { effect: ActiveEffect };
@@ -102,6 +117,11 @@ export type SpellBehavior = SpellRollEntries & {
   onAreaExit?(scope: SpellAreaScope): Promise<void>;
   /** Runs on the active GM's client when a spell is cast across the spell's area from outside. */
   onSpellAcross?(scope: SpellAcrossScope): Promise<void>;
+  /**
+   * Runs when a missile carrying one of the spell's effects is fired, after its attack card is
+   * posted and before the spell is spent: Multimissile adds its magical missiles here.
+   */
+  onMissileFired?(scope: MissileFiredScope): Promise<void>;
   /** Runs when one of the spell's effects expires or is deleted. */
   onEnd?(scope: SpellEndScope): Promise<void>;
   /** Run `apply` on the active GM's client, e.g. because it creates tokens, which players may not. */
@@ -124,6 +144,7 @@ const actingHookNames = [
   "onAreaEnter",
   "onAreaExit",
   "onSpellAcross",
+  "onMissileFired",
   "onEnd",
 ] as const satisfies readonly (keyof SpellBehavior)[];
 
@@ -200,7 +221,8 @@ type HookKind =
   | "onEnd"
   | "onAreaEnter"
   | "onAreaExit"
-  | "onSpellAcross";
+  | "onSpellAcross"
+  | "onMissileFired";
 
 // Per function, so spells registering the same hook (Countermagic and Shield) still share it
 const guardedHooks: Record<HookKind, WeakMap<object, (scope: any) => Promise<any>>> = {
@@ -211,6 +233,7 @@ const guardedHooks: Record<HookKind, WeakMap<object, (scope: any) => Promise<any
   onAreaEnter: new WeakMap(),
   onAreaExit: new WeakMap(),
   onSpellAcross: new WeakMap(),
+  onMissileFired: new WeakMap(),
 };
 
 function guarded<F extends (scope: any) => Promise<any>>(
@@ -336,6 +359,11 @@ function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavio
       "onSpellAcross",
       behavior.onSpellAcross,
       (scope) => scope.spell.name ?? "",
+    ),
+    onMissileFired: guarded(
+      "onMissileFired",
+      behavior.onMissileFired,
+      (scope) => scope.effects[0]?.name ?? "",
     ),
     barrier: behavior.barrier,
     areaBarrier: behavior.areaBarrier,

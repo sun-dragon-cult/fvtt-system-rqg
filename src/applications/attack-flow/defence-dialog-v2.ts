@@ -672,6 +672,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       parryWeaponUsageType,
       attackingWeaponDamageType,
       parryingWeaponDamageType ?? "parry",
+      attackChatMessage?.system.attackIsMagicMissile ?? false,
     );
 
     const outcomeDescription = getBasicOutcomeDescription(

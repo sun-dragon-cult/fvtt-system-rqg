@@ -53,6 +53,7 @@ export async function combatOutcome(
   parryWeaponUsageType: UsageType | undefined,
   attackingWeaponDamageType: DamageType,
   parryingWeaponDamageType: DamageType,
+  isMagicMissile = false,
 ): Promise<CombatOutcome> {
   const attackSuccessLevel = attackRoll.successLevel;
   requireValue(
@@ -68,7 +69,10 @@ export async function combatOutcome(
   const defenceSuccessLevel = defenceRoll?.successLevel ?? AbilitySuccessLevelEnum.Failure;
   const defenceUsed = defence ?? "ignore";
 
-  const damageDegree = getDamageDegree(defenceUsed, attackSuccessLevel, defenceSuccessLevel);
+  const damageDegree = magicMissileDamageDegree(
+    getDamageDegree(defenceUsed, attackSuccessLevel, defenceSuccessLevel),
+    isMagicMissile,
+  );
   if (damageDegree === DamageDegree.None) {
     return createEmptyCombatOutcome();
   }
@@ -147,6 +151,14 @@ export async function combatOutcome(
     weaponDoingDamage: weaponDoingDamageDesignation,
   };
 }
+/** A magical missile only does normal damage on a special success; a critical still counts. */
+export function magicMissileDamageDegree(
+  degree: DamageDegree,
+  isMagicMissile: boolean,
+): DamageDegree {
+  return isMagicMissile && degree === DamageDegree.Special ? DamageDegree.Normal : degree;
+}
+
 /**
  * Format a damage part of a damage formula with a description in brackets.
  * The description is localized.

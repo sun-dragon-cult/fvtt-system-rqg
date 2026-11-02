@@ -615,6 +615,7 @@
     "Dialog": {
       "Attack": {
         "Title": "Attack",
+        "MagicMissile": "magic missile",
         "NoTargetSelected": "No target selected",
         "AttackingWeapon": "Attacking Weapon",
         "WeaponUsage": "Usage",

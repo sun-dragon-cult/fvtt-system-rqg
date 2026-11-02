@@ -13,6 +13,8 @@ import { barrierPriorities } from "../spell-effects/spell-barriers";
 import { castPoints, effectRemovalCost, listSpellEffects } from "../spell-effects/spell-rules";
 import { summon } from "../spell-effects/summon";
 import { dealSpellDamage } from "../spell-effects/spell-damage";
+import { postMagicMissiles as postAttackMagicMissiles } from "../../applications/attack-flow/magic-missiles";
+import type { MissileFiredScope } from "../spell-effects/spell-behavior";
 import * as query from "./api-query";
 import * as rolls from "./api-rolls";
 import { openDataModelRepairDialog } from "./data-model-repair";
@@ -79,6 +81,8 @@ export function createRqgApi() {
       createArea,
       applyAreaEffect,
       metersToPixels,
+      postMagicMissiles: (scope: MissileFiredScope, count: number) =>
+        postAttackMagicMissiles(scope.attack.chatMessage, count),
     },
   };
 }
