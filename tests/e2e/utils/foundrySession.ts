@@ -129,7 +129,12 @@ async function clickWorldLaunchByPackageId(page: Page, worldPackageId: string) {
   }, worldPackageId);
 }
 
-async function clickWorldLaunchAndWait(page: Page, worldPackageId: string, foundryBaseUrl: string) {
+async function clickWorldLaunchAndWait(
+  page: Page,
+  worldPackageId: string,
+  foundryBaseUrl: string,
+  loadTimeoutMs: number,
+) {
   const worldCard = await resolveWorldCardByPackageId(page, worldPackageId);
   if (!worldCard) {
     throw new Error(`World card with data-package-id="${worldPackageId}" was not found.`);
@@ -165,7 +170,10 @@ async function clickWorldLaunchAndWait(page: Page, worldPackageId: string, found
 
   // Last resort: if there was no visible transition, navigate directly to join.
   if (!(await passwordInput.count()) && !(await isCriticalFailureVisible(page))) {
-    await page.goto(`${foundryBaseUrl}/join`, { waitUntil: "networkidle", timeout: 15000 });
+    await page.goto(`${foundryBaseUrl}/join`, {
+      waitUntil: "networkidle",
+      timeout: loadTimeoutMs,
+    });
   }
 }
 
@@ -237,7 +245,10 @@ export async function loginToConfiguredWorld(
     setupAttempts++;
     console.log(`[E2E] Setup navigation attempt ${setupAttempts}`);
 
-    await page.goto(foundryBaseUrl, { waitUntil: "networkidle", timeout: 15000 });
+    await page.goto(foundryBaseUrl, {
+      waitUntil: "networkidle",
+      timeout: e2eConfig.worldLoadTimeoutMs,
+    });
     await dismissFoundryFirstRunUI(page);
     await loginToSetupIfNeeded(page, e2eConfig.foundryAdminPassword);
 
@@ -278,7 +289,12 @@ export async function loginToConfiguredWorld(
 
   // Only launch world from setup when not already on join.
   if (!(await isJoinPageReady(page))) {
-    await clickWorldLaunchAndWait(page, e2eConfig.foundryWorld, foundryBaseUrl);
+    await clickWorldLaunchAndWait(
+      page,
+      e2eConfig.foundryWorld,
+      foundryBaseUrl,
+      e2eConfig.worldLoadTimeoutMs,
+    );
   }
 
   // Re-check for critical failure after navigation and dismiss if found
@@ -296,10 +312,16 @@ export async function loginToConfiguredWorld(
 
       // Retry through Foundry's normal flow from base URL.
       console.log("[E2E] Retrying from base URL and reselecting world...");
-      await page.goto(foundryBaseUrl, { waitUntil: "networkidle", timeout: 15000 });
-      await clickWorldLaunchAndWait(page, e2eConfig.foundryWorld, foundryBaseUrl).catch(
-        () => undefined,
-      );
+      await page.goto(foundryBaseUrl, {
+        waitUntil: "networkidle",
+        timeout: e2eConfig.worldLoadTimeoutMs,
+      });
+      await clickWorldLaunchAndWait(
+        page,
+        e2eConfig.foundryWorld,
+        foundryBaseUrl,
+        e2eConfig.worldLoadTimeoutMs,
+      ).catch(() => undefined);
       continue;
     }
 
@@ -355,10 +377,24 @@ export async function loginToConfiguredWorld(
     );
   }
 
-  await page.waitForURL(/\/game$/, { timeout: 15000 });
-  await page.waitForLoadState("networkidle");
+  await page.waitForURL(/\/game$/, { timeout: e2eConfig.worldLoadTimeoutMs });
+  await page.waitForLoadState("networkidle", { timeout: e2eConfig.worldLoadTimeoutMs });
+  await waitForGameReady(page, e2eConfig);
   await dismissFoundryFirstRunUI(page);
   await closeBlockingWindows(page);
 
   return e2eConfig;
+}
+
+/** Wait until Foundry reports `game.ready`; the timeout is `E2E_WORLD_LOAD_TIMEOUT`. */
+export async function waitForGameReady(page: Page, config?: E2EConfig): Promise<void> {
+  const { worldLoadTimeoutMs } = config ?? (await getE2EConfig());
+  await page.waitForFunction(
+    () => (globalThis as { game?: { ready?: boolean } }).game?.ready,
+    null,
+    {
+      timeout: worldLoadTimeoutMs,
+      polling: 500,
+    },
+  );
 }

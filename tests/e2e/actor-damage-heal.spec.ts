@@ -6,7 +6,6 @@ import { loginToConfiguredWorld } from "./utils/foundrySession";
 test("actor damage and heal methods", async ({ page, baseURL }) => {
   test.slow();
   const e2eConfig = await loginToConfiguredWorld(page, baseURL);
-  await page.waitForFunction(() => (globalThis as any).game?.ready, null, { timeout: 30000 });
 
   const results = await page.evaluate(async (sourceActorName) => {
     const g = game as any;
@@ -106,7 +105,6 @@ test("actor damage and heal methods", async ({ page, baseURL }) => {
 test("add and heal wound dialogs", async ({ page, baseURL }) => {
   test.slow();
   const e2eConfig = await loginToConfiguredWorld(page, baseURL);
-  await page.waitForFunction(() => (globalThis as any).game?.ready, null, { timeout: 30000 });
 
   const { actorId, chestId, sheetId } = await page.evaluate(async (sourceActorName) => {
     const g = game as any;
