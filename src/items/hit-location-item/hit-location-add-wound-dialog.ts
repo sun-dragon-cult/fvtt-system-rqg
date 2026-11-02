@@ -7,10 +7,7 @@ import { RqgItem } from "../rqg-item";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 
-type ArmorLayerDialogData = {
-  name: string;
-  absorbs: number;
-};
+import { type ArmorLayerDialogData, withNaturalArmorLayer } from "./hit-location-armor-layers";
 
 export async function showHitLocationAddWoundDialog(
   actor: RqgActor,
@@ -23,7 +20,11 @@ export async function showHitLocationAddWoundDialog(
     "RQG.Item.HitLocation.Notification.CantFindHitLocation",
   );
 
-  const armorLayers = getEquippedArmorLayersForHitLocation(actor, hitLocation);
+  const armorLayers = withNaturalArmorLayer(
+    hitLocation.system.naturalAp ?? 0,
+    getEquippedArmorLayersForHitLocation(actor, hitLocation),
+    localize("RQG.Item.HitLocation.AddWound.NaturalArmor"),
+  );
 
   const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
     templatePaths.hitLocationAddWound,
