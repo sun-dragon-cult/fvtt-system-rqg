@@ -22,6 +22,7 @@ function buildSystem() {
     effect: {
       multiply: { healingRate: 1 },
       add: {
+        strikeRank: 0,
         magicPoints: { max: 0 },
         hitPoints: { max: 0 },
         skillCategoryModifiers: {
@@ -224,5 +225,32 @@ describe("CharacterDataModel.prepareDerivedData", () => {
       .healingRate;
 
     expect(trance).toBe(normal * 8);
+  });
+
+  it("adds the effects' strike rank and rounds halved movement down", () => {
+    const model = new CharacterDataModel({});
+    const system = buildSystem() as ReturnType<typeof buildSystem> & {
+      attributes: { move?: unknown };
+    };
+    system.attributes.move = { walk: { value: 7 / 2 }, swim: { value: 1 }, fly: { value: null } };
+    Object.assign(model as object, system);
+    model.prepareDerivedData();
+    const base = (model as unknown as { attributes: { dexStrikeRank: number } }).attributes
+      .dexStrikeRank;
+
+    system.effect.add.strikeRank = 1;
+    model.prepareDerivedData();
+    const attributes = (
+      model as unknown as {
+        attributes: {
+          dexStrikeRank: number;
+          move: { walk: { value: number }; fly: { value: number | null } };
+        };
+      }
+    ).attributes;
+
+    expect(attributes.dexStrikeRank).toBe(base + 1);
+    expect(attributes.move.walk.value).toBe(3);
+    expect(attributes.move.fly.value).toBeNull();
   });
 });

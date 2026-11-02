@@ -153,6 +153,12 @@ function defineCharacterSchema() {
         }),
       }),
       add: new SchemaField({
+        strikeRank: new NumberField({
+          integer: true,
+          nullable: false,
+          initial: 0,
+          persisted: false,
+        }),
         magicPoints: new SchemaField({
           max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
         }),
@@ -366,7 +372,18 @@ export class CharacterDataModel extends RqgActorDataModel<
 
     system.skillCategoryModifiers = baseWithEffects;
 
-    system.attributes.dexStrikeRank = characteristicDerived.dexStrikeRank;
+    system.attributes.dexStrikeRank =
+      characteristicDerived.dexStrikeRank == null
+        ? characteristicDerived.dexStrikeRank
+        : characteristicDerived.dexStrikeRank + system.effect.add.strikeRank;
+
+    // Effects that halve movement round down
+    for (const locomotion of Object.values(LocomotionEnum)) {
+      const move = system.attributes.move?.[locomotion];
+      if (move && typeof move.value === "number") {
+        move.value = Math.floor(move.value);
+      }
+    }
     system.attributes.sizStrikeRank = characteristicDerived.sizStrikeRank;
     system.attributes.damageBonus = characteristicDerived.damageBonus;
     system.attributes.healingRate =
