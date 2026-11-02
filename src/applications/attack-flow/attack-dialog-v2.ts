@@ -692,6 +692,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     // A missile shot from a launcher, as opposed to a thrown weapon
     const missile = projectileItem !== weaponItem ? projectileItem : undefined;
     const attackProjectileDamage = missile?.system.getMagicDamageFormula("missile", "") ?? "";
+    const attackDamageOverride = missile?.system.effect.override.missile.damage ?? "";
 
     const attack: AttackHookData = {
       ...AttackDialogV2.buildAttack(
@@ -763,6 +764,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       weaponDamageApplied: false,
       attackExtraDamage: formDataObject.attackExtraDamage,
       attackProjectileDamage: attackProjectileDamage,
+      attackDamageOverride: attackDamageOverride,
       attackDamageBonus: attackDamageBonusForChat,
       attackRoll: attackRoll.toJSON(),
       defenceRoll: undefined,

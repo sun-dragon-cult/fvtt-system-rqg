@@ -1,4 +1,4 @@
-import { calculateAbilitySuccessLevel } from "./calculate-ability-success-level";
+import { applySureHit, calculateAbilitySuccessLevel } from "./calculate-ability-success-level";
 import {
   activateChatTab,
   isTruthy,
@@ -48,7 +48,11 @@ export class AbilityRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
     if (!this._evaluated || this.total == null) {
       return undefined;
     }
-    return calculateAbilitySuccessLevel(this.targetChance, this.total);
+    return applySureHit(
+      calculateAbilitySuccessLevel(this.targetChance, this.total),
+      this.total,
+      this.options.sureHit,
+    );
   }
 
   get targetChance(): number {

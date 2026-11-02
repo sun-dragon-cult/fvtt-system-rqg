@@ -1,6 +1,17 @@
 import { AbilitySuccessLevelEnum } from "./ability-roll.defs";
 import { RqgError } from "../../system/util.ts";
 
+/** A sure hit succeeds on any failure but a roll of 96-00; critical, special and fumble stay. */
+export function applySureHit(
+  level: AbilitySuccessLevelEnum,
+  roll: number,
+  sureHit: boolean | undefined,
+): AbilitySuccessLevelEnum {
+  return sureHit && level === AbilitySuccessLevelEnum.Failure && roll < 96
+    ? AbilitySuccessLevelEnum.Success
+    : level;
+}
+
 export function calculateAbilitySuccessLevel(
   rawChance: number,
   roll: number,

@@ -54,6 +54,7 @@ export async function combatOutcome(
   attackingWeaponDamageType: DamageType,
   parryingWeaponDamageType: DamageType,
   isMagicMissile = false,
+  attackDamageOverride = "",
 ): Promise<CombatOutcome> {
   const attackSuccessLevel = attackRoll.successLevel;
   requireValue(
@@ -71,7 +72,8 @@ export async function combatOutcome(
 
   const damageDegree = magicMissileDamageDegree(
     getDamageDegree(defenceUsed, attackSuccessLevel, defenceSuccessLevel),
-    isMagicMissile,
+    // Only the original missile of Multimissile can impale, and Firearrow's fire can't
+    isMagicMissile || !!attackDamageOverride,
   );
   if (damageDegree === DamageDegree.None) {
     return createEmptyCombatOutcome();
@@ -117,6 +119,7 @@ export async function combatOutcome(
     usage,
     damageDegree,
     weaponDoingDamageDamageType,
+    weaponDoingDamageDesignation === "attackingWeapon" ? attackDamageOverride : "",
   );
   if (damageFormula == null) {
     requireValue(damageFormula, "Tried to calculate combat outcome without a damage formula");
@@ -151,12 +154,9 @@ export async function combatOutcome(
     weaponDoingDamage: weaponDoingDamageDesignation,
   };
 }
-/** A magical missile only does normal damage on a special success; a critical still counts. */
-export function magicMissileDamageDegree(
-  degree: DamageDegree,
-  isMagicMissile: boolean,
-): DamageDegree {
-  return isMagicMissile && degree === DamageDegree.Special ? DamageDegree.Normal : degree;
+/** A missile that can't impale only does normal damage on a special success; a critical still counts. */
+export function magicMissileDamageDegree(degree: DamageDegree, cantImpale: boolean): DamageDegree {
+  return cantImpale && degree === DamageDegree.Special ? DamageDegree.Normal : degree;
 }
 
 /**
