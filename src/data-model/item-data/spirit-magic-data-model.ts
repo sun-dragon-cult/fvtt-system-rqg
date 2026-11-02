@@ -59,6 +59,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     boost: number = 0,
     magicPointSource?: MagicPointSourceSelection,
     casterActor: RqgActor | undefined = this.parent?.actor ?? undefined,
+    maxLevel: number = this.points,
   ): string | undefined {
     const normalizedLevelUsed = levelUsed == null ? undefined : Number(levelUsed);
     const normalizedBoost = Number(boost) || 0;
@@ -69,7 +70,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     if (
       normalizedLevelUsed == null ||
       !Number.isFinite(normalizedLevelUsed) ||
-      normalizedLevelUsed > this.points
+      normalizedLevelUsed > Math.max(this.points, maxLevel)
     ) {
       return localize("RQG.Item.SpiritMagic.CantCastSpellAboveLearnedLevel");
     }
@@ -162,6 +163,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       boost,
       magicPointSource,
       casterActor,
+      preparation.maxLevel,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);

@@ -21,6 +21,26 @@ describe("SpiritMagicDataModel cast validation", () => {
     );
   });
 
+  it("lets a hook raise the level above the learned one, up to the magic points", () => {
+    const fakeModel = {
+      points: 1,
+      parent: { actor: { system: { attributes: { magicPoints: { value: 3 } } } } },
+    } as unknown as SpiritMagicDataModel;
+    const validate = (level: number, maxLevel?: number) =>
+      SpiritMagicDataModel.prototype.getCastValidationError.call(
+        fakeModel,
+        level,
+        0,
+        undefined,
+        undefined,
+        maxLevel,
+      );
+
+    expect(validate(2)).toContain("RQG.Item.SpiritMagic.CantCastSpellAboveLearnedLevel");
+    expect(validate(2, 2)).toBeUndefined();
+    expect(validate(3, 2)).toContain("RQG.Item.SpiritMagic.CantCastSpellAboveLearnedLevel");
+  });
+
   it("counts a chosen magic point source's stored points as available (#956)", () => {
     const fakeModel = {
       points: 3,

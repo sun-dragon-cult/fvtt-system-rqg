@@ -229,7 +229,9 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       selectedTarget: targetNote.selectedTarget,
       disableRoll: targetNote.tooManyTargets,
       areaTargets: this.castTargets.areaLabel(Number(formData.levelUsed)),
-      isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
+      isVariable:
+        (this.spellItem.system.isVariable && this.spellItem.system.points > 1) ||
+        (this.prepared?.maxLevel ?? 0) > this.spellItem.system.points,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,
       magicPointSourceOptions: getMagicPointSourceOptions(this.casterActor),
@@ -316,6 +318,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       Number(formDataObject.boost ?? 0),
       formDataObject.magicPointSource,
       casterActor,
+      this.prepared?.maxLevel,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);
