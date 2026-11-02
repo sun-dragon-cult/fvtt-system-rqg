@@ -21,6 +21,7 @@ import { spellApplyScope, spellEffectCast, type SpellEffectCast } from "./apply-
 import { castAcrossSpellAreas, tokenOfUuid } from "./spell-across";
 import { interceptIncomingSpell } from "./incoming-spell";
 import { reflectsSpell } from "./reflect-spell";
+import { spellBehaviorOf } from "./spell-behavior";
 import { queryActiveGm } from "./run-spell-apply";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
@@ -226,6 +227,21 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
           : undefined,
       });
       return request?.id ?? "";
+    },
+    notApplied: async (entry, reason) => {
+      const { actor, name, token } = await target(entry);
+      const onNotApplied = spell ? spellBehaviorOf(spell)?.onNotApplied : undefined;
+      if (!spell || !actor || !onNotApplied) {
+        return;
+      }
+      const scope = spellApplyScope(
+        spell,
+        actor,
+        name,
+        recordCast(record, message.id ?? "", spell, entry),
+        token ?? undefined,
+      );
+      await onNotApplied({ ...scope, reason: reason });
     },
     reflects: async (entry) => {
       const { actor, name } = await target(entry);

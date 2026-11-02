@@ -41,10 +41,52 @@ function env(overrides: Partial<SpellCastStepEnv> = {}): SpellCastStepEnv {
     areaTargetValue: vi.fn(() => 10),
     requestResistance: vi.fn(async (entry) => `request-${entry.id}`),
     reflects: vi.fn(async () => false),
+    notApplied: vi.fn(async () => {}),
     newId: () => `new${id++}`,
     ...overrides,
   };
 }
+
+describe("stepSpellCast not applied", () => {
+  it("tells the spell about a failed cast once, and settles it", async () => {
+    const e = env();
+    const failed = { ...target("a"), stage: "failed" as const, state: "unaffected" as const };
+    const next = await stepSpellCast(record(SpellResistedByEnum.None, [failed]), [], e);
+    expect(e.notApplied).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ id: "a" }),
+      "castFailed",
+    );
+    expect(next.targets[0]!.stage).toBe("settled");
+    await stepSpellCast(next, [], e);
+    expect(e.notApplied).toHaveBeenCalledOnce();
+  });
+
+  it("tells the spell when a protective spell stops it", async () => {
+    const e = env({ barrierStops: vi.fn(async () => true) });
+    await stepSpellCast(record(SpellResistedByEnum.ResistanceRoll), [], e);
+    expect(e.notApplied).toHaveBeenCalledExactlyOnceWith(expect.anything(), "blocked");
+  });
+
+  it("tells the spell when the target's resistance held, but not when it was reflected", async () => {
+    const e = env();
+    const asked = await stepSpellCast(record(SpellResistedByEnum.ResistanceRoll), [], e);
+    const held: Parameters<typeof stepSpellCast>[1] = [
+      { kind: "resistance", entryId: "a", result: "held", casterSuccessLevel: Failure },
+    ];
+    await stepSpellCast(asked, held, e);
+    expect(e.notApplied).toHaveBeenCalledExactlyOnceWith(expect.anything(), "resisted");
+
+    const reflecting = env({ reflects: vi.fn(async () => true) });
+    await stepSpellCast(asked, held, reflecting);
+    expect(reflecting.notApplied).not.toHaveBeenCalled();
+  });
+
+  it("doesn't tell the spell when the target is affected", async () => {
+    const e = env();
+    await stepSpellCast(record(SpellResistedByEnum.None), [], e);
+    expect(e.notApplied).not.toHaveBeenCalled();
+  });
+});
 
 describe("stepSpellCast", () => {
   it("passes an unresisted spell through areas and protective spells, crossing areas once", async () => {
@@ -326,9 +368,9 @@ describe("buildSpellCastEntries", () => {
     expect(build("self", SpellResistedByEnum.SpiritCombatRound)[0]!.actorUuid).toBe("");
   });
 
-  it("settles every entry of a failed cast", () => {
+  it("holds every entry of a failed cast for the runner to tell the spell", () => {
     expect(build("self", SpellResistedByEnum.None, false)[0]).toMatchObject({
-      stage: "settled",
+      stage: "failed",
       state: "unaffected",
       resolvedBy: "castFailed",
     });

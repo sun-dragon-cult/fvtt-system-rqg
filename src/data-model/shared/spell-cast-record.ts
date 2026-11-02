@@ -18,10 +18,12 @@ const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foun
 
 /**
  * Where a target of a cast has got to (#1224). `targeted`, `resistance` and `affected` can wait for
- * input, `applied` and `settled` are final, and the others are passed through at once.
+ * input, `applied` and `settled` are final, and the others are passed through at once. `failed` is
+ * a failed cast waiting for the runner to tell the spell, then it is `settled`.
  */
 export const spellCastStages = [
   "targeted",
+  "failed",
   "crossing",
   "barriers",
   "resistance",
@@ -40,6 +42,7 @@ export function isEntryDone(entry: Pick<SpellCastEntry, "stage">): boolean {
 /** Whether an entry can move on without input, e.g. one left waiting while no GM was logged in. */
 export function canEntryMoveOn(entry: Pick<SpellCastEntry, "stage" | "actorUuid">): boolean {
   return (
+    entry.stage === "failed" ||
     entry.stage === "crossing" ||
     entry.stage === "barriers" ||
     entry.stage === "resisted" ||
@@ -203,7 +206,7 @@ export function buildSpellCastEntries(params: {
     const entry = newSpellCastEntry(newId(), target);
     return castSucceeded
       ? entry
-      : { ...entry, stage: "settled", state: "unaffected", resolvedBy: "castFailed" };
+      : { ...entry, stage: "failed", state: "unaffected", resolvedBy: "castFailed" };
   });
 }
 
