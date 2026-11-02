@@ -110,12 +110,9 @@ const tokenTargetKinds: readonly string[] = [
   SpellTargetKindEnum.Spirit,
   SpellTargetKindEnum.HitLocation,
   SpellTargetKindEnum.SpellOrEffect,
+  SpellTargetKindEnum.Weapon, // the weapon of the token picked, or the caster's own
 ];
-const oneTargetKinds: readonly string[] = [
-  ...tokenTargetKinds,
-  SpellTargetKindEnum.Weapon,
-  SpellTargetKindEnum.Object,
-];
+const oneTargetKinds: readonly string[] = [...tokenTargetKinds, SpellTargetKindEnum.Object];
 const casterKindsWhenUntargeted: readonly string[] = [
   SpellTargetKindEnum.Self,
   SpellTargetKindEnum.Weapon,
