@@ -69,12 +69,15 @@ E2E_GM_USER=gamemaster
 E2E_GM_PASSWORD=
 E2E_FOUNDRY_ADMIN_PASSWORD=123
 E2E_RQG_ACTOR=Vasana
+E2E_WORLD_LOAD_TIMEOUT=120000
 ```
+
+`E2E_WORLD_LOAD_TIMEOUT` (ms, default 120000) is how long the specs wait for Foundry's pages and for `game.ready`. Raise it for a world with many modules or large compendiums. Specs call `waitForGameReady(page)` from `tests/e2e/utils/foundrySession.ts` rather than their own wait.
 
 World prerequisites:
 
 - The configured world must exist (`E2E_FOUNDRY_WORLD`).
-- The configured GM user must exist and be enabled (`E2E_GM_USER`).
+- The configured GM user must exist and be enabled (`E2E_GM_USER`), and must not be logged in elsewhere: Foundry refuses a second session for the same user, so the join step fails.
 - At least one actor must exist in the world.
 - For attack-dialog coverage, the actor configured in `E2E_RQG_ACTOR` should exist and have at least one weapon attack (default: `Vasana`).
 
