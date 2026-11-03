@@ -13,7 +13,8 @@ export type AttackDialogContext = CombatRollHeaderPartData &
     selectedProjectileId: string;
     usageTypeOptions: SelectOptionData<UsageType>[];
     augmentOptions: SelectOptionData<number>[];
-    defendingTokenName: string;
+    targetOptions: SelectOptionData<string>[];
+    selectedTarget: string;
     attackerOptions: SelectOptionData<string>[];
     attackingWeaponOptions: SelectOptionData<string>[];
     damageBonusSourceOptions: SelectOptionData<string>[];
