@@ -862,7 +862,7 @@ export class RqgActorSheet<
       );
     }
 
-    const currentCombatants = combat.getCombatantsByActor(this.actor.id ?? "");
+    const currentCombatants = combat.getCombatantsByActor(this.actor as Actor.Stored);
 
     // Delete combatants that don't match activeInSR
     const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
