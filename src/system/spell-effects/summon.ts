@@ -1,56 +1,28 @@
-import { localize } from "../util";
+import { hasActiveGm, localize } from "../util";
 import { systemId } from "../config";
 import { Rqid } from "../api/rqid-api";
-import { tokenOfDocument } from "./spell-across";
 import {
+  spellApplyScope,
   spellProvenance,
   type SpellEffectApplied,
+  type SpellEffectCast,
   type SpellEffectDuration,
   type SpellApplyScope,
 } from "./apply-spell-effect";
-import { actorRefUuid } from "../../data-model/shared/actor-ref";
+import { casterTokenOnScene } from "./spell-area-targets";
+import { placeSummonedToken } from "./place-summoned-token";
+import { queryActiveGm } from "./run-spell-apply";
+import {
+  nearestFreeCell,
+  summonedTokenCells,
+  summonerToken,
+  tokenCell,
+  type GridRect,
+} from "./token-cells";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
 
-type GridRect = { col: number; row: number; w: number; h: number };
-
-function overlaps(a: GridRect, b: GridRect): boolean {
-  return a.col < b.col + b.w && b.col < a.col + a.w && a.row < b.row + b.h && b.row < a.row + a.h;
-}
-
-/**
- * The free grid cell nearest the summoner for a token of the given size, in grid units, looking
- * at most `reach` cells away.
- */
-export function nearestFreeCell(
-  summoner: GridRect,
-  size: { w: number; h: number },
-  occupied: GridRect[],
-  reach = 10,
-): { col: number; row: number } | undefined {
-  const centre = { col: summoner.col + summoner.w / 2, row: summoner.row + summoner.h / 2 };
-  let best: { col: number; row: number; distance: number } | undefined;
-  for (let row = summoner.row - size.h - reach; row <= summoner.row + summoner.h + reach; row++) {
-    for (let col = summoner.col - size.w - reach; col <= summoner.col + summoner.w + reach; col++) {
-      const rect = { col, row, w: size.w, h: size.h };
-      if (occupied.some((other) => overlaps(rect, other))) {
-        continue;
-      }
-      const distance = Math.hypot(col + size.w / 2 - centre.col, row + size.h / 2 - centre.row);
-      if (!best || distance < best.distance) {
-        best = { col, row, distance };
-      }
-    }
-  }
-  return best ? { col: best.col, row: best.row } : undefined;
-}
-
-/** The token to summon next to: the caster's, or without a caster (token HUD "+") the target's. */
-export async function summonerToken(scope: SpellApplyScope): Promise<TokenDocument | undefined> {
-  return tokenOfDocument(
-    actorRefUuid(scope.cast.caster)
-      ? await fromUuid(actorRefUuid(scope.cast.caster))
-      : scope.targetActor,
-  );
-}
+type Point = { x: number; y: number };
 
 async function summonedFolder(): Promise<Folder | undefined> {
   const name = localize("RQG.ChatMessage.SpellCast.Summon.Folder");
@@ -73,28 +45,113 @@ async function worldActor(actorRqid: string): Promise<Actor | undefined> {
   return (await Actor.implementation.create(data)) as Actor | undefined;
 }
 
-function gridRect(token: TokenDocument, gridSize: number): GridRect {
-  return { col: token.x / gridSize, row: token.y / gridSize, w: token.width, h: token.height };
-}
-
 export type SummonOptions = {
   /** The summoning's icon on the token, the spell's own by default. */
   img?: string;
   /** How long the summoning lasts, the scope's Temporal duration by default. */
   duration?: SpellEffectDuration;
+  /**
+   * The body's footprint in meters, e.g. 1x3 for a medium elemental (RBM p.90). The token is round
+   * with the same ground area, rounded up to whole squares, so it follows the scene's grid scale;
+   * the actor's own token size by default.
+   */
+  footprintMeters?: { w: number; h: number };
 };
 
+/** What a player's client sends the GM to make a summoned token, since players may not create them. */
+export type SummonQueryData = {
+  spellUuid: string;
+  targetActorUuid: string;
+  targetName: string;
+  cast: SpellEffectCast;
+  actorRqid: string;
+  options: SummonOptions;
+  /** The top left corner of the token's place, or null to put it next to the summoner. */
+  position: Point | null;
+};
+
+/** The token size in grid squares, from the options' footprint in meters or else the actor's own. */
+function summonedFootprint(
+  options: SummonOptions,
+  grid: Scene["grid"],
+  actorSize: { w: number; h: number },
+): { w: number; h: number } {
+  if (!options.footprintMeters) {
+    return actorSize;
+  }
+  const cells = summonedTokenCells(options.footprintMeters, grid.distance, grid.isGridless);
+  return { w: cells, h: cells };
+}
+
 /**
- * Place an unlinked token of the actor with this rqid on the nearest free cell next to the caster,
- * importing the actor into a Summoned folder the first time. The token gets an effect carrying the
- * spell's provenance, and goes when the effect ends (RBM p.90). Creates tokens, so the behavior
- * calling it needs `runAsGm`.
+ * Summon the actor with this rqid. The user who applies the spell places the token with Foundry's
+ * own token placement, within range and sight of the caster (RBM p.6). Without a caster token on
+ * the viewed scene that the user owns, or without a caster (token HUD "+"), it goes on the nearest
+ * free cell next to the summoner. The active GM creates the token, importing the actor into a Summoned folder the
+ * first time, and gives it an effect carrying the spell's provenance that removes it when the
+ * summoning ends (RBM p.90). Resolves to undefined, leaving Apply clickable, when the placement is
+ * cancelled. Part of the public API.
  */
 export async function summon(
   scope: SpellApplyScope,
   actorRqid: string,
   options: SummonOptions = {},
 ): Promise<SpellEffectApplied | undefined> {
+  const spellName = scope.spell.name ?? "";
+  if (!game.user?.isGM && !hasActiveGm(spellName)) {
+    return undefined;
+  }
+  const summoner = await summonerToken(scope);
+  let position: Point | null = null;
+  const casterOnScene =
+    scope.cast.caster && summoner?.isOwner
+      ? casterTokenOnScene(summoner, summoner.actor as RqgActor)
+      : undefined;
+  if (casterOnScene) {
+    const actor = await Rqid.fromRqid(actorRqid, undefined, true);
+    if (actor instanceof Actor) {
+      const placed = await placeSummonedToken(
+        scope,
+        casterOnScene,
+        actor,
+        summonedFootprint(options, summoner!.parent!.grid, {
+          w: actor.prototypeToken.width,
+          h: actor.prototypeToken.height,
+        }),
+      );
+      if (!placed) {
+        return undefined;
+      }
+      position = placed;
+    }
+  }
+  const data: SummonQueryData = {
+    spellUuid: scope.spell.uuid ?? "",
+    targetActorUuid: scope.targetActor.uuid ?? "",
+    targetName: scope.targetName,
+    cast: scope.cast,
+    actorRqid: actorRqid,
+    options: options,
+    position: position,
+  };
+  return game.user?.isGM ? summonAsGm(data) : queryActiveGm("rqg.summon", data, spellName);
+}
+
+async function summonAsGm(data: SummonQueryData): Promise<SpellEffectApplied | undefined> {
+  const [spell, targetActor] = await Promise.all([
+    fromUuid(data.spellUuid),
+    fromUuid(data.targetActorUuid),
+  ]);
+  if (!spell || !targetActor) {
+    return undefined;
+  }
+  const scope = spellApplyScope(
+    spell as RqgItem,
+    targetActor as RqgActor,
+    data.targetName,
+    data.cast,
+  );
+  const { actorRqid, options } = data;
   const spellName = scope.spell.name ?? "";
   const summoner = await summonerToken(scope);
   const scene = summoner?.parent;
@@ -112,13 +169,23 @@ export async function summon(
     return undefined;
   }
 
-  const gridSize = scene.grid.size;
-  const cell = nearestFreeCell(
-    gridRect(summoner, gridSize),
-    { w: actor.prototypeToken.width, h: actor.prototypeToken.height },
-    scene.tokens.contents.map((token) => gridRect(token, gridSize)),
-  );
-  if (!cell) {
+  const grid = scene.grid;
+  const size = summonedFootprint(options, grid, {
+    w: actor.prototypeToken.width,
+    h: actor.prototypeToken.height,
+  });
+  // Where the user placed it, exactly; else the free cell nearest the summoner
+  let position: Point | undefined = data.position ?? undefined;
+  if (!position) {
+    if (grid.isGridless) {
+      position = { x: summoner.x + summoner.width * grid.size, y: summoner.y };
+    } else {
+      const occupied: GridRect[] = scene.tokens.contents.map((token) => tokenCell(grid, token));
+      const cell = nearestFreeCell(tokenCell(grid, summoner), size, occupied);
+      position = cell ? grid.getTopLeftPoint({ i: cell.row, j: cell.col }) : undefined;
+    }
+  }
+  if (!position) {
     ui.notifications?.warn(
       localize("RQG.ChatMessage.SpellCast.Summon.NoRoom", {
         spellName,
@@ -129,8 +196,10 @@ export async function summon(
   }
   const tokenData = await actor.getTokenDocument(
     {
-      x: cell.col * gridSize,
-      y: cell.row * gridSize,
+      x: position.x,
+      y: position.y,
+      width: size.w,
+      height: size.h,
       actorLink: false,
       disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL,
     },
@@ -155,10 +224,13 @@ export async function summon(
     localize("RQG.ChatMessage.SpellCast.Summon.Summoned", {
       spellName,
       summonedName: token?.name ?? "",
-      casterName: summoner.name ?? "",
     }),
   );
   return { outcome: "applied", effectUuids: [effect.uuid] };
+}
+
+export function initSummonQuery(): void {
+  CONFIG.queries["rqg.summon"] = summonAsGm;
 }
 
 /** Remove the token of a summoning made by `summon` once its effect has ended. */

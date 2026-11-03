@@ -550,7 +550,7 @@
           "NoCasterToken": "{spellName}: the caster has no token on a scene to summon next to.",
           "NoActor": "{spellName}: there is no actor with the rqid {rqid} to summon. Create one, for example from the Glorantha Bestiary, and give it that rqid.",
           "NoRoom": "{spellName}: there is no free space near {casterName}.",
-          "Summoned": "{spellName}: {summonedName} appears next to {casterName}."
+          "Summoned": "{spellName}: {summonedName} appears."
         },
         "NoSpellEffectTarget": "{targetName} has nothing {spellName} can be cast on.",
         "ChooseTargetTitle": "Apply {spellName} to",

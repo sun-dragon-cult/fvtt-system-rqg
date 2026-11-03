@@ -1,7 +1,7 @@
 import { localize } from "../util";
 import { drawReach, spellReach } from "./place-spell-area";
 import { casterTokenOnScene } from "./spell-area-targets";
-import { nearestFreeCell, summonerToken } from "./summon";
+import { nearestFreeCell, summonerToken, tokenCell } from "./token-cells";
 import type { SpellApplyScope } from "./apply-spell-effect";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 
@@ -154,21 +154,13 @@ export async function moveTokenNear(
     return undefined;
   }
   const grid = scene.grid;
-  // Cells by the grid's own offsets, so a grid that doesn't start at the scene's corner still lines up
-  // A token's corner can sit on the edge of its cell, so its center says which cell it is in
-  const rect = (other: { x: number; y: number; width: number; height: number }) => {
-    const center = {
-      x: other.x + (other.width * (grid.sizeX ?? grid.size)) / 2,
-      y: other.y + (other.height * (grid.sizeY ?? grid.size)) / 2,
-    };
-    const { i, j } = grid.getOffset(center);
-    return { col: j, row: i, w: other.width, h: other.height };
-  };
   const { i, j } = grid.getOffset(point);
   const cell = nearestFreeCell(
     { col: j, row: i, w: 1, h: 1 },
     { w: token.width, h: token.height },
-    scene.tokens.contents.filter((other) => other.id !== token.id).map(rect),
+    scene.tokens.contents
+      .filter((other) => other.id !== token.id)
+      .map((other) => tokenCell(grid, other)),
   );
   if (!cell) {
     return undefined;

@@ -12,7 +12,7 @@ import {
   type SpellEffectCast,
   type SpellEffectDuration,
 } from "./apply-spell-effect";
-import { summonerToken } from "./summon";
+import { summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
 import { queryActiveGm } from "./run-spell-apply";
