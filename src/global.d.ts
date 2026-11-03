@@ -41,7 +41,6 @@ import type { CharacteristicRollOptions } from "./rolls/characteristic-roll/char
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
-import type { RqgToken } from "./combat/rqg-token.ts";
 import type { SpellStackingRule } from "./active-effect/data-model/spell-effect.defs";
 import type { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior.ts";
 import type { SpellAreaRegionBehavior } from "./scene/spell-area-region-behavior.ts";
@@ -296,10 +295,6 @@ declare global {
     RollTable: { [systemId]?: RollTableFlags };
     Scene: { [systemId]?: SceneFlags };
     ChatMessage: { [systemId]?: RqgChatMessageDataSource };
-  }
-
-  interface PlaceableObjectClassConfig {
-    Token: typeof RqgToken;
   }
 
   interface SettingConfig {

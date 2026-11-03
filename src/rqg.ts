@@ -9,7 +9,7 @@ import { RqgCombat } from "./combat/rqg-combat";
 import { RQG_CONFIG, systemId } from "./system/config";
 import { migrateWorld } from "./system/migrations/migrate-world";
 import { RqgCombatTracker } from "./combat/rqg-combat-tracker";
-import { RqgToken } from "./combat/rqg-token";
+import { initTokenHooks } from "./combat/token-hooks";
 import { cacheAvailableHitLocations, cacheAvailableRunes } from "./system/util";
 import { RqgChatMessage } from "./chat/rqg-chat-message";
 import { createRqgApi } from "./system/api/rqg-api";
@@ -109,7 +109,7 @@ Hooks.once("init", () => {
   RqgCombat.init();
   RqgCombatTracker.init();
   RqgTokenRuler.init();
-  RqgToken.init();
+  initTokenHooks();
   RqgActor.init();
   RqgDotPickerElement.register();
   initCharacterPassiveRecovery();
