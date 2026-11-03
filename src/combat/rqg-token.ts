@@ -2,12 +2,13 @@ import { initializeAllCharacteristics } from "../actors/context-menus/characteri
 import { getCombatantsSharingToken } from "./combatant-utils";
 
 import Token = foundry.canvas.placeables.Token;
-import { assertDocumentSubType } from "../system/util";
+import { isDocumentSubType } from "../system/util";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data";
 
 export class RqgToken extends Token {
   static init() {
     CONFIG.Token.objectClass = RqgToken;
+    Hooks.on("createToken", RqgToken.onCreateToken);
   }
 
   override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void {
@@ -34,24 +35,22 @@ export class RqgToken extends Token {
     }
   }
 
-  protected override _onCreate(
-    data: foundry.data.fields.SchemaField.CreateData<TokenDocument["schema"]["fields"]>,
-    options: TokenDocument.Database.OnCreateOptions,
+  /** Runs on every client regardless of open scene, so only the creating user sets the token up. */
+  static async onCreateToken(
+    document: TokenDocument,
+    _options: TokenDocument.Database.OnCreateOptions,
     userId: string,
-  ): void {
-    super._onCreate(data, options, userId);
-    assertDocumentSubType<CharacterActor>(
-      this.actor,
-      ActorTypeEnum.Character,
-      "Expected CharacterActor on Token creation",
-    );
-    if (userId === game.user?.id) {
-      void this.actor?.updateTokenEffectFromHealth();
-      if (!this.document.actorLink) {
-        if (this.actor) {
-          void initializeAllCharacteristics(this.actor);
-        }
-      }
+  ): Promise<void> {
+    if (userId !== game.user?.id) {
+      return;
+    }
+    const actor = document.actor;
+    if (!isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
+      return;
+    }
+    await actor.updateTokenEffectFromHealth();
+    if (!document.actorLink) {
+      await initializeAllCharacteristics(actor);
     }
   }
 }
