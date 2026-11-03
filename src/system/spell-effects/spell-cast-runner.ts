@@ -253,7 +253,7 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
   };
 
   const next = await stepSpellCast(record, data.inputs, env);
-  if (!data.requestPatch && foundry.utils.objectsEqual(next.targets, record.targets)) {
+  if (!data.requestPatch && foundry.utils.equals(next.targets, record.targets)) {
     return;
   }
   await writeStep(message, next, data);
