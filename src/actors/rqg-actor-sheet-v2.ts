@@ -396,7 +396,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // Compute active SRs from combat tracker
     const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
-      this.actor.id ?? "",
+      this.actor as Actor.Stored,
     );
     this._activeInSR = new Set(
       actorCombatants

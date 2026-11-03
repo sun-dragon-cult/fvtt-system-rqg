@@ -168,7 +168,7 @@ export class RqgActorSheet<
   override async _render(force = false, options: Application.RenderOptions<Options> = {}) {
     await super._render(force, options);
     const actorCombatants: Combatant.Implementation[] =
-      game.combat?.getCombatantsByActor(this.actor.id ?? "") ?? [];
+      game.combat?.getCombatantsByActor(this.actor as Actor.Stored) ?? [];
     actorCombatants?.forEach((c) => (c.apps[this.appId] = this as any));
   }
 
@@ -178,7 +178,7 @@ export class RqgActorSheet<
       // but try to remove the combatant.apps reference.
       // This is is a workaround - can I remove the app reference in a better way?
       const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
-        this.actor.id ?? "",
+        this.actor as Actor.Stored,
       );
       actorCombatants?.forEach((c) => delete c.apps[this.appId]);
     } else {
@@ -196,7 +196,7 @@ export class RqgActorSheet<
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
 
     const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
-      this.actor.id ?? "",
+      this.actor as Actor.Stored,
     );
 
     this.activeInSR = new Set(
