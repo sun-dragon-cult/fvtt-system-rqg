@@ -252,6 +252,16 @@ export class CharacterDataModel extends RqgActorDataModel<
     return defineCharacterSchema();
   }
 
+  /** Before the data models the sheets stored the birth year as `background.birthyear`. */
+  static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
+    const background = source["background"] as Record<string, unknown> | undefined;
+    if (background && "birthyear" in background) {
+      background["birthYear"] ??= background["birthyear"];
+      delete background["birthyear"];
+    }
+    return super.migrateData(source);
+  }
+
   static getSpiritMagicPointSum(actor: CharacterActor): number {
     return actor.items.reduce((acc: number, item) => {
       if (
