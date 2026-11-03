@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ActorTypeEnum } from "../data-model/actor-data/rqg-actor-data";
 
+const warnDeprecated = vi.hoisted(() => vi.fn());
+vi.mock("../system/deprecation", () => ({ warnDeprecated }));
+
 class DataModelStub {}
 
 /** Install the globals the class needs at definition time, then import it - hence the dynamic import. */
@@ -99,6 +102,7 @@ const originalActiveEffect = (globalThis as any).ActiveEffect;
 const originalDataModel = (globalThis as any).foundry.abstract.DataModel;
 
 afterEach(() => {
+  warnDeprecated.mockClear();
   (globalThis as any).Item = originalItem;
   (globalThis as any).ActiveEffect = originalActiveEffect;
   (globalThis as any).foundry.abstract.DataModel = originalDataModel;
@@ -320,8 +324,12 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     expect(item.system.getFieldForProperty).toHaveBeenCalledWith("effect.add.melee.attack");
     expect(item.system.effect.add.melee.attack).toBe(50);
     // what the migration could not reach (locked packs, module content) is surfaced to be fixed
-    expect(warn).toHaveBeenCalledTimes(1);
-    expect(warn.mock.calls[0]![0]).toContain("LegacySyntaxDeprecated");
+    expect(warnDeprecated).toHaveBeenCalledWith(
+      expect.stringContaining("i.weapon.short-spear:system.effect.add.melee.attack"),
+      expect.stringContaining("@i.weapon.short-spear:system.effect.add.melee.attack"),
+      { since: "6.2.0", until: "6.4.0" },
+    );
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it("warns about a bare rqid with no system path instead of silently dropping it", async () => {

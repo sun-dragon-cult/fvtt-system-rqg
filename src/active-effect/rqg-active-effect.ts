@@ -20,6 +20,7 @@ import {
   type RoutedKeyWarningReason,
 } from "./routed-key/routed-key-warnings";
 
+import { warnDeprecated } from "../system/deprecation";
 import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -303,7 +304,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
 
   /**
    * @deprecated Pre-#920 syntax: use "@<rqid>:system.path" instead of "<rqid>:system.path". Kept
-   * one release for content the #920 migration misses (unlinked packs, hand-authored effects).
+   * until 6.4.0 for content the #920 migration misses (unlinked packs, hand-authored effects).
    */
   static override _applyChangeCustom(
     targetDoc: Actor.Implementation,
@@ -324,7 +325,11 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       return;
     }
 
-    RqgActiveEffect.#warnRoutedKey(effect, change, "legacy-syntax-deprecated");
+    warnDeprecated(
+      `The Active Effect key "${change.key}" in CUSTOM mode`,
+      `"@${change.key}" in ADD mode`,
+      { since: "6.2.0", until: "6.4.0" },
+    );
 
     // core passes no options here, so the replacement data has to be rebuilt
     RqgActiveEffect.#applyRoutedChange(
