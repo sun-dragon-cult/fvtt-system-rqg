@@ -74,3 +74,26 @@ describe("CharacterDataModel accumulator schema", () => {
     }
   });
 });
+
+describe("CharacterDataModel.migrateData birth year", () => {
+  const migrate = (background: Record<string, unknown>) =>
+    CharacterDataModel.migrateData({ background }) as {
+      background: Record<string, unknown>;
+    };
+
+  it("moves the lowercase birthyear the sheets used to write to birthYear", () => {
+    const { background } = migrate({ birthyear: 1612 });
+    expect(background["birthYear"]).toBe(1612);
+    expect("birthyear" in background).toBe(false);
+  });
+
+  it("keeps a birthYear that is already set", () => {
+    const { background } = migrate({ birthyear: 1600, birthYear: 1612 });
+    expect(background["birthYear"]).toBe(1612);
+    expect("birthyear" in background).toBe(false);
+  });
+
+  it("leaves data without the old key alone", () => {
+    expect(migrate({ birthYear: 1612 }).background).toEqual({ birthYear: 1612 });
+  });
+});

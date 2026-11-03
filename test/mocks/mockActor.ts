@@ -431,7 +431,7 @@ export const mockActor: any = {
       cultureJournalRqidLinks: [],
       tribeJournalRqidLinks: [],
       clanJournalRqidLinks: [],
-      birthyear: null,
+      birthYear: null,
       age: null,
       gender: "",
       reputation: null,

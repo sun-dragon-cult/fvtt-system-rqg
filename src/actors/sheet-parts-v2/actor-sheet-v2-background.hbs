@@ -7,13 +7,13 @@
       <legend>{{localize "RQG.Actor.Background.BaseData"}}</legend>
       <div class="key-value-grid">
         {{#edit-mode system.editMode "all"}}
-          <label for="birthyear-{{id}}">{{localize "RQG.Actor.Background.BirthYear"}}</label>
-          <input id="birthyear-{{id}}" name="system.background.birthyear"
-            value="{{system.background.birthyear}}" type="number" min="0" max="9999" />
+          <label for="birthYear-{{id}}">{{localize "RQG.Actor.Background.BirthYear"}}</label>
+          <input id="birthYear-{{id}}" name="system.background.birthYear"
+            value="{{system.background.birthYear}}" type="number" min="0" max="9999" />
         {{else}}
-          {{#if system.background.birthyear}}
+          {{#if system.background.birthYear}}
             <label>{{localize "RQG.Actor.Background.BirthYear"}}</label>
-            <span>{{system.background.birthyear}}</span>
+            <span>{{system.background.birthYear}}</span>
           {{/if}}
         {{/edit-mode}}
 
