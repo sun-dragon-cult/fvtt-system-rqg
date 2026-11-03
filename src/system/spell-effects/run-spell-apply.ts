@@ -45,7 +45,8 @@ export async function runSpellApply(
   return queryActiveGm("rqg.applySpellBehavior", queryData, spellName);
 }
 
-type RqgQuery = "rqg.applySpellBehavior" | "rqg.createSpellArea" | "rqg.continueSpellCast";
+type RqgQuery =
+  "rqg.applySpellBehavior" | "rqg.createSpellArea" | "rqg.summon" | "rqg.continueSpellCast";
 
 /**
  * Run one of the system's queries on the active GM's client, for what players may not do. Warns,

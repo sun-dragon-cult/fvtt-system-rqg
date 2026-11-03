@@ -46,6 +46,7 @@ import type { SpellStackingRule } from "./active-effect/data-model/spell-effect.
 import type { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior.ts";
 import type { SpellAreaRegionBehavior } from "./scene/spell-area-region-behavior.ts";
 import type { CreateSpellAreaQueryData } from "./system/spell-effects/spell-area.ts";
+import type { SummonQueryData } from "./system/spell-effects/summon.ts";
 import type { ArmorDataModel } from "./data-model/item-data/armor-data-model";
 import type { CultDataModel } from "./data-model/item-data/cult-data-model";
 import type { GearDataModel } from "./data-model/item-data/gear-data-model";
@@ -225,6 +226,7 @@ declare global {
       "rqg.createSpellArea": (
         data: CreateSpellAreaQueryData,
       ) => Promise<SpellEffectApplied | undefined>;
+      "rqg.summon": (data: SummonQueryData) => Promise<SpellEffectApplied | undefined>;
       "rqg.continueSpellCast": (data: ContinueSpellCastData) => Promise<void>;
     }
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nearestFreeCell } from "./summon";
+import { nearestFreeCell, summonedTokenCells, tokenCell } from "./token-cells";
 
 describe("nearestFreeCell", () => {
   const caster = { col: 5, row: 5, w: 1, h: 1 };
@@ -32,5 +32,49 @@ describe("nearestFreeCell", () => {
   it("gives up when nothing within reach is free", () => {
     const wall = { col: -100, row: -100, w: 300, h: 300 };
     expect(nearestFreeCell(caster, { w: 1, h: 1 }, [wall], 2)).toBeUndefined();
+  });
+});
+
+describe("token cells", () => {
+  // A 100 px square grid that starts 50 px in from the scene's corner
+  const grid = {
+    size: 100,
+    sizeX: 100,
+    sizeY: 100,
+    getOffset: ({ x, y }: { x: number; y: number }) => ({
+      i: Math.floor((y - 50) / 100),
+      j: Math.floor((x - 50) / 100),
+    }),
+  } as any;
+
+  it("finds the cell a token covers from its center", () => {
+    expect(tokenCell(grid, { x: 250, y: 150, width: 1, height: 1 })).toEqual({
+      col: 2,
+      row: 1,
+      w: 1,
+      h: 1,
+    });
+  });
+});
+
+describe("summonedTokenCells", () => {
+  const small = { w: 1, h: 1 };
+  const medium = { w: 1, h: 3 };
+  const large = { w: 2, h: 5 };
+
+  it("rounds the equal-area square up on a 1.5 m grid", () => {
+    expect([small, medium, large].map((f) => summonedTokenCells(f, 1.5, false))).toEqual([1, 2, 3]);
+  });
+
+  it("rounds the equal-area square up on a 1 m grid", () => {
+    expect([small, medium, large].map((f) => summonedTokenCells(f, 1, false))).toEqual([1, 2, 4]);
+  });
+
+  it("is never smaller than one square", () => {
+    expect(summonedTokenCells(small, 5, false)).toBe(1);
+  });
+
+  it("is exact on a gridless scene", () => {
+    expect(summonedTokenCells(large, 1, true)).toBeCloseTo(Math.sqrt(10));
   });
 });
