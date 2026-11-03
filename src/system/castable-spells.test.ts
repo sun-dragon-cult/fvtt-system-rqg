@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { abilities, spells, weaponUsages } from "./api-query";
-import { getAlliedBondActor } from "../magic-point-source";
-import { getExternalSpiritMagicItems } from "../spell-source";
+import { getCastableSpells } from "./castable-spells";
+import { getAlliedBondActor } from "./magic-point-source";
+import { getExternalSpiritMagicItems } from "./spell-source";
 
-vi.mock("../magic-point-source", () => ({
+vi.mock("./magic-point-source", () => ({
   getAlliedBondActor: vi.fn(() => undefined),
   getBoundSpiritItems: vi.fn(() => []),
 }));
-vi.mock("../spell-source", () => ({
+vi.mock("./spell-source", () => ({
   getExternalSpiritMagicItems: vi.fn(() => []),
   getBoundSpiritSpiritMagicItems: vi.fn(() => []),
   getExternalRuneMagicItems: vi.fn(() => []),
 }));
-vi.mock("../spell-matrix", () => ({
+vi.mock("./spell-matrix", () => ({
   getMatrixSpellSlots: vi.fn((actor: any) =>
     actor.items.contents
       .filter((i: any) => i.system.matrixSpells?.length)
@@ -58,80 +58,7 @@ function mockActor(items: any[], system: any = {}): any {
   };
 }
 
-describe("abilities", () => {
-  const actor = mockActor([
-    item("s2", "skill", "Scan", { chance: 45, category: "perception", hasExperience: true }),
-    item("p1", "passion", "Hate (Lunars)", { chance: 70 }),
-    item("s1", "skill", "Dodge", { chance: 30, category: "agility" }),
-    item("w1", "weapon", "Spear"),
-  ]);
-
-  it("lists skills, runes and passions sorted by name", () => {
-    expect(abilities(actor).map((a) => a.name)).toEqual(["Dodge", "Hate (Lunars)", "Scan"]);
-  });
-
-  it("filters by type and only sets category for skills", () => {
-    const result = abilities(actor, { types: ["passion"] });
-    expect(result).toHaveLength(1);
-    expect(result[0]).toMatchObject({ name: "Hate (Lunars)", chance: 70, category: undefined });
-    expect(abilities(actor)[2]).toMatchObject({ category: "perception", hasExperience: true });
-  });
-});
-
-describe("weaponUsages", () => {
-  const usage = (rqid: string, extra: any = {}) => ({
-    skillRqidLink: { rqid, name: "" },
-    minStrength: 0,
-    minDexterity: 0,
-    strikeRank: 2,
-    ...extra,
-  });
-  const noUsage = usage("");
-  const spearSkill = { ...item("sk", "skill", "Spear", { chance: 50 }), rqid: "i.skill.spear" };
-  const spear = item("w1", "weapon", "Spear", {
-    equippedStatus: "equipped",
-    effect: { add: { melee: { attack: 10 }, missile: { attack: 0 } } },
-    usage: {
-      oneHand: usage("i.skill.spear"),
-      offHand: noUsage,
-      twoHand: usage("i.skill.spear", { minStrength: 20 }),
-      missile: noUsage,
-    },
-  });
-  const carriedBow = item("w2", "weapon", "Bow", {
-    equippedStatus: "carried",
-    usage: {
-      oneHand: noUsage,
-      offHand: noUsage,
-      twoHand: noUsage,
-      missile: usage("i.skill.spear"),
-    },
-  });
-  const actor = mockActor([spear, carriedBow, spearSkill]);
-
-  it("lists equipped weapon usages that have a linked skill", () => {
-    const result = weaponUsages(actor);
-    expect(result.map((u) => u.usage)).toEqual(["oneHand", "twoHand"]);
-    expect(result[0]).toMatchObject({
-      name: "Spear",
-      skillName: "Spear",
-      chance: 60,
-      strikeRank: 2,
-      unusable: false,
-    });
-    expect(result[1]?.unusable).toBe(true);
-  });
-
-  it("includes unequipped weapons on request", () => {
-    expect(weaponUsages(actor, { includeUnequipped: true }).map((u) => u.name)).toEqual([
-      "Spear",
-      "Spear",
-      "Bow",
-    ]);
-  });
-});
-
-describe("spells", () => {
+describe("getCastableSpells", () => {
   beforeEach(() => {
     vi.mocked(getAlliedBondActor).mockReturnValue(undefined);
     vi.mocked(getExternalSpiritMagicItems).mockReturnValue([]);
@@ -153,7 +80,7 @@ describe("spells", () => {
       item("ext", "spiritMagic", "Mobility", { points: 1, isVariable: false }),
     ]);
 
-    const result = spells(actor);
+    const result = getCastableSpells(actor);
 
     expect(result.map((s) => [s.name, s.source, s.sourceName])).toEqual([
       ["Bladesharp", "own", undefined],

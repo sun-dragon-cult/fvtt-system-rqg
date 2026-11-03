@@ -15,7 +15,7 @@ import { resolveMatrixSpellItem } from "../spell-matrix";
 import { RqgLogger } from "../logging/rqg-logger";
 import { type ActorRef, findItem, type ItemRef, resolveActor, resolveItem } from "./api-resolve";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
-import { type CastableSpell, spells } from "./api-query";
+import type { CastableSpell } from "../castable-spells";
 
 const logger = new RqgLogger("Api");
 
@@ -93,7 +93,7 @@ export type SpellRollOptions = RollOptions & {
 
 /**
  * Cast a spirit magic spell. The spell can be given as one of the `CastableSpell`s from
- * `query.spells`, which also covers spells from Allied Spirits, bound spirits and matrices.
+ * `actor.getCastableSpells()`, which also covers spells from Allied Spirits, bound spirits and matrices.
  * Returns the roll when `skipDialog` is set and the spell was cast.
  */
 export async function spiritMagic(
@@ -197,7 +197,7 @@ function findCastableSpellByName(
   name: string,
   type: string,
 ): CastableSpell | undefined {
-  const candidates = spells(caster).filter((s) => s.type === type);
+  const candidates = caster.getCastableSpells().filter((s) => s.type === type);
   const lowerName = name.toLowerCase();
   return (
     candidates.find((s) => s.name === name) ??
