@@ -10,7 +10,9 @@
     <label>
       {{localize "RQG.Dialog.Common.DefendingActor"}}
     </label>
-    <div>{{defendingTokenName}}</div>
+    <select data-target-select>
+      {{selectOptions targetOptions selected=selectedTarget}}
+    </select>
 
     <label>
       {{localize "RQG.Dialog.Attack.AttackingWeapon"}}

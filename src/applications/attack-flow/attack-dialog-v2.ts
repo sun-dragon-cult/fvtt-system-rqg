@@ -45,6 +45,10 @@ import { getEquippedProjectileOptions } from "@actors/rqg-actor-sheet-data-prep.
 import { firedMissilesSettled, projectileSpellNames } from "@items/weapon-item/spelled-projectile";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { DocumentAppsLink } from "../app-parts/document-apps-link";
+import {
+  buildTargetTokenSelect,
+  onTargetTokenSelectChange,
+} from "../app-parts/target-token-select";
 import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
 import {
   isForbidden,
@@ -402,6 +406,14 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       this.prepared,
     );
 
+    const attackerCanvasToken =
+      attackingTokenOrActor instanceof Token
+        ? attackingTokenOrActor
+        : attackingTokenOrActor instanceof TokenDocument
+          ? (attackingTokenOrActor.object ?? undefined)
+          : undefined;
+    const targetSelect = buildTargetTokenSelect(attackerCanvasToken);
+
     return {
       formData: formData,
       ammoQuantity: ammoQuantity,
@@ -409,7 +421,8 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       projectileOptions: projectileOptions,
       selectedProjectileId: this.weaponItem.system.projectileId,
       attackerOptions: AttackDialogV2.getAttackerOptions(),
-      defendingTokenName: target?.name ?? localize("RQG.Dialog.Attack.NoTargetSelected"),
+      targetOptions: targetSelect.options,
+      selectedTarget: targetSelect.selected,
       attackingWeaponOptions: AttackDialogV2.getWeaponOptions(
         attackingTokenOrActor instanceof Token
           ? (attackingTokenOrActor.document.uuid ?? undefined)
@@ -441,6 +454,9 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
   }
 
   private onCommittedFormChange(event: Event): boolean | void {
+    if (!onTargetTokenSelectChange(event)) {
+      return false;
+    }
     const target = event.target;
     if (!isFoundryElementInstanceOf(target, HTMLSelectElement)) {
       return;
