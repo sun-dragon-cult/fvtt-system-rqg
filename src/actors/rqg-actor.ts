@@ -1079,15 +1079,10 @@ export class RqgActor extends Actor {
   }
 
   private isHealthAffectingActorUpdate(
-    changes: Actor.UpdateData,
     changesMagicPointsValue: boolean,
     changesHitPointsValue: boolean,
   ): boolean {
-    return (
-      changesHitPointsValue ||
-      changesMagicPointsValue ||
-      foundry.utils.hasProperty(changes, "system.attributes.health")
-    );
+    return changesHitPointsValue || changesMagicPointsValue;
   }
 
   /**
@@ -1362,7 +1357,6 @@ export class RqgActor extends Actor {
       "system.attributes.hitPoints.value",
     );
     this._healthBeforeActorUpdate = this.isHealthAffectingActorUpdate(
-      changes,
       changesMagicPointsValue,
       changesHitPointsValue,
     )

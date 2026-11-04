@@ -140,6 +140,7 @@ function defineCharacterSchema() {
         nullable: false,
         initial: "healthy",
         choices: enumChoices(actorHealthStatuses, "RQG.Actor.Attributes.Health."),
+        persisted: false,
       }),
     }),
 

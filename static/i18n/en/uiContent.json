@@ -304,7 +304,7 @@
             },
             "health": {
               "label": "Health status",
-              "hint": "Calculated from the hit locations and hit points every time the character changes. A value written here is overwritten."
+              "hint": "Calculated from the hit locations and hit points, never stored."
             }
           },
           "effect": {
