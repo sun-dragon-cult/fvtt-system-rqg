@@ -223,8 +223,7 @@
             "magicPoints": {
               "label": "Magic points",
               "value": {
-                "label": "Current magic points",
-                "hint": "Stored."
+                "label": "Current magic points"
               },
               "max": {
                 "label": "Maximum magic points",
@@ -233,17 +232,16 @@
             },
             "magicPointRecoveryRateFactor": {
               "label": "Magic point recovery rate",
-              "hint": "Stored. 1 is the standard rate, 2 recovers twice as fast and 0.5 half as fast."
+              "hint": "1 is the standard rate, 2 recovers twice as fast and 0.5 half as fast."
             },
             "magicPointRecoverySettledWorldTime": {
               "label": "Magic points settled at",
-              "hint": "Stored. World time in seconds when passive recovery was last applied. null means never."
+              "hint": "World time in seconds when passive recovery was last applied. null means never."
             },
             "hitPoints": {
               "label": "Hit points",
               "value": {
-                "label": "Current hit points",
-                "hint": "Stored."
+                "label": "Current hit points"
               },
               "max": {
                 "label": "Maximum hit points",
@@ -252,13 +250,13 @@
             },
             "healingSettledWorldTime": {
               "label": "Healing settled at",
-              "hint": "Stored. World time in seconds when natural healing was last applied. null means never."
+              "hint": "World time in seconds when natural healing was last applied. null means never."
             },
             "move": {
               "label": "Movement",
               "currentLocomotion": {
                 "label": "Current movement mode",
-                "hint": "Stored. Which of walk, swim or fly the character is using."
+                "hint": "Which of walk, swim or fly the character is using."
               },
               "walk": {
                 "label": "Walk",
@@ -307,12 +305,11 @@
               }
             },
             "heroPoints": {
-              "label": "Hero points",
-              "hint": "Stored."
+              "label": "Hero points"
             },
             "isCreature": {
               "label": "Creature",
-              "hint": "Stored. Creatures have no skill category modifiers."
+              "hint": "Creatures have no skill category modifiers."
             },
             "health": {
               "label": "Health status",

@@ -543,8 +543,7 @@
                 "null"
               ],
               "default": 0,
-              "title": "Current magic points",
-              "description": "Stored."
+              "title": "Current magic points"
             },
             "max": {
               "type": "integer",
@@ -565,7 +564,7 @@
           "minimum": 0,
           "default": 1,
           "title": "Magic point recovery rate",
-          "description": "Stored. 1 is the standard rate, 2 recovers twice as fast and 0.5 half as fast."
+          "description": "1 is the standard rate, 2 recovers twice as fast and 0.5 half as fast."
         },
         "magicPointRecoverySettledWorldTime": {
           "type": [
@@ -573,7 +572,7 @@
             "null"
           ],
           "title": "Magic points settled at",
-          "description": "Stored. World time in seconds when passive recovery was last applied. null means never."
+          "description": "World time in seconds when passive recovery was last applied. null means never."
         },
         "hitPoints": {
           "type": "object",
@@ -584,8 +583,7 @@
                 "null"
               ],
               "default": 0,
-              "title": "Current hit points",
-              "description": "Stored."
+              "title": "Current hit points"
             },
             "max": {
               "type": "integer",
@@ -607,7 +605,7 @@
             "null"
           ],
           "title": "Healing settled at",
-          "description": "Stored. World time in seconds when natural healing was last applied. null means never."
+          "description": "World time in seconds when natural healing was last applied. null means never."
         },
         "move": {
           "type": "object",
@@ -622,7 +620,7 @@
               "minLength": 1,
               "default": "walk",
               "title": "Current movement mode",
-              "description": "Stored. Which of walk, swim or fly the character is using."
+              "description": "Which of walk, swim or fly the character is using."
             },
             "walk": {
               "type": "object",
@@ -830,14 +828,13 @@
           "type": "integer",
           "minimum": 0,
           "default": 0,
-          "title": "Hero points",
-          "description": "Stored."
+          "title": "Hero points"
         },
         "isCreature": {
           "type": "boolean",
           "default": false,
           "title": "Creature",
-          "description": "Stored. Creatures have no skill category modifiers."
+          "description": "Creatures have no skill category modifiers."
         },
         "health": {
           "type": "string",
