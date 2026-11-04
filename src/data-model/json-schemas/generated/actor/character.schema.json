@@ -542,28 +542,38 @@
                 "integer",
                 "null"
               ],
-              "default": 0
+              "default": 0,
+              "title": "Current magic points",
+              "description": "Stored."
             },
             "max": {
               "type": "integer",
-              "default": 0
+              "default": 0,
+              "title": "Maximum magic points",
+              "description": "Calculated from POW plus effects, never stored. To change it, add an Active Effect that writes to system.effect.add.magicPoints.max.",
+              "readOnly": true
             }
           },
           "additionalProperties": false,
           "required": [
             "max"
-          ]
+          ],
+          "title": "Magic points"
         },
         "magicPointRecoveryRateFactor": {
           "type": "number",
           "minimum": 0,
-          "default": 1
+          "default": 1,
+          "title": "Magic point recovery rate",
+          "description": "Stored. 1 is the standard rate, 2 recovers twice as fast and 0.5 half as fast."
         },
         "magicPointRecoverySettledWorldTime": {
           "type": [
             "number",
             "null"
-          ]
+          ],
+          "title": "Magic points settled at",
+          "description": "Stored. World time in seconds when passive recovery was last applied. null means never."
         },
         "hitPoints": {
           "type": "object",
@@ -573,23 +583,31 @@
                 "integer",
                 "null"
               ],
-              "default": 0
+              "default": 0,
+              "title": "Current hit points",
+              "description": "Stored."
             },
             "max": {
               "type": "integer",
-              "default": 0
+              "default": 0,
+              "title": "Maximum hit points",
+              "description": "Calculated from CON, SIZ and POW plus effects, never stored. To change it, add an Active Effect that writes to system.effect.add.hitPoints.max.",
+              "readOnly": true
             }
           },
           "additionalProperties": false,
           "required": [
             "max"
-          ]
+          ],
+          "title": "Hit points"
         },
         "healingSettledWorldTime": {
           "type": [
             "number",
             "null"
-          ]
+          ],
+          "title": "Healing settled at",
+          "description": "Stored. World time in seconds when natural healing was last applied. null means never."
         },
         "move": {
           "type": "object",
@@ -602,7 +620,9 @@
                 "fly"
               ],
               "minLength": 1,
-              "default": "walk"
+              "default": "walk",
+              "title": "Current movement mode",
+              "description": "Stored. Which of walk, swim or fly the character is using."
             },
             "walk": {
               "type": "object",
@@ -612,17 +632,22 @@
                     "number",
                     "null"
                   ],
-                  "default": 8
+                  "default": 8,
+                  "title": "Movement rate",
+                  "description": "Base movement rate for this kind of movement. The totals after encumbrance are calculated and not part of the schema."
                 },
                 "carryingFactor": {
                   "type": [
                     "number",
                     "null"
                   ],
-                  "default": 1
+                  "default": 1,
+                  "title": "Carrying factor",
+                  "description": "Multiplier on the maximum encumbrance (ENC) while moving this way."
                 }
               },
-              "additionalProperties": false
+              "additionalProperties": false,
+              "title": "Walk"
             },
             "swim": {
               "type": "object",
@@ -632,17 +657,22 @@
                     "number",
                     "null"
                   ],
-                  "default": 2
+                  "default": 2,
+                  "title": "Movement rate",
+                  "description": "Base movement rate for this kind of movement. The totals after encumbrance are calculated and not part of the schema."
                 },
                 "carryingFactor": {
                   "type": [
                     "number",
                     "null"
                   ],
-                  "default": 0.5
+                  "default": 0.5,
+                  "title": "Carrying factor",
+                  "description": "Multiplier on the maximum encumbrance (ENC) while moving this way."
                 }
               },
-              "additionalProperties": false
+              "additionalProperties": false,
+              "title": "Swim"
             },
             "fly": {
               "type": "object",
@@ -651,16 +681,21 @@
                   "type": [
                     "number",
                     "null"
-                  ]
+                  ],
+                  "title": "Movement rate",
+                  "description": "Base movement rate for this kind of movement. The totals after encumbrance are calculated and not part of the schema."
                 },
                 "carryingFactor": {
                   "type": [
                     "number",
                     "null"
-                  ]
+                  ],
+                  "title": "Carrying factor",
+                  "description": "Multiplier on the maximum encumbrance (ENC) while moving this way."
                 }
               },
-              "additionalProperties": false
+              "additionalProperties": false,
+              "title": "Fly"
             }
           },
           "additionalProperties": false,
@@ -669,16 +704,21 @@
             "walk",
             "swim",
             "fly"
-          ]
+          ],
+          "title": "Movement"
         },
         "heroPoints": {
           "type": "integer",
           "minimum": 0,
-          "default": 0
+          "default": 0,
+          "title": "Hero points",
+          "description": "Stored."
         },
         "isCreature": {
           "type": "boolean",
-          "default": false
+          "default": false,
+          "title": "Creature",
+          "description": "Stored. Creatures have no skill category modifiers."
         },
         "health": {
           "type": "string",
@@ -690,7 +730,9 @@
             "dead"
           ],
           "minLength": 1,
-          "default": "healthy"
+          "default": "healthy",
+          "title": "Health status",
+          "description": "Stored. The character's overall condition."
         }
       },
       "additionalProperties": false,
@@ -702,7 +744,8 @@
         "heroPoints",
         "isCreature",
         "health"
-      ]
+      ],
+      "title": "Attributes"
     },
     "effect": {
       "type": "object",
@@ -712,27 +755,37 @@
           "properties": {
             "healingRate": {
               "type": "integer",
-              "default": 1
+              "default": 1,
+              "title": "Healing rate multiplier",
+              "description": "Multiplies the calculated healing rate.",
+              "readOnly": true
             }
           },
           "additionalProperties": false,
           "required": [
             "healingRate"
-          ]
+          ],
+          "title": "Multipliers"
         },
         "add": {
           "type": "object",
           "properties": {
             "strikeRank": {
               "type": "integer",
-              "default": 0
+              "default": 0,
+              "title": "Strike rank modifier",
+              "description": "Added to the DEX strike rank.",
+              "readOnly": true
             },
             "magicPoints": {
               "type": "object",
               "properties": {
                 "max": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Maximum magic points modifier",
+                  "description": "Added to the maximum magic points.",
+                  "readOnly": true
                 }
               },
               "additionalProperties": false,
@@ -745,7 +798,10 @@
               "properties": {
                 "max": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Maximum hit points modifier",
+                  "description": "Added to the maximum hit points.",
+                  "readOnly": true
                 }
               },
               "additionalProperties": false,
@@ -758,51 +814,75 @@
               "properties": {
                 "agility": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Agility modifier",
+                  "readOnly": true
                 },
                 "communication": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Communication modifier",
+                  "readOnly": true
                 },
                 "knowledge": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Knowledge modifier",
+                  "readOnly": true
                 },
                 "magic": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Magic modifier",
+                  "readOnly": true
                 },
                 "manipulation": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Manipulation modifier",
+                  "readOnly": true
                 },
                 "perception": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Perception modifier",
+                  "readOnly": true
                 },
                 "stealth": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Stealth modifier",
+                  "readOnly": true
                 },
                 "meleeWeapons": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Melee Weapons modifier",
+                  "readOnly": true
                 },
                 "missileWeapons": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Missile Weapons modifier",
+                  "readOnly": true
                 },
                 "shields": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Shields modifier",
+                  "readOnly": true
                 },
                 "naturalWeapons": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Natural Weapons modifier",
+                  "readOnly": true
                 },
                 "otherSkills": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "title": "Other Skills modifier",
+                  "readOnly": true
                 }
               },
               "additionalProperties": false,
@@ -819,7 +899,9 @@
                 "shields",
                 "naturalWeapons",
                 "otherSkills"
-              ]
+              ],
+              "title": "Skill category modifiers",
+              "description": "Added to the skill category modifier from the characteristics."
             }
           },
           "additionalProperties": false,
@@ -828,14 +910,17 @@
             "magicPoints",
             "hitPoints",
             "skillCategoryModifiers"
-          ]
+          ],
+          "title": "Additions"
         }
       },
       "additionalProperties": false,
       "required": [
         "multiply",
         "add"
-      ]
+      ],
+      "title": "Effects",
+      "description": "Calculated pads that Active Effects write to. They are reset to 0 (1 for multipliers) every time the character is prepared and are never stored. The calculated values read them, so use these as targets for effects instead of writing to the calculated values."
     }
   },
   "additionalProperties": false,

@@ -216,6 +216,169 @@
           "warriorLightCavalry": "Warrior Light Cavalry"
         }
       },
+      "Character": {
+        "FIELDS": {
+          "attributes": {
+            "label": "Attributes",
+            "magicPoints": {
+              "label": "Magic points",
+              "value": {
+                "label": "Current magic points",
+                "hint": "Stored."
+              },
+              "max": {
+                "label": "Maximum magic points",
+                "hint": "Calculated from POW plus effects, never stored. To change it, add an Active Effect that writes to system.effect.add.magicPoints.max."
+              }
+            },
+            "magicPointRecoveryRateFactor": {
+              "label": "Magic point recovery rate",
+              "hint": "Stored. 1 is the standard rate, 2 recovers twice as fast and 0.5 half as fast."
+            },
+            "magicPointRecoverySettledWorldTime": {
+              "label": "Magic points settled at",
+              "hint": "Stored. World time in seconds when passive recovery was last applied. null means never."
+            },
+            "hitPoints": {
+              "label": "Hit points",
+              "value": {
+                "label": "Current hit points",
+                "hint": "Stored."
+              },
+              "max": {
+                "label": "Maximum hit points",
+                "hint": "Calculated from CON, SIZ and POW plus effects, never stored. To change it, add an Active Effect that writes to system.effect.add.hitPoints.max."
+              }
+            },
+            "healingSettledWorldTime": {
+              "label": "Healing settled at",
+              "hint": "Stored. World time in seconds when natural healing was last applied. null means never."
+            },
+            "move": {
+              "label": "Movement",
+              "currentLocomotion": {
+                "label": "Current movement mode",
+                "hint": "Stored. Which of walk, swim or fly the character is using."
+              },
+              "walk": {
+                "label": "Walk",
+                "value": {
+                  "label": "Movement rate",
+                  "hint": "Base movement rate for this kind of movement. The totals after encumbrance are calculated and not part of the schema."
+                },
+                "carryingFactor": {
+                  "label": "Carrying factor",
+                  "hint": "Multiplier on the maximum encumbrance (ENC) while moving this way."
+                }
+              },
+              "swim": {
+                "label": "Swim",
+                "value": {
+                  "label": "Movement rate",
+                  "hint": "Base movement rate for this kind of movement. The totals after encumbrance are calculated and not part of the schema."
+                },
+                "carryingFactor": {
+                  "label": "Carrying factor",
+                  "hint": "Multiplier on the maximum encumbrance (ENC) while moving this way."
+                }
+              },
+              "fly": {
+                "label": "Fly",
+                "value": {
+                  "label": "Movement rate",
+                  "hint": "Base movement rate for this kind of movement. The totals after encumbrance are calculated and not part of the schema."
+                },
+                "carryingFactor": {
+                  "label": "Carrying factor",
+                  "hint": "Multiplier on the maximum encumbrance (ENC) while moving this way."
+                }
+              }
+            },
+            "heroPoints": {
+              "label": "Hero points",
+              "hint": "Stored."
+            },
+            "isCreature": {
+              "label": "Creature",
+              "hint": "Stored. Creatures have no skill category modifiers."
+            },
+            "health": {
+              "label": "Health status",
+              "hint": "Stored. The character's overall condition."
+            }
+          },
+          "effect": {
+            "label": "Effects",
+            "hint": "Calculated pads that Active Effects write to. They are reset to 0 (1 for multipliers) every time the character is prepared and are never stored. The calculated values read them, so use these as targets for effects instead of writing to the calculated values.",
+            "multiply": {
+              "label": "Multipliers",
+              "healingRate": {
+                "label": "Healing rate multiplier",
+                "hint": "Multiplies the calculated healing rate."
+              }
+            },
+            "add": {
+              "label": "Additions",
+              "strikeRank": {
+                "label": "Strike rank modifier",
+                "hint": "Added to the DEX strike rank."
+              },
+              "magicPoints": {
+                "max": {
+                  "label": "Maximum magic points modifier",
+                  "hint": "Added to the maximum magic points."
+                }
+              },
+              "hitPoints": {
+                "max": {
+                  "label": "Maximum hit points modifier",
+                  "hint": "Added to the maximum hit points."
+                }
+              },
+              "skillCategoryModifiers": {
+                "label": "Skill category modifiers",
+                "hint": "Added to the skill category modifier from the characteristics.",
+                "agility": {
+                  "label": "Agility modifier"
+                },
+                "communication": {
+                  "label": "Communication modifier"
+                },
+                "knowledge": {
+                  "label": "Knowledge modifier"
+                },
+                "magic": {
+                  "label": "Magic modifier"
+                },
+                "manipulation": {
+                  "label": "Manipulation modifier"
+                },
+                "perception": {
+                  "label": "Perception modifier"
+                },
+                "stealth": {
+                  "label": "Stealth modifier"
+                },
+                "meleeWeapons": {
+                  "label": "Melee Weapons modifier"
+                },
+                "missileWeapons": {
+                  "label": "Missile Weapons modifier"
+                },
+                "shields": {
+                  "label": "Shields modifier"
+                },
+                "naturalWeapons": {
+                  "label": "Natural Weapons modifier"
+                },
+                "otherSkills": {
+                  "label": "Other Skills modifier"
+                }
+              }
+            }
+          }
+        }
+      },
       "Characteristics": {
         "Characteristic": "Characteristic",
         "format": "{name} ({abbr})",

@@ -28,10 +28,12 @@ installFoundrySchemaShim();
 
 const { schemaToJsonSchema } = await import("./generate-schema/field-to-json-schema.ts");
 const { allDocumentModels } = await import("./generate-schema/document-model-registry.ts");
+type FieldDescriber = import("./generate-schema/field-to-json-schema.ts").FieldDescriber;
 type DocumentModelDescriptor =
   (typeof import("./generate-schema/document-model-registry.ts"))["allDocumentModels"][number];
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const EN_UI_CONTENT = path.resolve(__dirname, "../static/i18n/en/uiContent.json");
 const DEFAULT_OUTPUT_DIR = path.resolve(__dirname, "../src/data-model/json-schemas/generated");
 const REPO_SCHEMA_BASE_URL =
   "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated";
@@ -62,11 +64,36 @@ interface GeneratedFile {
 
 const registryDir = path.resolve(__dirname, "generate-schema");
 
+type FieldText = { label?: string; hint?: string };
+
+/** Mirrors Foundry's `Localization.localizeSchema`: `<prefix>.FIELDS.<field path>.label|hint`. */
+function createFieldDescriber(prefixes: string[]): FieldDescriber {
+  const translations = JSON.parse(fs.readFileSync(EN_UI_CONTENT, "utf8")) as Record<
+    string,
+    unknown
+  >;
+  const rules: Record<string, unknown> = {};
+  for (const prefix of prefixes) {
+    const fields = [...prefix.split("."), "FIELDS"].reduce<unknown>(
+      (node, key) => (node as Record<string, unknown> | undefined)?.[key],
+      translations,
+    );
+    Object.assign(rules, fields);
+  }
+  return (fieldPath) => {
+    const text = fieldPath.reduce<unknown>(
+      (node, key) => (node as Record<string, unknown> | undefined)?.[key],
+      rules,
+    ) as FieldText | undefined;
+    return text;
+  };
+}
+
 async function buildSchemaFile(descriptor: DocumentModelDescriptor): Promise<GeneratedFile> {
   const absoluteImportUrl = new URL(descriptor.importPath, `file://${registryDir}/`).href;
   const module = (await import(absoluteImportUrl)) as Record<string, unknown>;
   const DataModelClass = module[descriptor.className] as
-    { defineSchema?: () => Record<string, unknown> } | undefined;
+    { defineSchema?: () => Record<string, unknown>; LOCALIZATION_PREFIXES?: string[] } | undefined;
 
   if (!DataModelClass || typeof DataModelClass.defineSchema !== "function") {
     throw new Error(
@@ -89,7 +116,11 @@ async function buildSchemaFile(descriptor: DocumentModelDescriptor): Promise<Gen
       `Generated JSON Schema for the "${descriptor.type}" ${descriptor.documentType} ` +
       `DataModel's \`system\` data. Source: ${descriptor.importPath.replace("../../", "")}. ` +
       "Do not edit by hand — run `pnpm generate:schemas`.",
-    ...schemaToJsonSchema(schema),
+    ...schemaToJsonSchema(
+      schema,
+      false,
+      createFieldDescriber(DataModelClass.LOCALIZATION_PREFIXES ?? []),
+    ),
   };
 
   return { relativePath, content: JSON.stringify(jsonSchema, null, 2) + "\n" };

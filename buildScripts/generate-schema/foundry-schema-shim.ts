@@ -53,6 +53,8 @@ class RollShim {}
 
 /** Stand-in for `foundry.abstract.TypeDataModel`, only needed as a base class. */
 class TypeDataModelShim {
+  static LOCALIZATION_PREFIXES: string[] = [];
+
   static defineSchema(): Record<string, unknown> {
     return {};
   }

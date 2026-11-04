@@ -104,3 +104,35 @@ describe("schemaToJsonSchema", () => {
     expect(schema.required).toBeUndefined();
   });
 });
+
+describe("schemaToJsonSchema labels and calculated fields", () => {
+  const fields = {
+    hitPoints: new SchemaFieldShim({
+      value: new NumberFieldShim({ integer: true, initial: 0 }),
+      max: new NumberFieldShim({ integer: true, nullable: false, initial: 0, persisted: false }),
+    }),
+  };
+
+  it("adds title and description from the describer, using the nested field path", () => {
+    const texts: Record<string, { label: string; hint?: string }> = {
+      hitPoints: { label: "Hit points" },
+      "hitPoints.max": { label: "Maximum hit points", hint: "Calculated." },
+    };
+
+    const schema = schemaToJsonSchema(fields, false, (path) => texts[path.join(".")]) as any;
+
+    expect(schema.properties.hitPoints.title).toBe("Hit points");
+    expect(schema.properties.hitPoints.properties.max).toMatchObject({
+      title: "Maximum hit points",
+      description: "Calculated.",
+    });
+    expect(schema.properties.hitPoints.properties.value.title).toBeUndefined();
+  });
+
+  it("marks persisted: false fields as readOnly, with or without a describer", () => {
+    const schema = schemaToJsonSchema(fields) as any;
+
+    expect(schema.properties.hitPoints.properties.max.readOnly).toBe(true);
+    expect(schema.properties.hitPoints.properties.value.readOnly).toBeUndefined();
+  });
+});

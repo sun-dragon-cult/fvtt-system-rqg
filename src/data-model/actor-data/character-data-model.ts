@@ -248,6 +248,8 @@ export class CharacterDataModel extends RqgActorDataModel<
     baseSkillCategoryModifiers: SkillCategories;
   }
 > {
+  static override LOCALIZATION_PREFIXES = ["RQG.Actor.Character"];
+
   static override defineSchema() {
     return defineCharacterSchema();
   }
