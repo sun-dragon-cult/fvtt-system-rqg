@@ -84,6 +84,6 @@ jobs:
           draft: ${{ github.event.release.unpublished }}
           prerelease: ${{ github.event.release.prerelease }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "static/${{env.manifest-file}}, /tmp/${{env.system-name}}.zip"
+          artifacts: "static/${{env.manifest-file}}, /tmp/${{env.system-name}}.zip, src/data-model/json-schemas/generated/*/*.schema.json"
           tag: ${{ github.event.release.tag_name }}
           body: ${{ github.event.release.body }}
