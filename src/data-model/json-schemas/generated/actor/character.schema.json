@@ -696,6 +696,27 @@
               },
               "additionalProperties": false,
               "title": "Fly"
+            },
+            "value": {
+              "type": "number",
+              "default": 0,
+              "title": "Movement",
+              "description": "Calculated from the movement rate of the current movement mode.",
+              "readOnly": true
+            },
+            "equipped": {
+              "type": "number",
+              "default": 0,
+              "title": "Movement when equipped",
+              "description": "Calculated: the movement reduced by the equipped encumbrance over the limit.",
+              "readOnly": true
+            },
+            "travel": {
+              "type": "number",
+              "default": 0,
+              "title": "Movement when traveling",
+              "description": "Calculated: the movement reduced by the travel encumbrance over the limit.",
+              "readOnly": true
             }
           },
           "additionalProperties": false,
@@ -703,9 +724,107 @@
             "currentLocomotion",
             "walk",
             "swim",
-            "fly"
+            "fly",
+            "value",
+            "equipped",
+            "travel"
           ],
           "title": "Movement"
+        },
+        "encumbrance": {
+          "type": "object",
+          "properties": {
+            "max": {
+              "type": "number",
+              "default": 0,
+              "title": "Maximum encumbrance",
+              "description": "Calculated from STR, CON and the carrying factor of the current movement mode.",
+              "readOnly": true
+            },
+            "equipped": {
+              "type": "number",
+              "default": 0,
+              "title": "Equipped encumbrance",
+              "description": "Calculated from the equipped items.",
+              "readOnly": true
+            },
+            "travel": {
+              "type": "number",
+              "default": 0,
+              "title": "Travel encumbrance",
+              "description": "Calculated from the carried and equipped items.",
+              "readOnly": true
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "max",
+            "equipped",
+            "travel"
+          ],
+          "title": "Encumbrance"
+        },
+        "dexStrikeRank": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "title": "DEX strike rank",
+          "description": "Calculated from DEX plus effect.add.strikeRank. null when DEX is not set.",
+          "readOnly": true
+        },
+        "sizStrikeRank": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "title": "SIZ strike rank",
+          "description": "Calculated from SIZ. null when SIZ is not set.",
+          "readOnly": true
+        },
+        "damageBonus": {
+          "type": "string",
+          "default": "",
+          "title": "Damage bonus",
+          "description": "Calculated from STR and SIZ, as a dice expression like 1d4.",
+          "readOnly": true
+        },
+        "healingRate": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "title": "Healing rate",
+          "description": "Calculated from CON, times effect.multiply.healingRate.",
+          "readOnly": true
+        },
+        "spiritCombatDamage": {
+          "type": "string",
+          "default": "",
+          "title": "Spirit combat damage",
+          "description": "Calculated from POW and CHA, as a dice expression.",
+          "readOnly": true
+        },
+        "magicPointRecoveryPointsPerDay": {
+          "type": "number",
+          "default": 0,
+          "title": "Magic points recovered per day",
+          "description": "Calculated from the maximum magic points and the recovery rate.",
+          "readOnly": true
+        },
+        "magicPointRecoveryHoursPerPoint": {
+          "type": "number",
+          "default": 0,
+          "title": "Hours per recovered magic point",
+          "description": "Calculated together with the minutes per point.",
+          "readOnly": true
+        },
+        "magicPointRecoveryMinutesPerPoint": {
+          "type": "number",
+          "default": 0,
+          "title": "Minutes per recovered magic point",
+          "description": "Calculated together with the hours per point.",
+          "readOnly": true
         },
         "heroPoints": {
           "type": "integer",
@@ -742,11 +861,205 @@
         "magicPointRecoveryRateFactor",
         "hitPoints",
         "move",
+        "encumbrance",
+        "damageBonus",
+        "spiritCombatDamage",
+        "magicPointRecoveryPointsPerDay",
+        "magicPointRecoveryHoursPerPoint",
+        "magicPointRecoveryMinutesPerPoint",
         "heroPoints",
         "isCreature",
         "health"
       ],
       "title": "Attributes"
+    },
+    "baseSkillCategoryModifiers": {
+      "type": "object",
+      "properties": {
+        "agility": {
+          "type": "integer",
+          "default": 0,
+          "title": "Agility",
+          "readOnly": true
+        },
+        "communication": {
+          "type": "integer",
+          "default": 0,
+          "title": "Communication",
+          "readOnly": true
+        },
+        "knowledge": {
+          "type": "integer",
+          "default": 0,
+          "title": "Knowledge",
+          "readOnly": true
+        },
+        "magic": {
+          "type": "integer",
+          "default": 0,
+          "title": "Magic",
+          "readOnly": true
+        },
+        "manipulation": {
+          "type": "integer",
+          "default": 0,
+          "title": "Manipulation",
+          "readOnly": true
+        },
+        "perception": {
+          "type": "integer",
+          "default": 0,
+          "title": "Perception",
+          "readOnly": true
+        },
+        "stealth": {
+          "type": "integer",
+          "default": 0,
+          "title": "Stealth",
+          "readOnly": true
+        },
+        "meleeWeapons": {
+          "type": "integer",
+          "default": 0,
+          "title": "Melee Weapons",
+          "readOnly": true
+        },
+        "missileWeapons": {
+          "type": "integer",
+          "default": 0,
+          "title": "Missile Weapons",
+          "readOnly": true
+        },
+        "shields": {
+          "type": "integer",
+          "default": 0,
+          "title": "Shields",
+          "readOnly": true
+        },
+        "naturalWeapons": {
+          "type": "integer",
+          "default": 0,
+          "title": "Natural Weapons",
+          "readOnly": true
+        },
+        "otherSkills": {
+          "type": "integer",
+          "default": 0,
+          "title": "Other Skills",
+          "readOnly": true
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "agility",
+        "communication",
+        "knowledge",
+        "magic",
+        "manipulation",
+        "perception",
+        "stealth",
+        "meleeWeapons",
+        "missileWeapons",
+        "shields",
+        "naturalWeapons",
+        "otherSkills"
+      ],
+      "title": "Base skill category modifiers",
+      "description": "Calculated from the characteristics only. Never stored."
+    },
+    "skillCategoryModifiers": {
+      "type": "object",
+      "properties": {
+        "agility": {
+          "type": "integer",
+          "default": 0,
+          "title": "Agility",
+          "readOnly": true
+        },
+        "communication": {
+          "type": "integer",
+          "default": 0,
+          "title": "Communication",
+          "readOnly": true
+        },
+        "knowledge": {
+          "type": "integer",
+          "default": 0,
+          "title": "Knowledge",
+          "readOnly": true
+        },
+        "magic": {
+          "type": "integer",
+          "default": 0,
+          "title": "Magic",
+          "readOnly": true
+        },
+        "manipulation": {
+          "type": "integer",
+          "default": 0,
+          "title": "Manipulation",
+          "readOnly": true
+        },
+        "perception": {
+          "type": "integer",
+          "default": 0,
+          "title": "Perception",
+          "readOnly": true
+        },
+        "stealth": {
+          "type": "integer",
+          "default": 0,
+          "title": "Stealth",
+          "readOnly": true
+        },
+        "meleeWeapons": {
+          "type": "integer",
+          "default": 0,
+          "title": "Melee Weapons",
+          "readOnly": true
+        },
+        "missileWeapons": {
+          "type": "integer",
+          "default": 0,
+          "title": "Missile Weapons",
+          "readOnly": true
+        },
+        "shields": {
+          "type": "integer",
+          "default": 0,
+          "title": "Shields",
+          "readOnly": true
+        },
+        "naturalWeapons": {
+          "type": "integer",
+          "default": 0,
+          "title": "Natural Weapons",
+          "readOnly": true
+        },
+        "otherSkills": {
+          "type": "integer",
+          "default": 0,
+          "title": "Other Skills",
+          "readOnly": true
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "agility",
+        "communication",
+        "knowledge",
+        "magic",
+        "manipulation",
+        "perception",
+        "stealth",
+        "meleeWeapons",
+        "missileWeapons",
+        "shields",
+        "naturalWeapons",
+        "otherSkills"
+      ],
+      "title": "Skill category modifiers",
+      "description": "Calculated from the characteristics, effect.add.skillCategoryModifiers and encumbrance. Never stored."
     },
     "effect": {
       "type": "object",
@@ -932,6 +1245,8 @@
     "editMode",
     "extendedName",
     "attributes",
+    "baseSkillCategoryModifiers",
+    "skillCategoryModifiers",
     "effect"
   ]
 }

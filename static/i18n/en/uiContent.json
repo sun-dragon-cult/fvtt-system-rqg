@@ -292,6 +292,18 @@
                   "label": "Carrying factor",
                   "hint": "Multiplier on the maximum encumbrance (ENC) while moving this way."
                 }
+              },
+              "value": {
+                "label": "Movement",
+                "hint": "Calculated from the movement rate of the current movement mode."
+              },
+              "equipped": {
+                "label": "Movement when equipped",
+                "hint": "Calculated: the movement reduced by the equipped encumbrance over the limit."
+              },
+              "travel": {
+                "label": "Movement when traveling",
+                "hint": "Calculated: the movement reduced by the travel encumbrance over the limit."
               }
             },
             "heroPoints": {
@@ -305,6 +317,53 @@
             "health": {
               "label": "Health status",
               "hint": "Calculated from the hit locations and hit points, never stored."
+            },
+            "dexStrikeRank": {
+              "label": "DEX strike rank",
+              "hint": "Calculated from DEX plus effect.add.strikeRank. null when DEX is not set."
+            },
+            "sizStrikeRank": {
+              "label": "SIZ strike rank",
+              "hint": "Calculated from SIZ. null when SIZ is not set."
+            },
+            "damageBonus": {
+              "label": "Damage bonus",
+              "hint": "Calculated from STR and SIZ, as a dice expression like 1d4."
+            },
+            "healingRate": {
+              "label": "Healing rate",
+              "hint": "Calculated from CON, times effect.multiply.healingRate."
+            },
+            "spiritCombatDamage": {
+              "label": "Spirit combat damage",
+              "hint": "Calculated from POW and CHA, as a dice expression."
+            },
+            "magicPointRecoveryPointsPerDay": {
+              "label": "Magic points recovered per day",
+              "hint": "Calculated from the maximum magic points and the recovery rate."
+            },
+            "magicPointRecoveryHoursPerPoint": {
+              "label": "Hours per recovered magic point",
+              "hint": "Calculated together with the minutes per point."
+            },
+            "magicPointRecoveryMinutesPerPoint": {
+              "label": "Minutes per recovered magic point",
+              "hint": "Calculated together with the hours per point."
+            },
+            "encumbrance": {
+              "label": "Encumbrance",
+              "max": {
+                "label": "Maximum encumbrance",
+                "hint": "Calculated from STR, CON and the carrying factor of the current movement mode."
+              },
+              "equipped": {
+                "label": "Equipped encumbrance",
+                "hint": "Calculated from the equipped items."
+              },
+              "travel": {
+                "label": "Travel encumbrance",
+                "hint": "Calculated from the carried and equipped items."
+              }
             }
           },
           "effect": {
@@ -375,6 +434,86 @@
                   "label": "Other Skills modifier"
                 }
               }
+            }
+          },
+          "baseSkillCategoryModifiers": {
+            "label": "Base skill category modifiers",
+            "hint": "Calculated from the characteristics only. Never stored.",
+            "agility": {
+              "label": "Agility"
+            },
+            "communication": {
+              "label": "Communication"
+            },
+            "knowledge": {
+              "label": "Knowledge"
+            },
+            "magic": {
+              "label": "Magic"
+            },
+            "manipulation": {
+              "label": "Manipulation"
+            },
+            "perception": {
+              "label": "Perception"
+            },
+            "stealth": {
+              "label": "Stealth"
+            },
+            "meleeWeapons": {
+              "label": "Melee Weapons"
+            },
+            "missileWeapons": {
+              "label": "Missile Weapons"
+            },
+            "shields": {
+              "label": "Shields"
+            },
+            "naturalWeapons": {
+              "label": "Natural Weapons"
+            },
+            "otherSkills": {
+              "label": "Other Skills"
+            }
+          },
+          "skillCategoryModifiers": {
+            "label": "Skill category modifiers",
+            "hint": "Calculated from the characteristics, effect.add.skillCategoryModifiers and encumbrance. Never stored.",
+            "agility": {
+              "label": "Agility"
+            },
+            "communication": {
+              "label": "Communication"
+            },
+            "knowledge": {
+              "label": "Knowledge"
+            },
+            "magic": {
+              "label": "Magic"
+            },
+            "manipulation": {
+              "label": "Manipulation"
+            },
+            "perception": {
+              "label": "Perception"
+            },
+            "stealth": {
+              "label": "Stealth"
+            },
+            "meleeWeapons": {
+              "label": "Melee Weapons"
+            },
+            "missileWeapons": {
+              "label": "Missile Weapons"
+            },
+            "shields": {
+              "label": "Shields"
+            },
+            "naturalWeapons": {
+              "label": "Natural Weapons"
+            },
+            "otherSkills": {
+              "label": "Other Skills"
             }
           }
         }

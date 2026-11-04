@@ -4,7 +4,6 @@ import { derivedResourceSchemaField } from "../shared/resource-schema-field";
 import { actorHealthStatuses, LocomotionEnum } from "./attributes";
 import { OccupationEnum } from "./background-enums";
 import { enumChoices } from "../shared/enum-choices";
-import type { SkillCategories } from "./skill-categories";
 import { getCharacteristicDerivedValues } from "./derived-character-values";
 import type { CharacterActor } from "./rqg-actor-data";
 import { RqgCalculations } from "../../system/rqg-calculations";
@@ -36,6 +35,28 @@ function locomotionSchemaField(
   return new SchemaField({
     value: new NumberField({ nullable: true, initial: initialValue }),
     carryingFactor: new NumberField({ nullable: true, initial: initialCarrying }),
+  });
+}
+
+function derivedNumberField(options: { integer?: boolean } = {}) {
+  return new NumberField({ ...options, nullable: false, initial: 0, persisted: false });
+}
+
+/** One calculated number per skill category. */
+function skillCategoryModifiersSchemaField() {
+  return new SchemaField({
+    agility: derivedNumberField({ integer: true }),
+    communication: derivedNumberField({ integer: true }),
+    knowledge: derivedNumberField({ integer: true }),
+    magic: derivedNumberField({ integer: true }),
+    manipulation: derivedNumberField({ integer: true }),
+    perception: derivedNumberField({ integer: true }),
+    stealth: derivedNumberField({ integer: true }),
+    meleeWeapons: derivedNumberField({ integer: true }),
+    missileWeapons: derivedNumberField({ integer: true }),
+    shields: derivedNumberField({ integer: true }),
+    naturalWeapons: derivedNumberField({ integer: true }),
+    otherSkills: derivedNumberField({ integer: true }),
   });
 }
 
@@ -132,7 +153,43 @@ function defineCharacterSchema() {
         [LocomotionEnum.Walk]: locomotionSchemaField(8, 1),
         [LocomotionEnum.Swim]: locomotionSchemaField(2, 0.5),
         [LocomotionEnum.Fly]: locomotionSchemaField(undefined, undefined),
+        value: derivedNumberField(),
+        equipped: derivedNumberField(),
+        travel: derivedNumberField(),
       }),
+      encumbrance: new SchemaField({
+        max: derivedNumberField(),
+        equipped: derivedNumberField(),
+        travel: derivedNumberField(),
+      }),
+      dexStrikeRank: new NumberField({
+        integer: true,
+        nullable: true,
+        initial: null,
+        persisted: false,
+      }),
+      sizStrikeRank: new NumberField({
+        integer: true,
+        nullable: true,
+        initial: null,
+        persisted: false,
+      }),
+      damageBonus: new StringField({ nullable: false, blank: true, initial: "", persisted: false }),
+      healingRate: new NumberField({
+        integer: true,
+        nullable: true,
+        initial: null,
+        persisted: false,
+      }),
+      spiritCombatDamage: new StringField({
+        nullable: false,
+        blank: true,
+        initial: "",
+        persisted: false,
+      }),
+      magicPointRecoveryPointsPerDay: derivedNumberField(),
+      magicPointRecoveryHoursPerPoint: derivedNumberField(),
+      magicPointRecoveryMinutesPerPoint: derivedNumberField(),
       heroPoints: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
       isCreature: new BooleanField({ nullable: false, initial: false }),
       health: new StringField({
@@ -143,6 +200,9 @@ function defineCharacterSchema() {
         persisted: false,
       }),
     }),
+
+    baseSkillCategoryModifiers: skillCategoryModifiersSchemaField(),
+    skillCategoryModifiers: skillCategoryModifiersSchemaField(),
 
     effect: new SchemaField({
       multiply: new SchemaField({
@@ -166,75 +226,7 @@ function defineCharacterSchema() {
         hitPoints: new SchemaField({
           max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
         }),
-        skillCategoryModifiers: new SchemaField({
-          agility: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          communication: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          knowledge: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          magic: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
-          manipulation: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          perception: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          stealth: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          meleeWeapons: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          missileWeapons: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          shields: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          naturalWeapons: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-          otherSkills: new NumberField({
-            integer: true,
-            nullable: false,
-            initial: 0,
-            persisted: false,
-          }),
-        }),
+        skillCategoryModifiers: skillCategoryModifiersSchemaField(),
       }),
     }),
   } as const;
@@ -242,13 +234,7 @@ function defineCharacterSchema() {
 
 type CharacterSchema = ReturnType<typeof defineCharacterSchema>;
 
-export class CharacterDataModel extends RqgActorDataModel<
-  CharacterSchema,
-  {
-    skillCategoryModifiers: SkillCategories;
-    baseSkillCategoryModifiers: SkillCategories;
-  }
-> {
+export class CharacterDataModel extends RqgActorDataModel<CharacterSchema> {
   static override LOCALIZATION_PREFIXES = ["RQG.Actor.Character"];
 
   static override defineSchema() {
@@ -387,7 +373,7 @@ export class CharacterDataModel extends RqgActorDataModel<
 
     system.attributes.dexStrikeRank =
       characteristicDerived.dexStrikeRank == null
-        ? characteristicDerived.dexStrikeRank
+        ? null
         : characteristicDerived.dexStrikeRank + system.effect.add.strikeRank;
 
     // Effects that halve movement round down
@@ -397,7 +383,7 @@ export class CharacterDataModel extends RqgActorDataModel<
         move.value = Math.floor(move.value);
       }
     }
-    system.attributes.sizStrikeRank = characteristicDerived.sizStrikeRank;
+    system.attributes.sizStrikeRank = characteristicDerived.sizStrikeRank ?? null;
     system.attributes.damageBonus = characteristicDerived.damageBonus;
     system.attributes.healingRate =
       characteristicDerived.healingRate * system.effect.multiply.healingRate;
