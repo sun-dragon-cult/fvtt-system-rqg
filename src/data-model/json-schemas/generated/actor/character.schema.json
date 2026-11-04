@@ -732,7 +732,7 @@
           "minLength": 1,
           "default": "healthy",
           "title": "Health status",
-          "description": "Stored. The character's overall condition."
+          "description": "Calculated from the hit locations and hit points every time the character changes. A value written here is overwritten."
         }
       },
       "additionalProperties": false,
