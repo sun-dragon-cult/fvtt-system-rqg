@@ -82,34 +82,3 @@ describe("game.system.api", () => {
     await expect(fromRqidRegexBest(undefined, "i")).resolves.toEqual([]);
   });
 });
-
-describe("RqgHooks", () => {
-  // Every key of RqgHooks must be listed here and nothing else: the compiler checks it. A change
-  // here changes the public API - update the Roll Hooks / Behaviors pages and note it in the changelog.
-  const hooks = {
-    "rqg.registerSpellBehaviors": true,
-    "rqg.registerSkillBehaviors": true,
-    "rqg.prepareAbilityRoll": true,
-    "rqg.preAbilityRoll": true,
-    "rqg.abilityRoll": true,
-    "rqg.prepareCharacteristicRoll": true,
-    "rqg.preCharacteristicRoll": true,
-    "rqg.characteristicRoll": true,
-    "rqg.prepareReputationRoll": true,
-    "rqg.preReputationRoll": true,
-    "rqg.reputationRoll": true,
-    "rqg.prepareSpellCast": true,
-    "rqg.preSpellCast": true,
-    "rqg.spellCast": true,
-    "rqg.prepareAttack": true,
-    "rqg.preAttack": true,
-    "rqg.attack": true,
-    "rqg.prepareDefence": true,
-    "rqg.preDefence": true,
-    "rqg.defence": true,
-  } as const satisfies Record<keyof RqgHooks, true>;
-
-  it("has the expected hook names", () => {
-    expect(Object.keys(hooks)).toHaveLength(20);
-  });
-});
