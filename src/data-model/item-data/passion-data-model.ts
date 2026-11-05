@@ -20,6 +20,8 @@ function definePassionSchema() {
 type PassionSchema = ReturnType<typeof definePassionSchema>;
 
 export class PassionDataModel extends AbilityDataModel<PassionSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.Passion", "RQG.Item.Ability"];
+
   static override defineSchema() {
     return definePassionSchema();
   }

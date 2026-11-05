@@ -43,15 +43,15 @@ function defineHitLocationSchema() {
       choices: enumChoices(HitLocationTypesEnum, "RQG.Item.HitLocationType."),
     }),
     connectedTo: new StringField({ blank: true, nullable: false, initial: "" }),
+    armorPoints: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
   } as const;
 }
 
 type HitLocationSchema = ReturnType<typeof defineHitLocationSchema>;
 
-export class HitLocationDataModel extends RqgItemDataModel<
-  HitLocationSchema,
-  { armorPoints: number }
-> {
+export class HitLocationDataModel extends RqgItemDataModel<HitLocationSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.HitLocation"];
+
   static override defineSchema() {
     return defineHitLocationSchema();
   }

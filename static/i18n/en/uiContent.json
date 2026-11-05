@@ -1247,6 +1247,36 @@
           "BronzeDiskPlate": "Bronze Disk Plate",
           "BronzePlate": "Bronze Plate",
           "IronPlate": "Iron Plate"
+        },
+        "FIELDS": {
+          "size": {
+            "label": "Fits SIZ",
+            "hint": "The size of the wearer the armor fits, as a SIZ value."
+          },
+          "hitLocationRqidLinks": {
+            "label": "Hit locations",
+            "hint": "Links to the hit locations the armor covers."
+          },
+          "namePrefix": {
+            "label": "Name prefix",
+            "hint": "Text put before the armor name, for example its material."
+          },
+          "armorType": {
+            "label": "Armor type",
+            "hint": "The kind of armor, for example a cuirass or a helm."
+          },
+          "material": {
+            "label": "Material",
+            "hint": "What the armor is made of."
+          },
+          "absorbs": {
+            "label": "Absorbs",
+            "hint": "Armor points it adds to every hit location it covers while equipped."
+          },
+          "moveQuietlyPenalty": {
+            "label": "Move Quietly penalty",
+            "hint": "Modifier to Move Quietly while the armor is worn."
+          }
         }
       },
       "Cult": {
@@ -1265,6 +1295,44 @@
         "CommonRuneMagic": "Common Rune Magic",
         "Notification": {
           "NoRunesWarn": "No runes linked. At least one rune is needed for the cult to work correctly."
+        },
+        "FIELDS": {
+          "deity": {
+            "label": "Deity",
+            "hint": "Name of the deity."
+          },
+          "descriptionRqidLink": {
+            "label": "Description",
+            "hint": "Link to the journal entry that describes the cult."
+          },
+          "runePoints": {
+            "label": "Rune points",
+            "hint": "The cult's rune points. Value is the points the initiate currently holds."
+          },
+          "holyDays": {
+            "label": "Holy days",
+            "hint": "Free text listing the cult's holy days."
+          },
+          "gifts": {
+            "label": "Gifts",
+            "hint": "The gifts the character has received from the cult. Free text."
+          },
+          "geases": {
+            "label": "Geases",
+            "hint": "The geases the character has taken on for the cult. Free text."
+          },
+          "runeRqidLinks": {
+            "label": "Runes",
+            "hint": "Links to the runes the cult is associated with."
+          },
+          "commonRuneMagicRqidLinks": {
+            "label": "Common rune magic",
+            "hint": "Links to the rune magic spells available to every initiate."
+          },
+          "joinedCults": {
+            "label": "Joined cults",
+            "hint": "The cults the character has joined through this cult item. Each entry holds a cult name, a tagline and a rank."
+          }
         }
       },
       "EquippedStatus": {
@@ -1382,6 +1450,52 @@
           "NoMaxOnHitLocation": "No max on hit location ${hitLocationName}",
           "AddWoundNeedsActor": "Wounds can only be added to a hit location on an actor.",
           "RqidNeededWarn": "No Rqid assigned. A Rqid is needed to make the hit location work for armor protection etc."
+        },
+        "FIELDS": {
+          "dieFrom": {
+            "label": "Roll from",
+            "hint": "Lowest D20 roll that hits this location."
+          },
+          "dieTo": {
+            "label": "Roll to",
+            "hint": "Highest D20 roll that hits this location."
+          },
+          "hitPoints": {
+            "label": "Hit points",
+            "hint": "The location's hit points. On a character they are calculated from the character's total hit points and the wounds, never stored."
+          },
+          "baseHpDelta": {
+            "label": "Hit point adjustment",
+            "hint": "Added to the location's hit points, for example +1 for a leg."
+          },
+          "naturalAp": {
+            "label": "Natural armor points",
+            "hint": "Armor points the location has by itself, before worn armor."
+          },
+          "wounds": {
+            "label": "Wounds",
+            "hint": "The damage of each open wound on the location."
+          },
+          "hitLocationHealthState": {
+            "label": "Location health",
+            "hint": "Condition of the location: healthy, wounded, useless or severed."
+          },
+          "actorHealthImpact": {
+            "label": "Impact on health",
+            "hint": "The health state this location puts the character in: for example wounded, shock, unconscious or dead."
+          },
+          "hitLocationType": {
+            "label": "Location type",
+            "hint": "Kind of location: limb, head, chest or abdomen."
+          },
+          "connectedTo": {
+            "label": "Connected to",
+            "hint": "Name of the location this one is attached to."
+          },
+          "armorPoints": {
+            "label": "Armor points",
+            "hint": "Natural armor points plus what equipped armor adds. Calculated, never stored."
+          }
         }
       },
       "HitLocationType": {
@@ -1400,7 +1514,57 @@
         "CultLinks": "Cult Links",
         "SkillLinks": "Skill Links",
         "PassionLinks": "Passion Links",
-        "RuneLinks": "Rune Links"
+        "RuneLinks": "Rune Links",
+        "FIELDS": {
+          "homeland": {
+            "label": "Homeland",
+            "hint": "Name of the homeland."
+          },
+          "homelandJournalRqidLink": {
+            "label": "Homeland journal",
+            "hint": "Link to the journal entry about the homeland."
+          },
+          "region": {
+            "label": "Region or city",
+            "hint": "Name of the region."
+          },
+          "regionJournalRqidLink": {
+            "label": "Region journal",
+            "hint": "Link to the journal entry about the region."
+          },
+          "cultureJournalRqidLinks": {
+            "label": "Cultures",
+            "hint": "Links to the journal entries about the cultures."
+          },
+          "tribeJournalRqidLinks": {
+            "label": "Tribes",
+            "hint": "Links to the journal entries about the tribes."
+          },
+          "clanJournalRqidLinks": {
+            "label": "Clans",
+            "hint": "Links to the journal entries about the clans."
+          },
+          "cultRqidLinks": {
+            "label": "Cults",
+            "hint": "Links to the cults a character from here can pick in the actor wizard."
+          },
+          "skillRqidLinks": {
+            "label": "Skills",
+            "hint": "Links to the skills the homeland grants, each with a bonus."
+          },
+          "runeRqidLinks": {
+            "label": "Runes",
+            "hint": "Links to the runes the homeland grants."
+          },
+          "passionRqidLinks": {
+            "label": "Passions",
+            "hint": "Links to the passions the homeland grants."
+          },
+          "wizardInstructions": {
+            "label": "Wizard instructions",
+            "hint": "Text shown to the player in the actor wizard when they pick this homeland."
+          }
+        }
       },
       "Notification": {
         "CantFindRuneInAvailableRunesError": "Can't find rune \"{rqid}\" in any compendium",
@@ -1437,7 +1601,53 @@
         "BaseIncomeNotes": "Base Income Notes",
         "CultLinks": "Cult Links",
         "Ransom": "Ransom",
-        "StartingEquipmentLinks": "Starting Equipment Links"
+        "StartingEquipmentLinks": "Starting Equipment Links",
+        "FIELDS": {
+          "occupation": {
+            "label": "Occupation",
+            "hint": "Name of the occupation."
+          },
+          "occupationRqidLink": {
+            "label": "Occupation journal",
+            "hint": "Link to the journal entry about the occupation."
+          },
+          "specialization": {
+            "label": "Specialization",
+            "hint": "A narrower field within the occupation."
+          },
+          "homelands": {
+            "label": "Homelands",
+            "hint": "Names of the homelands where the occupation is found."
+          },
+          "occupationalSkills": {
+            "label": "Occupational skills",
+            "hint": "The skills the occupation grants. Each entry holds a skill link, a bonus and whether it is the income skill."
+          },
+          "standardOfLiving": {
+            "label": "Standard of living",
+            "hint": "Social standing of the occupation: destitute, poor, free, noble or petty king."
+          },
+          "baseIncome": {
+            "label": "Base income",
+            "hint": "Income per year in Lunars."
+          },
+          "baseIncomeNotes": {
+            "label": "Base income notes",
+            "hint": "Free text explaining how the income is made."
+          },
+          "cultRqidLinks": {
+            "label": "Cults",
+            "hint": "Links to the cults that fit the occupation."
+          },
+          "ransom": {
+            "label": "Ransom",
+            "hint": "Ransom in Lunars."
+          },
+          "startingEquipmentRqidLinks": {
+            "label": "Starting equipment",
+            "hint": "Links to the items a character starts with."
+          }
+        }
       },
       "Passion": {
         "Name": "Name",
@@ -1458,6 +1668,28 @@
           "Love": "Love",
           "Gluttony": "Gluttony",
           "Vanity": "Vanity"
+        },
+        "FIELDS": {
+          "chance": {
+            "label": "Chance",
+            "hint": "The passion's percentage."
+          },
+          "passion": {
+            "label": "Passion",
+            "hint": "Name of the passion, for example Loyalty or Hate."
+          },
+          "subject": {
+            "label": "Subject",
+            "hint": "What the passion is directed at."
+          },
+          "description": {
+            "label": "Description",
+            "hint": "Description shown to the players."
+          },
+          "gmNotes": {
+            "label": "GM notes",
+            "hint": "Notes only the GM sees."
+          }
         }
       },
       "RqgItem": {
@@ -1498,6 +1730,36 @@
         },
         "Notification": {
           "RqidNeededWarn": "No Rqid assigned. A Rqid is needed to make the rune available for cults, rune magic etc."
+        },
+        "FIELDS": {
+          "chance": {
+            "label": "Chance",
+            "hint": "The rune's percentage."
+          },
+          "descriptionRqidLink": {
+            "label": "Description",
+            "hint": "Link to the journal entry that describes the rune."
+          },
+          "rune": {
+            "label": "Rune",
+            "hint": "Name of the rune."
+          },
+          "runeType": {
+            "label": "Rune type",
+            "hint": "The kind of rune."
+          },
+          "opposingRuneRqidLink": {
+            "label": "Opposing rune",
+            "hint": "Link to the rune opposite this one."
+          },
+          "minorRuneRqidLinks": {
+            "label": "Minor runes",
+            "hint": "Links to the minor runes that belong to this rune."
+          },
+          "isMastered": {
+            "label": "Is mastered",
+            "hint": "Whether the character has mastered the rune for Sorcery. Techniques count as mastered."
+          }
         }
       },
       "RuneMagic": {
@@ -1519,6 +1781,28 @@
           "btnAddRuneMagic": "Add Rune Magic",
           "Actor": "Actor",
           "RuneMagic": "RuneMagic"
+        },
+        "FIELDS": {
+          "cultId": {
+            "label": "Cult",
+            "hint": "Id of the cult item on the same actor that the spell is learned through."
+          },
+          "runeRqidLinks": {
+            "label": "Runes",
+            "hint": "Links to the runes the spell is cast with."
+          },
+          "isStackable": {
+            "label": "Is stackable",
+            "hint": "Whether the spell can be cast several times to stack its effect."
+          },
+          "isOneUse": {
+            "label": "Is one use",
+            "hint": "Whether the spell is used up when cast."
+          },
+          "chance": {
+            "label": "Chance",
+            "hint": "The chance used when casting: the strongest of the spell's runes. Calculated, never stored."
+          }
         }
       },
       "SheetTab": {
@@ -1555,7 +1839,45 @@
         "Chance": "Chance",
         "CanGainExperienceQ": "Can Gain Experience?",
         "HasExperienceQ": "Has Experience?",
-        "SorceryRunes": "Sorcery Runes"
+        "SorceryRunes": "Sorcery Runes",
+        "FIELDS": {
+          "descriptionRqidLink": {
+            "label": "Description",
+            "hint": "Link to the journal entry that describes the skill."
+          },
+          "category": {
+            "label": "Category",
+            "hint": "The skill category. The character's modifier for the category applies to the skill."
+          },
+          "skillName": {
+            "label": "Skill name",
+            "hint": "Name of the skill, without the specialization."
+          },
+          "specialization": {
+            "label": "Specialization",
+            "hint": "The specialization, for example the weapon or language."
+          },
+          "baseChance": {
+            "label": "Base chance",
+            "hint": "The skill's starting percentage."
+          },
+          "gainedChance": {
+            "label": "Gained chance",
+            "hint": "Percentage points gained from experience, training and research."
+          },
+          "runeRqidLinks": {
+            "label": "Runes",
+            "hint": "Links to the runes that can affect the skill."
+          },
+          "categoryMod": {
+            "label": "Category modifier",
+            "hint": "The character's modifier for this skill's category. Calculated, never stored."
+          },
+          "chance": {
+            "label": "Chance",
+            "hint": "The chance used when rolling: base and gained chance plus the category modifier and other modifiers. Calculated, never stored."
+          }
+        }
       },
       "Spell": {
         "Point": "Point",
@@ -1619,6 +1941,60 @@
           "undefined": "",
           "active": "Active",
           "passive": "Passive"
+        },
+        "FIELDS": {
+          "points": {
+            "label": "Points",
+            "hint": "Magic points the spell costs, or its level."
+          },
+          "castingRange": {
+            "label": "Casting range",
+            "hint": "How far from the caster the spell can reach."
+          },
+          "duration": {
+            "label": "Duration",
+            "hint": "How long the spell lasts."
+          },
+          "concentration": {
+            "label": "Concentration",
+            "hint": "Whether the caster has to concentrate on the spell while it lasts."
+          },
+          "isRitual": {
+            "label": "Is ritual",
+            "hint": "Whether the spell is cast as a ritual."
+          },
+          "isEnchantment": {
+            "label": "Is enchantment",
+            "hint": "Whether the spell is an enchantment."
+          },
+          "resistedBy": {
+            "label": "Resisted by",
+            "hint": "What the target can resist the spell with."
+          },
+          "resistedWith": {
+            "label": "Resisted with",
+            "hint": "The characteristic the target resists with."
+          },
+          "targetKind": {
+            "label": "Target kind",
+            "hint": "What the spell targets: for example a character, a weapon or an area."
+          },
+          "effectTier": {
+            "label": "Effect tier",
+            "hint": "How the system applies the spell effect: not at all, with an Active Effect, or with a macro."
+          },
+          "passesSpellBarriers": {
+            "label": "Passes spell barriers",
+            "hint": "Set for spells that attack other spells' defences, like Dispel Magic and Dismiss Magic."
+          },
+          "descriptionRqidLink": {
+            "label": "Description",
+            "hint": "Link to the journal entry that describes the spell."
+          },
+          "effectRqidLink": {
+            "label": "Effect",
+            "hint": "Link to the Active Effect template applied when the spell is cast."
+          }
         }
       },
       "SpiritMagic": {
@@ -1632,7 +2008,21 @@
         "MatrixIndicator": "(held in matrix)",
         "MatrixQ": "Held in Matrix",
         "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
-        "NotEnoughMagicPoints": "Not enough magic points left to cast this spell."
+        "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
+        "FIELDS": {
+          "isVariable": {
+            "label": "Is variable",
+            "hint": "Whether the spell can be cast at any number of points up to its maximum."
+          },
+          "spellFocus": {
+            "label": "Spell focus",
+            "hint": "The object used to focus the spell, if any."
+          },
+          "isMatrix": {
+            "label": "Held in matrix",
+            "hint": "Whether the spell is stored in a matrix."
+          }
+        }
       },
       "Weapon": {
         "Name": "Name",
@@ -1683,6 +2073,344 @@
           "Punch": "Punch",
           "Kick": "Kick",
           "Trample": "Trample"
+        },
+        "FIELDS": {
+          "effect": {
+            "label": "Effects",
+            "hint": "Calculated values that active effects change. Never stored.",
+            "add": {
+              "label": "Added",
+              "hint": "Values added to the weapon's own.",
+              "melee": {
+                "label": "Melee",
+                "hint": "Added to melee attacks.",
+                "attack": {
+                  "label": "Attack",
+                  "hint": "Added to the attack chance."
+                },
+                "parry": {
+                  "label": "Parry",
+                  "hint": "Added to the parry chance."
+                },
+                "magicDamage": {
+                  "label": "Magic damage",
+                  "hint": "Flat magical damage added to the damage roll."
+                },
+                "magicDamageDice": {
+                  "label": "Magic damage dice",
+                  "hint": "Magical damage dice added to the damage roll."
+                }
+              },
+              "missile": {
+                "label": "Missile",
+                "hint": "Added to missile attacks.",
+                "attack": {
+                  "label": "Attack",
+                  "hint": "Added to the attack chance."
+                },
+                "parry": {
+                  "label": "Parry",
+                  "hint": "Added to the parry chance."
+                },
+                "magicDamage": {
+                  "label": "Magic damage",
+                  "hint": "Flat magical damage added to the damage roll."
+                },
+                "magicDamageDice": {
+                  "label": "Magic damage dice",
+                  "hint": "Magical damage dice added to the damage roll."
+                }
+              }
+            },
+            "multiply": {
+              "label": "Multiplied",
+              "hint": "Values the weapon's own are multiplied by.",
+              "melee": {
+                "label": "Melee",
+                "hint": "Multiplies melee damage.",
+                "damage": {
+                  "label": "Damage multiplier",
+                  "hint": "Number the weapon dice are multiplied by."
+                }
+              },
+              "missile": {
+                "label": "Missile",
+                "hint": "Multiplies missile damage.",
+                "damage": {
+                  "label": "Damage multiplier",
+                  "hint": "Number the weapon dice are multiplied by."
+                }
+              }
+            },
+            "override": {
+              "label": "Overridden",
+              "hint": "Values that replace the weapon's own.",
+              "missile": {
+                "label": "Missile",
+                "hint": "Replaces missile values.",
+                "damage": {
+                  "label": "Damage",
+                  "hint": "Damage dice that replace the missile's own, for example from Firearrow."
+                }
+              }
+            }
+          },
+          "usage": {
+            "label": "Usage",
+            "hint": "How the weapon is used: one-handed, off-hand, two-handed or as a missile.",
+            "oneHand": {
+              "label": "One hand",
+              "hint": "How the weapon is used this way.",
+              "skillRqidLink": {
+                "label": "Skill",
+                "hint": "Link to the skill rolled when attacking this way."
+              },
+              "combatManeuvers": {
+                "label": "Combat maneuvers",
+                "hint": "The maneuvers available this way, each with a name, damage type and description."
+              },
+              "damage": {
+                "label": "Damage",
+                "hint": "Damage dice, for example 1D8+1."
+              },
+              "minStrength": {
+                "label": "Minimum STR",
+                "hint": "Strength needed to use the weapon without a penalty."
+              },
+              "minDexterity": {
+                "label": "Minimum DEX",
+                "hint": "Dexterity needed to use the weapon without a penalty."
+              },
+              "strikeRank": {
+                "label": "Strike rank",
+                "hint": "The weapon's strike rank. Empty when it is not set."
+              }
+            },
+            "offHand": {
+              "label": "Off hand",
+              "hint": "How the weapon is used this way.",
+              "skillRqidLink": {
+                "label": "Skill",
+                "hint": "Link to the skill rolled when attacking this way."
+              },
+              "combatManeuvers": {
+                "label": "Combat maneuvers",
+                "hint": "The maneuvers available this way, each with a name, damage type and description."
+              },
+              "damage": {
+                "label": "Damage",
+                "hint": "Damage dice, for example 1D8+1."
+              },
+              "minStrength": {
+                "label": "Minimum STR",
+                "hint": "Strength needed to use the weapon without a penalty."
+              },
+              "minDexterity": {
+                "label": "Minimum DEX",
+                "hint": "Dexterity needed to use the weapon without a penalty."
+              },
+              "strikeRank": {
+                "label": "Strike rank",
+                "hint": "The weapon's strike rank. Empty when it is not set."
+              }
+            },
+            "twoHand": {
+              "label": "Two hands",
+              "hint": "How the weapon is used this way.",
+              "skillRqidLink": {
+                "label": "Skill",
+                "hint": "Link to the skill rolled when attacking this way."
+              },
+              "combatManeuvers": {
+                "label": "Combat maneuvers",
+                "hint": "The maneuvers available this way, each with a name, damage type and description."
+              },
+              "damage": {
+                "label": "Damage",
+                "hint": "Damage dice, for example 1D8+1."
+              },
+              "minStrength": {
+                "label": "Minimum STR",
+                "hint": "Strength needed to use the weapon without a penalty."
+              },
+              "minDexterity": {
+                "label": "Minimum DEX",
+                "hint": "Dexterity needed to use the weapon without a penalty."
+              },
+              "strikeRank": {
+                "label": "Strike rank",
+                "hint": "The weapon's strike rank. Empty when it is not set."
+              }
+            },
+            "missile": {
+              "label": "Missile",
+              "hint": "How the weapon is used this way.",
+              "skillRqidLink": {
+                "label": "Skill",
+                "hint": "Link to the skill rolled when attacking this way."
+              },
+              "combatManeuvers": {
+                "label": "Combat maneuvers",
+                "hint": "The maneuvers available this way, each with a name, damage type and description."
+              },
+              "damage": {
+                "label": "Damage",
+                "hint": "Damage dice, for example 1D8+1."
+              },
+              "minStrength": {
+                "label": "Minimum STR",
+                "hint": "Strength needed to use the weapon without a penalty."
+              },
+              "minDexterity": {
+                "label": "Minimum DEX",
+                "hint": "Dexterity needed to use the weapon without a penalty."
+              },
+              "strikeRank": {
+                "label": "Strike rank",
+                "hint": "The weapon's strike rank. Empty when it is not set."
+              }
+            }
+          },
+          "defaultUsage": {
+            "label": "Default usage",
+            "hint": "The usage that is preselected when attacking with the weapon."
+          },
+          "hitPoints": {
+            "label": "Hit points",
+            "hint": "The weapon's hit points. A natural weapon has no max of its own.",
+            "value": {
+              "label": "Current",
+              "hint": "Current hit points."
+            },
+            "max": {
+              "label": "Max",
+              "hint": "Max hit points."
+            }
+          },
+          "hitPointLocation": {
+            "label": "Hit point location",
+            "hint": "For a natural weapon: the hit location it belongs to. The weapon then shares that location's hit points."
+          },
+          "isNatural": {
+            "label": "Is natural",
+            "hint": "Whether the weapon is part of the body, like a claw or a bite."
+          },
+          "rate": {
+            "label": "Rate of fire",
+            "hint": "Rate of fire of a missile weapon, from 0 to 5."
+          },
+          "range": {
+            "label": "Range",
+            "hint": "Range of a missile or thrown weapon."
+          },
+          "isProjectile": {
+            "label": "Is projectile",
+            "hint": "Ammunition, like an arrow, used together with a projectile weapon."
+          },
+          "isProjectileWeapon": {
+            "label": "Is projectile weapon",
+            "hint": "A weapon that fires projectiles, like a bow. Each attack uses up one of the quantity of the linked projectile."
+          },
+          "isThrownWeapon": {
+            "label": "Is thrown weapon",
+            "hint": "A thrown weapon, like a javelin. Each attack uses up one of its quantity."
+          },
+          "isRangedWeapon": {
+            "label": "Is ranged weapon",
+            "hint": "A ranged weapon that uses up nothing when it attacks."
+          },
+          "projectileId": {
+            "label": "Projectile",
+            "hint": "Id of the item on the same actor that this weapon fires or throws."
+          }
+        }
+      },
+      "Physical": {
+        "FIELDS": {
+          "physicalItemType": {
+            "label": "Item type",
+            "hint": "Whether the item is one of a kind (unique) or a stack of identical items (consumable)."
+          },
+          "quantity": {
+            "label": "Quantity",
+            "hint": "How many of the item the character has."
+          },
+          "description": {
+            "label": "Description",
+            "hint": "Description shown to the players."
+          },
+          "gmNotes": {
+            "label": "GM notes",
+            "hint": "Notes only the GM sees."
+          },
+          "location": {
+            "label": "Location",
+            "hint": "Name of the container item that holds this item. Blank when it is not inside one."
+          },
+          "isContainer": {
+            "label": "Is container",
+            "hint": "Whether other items can be stored inside this one."
+          },
+          "attunedTo": {
+            "label": "Attuned to",
+            "hint": "Free text noting who the item is attuned to. Does not identify a stored magic item."
+          },
+          "encumbrance": {
+            "label": "Encumbrance",
+            "hint": "Encumbrance (ENC) of one item."
+          },
+          "equippedStatus": {
+            "label": "Equipped status",
+            "hint": "Where the item is: carried, equipped, or stored away. Only equipped items count as worn or wielded."
+          },
+          "price": {
+            "label": "Price",
+            "hint": "Value of the item.",
+            "real": {
+              "label": "Real price",
+              "hint": "The actual price."
+            },
+            "estimated": {
+              "label": "Estimated price",
+              "hint": "The price players believe it has, before it is identified."
+            }
+          },
+          "storedMagicPoints": {
+            "label": "Stored magic points",
+            "hint": "Magic points kept in the item, for example in a POW-storing crystal. They can be spent when casting.",
+            "value": {
+              "label": "Stored points",
+              "hint": "Magic points currently stored."
+            },
+            "max": {
+              "label": "Capacity",
+              "hint": "Most magic points the item can store."
+            },
+            "identified": {
+              "label": "Identified",
+              "hint": "Whether the players can see the stored magic points and use them."
+            }
+          },
+          "boundSpiritActorUuids": {
+            "label": "Bound spirits",
+            "hint": "UUIDs of the spirit actors bound into the item by a Binding Enchantment."
+          },
+          "matrixSpells": {
+            "label": "Matrix spells",
+            "hint": "Spirit magic spells stored in the item by a Spell Matrix Enchantment. Each entry holds a link to the spell, its points and its sort order."
+          }
+        }
+      },
+      "Ability": {
+        "FIELDS": {
+          "canGetExperience": {
+            "label": "Can get experience",
+            "hint": "Whether the ability can be checked for an experience gain."
+          },
+          "hasExperience": {
+            "label": "Has experience",
+            "hint": "Set when the ability has earned an experience check. Cleared when the improvement is rolled."
+          }
         }
       }
     },

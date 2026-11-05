@@ -7,7 +7,9 @@
   "properties": {
     "occupation": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Occupation",
+      "description": "Name of the occupation."
     },
     "occupationRqidLink": {
       "type": [
@@ -34,18 +36,24 @@
       "required": [
         "rqid",
         "name"
-      ]
+      ],
+      "title": "Occupation journal",
+      "description": "Link to the journal entry about the occupation."
     },
     "specialization": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Specialization",
+      "description": "A narrower field within the occupation."
     },
     "homelands": {
       "type": "array",
       "items": {
         "type": "string",
         "default": ""
-      }
+      },
+      "title": "Homelands",
+      "description": "Names of the homelands where the occupation is found."
     },
     "occupationalSkills": {
       "type": "array",
@@ -94,7 +102,9 @@
           "incomeSkill",
           "bonus"
         ]
-      }
+      },
+      "title": "Occupational skills",
+      "description": "The skills the occupation grants. Each entry holds a skill link, a bonus and whether it is the income skill."
     },
     "standardOfLiving": {
       "type": "string",
@@ -106,16 +116,22 @@
         "petty-king"
       ],
       "minLength": 1,
-      "default": "free"
+      "default": "free",
+      "title": "Standard of living",
+      "description": "Social standing of the occupation: destitute, poor, free, noble or petty king."
     },
     "baseIncome": {
       "type": "number",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Base income",
+      "description": "Income per year in Lunars."
     },
     "baseIncomeNotes": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Base income notes",
+      "description": "Free text explaining how the income is made."
     },
     "cultRqidLinks": {
       "type": "array",
@@ -142,12 +158,16 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Cults",
+      "description": "Links to the cults that fit the occupation."
     },
     "ransom": {
       "type": "number",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Ransom",
+      "description": "Ransom in Lunars."
     },
     "startingEquipmentRqidLinks": {
       "type": "array",
@@ -174,7 +194,9 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Starting equipment",
+      "description": "Links to the items a character starts with."
     }
   },
   "additionalProperties": false,

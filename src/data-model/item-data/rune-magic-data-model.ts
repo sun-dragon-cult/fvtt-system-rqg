@@ -45,7 +45,7 @@ export type RuneMagicItem = RqgItem & { system: Item.SystemOfType<"runeMagic"> }
 type ChanceModifier = { value?: number | string | null | undefined };
 type RpAndMpCost = { mp: number; rp: number; exp: boolean };
 
-const { BooleanField, StringField } = foundry.data.fields;
+const { BooleanField, NumberField, StringField } = foundry.data.fields;
 const logger = new RqgLogger("RuneMagicDataModel");
 
 function defineRuneMagicSchema() {
@@ -55,12 +55,15 @@ function defineRuneMagicSchema() {
     runeRqidLinks: rqidLinkArraySchemaField(),
     isStackable: new BooleanField({ nullable: false, initial: false }),
     isOneUse: new BooleanField({ nullable: false, initial: false }),
+    chance: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
   } as const;
 }
 
 type RuneMagicSchema = ReturnType<typeof defineRuneMagicSchema>;
 
-export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chance: number }> {
+export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.RuneMagic", "RQG.Item.Spell"];
+
   declare descriptionRqidLink: RqidLink<RqidString>;
 
   static override defineSchema() {

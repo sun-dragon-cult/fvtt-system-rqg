@@ -7,7 +7,9 @@
   "properties": {
     "homeland": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Homeland",
+      "description": "Name of the homeland."
     },
     "homelandJournalRqidLink": {
       "type": [
@@ -34,11 +36,15 @@
       "required": [
         "rqid",
         "name"
-      ]
+      ],
+      "title": "Homeland journal",
+      "description": "Link to the journal entry about the homeland."
     },
     "region": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Region or city",
+      "description": "Name of the region."
     },
     "regionJournalRqidLink": {
       "type": [
@@ -65,7 +71,9 @@
       "required": [
         "rqid",
         "name"
-      ]
+      ],
+      "title": "Region journal",
+      "description": "Link to the journal entry about the region."
     },
     "cultureJournalRqidLinks": {
       "type": "array",
@@ -92,7 +100,9 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Cultures",
+      "description": "Links to the journal entries about the cultures."
     },
     "tribeJournalRqidLinks": {
       "type": "array",
@@ -119,7 +129,9 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Tribes",
+      "description": "Links to the journal entries about the tribes."
     },
     "clanJournalRqidLinks": {
       "type": "array",
@@ -146,7 +158,9 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Clans",
+      "description": "Links to the journal entries about the clans."
     },
     "cultRqidLinks": {
       "type": "array",
@@ -173,7 +187,9 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Cults",
+      "description": "Links to the cults a character from here can pick in the actor wizard."
     },
     "skillRqidLinks": {
       "type": "array",
@@ -200,7 +216,9 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Skills",
+      "description": "Links to the skills the homeland grants, each with a bonus."
     },
     "runeRqidLinks": {
       "type": "array",
@@ -227,7 +245,9 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Runes",
+      "description": "Links to the runes the homeland grants."
     },
     "passionRqidLinks": {
       "type": "array",
@@ -254,11 +274,15 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Passions",
+      "description": "Links to the passions the homeland grants."
     },
     "wizardInstructions": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Wizard instructions",
+      "description": "Text shown to the player in the actor wizard when they pick this homeland."
     }
   },
   "additionalProperties": false,

@@ -13,37 +13,53 @@
         "consumable"
       ],
       "minLength": 1,
-      "default": "unique"
+      "default": "unique",
+      "title": "Item type",
+      "description": "Whether the item is one of a kind (unique) or a stack of identical items (consumable)."
     },
     "quantity": {
       "type": "integer",
       "minimum": 0,
-      "default": 1
+      "default": 1,
+      "title": "Quantity",
+      "description": "How many of the item the character has."
     },
     "description": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Description",
+      "description": "Description shown to the players."
     },
     "gmNotes": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "GM notes",
+      "description": "Notes only the GM sees."
     },
     "location": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Location",
+      "description": "Name of the container item that holds this item. Blank when it is not inside one."
     },
     "isContainer": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is container",
+      "description": "Whether other items can be stored inside this one."
     },
     "attunedTo": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Attuned to",
+      "description": "Free text noting who the item is attuned to. Does not identify a stored magic item."
     },
     "encumbrance": {
       "type": "number",
       "minimum": 0,
-      "default": 1
+      "default": 1,
+      "title": "Encumbrance",
+      "description": "Encumbrance (ENC) of one item."
     },
     "equippedStatus": {
       "type": "string",
@@ -53,7 +69,9 @@
         "equipped"
       ],
       "minLength": 1,
-      "default": "carried"
+      "default": "carried",
+      "title": "Equipped status",
+      "description": "Where the item is: carried, equipped, or stored away. Only equipped items count as worn or wielded."
     },
     "price": {
       "type": "object",
@@ -61,19 +79,25 @@
         "real": {
           "type": "number",
           "minimum": 0,
-          "default": 0
+          "default": 0,
+          "title": "Real price",
+          "description": "The actual price."
         },
         "estimated": {
           "type": "number",
           "minimum": 0,
-          "default": 0
+          "default": 0,
+          "title": "Estimated price",
+          "description": "The price players believe it has, before it is identified."
         }
       },
       "additionalProperties": false,
       "required": [
         "real",
         "estimated"
-      ]
+      ],
+      "title": "Price",
+      "description": "Value of the item."
     },
     "storedMagicPoints": {
       "type": "object",
@@ -83,28 +107,38 @@
             "integer",
             "null"
           ],
-          "default": 0
+          "default": 0,
+          "title": "Stored points",
+          "description": "Magic points currently stored."
         },
         "max": {
           "type": "integer",
-          "default": 0
+          "default": 0,
+          "title": "Capacity",
+          "description": "Most magic points the item can store."
         },
         "identified": {
           "type": "boolean",
-          "default": false
+          "default": false,
+          "title": "Identified",
+          "description": "Whether the players can see the stored magic points and use them."
         }
       },
       "additionalProperties": false,
       "required": [
         "max",
         "identified"
-      ]
+      ],
+      "title": "Stored magic points",
+      "description": "Magic points kept in the item, for example in a POW-storing crystal. They can be spent when casting."
     },
     "boundSpiritActorUuids": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "title": "Bound spirits",
+      "description": "UUIDs of the spirit actors bound into the item by a Binding Enchantment."
     },
     "matrixSpells": {
       "type": "array",
@@ -153,7 +187,9 @@
           "points",
           "sort"
         ]
-      }
+      },
+      "title": "Matrix spells",
+      "description": "Spirit magic spells stored in the item by a Spell Matrix Enchantment. Each entry holds a link to the spell, its points and its sort order."
     },
     "effect": {
       "type": "object",
@@ -167,21 +203,29 @@
                 "attack": {
                   "type": "integer",
                   "default": 0,
+                  "title": "Attack",
+                  "description": "Added to the attack chance.",
                   "readOnly": true
                 },
                 "parry": {
                   "type": "integer",
                   "default": 0,
+                  "title": "Parry",
+                  "description": "Added to the parry chance.",
                   "readOnly": true
                 },
                 "magicDamage": {
                   "type": "integer",
                   "default": 0,
+                  "title": "Magic damage",
+                  "description": "Flat magical damage added to the damage roll.",
                   "readOnly": true
                 },
                 "magicDamageDice": {
                   "type": "string",
                   "default": "",
+                  "title": "Magic damage dice",
+                  "description": "Magical damage dice added to the damage roll.",
                   "readOnly": true
                 }
               },
@@ -191,7 +235,9 @@
                 "parry",
                 "magicDamage",
                 "magicDamageDice"
-              ]
+              ],
+              "title": "Melee",
+              "description": "Added to melee attacks."
             },
             "missile": {
               "type": "object",
@@ -199,21 +245,29 @@
                 "attack": {
                   "type": "integer",
                   "default": 0,
+                  "title": "Attack",
+                  "description": "Added to the attack chance.",
                   "readOnly": true
                 },
                 "parry": {
                   "type": "integer",
                   "default": 0,
+                  "title": "Parry",
+                  "description": "Added to the parry chance.",
                   "readOnly": true
                 },
                 "magicDamage": {
                   "type": "integer",
                   "default": 0,
+                  "title": "Magic damage",
+                  "description": "Flat magical damage added to the damage roll.",
                   "readOnly": true
                 },
                 "magicDamageDice": {
                   "type": "string",
                   "default": "",
+                  "title": "Magic damage dice",
+                  "description": "Magical damage dice added to the damage roll.",
                   "readOnly": true
                 }
               },
@@ -223,14 +277,18 @@
                 "parry",
                 "magicDamage",
                 "magicDamageDice"
-              ]
+              ],
+              "title": "Missile",
+              "description": "Added to missile attacks."
             }
           },
           "additionalProperties": false,
           "required": [
             "melee",
             "missile"
-          ]
+          ],
+          "title": "Added",
+          "description": "Values added to the weapon's own."
         },
         "multiply": {
           "type": "object",
@@ -242,13 +300,17 @@
                   "type": "number",
                   "minimum": 0,
                   "default": 1,
+                  "title": "Damage multiplier",
+                  "description": "Number the weapon dice are multiplied by.",
                   "readOnly": true
                 }
               },
               "additionalProperties": false,
               "required": [
                 "damage"
-              ]
+              ],
+              "title": "Melee",
+              "description": "Multiplies melee damage."
             },
             "missile": {
               "type": "object",
@@ -257,20 +319,26 @@
                   "type": "number",
                   "minimum": 0,
                   "default": 1,
+                  "title": "Damage multiplier",
+                  "description": "Number the weapon dice are multiplied by.",
                   "readOnly": true
                 }
               },
               "additionalProperties": false,
               "required": [
                 "damage"
-              ]
+              ],
+              "title": "Missile",
+              "description": "Multiplies missile damage."
             }
           },
           "additionalProperties": false,
           "required": [
             "melee",
             "missile"
-          ]
+          ],
+          "title": "Multiplied",
+          "description": "Values the weapon's own are multiplied by."
         },
         "override": {
           "type": "object",
@@ -281,19 +349,25 @@
                 "damage": {
                   "type": "string",
                   "default": "",
+                  "title": "Damage",
+                  "description": "Damage dice that replace the missile's own, for example from Firearrow.",
                   "readOnly": true
                 }
               },
               "additionalProperties": false,
               "required": [
                 "damage"
-              ]
+              ],
+              "title": "Missile",
+              "description": "Replaces missile values."
             }
           },
           "additionalProperties": false,
           "required": [
             "missile"
-          ]
+          ],
+          "title": "Overridden",
+          "description": "Values that replace the weapon's own."
         }
       },
       "additionalProperties": false,
@@ -301,7 +375,9 @@
         "add",
         "multiply",
         "override"
-      ]
+      ],
+      "title": "Effects",
+      "description": "Calculated values that active effects change. Never stored."
     },
     "usage": {
       "type": "object",
@@ -334,7 +410,9 @@
               "required": [
                 "rqid",
                 "name"
-              ]
+              ],
+              "title": "Skill",
+              "description": "Link to the skill rolled when attacking this way."
             },
             "combatManeuvers": {
               "type": "array",
@@ -370,21 +448,29 @@
                   "name",
                   "damageType"
                 ]
-              }
+              },
+              "title": "Combat maneuvers",
+              "description": "The maneuvers available this way, each with a name, damage type and description."
             },
             "damage": {
               "type": "string",
-              "default": ""
+              "default": "",
+              "title": "Damage",
+              "description": "Damage dice, for example 1D8+1."
             },
             "minStrength": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Minimum STR",
+              "description": "Strength needed to use the weapon without a penalty."
             },
             "minDexterity": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Minimum DEX",
+              "description": "Dexterity needed to use the weapon without a penalty."
             },
             "strikeRank": {
               "type": [
@@ -392,7 +478,9 @@
                 "null"
               ],
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Strike rank",
+              "description": "The weapon's strike rank. Empty when it is not set."
             }
           },
           "additionalProperties": false,
@@ -401,7 +489,9 @@
             "damage",
             "minStrength",
             "minDexterity"
-          ]
+          ],
+          "title": "One hand",
+          "description": "How the weapon is used this way."
         },
         "offHand": {
           "type": "object",
@@ -431,7 +521,9 @@
               "required": [
                 "rqid",
                 "name"
-              ]
+              ],
+              "title": "Skill",
+              "description": "Link to the skill rolled when attacking this way."
             },
             "combatManeuvers": {
               "type": "array",
@@ -467,21 +559,29 @@
                   "name",
                   "damageType"
                 ]
-              }
+              },
+              "title": "Combat maneuvers",
+              "description": "The maneuvers available this way, each with a name, damage type and description."
             },
             "damage": {
               "type": "string",
-              "default": ""
+              "default": "",
+              "title": "Damage",
+              "description": "Damage dice, for example 1D8+1."
             },
             "minStrength": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Minimum STR",
+              "description": "Strength needed to use the weapon without a penalty."
             },
             "minDexterity": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Minimum DEX",
+              "description": "Dexterity needed to use the weapon without a penalty."
             },
             "strikeRank": {
               "type": [
@@ -489,7 +589,9 @@
                 "null"
               ],
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Strike rank",
+              "description": "The weapon's strike rank. Empty when it is not set."
             }
           },
           "additionalProperties": false,
@@ -498,7 +600,9 @@
             "damage",
             "minStrength",
             "minDexterity"
-          ]
+          ],
+          "title": "Off hand",
+          "description": "How the weapon is used this way."
         },
         "twoHand": {
           "type": "object",
@@ -528,7 +632,9 @@
               "required": [
                 "rqid",
                 "name"
-              ]
+              ],
+              "title": "Skill",
+              "description": "Link to the skill rolled when attacking this way."
             },
             "combatManeuvers": {
               "type": "array",
@@ -564,21 +670,29 @@
                   "name",
                   "damageType"
                 ]
-              }
+              },
+              "title": "Combat maneuvers",
+              "description": "The maneuvers available this way, each with a name, damage type and description."
             },
             "damage": {
               "type": "string",
-              "default": ""
+              "default": "",
+              "title": "Damage",
+              "description": "Damage dice, for example 1D8+1."
             },
             "minStrength": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Minimum STR",
+              "description": "Strength needed to use the weapon without a penalty."
             },
             "minDexterity": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Minimum DEX",
+              "description": "Dexterity needed to use the weapon without a penalty."
             },
             "strikeRank": {
               "type": [
@@ -586,7 +700,9 @@
                 "null"
               ],
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Strike rank",
+              "description": "The weapon's strike rank. Empty when it is not set."
             }
           },
           "additionalProperties": false,
@@ -595,7 +711,9 @@
             "damage",
             "minStrength",
             "minDexterity"
-          ]
+          ],
+          "title": "Two hands",
+          "description": "How the weapon is used this way."
         },
         "missile": {
           "type": "object",
@@ -625,7 +743,9 @@
               "required": [
                 "rqid",
                 "name"
-              ]
+              ],
+              "title": "Skill",
+              "description": "Link to the skill rolled when attacking this way."
             },
             "combatManeuvers": {
               "type": "array",
@@ -661,21 +781,29 @@
                   "name",
                   "damageType"
                 ]
-              }
+              },
+              "title": "Combat maneuvers",
+              "description": "The maneuvers available this way, each with a name, damage type and description."
             },
             "damage": {
               "type": "string",
-              "default": ""
+              "default": "",
+              "title": "Damage",
+              "description": "Damage dice, for example 1D8+1."
             },
             "minStrength": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Minimum STR",
+              "description": "Strength needed to use the weapon without a penalty."
             },
             "minDexterity": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Minimum DEX",
+              "description": "Dexterity needed to use the weapon without a penalty."
             },
             "strikeRank": {
               "type": [
@@ -683,7 +811,9 @@
                 "null"
               ],
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "title": "Strike rank",
+              "description": "The weapon's strike rank. Empty when it is not set."
             }
           },
           "additionalProperties": false,
@@ -692,7 +822,9 @@
             "damage",
             "minStrength",
             "minDexterity"
-          ]
+          ],
+          "title": "Missile",
+          "description": "How the weapon is used this way."
         }
       },
       "additionalProperties": false,
@@ -701,7 +833,9 @@
         "offHand",
         "twoHand",
         "missile"
-      ]
+      ],
+      "title": "Usage",
+      "description": "How the weapon is used: one-handed, off-hand, two-handed or as a missile."
     },
     "defaultUsage": {
       "type": [
@@ -714,7 +848,9 @@
         "offHand",
         "missile"
       ],
-      "minLength": 1
+      "minLength": 1,
+      "title": "Default usage",
+      "description": "The usage that is preselected when attacking with the weapon."
     },
     "hitPoints": {
       "type": "object",
@@ -724,56 +860,80 @@
             "integer",
             "null"
           ],
-          "default": 0
+          "default": 0,
+          "title": "Current",
+          "description": "Current hit points."
         },
         "max": {
           "type": [
             "integer",
             "null"
           ],
-          "default": 0
+          "default": 0,
+          "title": "Max",
+          "description": "Max hit points."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "Hit points",
+      "description": "The weapon's hit points. A natural weapon has no max of its own."
     },
     "hitPointLocation": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Hit point location",
+      "description": "For a natural weapon: the hit location it belongs to. The weapon then shares that location's hit points."
     },
     "isNatural": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is natural",
+      "description": "Whether the weapon is part of the body, like a claw or a bite."
     },
     "rate": {
       "type": "integer",
       "minimum": 0,
       "maximum": 5,
-      "default": 0
+      "default": 0,
+      "title": "Rate of fire",
+      "description": "Rate of fire of a missile weapon, from 0 to 5."
     },
     "range": {
       "type": "integer",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Range",
+      "description": "Range of a missile or thrown weapon."
     },
     "isProjectile": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is projectile",
+      "description": "Ammunition, like an arrow, used together with a projectile weapon."
     },
     "isProjectileWeapon": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is projectile weapon",
+      "description": "A weapon that fires projectiles, like a bow. Each attack uses up one of the quantity of the linked projectile."
     },
     "isThrownWeapon": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is thrown weapon",
+      "description": "A thrown weapon, like a javelin. Each attack uses up one of its quantity."
     },
     "isRangedWeapon": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is ranged weapon",
+      "description": "A ranged weapon that uses up nothing when it attacks."
     },
     "projectileId": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Projectile",
+      "description": "Id of the item on the same actor that this weapon fires or throws."
     }
   },
   "additionalProperties": false,

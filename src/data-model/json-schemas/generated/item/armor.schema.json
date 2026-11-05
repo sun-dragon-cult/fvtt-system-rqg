@@ -13,37 +13,53 @@
         "consumable"
       ],
       "minLength": 1,
-      "default": "unique"
+      "default": "unique",
+      "title": "Item type",
+      "description": "Whether the item is one of a kind (unique) or a stack of identical items (consumable)."
     },
     "quantity": {
       "type": "integer",
       "minimum": 0,
-      "default": 1
+      "default": 1,
+      "title": "Quantity",
+      "description": "How many of the item the character has."
     },
     "description": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Description",
+      "description": "Description shown to the players."
     },
     "gmNotes": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "GM notes",
+      "description": "Notes only the GM sees."
     },
     "location": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Location",
+      "description": "Name of the container item that holds this item. Blank when it is not inside one."
     },
     "isContainer": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is container",
+      "description": "Whether other items can be stored inside this one."
     },
     "attunedTo": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Attuned to",
+      "description": "Free text noting who the item is attuned to. Does not identify a stored magic item."
     },
     "encumbrance": {
       "type": "number",
       "minimum": 0,
-      "default": 1
+      "default": 1,
+      "title": "Encumbrance",
+      "description": "Encumbrance (ENC) of one item."
     },
     "equippedStatus": {
       "type": "string",
@@ -53,7 +69,9 @@
         "equipped"
       ],
       "minLength": 1,
-      "default": "carried"
+      "default": "carried",
+      "title": "Equipped status",
+      "description": "Where the item is: carried, equipped, or stored away. Only equipped items count as worn or wielded."
     },
     "price": {
       "type": "object",
@@ -61,19 +79,25 @@
         "real": {
           "type": "number",
           "minimum": 0,
-          "default": 0
+          "default": 0,
+          "title": "Real price",
+          "description": "The actual price."
         },
         "estimated": {
           "type": "number",
           "minimum": 0,
-          "default": 0
+          "default": 0,
+          "title": "Estimated price",
+          "description": "The price players believe it has, before it is identified."
         }
       },
       "additionalProperties": false,
       "required": [
         "real",
         "estimated"
-      ]
+      ],
+      "title": "Price",
+      "description": "Value of the item."
     },
     "storedMagicPoints": {
       "type": "object",
@@ -83,28 +107,38 @@
             "integer",
             "null"
           ],
-          "default": 0
+          "default": 0,
+          "title": "Stored points",
+          "description": "Magic points currently stored."
         },
         "max": {
           "type": "integer",
-          "default": 0
+          "default": 0,
+          "title": "Capacity",
+          "description": "Most magic points the item can store."
         },
         "identified": {
           "type": "boolean",
-          "default": false
+          "default": false,
+          "title": "Identified",
+          "description": "Whether the players can see the stored magic points and use them."
         }
       },
       "additionalProperties": false,
       "required": [
         "max",
         "identified"
-      ]
+      ],
+      "title": "Stored magic points",
+      "description": "Magic points kept in the item, for example in a POW-storing crystal. They can be spent when casting."
     },
     "boundSpiritActorUuids": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "title": "Bound spirits",
+      "description": "UUIDs of the spirit actors bound into the item by a Binding Enchantment."
     },
     "matrixSpells": {
       "type": "array",
@@ -153,12 +187,16 @@
           "points",
           "sort"
         ]
-      }
+      },
+      "title": "Matrix spells",
+      "description": "Spirit magic spells stored in the item by a Spell Matrix Enchantment. Each entry holds a link to the spell, its points and its sort order."
     },
     "size": {
       "type": "integer",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Fits SIZ",
+      "description": "The size of the wearer the armor fits, as a SIZ value."
     },
     "hitLocationRqidLinks": {
       "type": "array",
@@ -185,28 +223,40 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Hit locations",
+      "description": "Links to the hit locations the armor covers."
     },
     "namePrefix": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Name prefix",
+      "description": "Text put before the armor name, for example its material."
     },
     "armorType": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Armor type",
+      "description": "The kind of armor, for example a cuirass or a helm."
     },
     "material": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Material",
+      "description": "What the armor is made of."
     },
     "absorbs": {
       "type": "integer",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Absorbs",
+      "description": "Armor points it adds to every hit location it covers while equipped."
     },
     "moveQuietlyPenalty": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "title": "Move Quietly penalty",
+      "description": "Modifier to Move Quietly while the armor is worn."
     }
   },
   "additionalProperties": false,

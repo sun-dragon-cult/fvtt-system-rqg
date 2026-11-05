@@ -6,7 +6,7 @@ import { PassionDataModel } from "./passion-data-model";
 describe("Ability item chance persistence", () => {
   it("does not persist `chance` for skill (it's purely derived from baseChance + gainedChance)", () => {
     const schema = SkillDataModel.defineSchema();
-    expect(schema).not.toHaveProperty("chance");
+    expect(schema.chance.options.persisted).toBe(false);
     expect(schema).toHaveProperty("baseChance");
     expect(schema).toHaveProperty("gainedChance");
   });

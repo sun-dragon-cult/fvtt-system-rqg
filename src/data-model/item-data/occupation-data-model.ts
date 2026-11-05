@@ -45,6 +45,8 @@ function defineOccupationSchema() {
 type OccupationSchema = ReturnType<typeof defineOccupationSchema>;
 
 export class OccupationDataModel extends RqgItemDataModel<OccupationSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.Occupation"];
+
   static override defineSchema() {
     return defineOccupationSchema();
   }

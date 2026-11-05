@@ -8,7 +8,9 @@
     "points": {
       "type": "integer",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Points",
+      "description": "Magic points the spell costs, or its level."
     },
     "castingRange": {
       "type": "string",
@@ -19,7 +21,9 @@
         "ranged",
         "special"
       ],
-      "default": "ranged"
+      "default": "ranged",
+      "title": "Casting range",
+      "description": "How far from the caster the spell can reach."
     },
     "duration": {
       "type": "string",
@@ -31,7 +35,9 @@
         "permanent",
         "special"
       ],
-      "default": "temporal"
+      "default": "temporal",
+      "title": "Duration",
+      "description": "How long the spell lasts."
     },
     "concentration": {
       "type": "string",
@@ -40,15 +46,21 @@
         "active"
       ],
       "minLength": 1,
-      "default": "passive"
+      "default": "passive",
+      "title": "Concentration",
+      "description": "Whether the caster has to concentrate on the spell while it lasts."
     },
     "isRitual": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is ritual",
+      "description": "Whether the spell is cast as a ritual."
     },
     "isEnchantment": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is enchantment",
+      "description": "Whether the spell is an enchantment."
     },
     "resistedBy": {
       "type": "string",
@@ -61,7 +73,9 @@
         "spiritCombatDefeat"
       ],
       "minLength": 1,
-      "default": "none"
+      "default": "none",
+      "title": "Resisted by",
+      "description": "What the target can resist the spell with."
     },
     "resistedWith": {
       "type": "string",
@@ -70,7 +84,9 @@
         "magicPoints"
       ],
       "minLength": 1,
-      "default": "power"
+      "default": "power",
+      "title": "Resisted with",
+      "description": "The characteristic the target resists with."
     },
     "targetKind": {
       "type": "string",
@@ -89,7 +105,9 @@
         "ritual"
       ],
       "minLength": 1,
-      "default": "none"
+      "default": "none",
+      "title": "Target kind",
+      "description": "What the spell targets: for example a character, a weapon or an area."
     },
     "effectTier": {
       "type": "string",
@@ -100,11 +118,15 @@
         "behavior"
       ],
       "minLength": 1,
-      "default": "none"
+      "default": "none",
+      "title": "Effect tier",
+      "description": "How the system applies the spell effect: not at all, with an Active Effect, or with a macro."
     },
     "passesSpellBarriers": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Passes spell barriers",
+      "description": "Set for spells that attack other spells' defences, like Dispel Magic and Dismiss Magic."
     },
     "descriptionRqidLink": {
       "type": [
@@ -131,7 +153,9 @@
       "required": [
         "rqid",
         "name"
-      ]
+      ],
+      "title": "Description",
+      "description": "Link to the journal entry that describes the spell."
     },
     "effectRqidLink": {
       "type": [
@@ -158,11 +182,15 @@
       "required": [
         "rqid",
         "name"
-      ]
+      ],
+      "title": "Effect",
+      "description": "Link to the Active Effect template applied when the spell is cast."
     },
     "cultId": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Cult",
+      "description": "Id of the cult item on the same actor that the spell is learned through."
     },
     "runeRqidLinks": {
       "type": "array",
@@ -189,15 +217,28 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Runes",
+      "description": "Links to the runes the spell is cast with."
     },
     "isStackable": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is stackable",
+      "description": "Whether the spell can be cast several times to stack its effect."
     },
     "isOneUse": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is one use",
+      "description": "Whether the spell is used up when cast."
+    },
+    "chance": {
+      "type": "integer",
+      "default": 0,
+      "title": "Chance",
+      "description": "The chance used when casting: the strongest of the spell's runes. Calculated, never stored.",
+      "readOnly": true
     }
   },
   "additionalProperties": false,
@@ -216,6 +257,7 @@
     "cultId",
     "runeRqidLinks",
     "isStackable",
-    "isOneUse"
+    "isOneUse",
+    "chance"
   ]
 }

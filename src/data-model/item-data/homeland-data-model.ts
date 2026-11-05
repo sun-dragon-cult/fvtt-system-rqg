@@ -27,6 +27,8 @@ function defineHomelandSchema() {
 type HomelandSchema = ReturnType<typeof defineHomelandSchema>;
 
 export class HomelandDataModel extends RqgItemDataModel<HomelandSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.Homeland"];
+
   declare skillRqidLinks: RqidLink<`i.skill.${string}`>[];
   declare runeRqidLinks: RqidLink<`i.rune.${string}`>[];
   declare passionRqidLinks: RqidLink<`i.passion.${string}`>[];

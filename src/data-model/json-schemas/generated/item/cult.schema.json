@@ -9,7 +9,9 @@
       "type": [
         "string",
         "null"
-      ]
+      ],
+      "title": "Deity",
+      "description": "Name of the deity."
     },
     "descriptionRqidLink": {
       "type": [
@@ -36,7 +38,9 @@
       "required": [
         "rqid",
         "name"
-      ]
+      ],
+      "title": "Description",
+      "description": "Link to the journal entry that describes the cult."
     },
     "runePoints": {
       "type": "object",
@@ -56,19 +60,27 @@
       "additionalProperties": false,
       "required": [
         "max"
-      ]
+      ],
+      "title": "Rune points",
+      "description": "The cult's rune points. Value is the points the initiate currently holds."
     },
     "holyDays": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Holy days",
+      "description": "Free text listing the cult's holy days."
     },
     "gifts": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Gifts",
+      "description": "The gifts the character has received from the cult. Free text."
     },
     "geases": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Geases",
+      "description": "The geases the character has taken on for the cult. Free text."
     },
     "runeRqidLinks": {
       "type": "array",
@@ -95,7 +107,9 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Runes",
+      "description": "Links to the runes the cult is associated with."
     },
     "commonRuneMagicRqidLinks": {
       "type": "array",
@@ -122,7 +136,9 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Common rune magic",
+      "description": "Links to the rune magic spells available to every initiate."
     },
     "joinedCults": {
       "type": "array",
@@ -159,7 +175,9 @@
           "tagline",
           "rank"
         ]
-      }
+      },
+      "title": "Joined cults",
+      "description": "The cults the character has joined through this cult item. Each entry holds a cult name, a tagline and a rank."
     }
   },
   "additionalProperties": false,

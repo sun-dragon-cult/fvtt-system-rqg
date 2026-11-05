@@ -25,6 +25,8 @@ function defineArmorSchema() {
 type ArmorSchema = ReturnType<typeof defineArmorSchema>;
 
 export class ArmorDataModel extends RqgItemDataModel<ArmorSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.Armor", "RQG.Item.Physical"];
+
   static override defineSchema() {
     return defineArmorSchema();
   }
