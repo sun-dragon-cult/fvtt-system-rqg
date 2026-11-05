@@ -15,6 +15,9 @@ import {
 
 export type JsonSchemaNode = Record<string, unknown>;
 
+/** Looks up the localized label and hint for the field at `path` (relative to `system`). */
+export type FieldDescriber = (path: string[]) => { label?: string; hint?: string } | undefined;
+
 function typeWithNull(type: string, nullable: boolean): string | string[] {
   return nullable ? [type, "null"] : type;
 }
@@ -28,7 +31,11 @@ function fieldOptions(field: unknown): Record<string, unknown> {
 }
 
 /** Converts a single field instance into a JSON Schema node. */
-export function fieldToJsonSchema(field: unknown): JsonSchemaNode {
+export function fieldToJsonSchema(
+  field: unknown,
+  describe?: FieldDescriber,
+  path: string[] = [],
+): JsonSchemaNode {
   if (field instanceof StringFieldShim) {
     const options = fieldOptions(field);
     const schema: JsonSchemaNode = { type: typeWithNull("string", isNullable(options)) };
@@ -79,7 +86,7 @@ export function fieldToJsonSchema(field: unknown): JsonSchemaNode {
   }
 
   if (field instanceof SchemaFieldShim) {
-    return schemaToJsonSchema(field.fields, isNullable(fieldOptions(field)));
+    return schemaToJsonSchema(field.fields, isNullable(fieldOptions(field)), describe, path);
   }
 
   if (field instanceof ObjectFieldShim) {
@@ -113,12 +120,27 @@ export function fieldToJsonSchema(field: unknown): JsonSchemaNode {
 export function schemaToJsonSchema(
   fields: Record<string, unknown>,
   nullable = false,
+  describe?: FieldDescriber,
+  path: string[] = [],
 ): JsonSchemaNode {
   const properties: Record<string, JsonSchemaNode> = {};
   const required: string[] = [];
 
   for (const [key, field] of Object.entries(fields)) {
-    properties[key] = fieldToJsonSchema(field);
+    const fieldPath = [...path, key];
+    const node = fieldToJsonSchema(field, describe, fieldPath);
+    const text = describe?.(fieldPath);
+    if (text?.label) {
+      node["title"] = text.label;
+    }
+    if (text?.hint) {
+      node["description"] = text.hint;
+    }
+    // Foundry's `persisted: false` marks values calculated on every prepare, never stored.
+    if (fieldOptions(field)["persisted"] === false) {
+      node["readOnly"] = true;
+    }
+    properties[key] = node;
     if (!isNullable(fieldOptions(field))) {
       required.push(key);
     }

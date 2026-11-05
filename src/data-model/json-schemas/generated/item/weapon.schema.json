@@ -166,19 +166,23 @@
               "properties": {
                 "attack": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "readOnly": true
                 },
                 "parry": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "readOnly": true
                 },
                 "magicDamage": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "readOnly": true
                 },
                 "magicDamageDice": {
                   "type": "string",
-                  "default": ""
+                  "default": "",
+                  "readOnly": true
                 }
               },
               "additionalProperties": false,
@@ -194,19 +198,23 @@
               "properties": {
                 "attack": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "readOnly": true
                 },
                 "parry": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "readOnly": true
                 },
                 "magicDamage": {
                   "type": "integer",
-                  "default": 0
+                  "default": 0,
+                  "readOnly": true
                 },
                 "magicDamageDice": {
                   "type": "string",
-                  "default": ""
+                  "default": "",
+                  "readOnly": true
                 }
               },
               "additionalProperties": false,
@@ -233,7 +241,8 @@
                 "damage": {
                   "type": "number",
                   "minimum": 0,
-                  "default": 1
+                  "default": 1,
+                  "readOnly": true
                 }
               },
               "additionalProperties": false,
@@ -247,7 +256,8 @@
                 "damage": {
                   "type": "number",
                   "minimum": 0,
-                  "default": 1
+                  "default": 1,
+                  "readOnly": true
                 }
               },
               "additionalProperties": false,
@@ -270,7 +280,8 @@
               "properties": {
                 "damage": {
                   "type": "string",
-                  "default": ""
+                  "default": "",
+                  "readOnly": true
                 }
               },
               "additionalProperties": false,

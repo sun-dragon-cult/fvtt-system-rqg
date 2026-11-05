@@ -220,8 +220,10 @@ function findMissingLiteralKeys(
 ): string[] {
   const missing: string[] = [];
   for (const key of literalKeys) {
-    // Skip keys that are in the locale or are part of the dynamic expansion
-    if (!localeKeys.has(key) && !dynamicKeys.has(key)) {
+    // Skip keys that are in the locale or are part of the dynamic expansion, and
+    // `LOCALIZATION_PREFIXES` entries, which are branches of the locale tree.
+    const isPrefix = [...localeKeys].some((localeKey) => localeKey.startsWith(`${key}.FIELDS.`));
+    if (!localeKeys.has(key) && !dynamicKeys.has(key) && !isPrefix) {
       missing.push(key);
     }
   }
@@ -264,11 +266,20 @@ function buildReport(options: Options): InternalAuditReport {
   // Expand dynamic keys from the exhaustive map
   const dynamicKeys = expandDynamicKeys();
 
+  // Foundry reads `<prefix>.FIELDS.*` labels and hints for a data model's `LOCALIZATION_PREFIXES`.
+  const isDataModelFieldText = (key: string): boolean => {
+    const prefix = key.split(".FIELDS.")[0];
+    return prefix !== key && corpus.includes(`"${prefix}"`);
+  };
+
   // A key is "used" if it appears literally in source OR is in the expanded dynamic key set
   const unusedEntries = translationEntries
     .filter(
       (entry) =>
-        entry.key.startsWith("RQG.") && !corpus.includes(entry.key) && !dynamicKeys.has(entry.key),
+        entry.key.startsWith("RQG.") &&
+        !corpus.includes(entry.key) &&
+        !dynamicKeys.has(entry.key) &&
+        !isDataModelFieldText(entry.key),
     )
     .sort((a, b) => a.key.localeCompare(b.key));
 
