@@ -283,9 +283,11 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Roll a characteristic, ×5 unless `difficulty` says otherwise - part of the public API. Opens
-   * the roll dialog, or with `skipDialog` rolls at once and returns the roll (undefined if a
-   * `rqg.preCharacteristicRoll` hook cancelled it).
+   * Roll a characteristic, ×5 unless `difficulty` says otherwise. Opens the roll dialog, or with
+   * `skipDialog` rolls at once and returns the roll (undefined if a `rqg.preCharacteristicRoll`
+   * hook cancelled it).
+   *
+   * @public since 6.2.0
    */
   public async rollCharacteristic(
     characteristicName: keyof Characteristics,
@@ -409,16 +411,22 @@ export class RqgActor extends Actor {
     ) as CharacteristicRollOptions;
   }
 
-  /** All spirit and rune magic the actor can cast, including Allied Spirit, bound spirit and matrix sources. */
+  /**
+   * All spirit and rune magic the actor can cast, including Allied Spirit, bound spirit and matrix
+   * sources.
+   *
+   * @public since 6.2.0
+   */
   public getCastableSpells(): CastableSpell[] {
     return getCastableSpells(this);
   }
 
   /**
-   * Cast a spirit or rune magic spell with this actor as the caster - part of the public API. The
-   * spell may belong to someone else: an Allied Spirit, a bound spirit or a matrix. Opens the cast
-   * dialog, or with `skipDialog` casts at once and returns the roll (undefined if the cast was
-   * stopped).
+   * Cast a spirit or rune magic spell with this actor as the caster. The spell may belong to someone
+   * else: an Allied Spirit, a bound spirit or a matrix. Opens the cast dialog, or with `skipDialog`
+   * casts at once and returns the roll (undefined if the cast was stopped).
+   *
+   * @public since 6.2.0
    */
   public async castSpell(
     spell: SpellItem,
@@ -429,9 +437,10 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Roll the actor's Reputation - part of the public API. Opens the roll dialog, or with
-   * `skipDialog` rolls at once and returns the roll (undefined if a `rqg.preReputationRoll` hook
-   * cancelled it).
+   * Roll the actor's Reputation. Opens the roll dialog, or with `skipDialog` rolls at once and
+   * returns the roll (undefined if a `rqg.preReputationRoll` hook cancelled it).
+   *
+   * @public since 6.2.0
    */
   public async rollReputation(options: RollMethodOptions = {}): Promise<AbilityRoll | undefined> {
     if (!options.skipDialog) {
@@ -874,6 +883,8 @@ export class RqgActor extends Actor {
    * Damage one hit location, and the total hit points unless `applyToTotalHp` is false.
    * Armor points are subtracted, the location's own unless `armorPoints` is given. A `"random"` location is rolled on this
    * actor's own hit location table.
+   *
+   * @public since 6.2.0
    */
   public async damage(options: DamageOptions): Promise<DamageResult> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
@@ -952,6 +963,8 @@ export class RqgActor extends Actor {
    * only that wound (an index into `system.wounds`) is healed, otherwise the largest wounds
    * first. A severed location is restored with `restoreSevered`, which defaults to a heal of 6+
    * points (Core p.148); `points: "all"` never restores one unless asked.
+   *
+   * @public since 6.2.0
    */
   public async heal(options: HealOptions): Promise<HealResult> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);

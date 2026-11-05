@@ -4,7 +4,11 @@ import type { CombatManeuver, UsageType, WeaponItem } from "@item-model/weapon-d
 import type { DefenceType } from "../applications/attack-flow/defence-dialog-data.types";
 import { warnDeprecated } from "../system/deprecation";
 
-/** Options shared by the public roll methods on actors and items - part of the public API. */
+/**
+ * Options shared by the public roll methods on actors and items.
+ *
+ * @public since 6.2.0
+ */
 export type RollMethodOptions = {
   /** Roll at once without opening the roll dialog; the roll is then returned. */
   skipDialog?: boolean;
@@ -15,7 +19,11 @@ export type RollMethodOptions = {
   rollMode?: foundry.dice.Roll.Mode;
 };
 
-/** Options for `item.cast` and `actor.castSpell` - part of the public API. */
+/**
+ * Options for `item.cast` and `actor.castSpell`.
+ *
+ * @public since 6.2.0
+ */
 export type SpellCastOptions = RollMethodOptions & {
   /** Points to cast with, defaults to the spell's points. */
   levelUsed?: number;
@@ -29,13 +37,21 @@ export type SpellCastOptions = RollMethodOptions & {
   usedRuneId?: string;
 };
 
-/** Options for `weapon.attack` - part of the public API. */
+/**
+ * Options for `weapon.attack`.
+ *
+ * @public since 6.2.0
+ */
 export type AttackOptions = {
   /** How the weapon is used; preselected in the attack dialog and remembered on the weapon. */
   usage?: UsageType;
 };
 
-/** What the `rqg.preAttack` and `rqg.attack` hooks get with the weapon - part of the public API. */
+/**
+ * What the `rqg.preAttack` and `rqg.attack` hooks get with the weapon.
+ *
+ * @public since 6.2.0
+ */
 export type AttackHookData = {
   attacker: RqgActor;
   /** The actor of the user's targeted token when the attack was made, if any. */
@@ -53,7 +69,11 @@ export type PrepareAttackData = Omit<AttackHookData, "combatManeuver"> & {
   combatManeuver: CombatManeuver | undefined;
 };
 
-/** What the defence hooks get with the defender - part of the public API. */
+/**
+ * What the defence hooks get with the defender.
+ *
+ * @public since 6.2.0
+ */
 export type DefenceHookData = {
   attacker: RqgActor | undefined;
   /** The attack card being defended against. */

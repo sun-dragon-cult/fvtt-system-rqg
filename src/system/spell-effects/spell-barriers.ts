@@ -12,7 +12,9 @@ export const barrierPriorities = { area: 100, countermagic: 200, shield: 300 } a
 
 /**
  * What a protective spell or Region gives to the layers an incoming spell must get through. A lower
- * priority is met first (further out). Part of the public API.
+ * priority is met first (further out).
+ *
+ * @public since 6.2.0
  */
 type BarrierBase = {
   priority: number;
