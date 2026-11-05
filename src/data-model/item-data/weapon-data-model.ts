@@ -14,8 +14,18 @@ import {
   type WeaponUsageType,
 } from "../shared/weapon-usage-choices";
 import { encodeLegacyWeaponSkillReferenceInRqid } from "./weapon-skill-link";
-import { assertDocumentSubType, localize, requireValue, RqgError } from "../../system/util";
+import {
+  assertDocumentSubType,
+  isDocumentSubType,
+  localize,
+  requireValue,
+  RqgError,
+} from "../../system/util";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import {
+  getWeaponUsageChanceInfo,
+  type WeaponUsageChanceInfo,
+} from "../../items/weapon-item/weapon-skill-links";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import { DamageDegree } from "../../system/combat-calculations.defs";
 import {
@@ -219,6 +229,19 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
     }
     const { AttackDialogV2 } = await import("../../applications/attack-flow/attack-dialog-v2");
     await new AttackDialogV2(weapon).render({ force: true });
+  }
+
+  /**
+   * Attack chance (the linked skill plus weapon effect modifiers) and the STR/DEX requirement
+   * status for one way of using this weapon, as wielded by the actor that owns it.
+   */
+  getUsageInfo(usage: UsageType): WeaponUsageChanceInfo {
+    const weapon = this.parent as unknown as WeaponItem;
+    const actor = weapon.parent;
+    if (!isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
+      return logger.throw(`getUsageInfo needs a weapon owned by a character, got ${weapon.name}`);
+    }
+    return getWeaponUsageChanceInfo(actor, weapon, usage);
   }
 
   /**
