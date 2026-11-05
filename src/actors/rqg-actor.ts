@@ -76,6 +76,7 @@ import { ActorTemplatePicker } from "../applications/actor-template-picker/actor
 import { templatePaths } from "../system/load-handlebars-templates";
 import { cloneActorFromTemplate } from "../system/api/actor-template-api";
 import { RqgLogger } from "../system/logging/rqg-logger";
+import { type CastableSpell, getCastableSpells } from "../system/castable-spells";
 import { ERR } from "../system/error-registry";
 
 import Actor = foundry.documents.Actor;
@@ -406,6 +407,11 @@ export class RqgActor extends Actor {
       },
       { overwrite: false },
     ) as CharacteristicRollOptions;
+  }
+
+  /** All spirit and rune magic the actor can cast, including Allied Spirit, bound spirit and matrix sources. */
+  public getCastableSpells(): CastableSpell[] {
+    return getCastableSpells(this);
   }
 
   /**

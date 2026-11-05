@@ -16,7 +16,6 @@ import { summon } from "../spell-effects/summon";
 import { dealSpellDamage } from "../spell-effects/spell-damage";
 import { postMagicMissiles as postAttackMagicMissiles } from "../../applications/attack-flow/magic-missiles";
 import type { MissileFiredScope } from "../spell-effects/spell-behavior";
-import * as query from "./api-query";
 import * as rolls from "./api-rolls";
 import { openDataModelRepairDialog } from "./data-model-repair";
 import { Rqid } from "./rqid-api";
@@ -36,11 +35,6 @@ export function createRqgApi() {
       runeMagic: rolls.runeMagic,
       /** Compare with `roll.successLevel`, lower is better. */
       SuccessLevel: AbilitySuccessLevelEnum,
-    },
-    query: {
-      abilities: query.abilities,
-      weaponUsages: query.weaponUsages,
-      spells: query.spells,
     },
     migration: {
       applyWorldMigrations: applyDefaultWorldMigrations,

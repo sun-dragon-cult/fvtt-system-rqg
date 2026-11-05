@@ -29,11 +29,6 @@ describe("game.system.api", () => {
           "openDataModelRepairDialog": "function",
           "openRqidBatchEditor": "function",
         },
-        "query": {
-          "abilities": "function",
-          "spells": "function",
-          "weaponUsages": "function",
-        },
         "rolls": {
           "SuccessLevel": {
             "Critical": 0,

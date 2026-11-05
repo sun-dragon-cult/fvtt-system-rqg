@@ -1,118 +1,16 @@
 import type { RqgItem } from "@items/rqg-item.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { CultItem } from "@item-model/cult-data-model.ts";
-import type { PassionItem } from "@item-model/passion-data-model.ts";
-import type { RuneItem } from "@item-model/rune-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
-import type { SkillItem } from "@item-model/skill-data-model.ts";
-import type { SkillCategoryEnum } from "@item-model/skill-enums.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
-import type { UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
-import type { EquippedStatus } from "@item-model/i-physical-item.ts";
-import { abilityItemTypes, ItemTypeEnum } from "@item-model/item-types.ts";
-import { weaponUsageTypes } from "../../data-model/shared/weapon-usage-choices";
-import {
-  getWeaponUsageChanceInfo,
-  hasLinkedSkillReference,
-} from "../../items/weapon-item/weapon-skill-links";
-import { getAlliedBondActor, getBoundSpiritItems } from "../magic-point-source";
+import { getAlliedBondActor, getBoundSpiritItems } from "./magic-point-source";
 import {
   getBoundSpiritSpiritMagicItems,
   getExternalRuneMagicItems,
   getExternalSpiritMagicItems,
-} from "../spell-source";
-import { getMatrixSpellSlots } from "../spell-matrix";
-import { type ActorRef, resolveActor } from "./api-resolve";
-
-export type AbilityType = (typeof abilityItemTypes)[number];
-
-export type AbilityInfo = {
-  id: string;
-  uuid: string;
-  rqid: string | undefined;
-  name: string;
-  img: string | null;
-  type: AbilityType;
-  chance: number;
-  /** Only for skills */
-  category: SkillCategoryEnum | undefined;
-  hasExperience: boolean;
-};
-
-/** Skills, runes and passions sorted by name. */
-export function abilities(
-  actorRef?: ActorRef,
-  options: { types?: readonly AbilityType[] } = {},
-): AbilityInfo[] {
-  const { actor } = resolveActor(actorRef);
-  const types: readonly string[] = options.types ?? abilityItemTypes;
-  return (actor.items.contents as RqgItem[])
-    .filter((i) => types.includes(i.type))
-    .map((i) => {
-      const item = i as SkillItem | RuneItem | PassionItem;
-      return {
-        id: item.id ?? "",
-        uuid: item.uuid ?? "",
-        rqid: item.getFlag("rqg", "documentRqidFlags")?.id,
-        name: item.name ?? "",
-        img: item.img,
-        type: item.type as AbilityType,
-        chance: Number(item.system.chance) || 0,
-        category:
-          item.type === ItemTypeEnum.Skill ? (item as SkillItem).system.category : undefined,
-        hasExperience: !!item.system.hasExperience,
-      };
-    })
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
-
-export type WeaponUsageInfo = {
-  weaponId: string;
-  weaponUuid: string;
-  name: string;
-  img: string | null;
-  usage: UsageType;
-  equippedStatus: EquippedStatus;
-  skillId: string | undefined;
-  skillName: string | undefined;
-  /** Attack chance including weapon effect modifiers */
-  chance: number;
-  strikeRank: number | null;
-  /** Under the STR/DEX minimums for this usage */
-  unusable: boolean;
-};
-
-/** One entry per weapon usage that has a linked skill (the ones the attack dialog offers). */
-export function weaponUsages(
-  actorRef?: ActorRef,
-  options: { includeUnequipped?: boolean } = {},
-): WeaponUsageInfo[] {
-  const { actor } = resolveActor(actorRef);
-  const weapons = (actor.items.contents as RqgItem[])
-    .filter((i): i is WeaponItem => i.type === ItemTypeEnum.Weapon)
-    .filter((w) => options.includeUnequipped || w.system.equippedStatus === "equipped")
-    .sort((a, b) => a.sort - b.sort);
-
-  return weapons.flatMap((weapon) =>
-    weaponUsageTypes
-      .filter((usage) => hasLinkedSkillReference(weapon, usage))
-      .map((usage) => {
-        const info = getWeaponUsageChanceInfo(actor, weapon, usage);
-        return {
-          weaponId: weapon.id ?? "",
-          weaponUuid: weapon.uuid ?? "",
-          name: weapon.name ?? "",
-          img: weapon.img,
-          usage,
-          equippedStatus: weapon.system.equippedStatus,
-          skillId: info.skillItem?.id ?? undefined,
-          skillName: info.skillItem?.name ?? undefined,
-          chance: info.totalChance,
-          strikeRank: weapon.system.usage[usage].strikeRank ?? null,
-          unusable: info.unusable,
-        };
-      }),
-  );
-}
+} from "./spell-source";
+import { getMatrixSpellSlots } from "./spell-matrix";
+import type { RqgActor } from "../actors/rqg-actor";
 
 /** Where a castable spell comes from: the actor's own item, an Allied Spirit bond partner, a
  *  spirit bound in one of the actor's items, or a spell matrix. */
@@ -140,8 +38,7 @@ export type CastableSpell = {
 };
 
 /** All spirit and rune magic the actor can cast, own spells first. */
-export function spells(actorRef?: ActorRef): CastableSpell[] {
-  const { actor } = resolveActor(actorRef);
+export function getCastableSpells(actor: RqgActor): CastableSpell[] {
   const ally = getAlliedBondActor(actor);
   const ownItems = (actor.items.contents as RqgItem[]).sort((a, b) => a.sort - b.sort);
 
