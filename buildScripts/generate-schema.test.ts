@@ -65,17 +65,17 @@ describe("generate-schema (integration)", () => {
         ]),
       );
 
-      expect(schema.properties.baseChance).toEqual({
+      expect(schema.properties.baseChance).toMatchObject({
         type: "integer",
         minimum: 0,
         default: 0,
       });
-      expect(schema.properties.gainedChance).toEqual({
+      expect(schema.properties.gainedChance).toMatchObject({
         type: "integer",
         minimum: 0,
         default: 0,
       });
-      expect(schema.properties.skillName).toEqual({ type: "string", default: "" });
+      expect(schema.properties.skillName).toMatchObject({ type: "string", default: "" });
       expect(schema.properties.runeRqidLinks.type).toBe("array");
       expect(schema.properties.runeRqidLinks.items.type).toBe("object");
     } finally {

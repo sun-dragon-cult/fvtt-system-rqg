@@ -30,15 +30,16 @@ function defineSkillSchema() {
     baseChance: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
     gainedChance: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
     runeRqidLinks: rqidLinkArraySchemaField(),
+    categoryMod: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+    chance: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
   } as const;
 }
 
 type SkillSchema = ReturnType<typeof defineSkillSchema>;
 
-export class SkillDataModel extends AbilityDataModel<
-  SkillSchema,
-  { chance: number; categoryMod: number }
-> {
+export class SkillDataModel extends AbilityDataModel<SkillSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.Skill", "RQG.Item.Ability"];
+
   declare baseChance: number;
   declare gainedChance: number;
   declare runeRqidLinks: RqidLink<`i.rune.${string}`>[];

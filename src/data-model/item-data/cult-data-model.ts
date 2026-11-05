@@ -50,6 +50,8 @@ function defineCultSchema() {
 type CultSchema = ReturnType<typeof defineCultSchema>;
 
 export class CultDataModel extends RqgItemDataModel<CultSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.Cult"];
+
   declare runeRqidLinks: RqidLink<`i.rune.${string}`>[];
   declare commonRuneMagicRqidLinks: RqidLink<`i.rune-magic.${string}`>[];
   declare descriptionRqidLink: RqidLink<RqidString>;

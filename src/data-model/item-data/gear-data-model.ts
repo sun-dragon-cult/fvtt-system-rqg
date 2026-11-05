@@ -13,6 +13,8 @@ function defineGearSchema() {
 type GearSchema = ReturnType<typeof defineGearSchema>;
 
 export class GearDataModel extends RqgItemDataModel<GearSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.Physical"];
+
   static override defineSchema() {
     return defineGearSchema();
   }

@@ -7,11 +7,15 @@
   "properties": {
     "canGetExperience": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "title": "Can get experience",
+      "description": "Whether the ability can be checked for an experience gain."
     },
     "hasExperience": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Has experience",
+      "description": "Set when the ability has earned an experience check. Cleared when the improvement is rolled."
     },
     "descriptionRqidLink": {
       "type": [
@@ -38,7 +42,9 @@
       "required": [
         "rqid",
         "name"
-      ]
+      ],
+      "title": "Description",
+      "description": "Link to the journal entry that describes the skill."
     },
     "category": {
       "type": "string",
@@ -57,25 +63,35 @@
         "otherSkills"
       ],
       "minLength": 1,
-      "default": "magic"
+      "default": "magic",
+      "title": "Category",
+      "description": "The skill category. The character's modifier for the category applies to the skill."
     },
     "skillName": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Skill name",
+      "description": "Name of the skill, without the specialization."
     },
     "specialization": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Specialization",
+      "description": "The specialization, for example the weapon or language."
     },
     "baseChance": {
       "type": "integer",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Base chance",
+      "description": "The skill's starting percentage."
     },
     "gainedChance": {
       "type": "integer",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Gained chance",
+      "description": "Percentage points gained from experience, training and research."
     },
     "runeRqidLinks": {
       "type": "array",
@@ -102,7 +118,23 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Runes",
+      "description": "Links to the runes that can affect the skill."
+    },
+    "categoryMod": {
+      "type": "integer",
+      "default": 0,
+      "title": "Category modifier",
+      "description": "The character's modifier for this skill's category. Calculated, never stored.",
+      "readOnly": true
+    },
+    "chance": {
+      "type": "integer",
+      "default": 0,
+      "title": "Chance",
+      "description": "The chance used when rolling: base and gained chance plus the category modifier and other modifiers. Calculated, never stored.",
+      "readOnly": true
     }
   },
   "additionalProperties": false,
@@ -114,6 +146,8 @@
     "specialization",
     "baseChance",
     "gainedChance",
-    "runeRqidLinks"
+    "runeRqidLinks",
+    "categoryMod",
+    "chance"
   ]
 }

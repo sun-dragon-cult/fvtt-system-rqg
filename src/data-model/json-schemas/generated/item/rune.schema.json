@@ -7,16 +7,22 @@
   "properties": {
     "canGetExperience": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "title": "Can get experience",
+      "description": "Whether the ability can be checked for an experience gain."
     },
     "hasExperience": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Has experience",
+      "description": "Set when the ability has earned an experience check. Cleared when the improvement is rolled."
     },
     "chance": {
       "type": "integer",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Chance",
+      "description": "The rune's percentage."
     },
     "descriptionRqidLink": {
       "type": [
@@ -43,11 +49,15 @@
       "required": [
         "rqid",
         "name"
-      ]
+      ],
+      "title": "Description",
+      "description": "Link to the journal entry that describes the rune."
     },
     "rune": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Rune",
+      "description": "Name of the rune."
     },
     "runeType": {
       "type": "object",
@@ -73,7 +83,9 @@
       "required": [
         "type",
         "name"
-      ]
+      ],
+      "title": "Rune type",
+      "description": "The kind of rune."
     },
     "opposingRuneRqidLink": {
       "type": [
@@ -100,7 +112,9 @@
       "required": [
         "rqid",
         "name"
-      ]
+      ],
+      "title": "Opposing rune",
+      "description": "Link to the rune opposite this one."
     },
     "minorRuneRqidLinks": {
       "type": "array",
@@ -127,11 +141,15 @@
           "rqid",
           "name"
         ]
-      }
+      },
+      "title": "Minor runes",
+      "description": "Links to the minor runes that belong to this rune."
     },
     "isMastered": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Is mastered",
+      "description": "Whether the rune has been mastered."
     }
   },
   "additionalProperties": false,

@@ -7,32 +7,46 @@
   "properties": {
     "canGetExperience": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "title": "Can get experience",
+      "description": "Whether the ability can be checked for an experience gain."
     },
     "hasExperience": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "title": "Has experience",
+      "description": "Set when the ability has earned an experience check. Cleared when the improvement is rolled."
     },
     "chance": {
       "type": "integer",
       "minimum": 0,
-      "default": 0
+      "default": 0,
+      "title": "Chance",
+      "description": "The passion's percentage."
     },
     "passion": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Passion",
+      "description": "Name of the passion, for example Loyalty or Hate."
     },
     "subject": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Subject",
+      "description": "What the passion is directed at."
     },
     "description": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "Description",
+      "description": "Description shown to the players."
     },
     "gmNotes": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "title": "GM notes",
+      "description": "Notes only the GM sees."
     }
   },
   "additionalProperties": false,

@@ -48,6 +48,8 @@ type RuneSchema = ReturnType<typeof defineRuneSchema>;
 const runeTypeValues = new Set<string>(Object.values(RuneTypeEnum));
 
 export class RuneDataModel extends AbilityDataModel<RuneSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.Rune", "RQG.Item.Ability"];
+
   declare descriptionRqidLink: RqidLink<RqidString>;
 
   static override defineSchema() {

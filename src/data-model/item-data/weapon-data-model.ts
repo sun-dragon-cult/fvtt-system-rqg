@@ -162,6 +162,8 @@ function defineWeaponSchema() {
 type WeaponSchema = ReturnType<typeof defineWeaponSchema>;
 
 export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.Weapon", "RQG.Item.Physical"];
+
   static override defineSchema() {
     return defineWeaponSchema();
   }

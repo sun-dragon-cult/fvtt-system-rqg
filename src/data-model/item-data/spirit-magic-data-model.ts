@@ -43,6 +43,8 @@ function defineSpiritMagicSchema() {
 type SpiritMagicSchema = ReturnType<typeof defineSpiritMagicSchema>;
 
 export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
+  static override LOCALIZATION_PREFIXES = ["RQG.Item.SpiritMagic", "RQG.Item.Spell"];
+
   declare descriptionRqidLink: RqidLink<RqidString>;
 
   static override defineSchema() {
