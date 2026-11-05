@@ -18,7 +18,9 @@ export type PickLocationOptions = {
  * Let the user click a point on the canvas for a spell, snapped to the center of a grid space, for
  * a spell that takes a place: a destination, or where something appears. Resolves to the canvas
  * point, or undefined when cancelled (right click or Escape) or when the caster has no token on
- * the viewed scene to measure from. Part of the public API.
+ * the viewed scene to measure from.
+ *
+ * @public since 6.2.0
  */
 export async function pickSpellLocation(
   scope: SpellApplyScope,
@@ -142,8 +144,9 @@ function clickPoint(
 
 /**
  * Move a token to the free grid space nearest a canvas point, e.g. the one `pickSpellLocation`
- * gave. Resolves to the token's new position, or undefined when there is no room. Part of the
- * public API.
+ * gave. Resolves to the token's new position, or undefined when there is no room.
+ *
+ * @public since 6.2.0
  */
 export async function moveTokenNear(
   token: TokenDocument,

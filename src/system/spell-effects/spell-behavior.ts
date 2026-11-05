@@ -96,7 +96,8 @@ export const spellRollEntryNames = [
 
 /**
  * What a spell does beyond attaching an effect template, registered by modules for a spell rqid.
- * Part of the public API.
+ *
+ * @public since 6.2.0
  */
 export type SpellBehavior = SpellRollEntries & {
   /** Replaces attaching the effect template when Apply is clicked. */

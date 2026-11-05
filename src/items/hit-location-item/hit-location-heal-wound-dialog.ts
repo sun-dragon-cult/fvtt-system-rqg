@@ -17,9 +17,11 @@ export type WoundChoice = { location: HitLocationItem; wound: number; points?: n
 export type ChosenHealing = { wounds: WoundChoice[]; reattach: HitLocationItem[] };
 
 /**
- * What `chooseWounds` asks for - part of the public API. `single`: one wound gets all `points`.
+ * What `chooseWounds` asks for. `single`: one wound gets all `points`.
  * `split`: the points are spread over wounds, worst first by default. `location`: all points go to
  * one location, the clicked wound first and the rest to its other wounds.
+ *
+ * @public since 6.2.0
  */
 export type ChooseWoundsOptions = {
   title: string;
@@ -207,9 +209,11 @@ function healDialogContext(
 }
 
 /**
- * Let the user pick which of the actor's wounds to heal, on all its wounded locations - part of
- * the public API, used by healing spells. Resolves undefined when cancelled or when nothing is
- * wounded. If the wounds change while it is open, it asks again with the current ones.
+ * Let the user pick which of the actor's wounds to heal, on all its wounded locations, for healing
+ * spells. Resolves undefined when cancelled or when nothing is wounded. If the wounds change while
+ * it is open, it asks again with the current ones.
+ *
+ * @public since 6.2.0
  */
 export async function chooseWounds(
   actor: RqgActor,

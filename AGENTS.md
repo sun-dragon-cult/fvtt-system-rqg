@@ -71,6 +71,7 @@ Foundry themes use `body.theme-dark` / `body.theme-light`. Prefer theme-adaptive
 - If you change sheets/dialogs, keep TypeScript context data, templates, and styles synchronized.
 - If you change migrations, keep them idempotent, GM-safe, localized in player-facing reports, and covered by targeted migration tests.
 - To deprecate a public method or API, keep it working and call `warnDeprecated(oldCall, newCall, { since, until })` from `src/system/deprecation.ts` with literal version strings. The release workflow (`pnpm check:deprecations <version>`) fails while any deprecation with `until` at or before the version being released is still in `src/`.
+- Public API (documented on the site's API pages): mark each public method, type and the `RqgHooks` interface with `@public since <version>` in its JSDoc, where `<version>` is the release that introduced it. Adding, renaming or removing one means updating the docs page too and, for a rename or removal, a `warnDeprecated` and a release note. The shape of `game.system.api` is guarded by the snapshot in `src/system/api/rqg-api.test.ts`, so its functions don't need the tag.
 - If a commit fixes a tracked GitHub issue, use a GitHub closing keyword on its own line in the commit body (`Fixes #N`, `Closes #N`, or `Resolves #N`) — a bare `(#N)` reference does not auto-close the issue.
 
 ## AI-Facing Codebase Map

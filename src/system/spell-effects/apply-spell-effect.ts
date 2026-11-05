@@ -42,10 +42,12 @@ export type SpellEffectApplied =
   | { outcome: "resolved" };
 
 /**
- * The scope a spell behavior's `apply` runs with - part of the public API. It runs on the client
+ * The scope a spell behavior's `apply` runs with. It runs on the client
  * of whoever clicked Apply (the target's owner), or the active GM's when the behavior is
  * `runAsGm`, and returns a SpellEffectApplied; "resolved" means it did its work without leaving an
  * effect.
+ *
+ * @public since 6.2.0
  */
 export type SpellApplyScope = {
   spell: RqgItem;

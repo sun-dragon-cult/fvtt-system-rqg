@@ -88,7 +88,11 @@ declare global {
     RQG: RqgConfig;
   }
 
-  /** The system's own hooks, called through callRqgHook - part of the public API. */
+  /**
+   * The system's own hooks, called through callRqgHook.
+   *
+   * @public since 6.2.0
+   */
   interface RqgHooks {
     /** Fired at `setup`: modules register their spell behaviors. */
     "rqg.registerSpellBehaviors": (registry: SpellBehaviorRegistry) => void;

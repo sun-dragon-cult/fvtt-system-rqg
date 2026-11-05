@@ -20,15 +20,21 @@ import { spellAreaBehavior } from "./spell-across";
 import { resolveActorFromUuid } from "../../applications/resistance-roll-dialog/resistance-roll-shared";
 
 /**
- * The shape of a spell's area, in meters - part of the public API. A polygon is clicked corner by
+ * The shape of a spell's area, in meters. A polygon is clicked corner by
  * corner, like a ward's wands, and may not exceed `maxArea` square meters.
+ *
+ * @public since 6.2.0
  */
 export type SpellAreaShape =
   | { kind: "circle"; radius: number }
   | { kind: "square"; side: number }
   | { kind: "polygon"; corners: number; maxArea: number };
 
-/** How `createArea` makes a spell's area - part of the public API. */
+/**
+ * How `createArea` makes a spell's area.
+ *
+ * @public since 6.2.0
+ */
 export type SpellAreaOptions = {
   shape: SpellAreaShape;
   /**
@@ -48,9 +54,11 @@ export type SpellAreaOptions = {
 };
 
 /**
- * What a spell's `onAreaEnter` and `onAreaExit` run with - part of the public API. They run on the
+ * What a spell's `onAreaEnter` and `onAreaExit` run with. They run on the
  * active GM's client. `crossed` is false for a token that was already inside when the area was
  * made, so wards can tell crossing the boundary from being there.
+ *
+ * @public since 6.2.0
  */
 export type SpellAreaScope = {
   spell: RqgItem;
@@ -71,9 +79,11 @@ export type SpellAcrossRegionScope = {
 };
 
 /**
- * What a spell's `onSpellAcross` runs with - part of the public API. It runs on the active GM's
+ * What a spell's `onSpellAcross` runs with. It runs on the active GM's
  * client when `incomingSpell` is cast from outside the area at `targets`, the tokens inside it that
  * it was cast at, once per cast, before their protective spells meet it.
+ *
+ * @public since 6.2.0
  */
 export type SpellAcrossScope = {
   spell: RqgItem;

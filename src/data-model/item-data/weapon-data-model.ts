@@ -236,6 +236,8 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
   /**
    * Attack chance (the linked skill plus weapon effect modifiers) and the STR/DEX requirement
    * status for one way of using this weapon, as wielded by the actor that owns it.
+   *
+   * @public since 6.2.0
    */
   getUsageInfo(usage: UsageType): WeaponUsageChanceInfo {
     const weapon = this.parent as unknown as WeaponItem;

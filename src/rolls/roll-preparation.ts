@@ -1,6 +1,10 @@
 import type { Modifier } from "./ability-roll/ability-roll.types";
 
-/** What the `rqg.prepare…` hooks can say about a roll besides its modifiers - part of the public API. */
+/**
+ * What the `rqg.prepare…` hooks can say about a roll besides its modifiers.
+ *
+ * @public since 6.2.0
+ */
 export type RollPreparation = {
   /** Why the roll isn't allowed. The dialog shows it and can't roll, and the roll is refused. */
   forbidden?: string;

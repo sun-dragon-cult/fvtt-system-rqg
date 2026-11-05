@@ -90,7 +90,9 @@ function summonedFootprint(
  * free cell next to the summoner. The active GM creates the token, importing the actor into a Summoned folder the
  * first time, and gives it an effect carrying the spell's provenance that removes it when the
  * summoning ends (RBM p.90). Resolves to undefined, leaving Apply clickable, when the placement is
- * cancelled. Part of the public API.
+ * cancelled.
+ *
+ * @public since 6.2.0
  */
 export async function summon(
   scope: SpellApplyScope,

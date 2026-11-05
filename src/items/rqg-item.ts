@@ -251,9 +251,10 @@ export class RqgItem extends Item {
   }
 
   /**
-   * Roll a skill, rune or passion - part of the public API. Opens the roll dialog, or with
-   * `skipDialog` rolls at once and returns the roll (undefined if a `rqg.preAbilityRoll` hook
-   * cancelled it).
+   * Roll a skill, rune or passion. Opens the roll dialog, or with `skipDialog` rolls at once and
+   * returns the roll (undefined if a `rqg.preAbilityRoll` hook cancelled it).
+   *
+   * @public since 6.2.0
    */
   public async roll(options: RollMethodOptions = {}): Promise<AbilityRoll | undefined> {
     assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
@@ -289,9 +290,11 @@ export class RqgItem extends Item {
   }
 
   /**
-   * Cast this spirit or rune magic spell as its owner - part of the public API. Opens the cast
-   * dialog, or with `skipDialog` casts at once and returns the roll (undefined if the cast was
-   * stopped). `actor.castSpell` casts a spell someone else owns.
+   * Cast this spirit or rune magic spell as its owner. Opens the cast dialog, or with `skipDialog`
+   * casts at once and returns the roll (undefined if the cast was stopped). `actor.castSpell` casts
+   * a spell someone else owns.
+   *
+   * @public since 6.2.0
    */
   public async cast(
     options: SpellCastOptions = {},
@@ -352,8 +355,10 @@ export class RqgItem extends Item {
   }
 
   /**
-   * Attack with this weapon - part of the public API. Opens the attack dialog, where the combat
-   * maneuver is chosen; `usage` preselects how the weapon is used and is remembered on it.
+   * Attack with this weapon. Opens the attack dialog, where the combat maneuver is chosen; `usage`
+   * preselects how the weapon is used and is remembered on it.
+   *
+   * @public since 6.2.0
    */
   public async attack(options: AttackOptions = {}): Promise<void> {
     assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
