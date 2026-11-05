@@ -74,13 +74,13 @@
       "type": "string",
       "default": "",
       "title": "Gifts",
-      "description": "Free text listing the cult's gifts."
+      "description": "The gifts the character has received from the cult. Free text."
     },
     "geases": {
       "type": "string",
       "default": "",
       "title": "Geases",
-      "description": "Free text listing the cult's geases."
+      "description": "The geases the character has taken on for the cult. Free text."
     },
     "runeRqidLinks": {
       "type": "array",

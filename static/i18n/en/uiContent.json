@@ -1250,7 +1250,7 @@
         },
         "FIELDS": {
           "size": {
-            "label": "Size",
+            "label": "Fits SIZ",
             "hint": "The size of the wearer the armor fits, as a SIZ value."
           },
           "hitLocationRqidLinks": {
@@ -1315,11 +1315,11 @@
           },
           "gifts": {
             "label": "Gifts",
-            "hint": "Free text listing the cult's gifts."
+            "hint": "The gifts the character has received from the cult. Free text."
           },
           "geases": {
             "label": "Geases",
-            "hint": "Free text listing the cult's geases."
+            "hint": "The geases the character has taken on for the cult. Free text."
           },
           "runeRqidLinks": {
             "label": "Runes",
@@ -1525,7 +1525,7 @@
             "hint": "Link to the journal entry about the homeland."
           },
           "region": {
-            "label": "Region",
+            "label": "Region or city",
             "hint": "Name of the region."
           },
           "regionJournalRqidLink": {
@@ -1758,7 +1758,7 @@
           },
           "isMastered": {
             "label": "Is mastered",
-            "hint": "Whether the rune has been mastered."
+            "hint": "Whether the character has mastered the rune for Sorcery. Techniques count as mastered."
           }
         }
       },
@@ -2019,7 +2019,7 @@
             "hint": "The object used to focus the spell, if any."
           },
           "isMatrix": {
-            "label": "Is matrix",
+            "label": "Held in matrix",
             "hint": "Whether the spell is stored in a matrix."
           }
         }
@@ -2305,19 +2305,19 @@
           },
           "isProjectile": {
             "label": "Is projectile",
-            "hint": "Whether the item is ammunition, like an arrow, that a missile weapon fires."
+            "hint": "Ammunition, like an arrow, used together with a projectile weapon."
           },
           "isProjectileWeapon": {
             "label": "Is projectile weapon",
-            "hint": "Whether the weapon fires projectiles, like a bow."
+            "hint": "A weapon that fires projectiles, like a bow. Each attack uses up one of the quantity of the linked projectile."
           },
           "isThrownWeapon": {
             "label": "Is thrown weapon",
-            "hint": "Whether the weapon is thrown, like a javelin."
+            "hint": "A thrown weapon, like a javelin. Each attack uses up one of its quantity."
           },
           "isRangedWeapon": {
             "label": "Is ranged weapon",
-            "hint": "Whether the weapon attacks at range."
+            "hint": "A ranged weapon that uses up nothing when it attacks."
           },
           "projectileId": {
             "label": "Projectile",

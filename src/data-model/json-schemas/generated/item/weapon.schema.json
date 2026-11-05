@@ -909,25 +909,25 @@
       "type": "boolean",
       "default": false,
       "title": "Is projectile",
-      "description": "Whether the item is ammunition, like an arrow, that a missile weapon fires."
+      "description": "Ammunition, like an arrow, used together with a projectile weapon."
     },
     "isProjectileWeapon": {
       "type": "boolean",
       "default": false,
       "title": "Is projectile weapon",
-      "description": "Whether the weapon fires projectiles, like a bow."
+      "description": "A weapon that fires projectiles, like a bow. Each attack uses up one of the quantity of the linked projectile."
     },
     "isThrownWeapon": {
       "type": "boolean",
       "default": false,
       "title": "Is thrown weapon",
-      "description": "Whether the weapon is thrown, like a javelin."
+      "description": "A thrown weapon, like a javelin. Each attack uses up one of its quantity."
     },
     "isRangedWeapon": {
       "type": "boolean",
       "default": false,
       "title": "Is ranged weapon",
-      "description": "Whether the weapon attacks at range."
+      "description": "A ranged weapon that uses up nothing when it attacks."
     },
     "projectileId": {
       "type": "string",

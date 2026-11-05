@@ -195,7 +195,7 @@
       "type": "integer",
       "minimum": 0,
       "default": 0,
-      "title": "Size",
+      "title": "Fits SIZ",
       "description": "The size of the wearer the armor fits, as a SIZ value."
     },
     "hitLocationRqidLinks": {

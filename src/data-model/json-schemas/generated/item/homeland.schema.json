@@ -43,7 +43,7 @@
     "region": {
       "type": "string",
       "default": "",
-      "title": "Region",
+      "title": "Region or city",
       "description": "Name of the region."
     },
     "regionJournalRqidLink": {

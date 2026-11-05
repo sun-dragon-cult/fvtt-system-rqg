@@ -149,7 +149,7 @@
       "type": "boolean",
       "default": false,
       "title": "Is mastered",
-      "description": "Whether the rune has been mastered."
+      "description": "Whether the character has mastered the rune for Sorcery. Techniques count as mastered."
     }
   },
   "additionalProperties": false,

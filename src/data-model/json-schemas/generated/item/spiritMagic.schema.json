@@ -201,7 +201,7 @@
     "isMatrix": {
       "type": "boolean",
       "default": false,
-      "title": "Is matrix",
+      "title": "Held in matrix",
       "description": "Whether the spell is stored in a matrix."
     }
   },
