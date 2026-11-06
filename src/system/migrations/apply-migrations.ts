@@ -1068,7 +1068,7 @@ function describeEmbeddedDocumentChanges(
   }
 }
 
-function buildMigrationChangeRows(
+export function buildMigrationChangeRows(
   documentData: object,
   updateData: object,
   labelPrefix = "",
@@ -1099,7 +1099,16 @@ function buildMigrationChangeRows(
       ];
     })
     .filter((row) => row.key.length > 0 && row.previousValue !== row.newValue)
+    .filter((row) => !isNoopDeletionRow(row))
     .sort((left, right) => left.key.localeCompare(right.key));
+}
+
+/** Deleting a value that was never set (`null` or missing) doesn't change anything. */
+function isNoopDeletionRow(row: MigrationChangeRow): boolean {
+  return (
+    row.newValue === "(deleted)" &&
+    (row.previousValue === "(undefined)" || row.previousValue === "null")
+  );
 }
 
 function buildMigrationChangeRowsForIdentifiedArray(
@@ -1133,10 +1142,13 @@ function buildMigrationChangeRowsForIdentifiedArray(
     const entryId = String(entryRecord["_id"] ?? entryRecord["id"] ?? "");
     const previousEntry = entryId ? (previousById.get(entryId) ?? {}) : {};
 
+    const entryName = String(
+      (previousEntry as Record<string, unknown>)["name"] ?? entryRecord["name"] ?? entryId,
+    );
     return buildMigrationChangeRows(
       previousEntry as object,
       entryRecord,
-      `${labelPrefix}${basePath}[] :: `,
+      `${labelPrefix}${basePath}[${entryName}] :: `,
     );
   });
 }
