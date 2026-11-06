@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import type { MigrationLogEntry } from "./apply-migrations";
-import { resolveActorName, resolveMigrationSource } from "./migrate-world";
+import { resolveActorName, resolveActorUuid, resolveMigrationSource } from "./migrate-world";
 
 const sceneUuid = "Scene.9ofv1FvTsz8cSIZM";
 const itemUuid = `${sceneUuid}.Token.tok1.Actor.act1.Item.item1`;
@@ -40,5 +40,39 @@ describe("migration report grouping", () => {
     expect(resolveActorName(entry([{ kind: "Item", uuid: itemUuid, label: "Ring" }]))).toBe(
       "Guard",
     );
+  });
+
+  it("tells actors with the same name apart by uuid, also from their items", () => {
+    const actor = resolveActorUuid(entry([{ kind: "Actor", uuid: "Actor.aaa", label: "Dismas" }]));
+    const item = resolveActorUuid(
+      entry([{ kind: "Item", uuid: "Actor.aaa.Item.i1", label: "Staff" }]),
+    );
+    const other = resolveActorUuid(entry([{ kind: "Actor", uuid: "Actor.bbb", label: "Dismas" }]));
+    expect(item).toBe(actor);
+    expect(other).not.toBe(actor);
+  });
+
+  it("uses the token actor uuid for a token actor's items", () => {
+    expect(resolveActorUuid(entry([{ kind: "Item", uuid: itemUuid, label: "Ring" }]))).toBe(
+      `${sceneUuid}.Token.tok1.Actor.act1`,
+    );
+  });
+
+  it("keys compendium actors by uuid and prefers the actor document", () => {
+    expect(
+      resolveActorUuid(
+        entry([
+          { kind: "Item", uuid: "Compendium.rqg.bestiary.Actor.aaa.Item.i1", label: "Staff" },
+        ]),
+      ),
+    ).toBe("Compendium.rqg.bestiary.Actor.aaa");
+    expect(
+      resolveActorUuid(
+        entry([
+          { kind: "Item", uuid: "Actor.bbb.Item.i1", label: "Staff" },
+          { kind: "Actor", uuid: "Actor.aaa", label: "Dismas" },
+        ]),
+      ),
+    ).toBe("Actor.aaa");
   });
 });
