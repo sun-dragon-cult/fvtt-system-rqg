@@ -738,7 +738,7 @@ async function parseMigrationEntry(entry: MigrationLogEntry): Promise<MigrationR
   };
 }
 
-function resolveMigrationSource(entry: MigrationLogEntry): {
+export function resolveMigrationSource(entry: MigrationLogEntry): {
   sourceKind: MigrationSourceKind;
   groupKey: string;
   groupName: string;
@@ -781,7 +781,7 @@ function resolveMigrationSource(entry: MigrationLogEntry): {
     const sceneName = sceneDocument.label || localize("RQG.Migration.reportSourceUnknownScene");
     return {
       sourceKind: "scene",
-      groupKey: `scene:${sceneDocument.uuid || sceneName}`,
+      groupKey: `scene:${getSceneIdFromUuid(sceneDocument.uuid) || sceneDocument.uuid || sceneName}`,
       groupName: sceneName,
       groupTitle: localize("RQG.Migration.reportSourceScene", {
         name: sceneName,
@@ -919,7 +919,7 @@ function toAnchorId(value: string): string {
   return `migration-${normalized || "source"}`;
 }
 
-function resolveActorName(entry: MigrationLogEntry): string {
+export function resolveActorName(entry: MigrationLogEntry): string {
   const documents = entry.documents ?? [];
   const actorDocument = documents.find((document) => document.kind === "Actor");
   if (actorDocument) {
@@ -937,6 +937,17 @@ function resolveActorName(entry: MigrationLogEntry): string {
       const actor = game.actors?.get(actorId);
       if (actor?.name) {
         return actor.name;
+      }
+    }
+  }
+
+  // A token actor's uuid is Scene.<id>.Token.<id>.Actor.<id>[.Item.<id>]
+  for (const document of documents) {
+    const [, sceneId, , tokenId, kind] = document.uuid?.split(".") ?? [];
+    if (sceneId && tokenId && kind === "Actor") {
+      const tokenName = game.scenes?.get(sceneId)?.tokens?.get(tokenId)?.actor?.name;
+      if (tokenName) {
+        return tokenName;
       }
     }
   }
