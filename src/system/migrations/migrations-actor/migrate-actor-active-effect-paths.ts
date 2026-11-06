@@ -23,10 +23,10 @@ const WARNING_REASON_LABELS: Record<AERewriteWarningReason, string> = {
  *
  * NOTE: Embedded item effects are migrated by item migrations in applyMigrations.
  */
-export const migrateActorActiveEffectPaths: ActorMigration = (
+export const migrateActorActiveEffectPaths: ActorMigration = async (
   actor: RqgActor,
   logger,
-): Actor.UpdateData => {
+): Promise<Actor.UpdateData> => {
   const updateData: Actor.UpdateData = {};
   const rawEffects = (actor as any).effects;
   const originalEffects = Array.isArray(rawEffects)

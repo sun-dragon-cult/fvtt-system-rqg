@@ -1,3 +1,8 @@
+import { ERR } from "../error-registry";
+import { RqgLogger } from "../logging/rqg-logger";
+
+const logger = new RqgLogger("DataModelRepair");
+
 export type DataModelRepairOptions = {
   autoReloadAfterFinish?: boolean;
 };
@@ -367,6 +372,9 @@ function buildErrorGroups(repairs: RepairEntry[]): ErrorGroup[] {
 export async function openDataModelRepairDialog(
   options: DataModelRepairOptions = {},
 ): Promise<DataModelRepairResult> {
+  if (!game.user?.isGM) {
+    logger.throw(ERR.gmOnlyOperation);
+  }
   const repairs: RepairEntry[] = [];
   const unknownTypeDocs: UnknownTypeEntry[] = [];
   const seenCollections = new Set<unknown>();

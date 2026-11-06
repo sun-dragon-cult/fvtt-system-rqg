@@ -7,6 +7,7 @@ import {
   type ItemMigration,
   type MigrationLogLevel,
   type MigrationResult,
+  type MigrationScope,
 } from "./apply-migrations";
 import { systemId } from "../config";
 import { tagSkillNameSkillsWithRqid } from "./migrations-item/tag-skill-name-skills-with-rqid";
@@ -31,6 +32,7 @@ import { resyncSpellFieldsFromCompendium } from "./migrations-item/resync-spell-
 import { templatePaths } from "../load-handlebars-templates";
 import type { MigrationDocumentLink, MigrationLogEntry } from "./apply-migrations";
 import { RqgLogger } from "../logging/rqg-logger";
+import { ERR } from "../error-registry";
 
 const logger = new RqgLogger("Migration");
 const ISSUES_PAGE_UUID_PLACEHOLDER = "__RQG_MIGRATION_ISSUES_PAGE_UUID__";
@@ -79,11 +81,10 @@ export async function migrateWorld(): Promise<void> {
   );
   logger.info(`Starting world migration to version ${systemVersion}`, { notify: false });
   try {
-    const migrationResult = await applyDefaultWorldMigrations(
-      undefined,
-      undefined,
-      migrationNotification,
-    );
+    const migrationResult = await runWorldMigrations({
+      ...getSystemMigrations(),
+      notification: migrationNotification,
+    });
     await logMigrationReport(systemVersion, migrationResult);
 
     if (migrationResult.errorCount === 0) {
@@ -121,63 +122,52 @@ export async function migrateWorld(): Promise<void> {
   }
 }
 
-/**
- * Run the default world migration. It is possible to override the migrations for items
- * and or actors by supplying an array of migration functions.
- * Accessible through game.system.api.migration.applyWorldMigrations()
- * This makes it possible to run custom migrations via macros.
- */
-export async function applyDefaultWorldMigrations(
-  itemMigrations: ItemMigration[] | undefined = undefined,
-  actorMigrations: ActorMigration[] | undefined = undefined,
-  migrationNotification?: any,
-  activeEffectMigrations: ActiveEffectMigration[] | undefined = undefined,
-): Promise<MigrationResult> {
-  if (!game.user?.isGM) {
-    ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));
-    const noOpResult: MigrationResult = {
-      errorCount: 1,
-      warningCount: 0,
-      logCount: 0,
-      logEntries: [],
-      stats: {
-        worldActorsInspected: 0,
-        worldItemsInspected: 0,
-        scenesInspected: 0,
-        unlinkedTokenActorsInspected: 0,
-        compendiumsInspected: 0,
-        compendiumsSkippedByDesign: 0,
-        compendiumDocumentsInspected: 0,
-      },
-    };
-    return noOpResult;
-  }
-  const worldItemMigrations: ItemMigration[] = itemMigrations ?? [
-    tagSkillNameSkillsWithRqid,
-    migrateWeaponSkillLinks,
-    migrateRuneItemType,
-    relabelRuneMagicCommandCultSpiritRqid,
-    migrateHitLocationConnectedToAndType,
-    migrateItemActiveEffectPaths,
-    migrateItemActiveEffectDurationUnits,
-    migrateItemPowCrystalToStoredMagicPoints,
-    resyncSpellFieldsFromCompendium,
-  ];
-  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [
-    migrateActorActiveEffectPaths,
-    migrateActorActiveEffectDurationUnits,
-  ];
-  const worldActiveEffectMigrations: ActiveEffectMigration[] = activeEffectMigrations ?? [
-    migrateActiveEffectActiveEffectPaths,
-    migrateActiveEffectDurationUnits,
-  ];
+/** The migrations the system runs on its own when a world is updated to a new version. */
+export function getSystemMigrations(): {
+  items: ItemMigration[];
+  actors: ActorMigration[];
+  activeEffects: ActiveEffectMigration[];
+} {
+  return {
+    items: [
+      tagSkillNameSkillsWithRqid,
+      migrateWeaponSkillLinks,
+      migrateRuneItemType,
+      relabelRuneMagicCommandCultSpiritRqid,
+      migrateHitLocationConnectedToAndType,
+      migrateItemActiveEffectPaths,
+      migrateItemActiveEffectDurationUnits,
+      migrateItemPowCrystalToStoredMagicPoints,
+      resyncSpellFieldsFromCompendium,
+    ],
+    actors: [migrateActorActiveEffectPaths, migrateActorActiveEffectDurationUnits],
+    activeEffects: [migrateActiveEffectActiveEffectPaths, migrateActiveEffectDurationUnits],
+  };
+}
 
-  return await applyMigrations(
-    worldItemMigrations,
-    worldActorMigrations,
-    migrationNotification,
-    worldActiveEffectMigrations,
-  );
+export interface WorldMigrationRun {
+  items: ItemMigration[];
+  actors: ActorMigration[];
+  activeEffects: ActiveEffectMigration[];
+  dryRun?: boolean;
+  scope?: MigrationScope;
+  /** The progress notification to update. */
+  notification?: any;
+}
+
+/**
+ * Run the given migrations over the world, and the compendiums the scope names. Nothing runs
+ * unless it is in the lists; see `getSystemMigrations` for the system's own.
+ */
+export async function runWorldMigrations(run: WorldMigrationRun): Promise<MigrationResult> {
+  if (!game.user?.isGM) {
+    logger.throw(ERR.gmOnlyOperation);
+  }
+  return await applyMigrations(run.items, run.actors, run.activeEffects, {
+    dryRun: run.dryRun,
+    scope: run.scope,
+    notification: run.notification,
+  });
 }
 
 async function buildMigrationReportPages(
@@ -326,9 +316,11 @@ function selectPerformedMigrationEntries(
   return actionableEntries.length > 0 ? actionableEntries : nonMetaInfoEntries;
 }
 
-async function logMigrationReport(
+/** Write the report of a run to the migration journal, a dry run labelled as such. */
+export async function logMigrationReport(
   systemVersion: string,
   migrationResult: MigrationResult,
+  dryRun = false,
 ): Promise<void> {
   const warnings = migrationResult.logEntries.filter((entry) => entry.level === "warn");
   const errors = migrationResult.logEntries.filter((entry) => entry.level === "error");
@@ -337,7 +329,7 @@ async function logMigrationReport(
 
   // Stage 3: Attempt to save. If this fails, show dialog so the user can retry or download.
   try {
-    await saveMigrationReportToJournal(systemVersion, reportPages);
+    await saveMigrationReportToJournal(systemVersion, reportPages, dryRun);
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     logger.error(`Failed to save migration report to journal: ${errorMessage}`, {
@@ -354,6 +346,7 @@ async function logMigrationReport(
       migrationResult,
       reportPages,
       errorMessage,
+      dryRun,
     );
   }
 
@@ -507,6 +500,7 @@ async function showMigrationReportSaveFailureDialog(
   migrationResult: MigrationResult,
   reportPages: MigrationReportPages,
   initialError: string,
+  dryRun: boolean,
 ): Promise<void> {
   const { ApplicationV2 } = foundry.applications.api;
   let reportHtml = buildMigrationReportFallbackHtml(reportPages);
@@ -567,7 +561,7 @@ async function showMigrationReportSaveFailureDialog(
               // Re-run stages 1-2 to get fresh template-rendered HTML (with document links)
               const freshPages = await buildMigrationReportPages(migrationResult);
               reportHtml = buildMigrationReportFallbackHtml(freshPages);
-              await saveMigrationReportToJournal(systemVersion, freshPages);
+              await saveMigrationReportToJournal(systemVersion, freshPages, dryRun);
               await this.close();
             } catch (err: unknown) {
               const retryError = err instanceof Error ? err.message : String(err);
@@ -1036,6 +1030,7 @@ function stripExecutableMarkupForSandboxedPreview(html: string): string {
 async function saveMigrationReportToJournal(
   systemVersion: string,
   reportPages: MigrationReportPages,
+  dryRun: boolean,
 ): Promise<void> {
   if (
     !reportPages.summaryHtml.trim() ||
@@ -1047,7 +1042,10 @@ async function saveMigrationReportToJournal(
 
   const migrationJournal = await getOrCreateMigrationJournal();
   const versionLabel = systemVersion || "unknown";
-  const categoryName = `v${versionLabel} - ${formatLocalTimestamp(new Date())}`;
+  const timestamp = formatLocalTimestamp(new Date());
+  const categoryName = dryRun
+    ? localize("RQG.Migration.reportCategoryDryRun", { version: versionLabel, timestamp })
+    : `v${versionLabel} - ${timestamp}`;
   const firstCategorySort = Math.min(
     ...(migrationJournal.categories.contents.map((category) => category.sort) ?? []),
   );
