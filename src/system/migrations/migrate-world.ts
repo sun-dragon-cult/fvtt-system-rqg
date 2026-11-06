@@ -674,10 +674,15 @@ type MigrationReportPages = {
 async function groupMigrationEntriesBySource(
   entries: MigrationResult["logEntries"],
 ): Promise<MigrationReportGroup[]> {
-  const sourceGroups = new Map<string, Map<string, MigrationReportEntry[]>>();
+  const sourceGroups = new Map<
+    string,
+    Map<string, { actorName: string; entries: MigrationReportEntry[] }>
+  >();
   const sourceTitles = new Map<string, string>();
   const sourceNames = new Map<string, string>();
   const sourceKinds = new Map<string, MigrationSourceKind>();
+
+  const unknownActorName = localize("RQG.Migration.reportSourceUnknownActor");
 
   for (const entry of entries) {
     const source = resolveMigrationSource(entry);
@@ -693,17 +698,19 @@ async function groupMigrationEntriesBySource(
     }
 
     const actorMap = sourceGroups.get(source.groupKey)!;
-    if (!actorMap.has(actorName)) {
-      actorMap.set(actorName, []);
+    const actorKey = resolveActorUuid(entry) ?? actorName;
+    const actorGroup = actorMap.get(actorKey) ?? { actorName, entries: [] };
+    if (actorGroup.actorName === unknownActorName) {
+      actorGroup.actorName = actorName;
     }
-
-    actorMap.get(actorName)!.push(parsedEntry);
+    actorGroup.entries.push(parsedEntry);
+    actorMap.set(actorKey, actorGroup);
   }
 
   const result: MigrationReportGroup[] = [];
   for (const [sourceKey, actorMap] of sourceGroups) {
     const actorGroups: MigrationActorGroup[] = [];
-    for (const [actorName, entries] of actorMap) {
+    for (const { actorName, entries } of actorMap.values()) {
       actorGroups.push({ actorName, entries });
     }
 
@@ -917,6 +924,21 @@ function toAnchorId(value: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
   return `migration-${normalized || "source"}`;
+}
+
+/** The uuid of the actor an entry is about, also for an actor's embedded items. */
+export function resolveActorUuid(entry: MigrationLogEntry): string | undefined {
+  const documents = entry.documents ?? [];
+  const actorDocuments = documents.filter((document) => document.kind === "Actor");
+  for (const document of [...actorDocuments, ...documents]) {
+    const match = document.uuid?.match(
+      /^(?:Compendium\.[^.]+\.[^.]+\.|Scene\.[^.]+\.Token\.[^.]+\.)?Actor\.[^.]+/,
+    );
+    if (match) {
+      return match[0];
+    }
+  }
+  return undefined;
 }
 
 export function resolveActorName(entry: MigrationLogEntry): string {
