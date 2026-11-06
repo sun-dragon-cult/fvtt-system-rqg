@@ -1,11 +1,14 @@
 {{!-- `item` isn't a real embedded Item, it's resolved live from the matrix item's rqid, so this
      uses data-matrix-spell-cast/data-matrix-spell-drag-handle instead of the native equivalents,
-     and omits "contextmenu" (the shared context menu would resolve the wrong document via
-     data-item-id).
+     and uses "matrix-spell-contextmenu" instead of "contextmenu" (the shared menus and drop
+     handling would resolve the matrix item as the spell via data-item-id).
+
+     The matrix item is the spell's focus (contact with it triggers the spell, Core p.264-265).
 
      Params: item, sourceItemId (matrix item's id), entryIndex, sourceItemName, sourceItemImg. --}}
 <div class="spirit-magic-row" data-item-id="{{sourceItemId}}" data-matrix-spell-row-index="{{entryIndex}}">
-  <div class="spirit-magic item">
+  <div class="spirit-magic item"
+       {{#if item.system.descriptionRqidLink.rqid}}data-rqid-link="{{item.system.descriptionRqidLink.rqid}}"{{/if}}>
     {{#if @root.isEditable}}
       <span class="item-drag-handle item draggable"
             data-matrix-spell-drag-handle
@@ -14,7 +17,7 @@
     {{/if}}
     <img class="row-icon" src="{{item.img}}">
   </div>
-  <div class="spirit-magic item"
+  <div class="spirit-magic item matrix-spell-contextmenu"
        data-matrix-spell-cast
        data-item-id="{{sourceItemId}}"
        data-matrix-spell-index="{{entryIndex}}"
@@ -23,12 +26,12 @@
     <img class="matrix-source-badge" src="{{sourceItemImg}}"
          data-tooltip="{{localize 'RQG.Actor.SpiritMagic.MatrixSourceTooltip' itemName=sourceItemName}}">
   </div>
-  <div class="spirit-magic item"
+  <div class="spirit-magic item matrix-spell-contextmenu"
        data-tooltip="{{item.spellSummaryTooltip}}"
        data-matrix-spell-cast
        data-item-id="{{sourceItemId}}"
        data-matrix-spell-index="{{entryIndex}}">
     {{item.spellSummary}}
   </div>
-  <div class="spirit-magic item">—</div>
+  <div class="spirit-magic item matrix-focus">{{sourceItemName}}</div>
 </div>

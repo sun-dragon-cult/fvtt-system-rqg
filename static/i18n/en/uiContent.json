@@ -776,6 +776,7 @@
       "OverwriteAllCharacteristicsDialogTitle": "Overwrite all characteristics on {actorName}?",
       "OverwriteAllCharacteristicsDialog": "Do you want to overwrite the current value of all characteristics? This will cause a recalculation of any derived attributes like Hit Points, Magic Points, Strike Ranks, and skill Categories",
       "ViewDescription": "View Description",
+      "EditMatrixItem": "Edit Matrix Item",
       "SetAsNotCarried": "Set as not carried",
       "SetAsCarried": "Set as carried",
       "SetAsEquipped": "Set as equipped",

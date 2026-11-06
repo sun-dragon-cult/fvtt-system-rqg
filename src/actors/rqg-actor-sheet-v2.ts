@@ -57,6 +57,7 @@ import { passionMenuOptions } from "./context-menus/passion-context-menu";
 import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-menu";
+import { matrixSpellMenuOptions } from "./context-menus/matrix-spell-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import { gearMenuOptions } from "./context-menus/gear-context-menu";
 import {
@@ -725,6 +726,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         this.element,
         ".spirit-magic.contextmenu",
         spiritMagicMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".matrix-spell-contextmenu",
+        matrixSpellMenuOptions(this.actor, this.document.token),
         ctxMenuOptions,
       );
       new RqgContextMenu(
