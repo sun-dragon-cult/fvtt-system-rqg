@@ -24,7 +24,7 @@ describe("game.system.api", () => {
         "dialogs": {
           "chooseWounds": "function",
         },
-        "migration": {
+        "maintenance": {
           "applyWorldMigrations": "function",
           "openDataModelRepairDialog": "function",
           "openRqidBatchEditor": "function",

@@ -2714,6 +2714,7 @@
       },
       "Error": {
         "GMOnlyOperation": "This operation is only allowed for GMs",
+        "UnknownItemType": "Unknown item type \"{itemType}\". Valid item types: {validTypes}.",
         "ResistanceRequestTargetNotFound": "Could not find who this resistance request is for.",
         "Unexpected": "An unexpected error occurred. Please report it with the code shown.",
         "WeaponHasNoOwner": "This weapon is not owned by an actor. Add it to a character before attacking with it.",
@@ -2869,6 +2870,7 @@
       "reportLevelError": "Error",
       "reportCloseButton": "Close",
       "reportJournalName": "RQG Migration Reports",
+      "reportCategoryDryRun": "Dry run - v{version} - {timestamp}",
       "reportPageSummary": "Summary",
       "reportPagePerformed": "Performed Migrations",
       "reportPageIssues": "Migration Issues",

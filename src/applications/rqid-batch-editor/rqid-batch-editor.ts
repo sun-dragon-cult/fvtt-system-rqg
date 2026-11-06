@@ -30,7 +30,7 @@ import type {
 /**
  * Item types that must have an rqid for other RQG features to keep working. Used both to gate
  * world migration (migrateWorld) and as the no-args default for the macro-facing
- * game.system.api.migration.openRqidBatchEditor - kept as a single list so the two don't drift.
+ * game.system.api.maintenance.openRqidBatchEditor - kept as a single list so the two don't drift.
  */
 export const DEFAULT_RQID_BATCH_ITEM_TYPES: ItemTypeEnum[] = [
   ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link

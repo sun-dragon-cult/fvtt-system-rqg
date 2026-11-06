@@ -155,6 +155,10 @@ const REGISTRY = {
     code: "RQG-W0012",
     message: "RQG.Notification.Error.NoHitLocationForRoll",
   },
+  gmOnlyOperation: {
+    code: "RQG-W0013",
+    message: "RQG.Notification.Error.GMOnlyOperation",
+  },
 } as const satisfies Record<string, RqgErrorEntry>;
 
 // Fail loud at module load on a malformed or duplicated registry.

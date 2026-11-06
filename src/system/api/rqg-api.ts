@@ -1,13 +1,7 @@
 import { pickSpellLocation, moveTokenNear } from "../spell-effects/pick-spell-location";
-import type { ItemTypeEnum } from "@item-model/item-types.ts";
 import { applyAreaEffect, createArea } from "../spell-effects/spell-area";
-import {
-  DEFAULT_RQID_BATCH_ITEM_TYPES,
-  RqidBatchEditor,
-} from "../../applications/rqid-batch-editor/rqid-batch-editor";
 import { chooseWounds } from "../../items/hit-location-item/hit-location-heal-wound-dialog";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
-import { applyDefaultWorldMigrations } from "../migrations/migrate-world";
 import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
 import { metersToPixels } from "../spell-effects/scene-distance";
 import { barrierPriorities } from "../spell-effects/spell-barriers";
@@ -18,6 +12,7 @@ import { postMagicMissiles as postAttackMagicMissiles } from "../../applications
 import type { MissileFiredScope } from "../spell-effects/spell-behavior";
 import * as rolls from "./api-rolls";
 import { openDataModelRepairDialog } from "./data-model-repair";
+import { applyWorldMigrations, openRqidBatchEditor } from "./maintenance-api";
 import { Rqid } from "./rqid-api";
 
 /**
@@ -36,20 +31,10 @@ export function createRqgApi() {
       /** Compare with `roll.successLevel`, lower is better. */
       SuccessLevel: AbilitySuccessLevelEnum,
     },
-    migration: {
-      applyWorldMigrations: applyDefaultWorldMigrations,
+    maintenance: {
+      applyWorldMigrations,
       openDataModelRepairDialog,
-      /**
-       * Show an application that lets you set rqid for items.
-       */
-      openRqidBatchEditor: async (...itemTypes: string[]): Promise<void> => {
-        const itemTypeEnums = (
-          itemTypes.length
-            ? itemTypes.map((it) => it as ItemTypeEnum)
-            : DEFAULT_RQID_BATCH_ITEM_TYPES
-        ) as Item.SubType[];
-        await RqidBatchEditor.factory(...itemTypeEnums);
-      },
+      openRqidBatchEditor,
     },
     // Bound, since several of these call other Rqid statics through `this`
     rqid: {

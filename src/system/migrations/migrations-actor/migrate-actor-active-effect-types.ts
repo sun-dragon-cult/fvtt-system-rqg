@@ -9,10 +9,10 @@ import {
 /**
  * ActorMigration: Repair malformed ActiveEffect change.type values on actor-owned effects.
  */
-export const migrateActorActiveEffectTypes: ActorMigration = (
+export const migrateActorActiveEffectTypes: ActorMigration = async (
   actor: RqgActor,
   logger,
-): Actor.UpdateData => {
+): Promise<Actor.UpdateData> => {
   const updateData: Actor.UpdateData = {};
   const rawEffects = (actor as any).effects;
   const originalEffects = Array.isArray(rawEffects)

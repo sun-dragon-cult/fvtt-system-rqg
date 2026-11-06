@@ -13,7 +13,10 @@ export type ItemMigration = (
   owningActorData?: RqgActor,
   logger?: MigrationLogger,
 ) => Promise<Item.UpdateData>;
-export type ActorMigration = (actorData: RqgActor, logger?: MigrationLogger) => Actor.UpdateData;
+export type ActorMigration = (
+  actorData: RqgActor,
+  logger?: MigrationLogger,
+) => Promise<Actor.UpdateData>;
 export type ActiveEffectMigration = (
   effectData: ActiveEffect.Implementation,
   logger?: MigrationLogger,
@@ -90,11 +93,23 @@ export interface MigrationResult {
   stats: MigrationStats;
 }
 
+/** Which compendiums a run changes: none, every non-system compendium, or the listed pack ids. */
+export type MigrationScope = "world" | "all" | string[];
+
+export interface MigrationRunOptions {
+  /** Work out and report the changes, but write nothing. */
+  dryRun?: boolean;
+  /** Defaults to "all", what the automatic world migration does. */
+  scope?: MigrationScope;
+  /** The progress notification to update. */
+  notification?: any;
+}
+
 export async function applyMigrations(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
-  migrationNotification?: any,
   activeEffectMigrations: ActiveEffectMigration[] = [],
+  { dryRun = false, scope = "all", notification: migrationNotification }: MigrationRunOptions = {},
 ): Promise<MigrationResult> {
   const migrationResult: MigrationResult = {
     errorCount: 0,
@@ -123,14 +138,16 @@ export async function applyMigrations(
       migrationResult,
       logger,
       progressState,
+      dryRun,
     );
-    await migrateWorldItems(itemMigrations, migrationResult, logger, progressState);
+    await migrateWorldItems(itemMigrations, migrationResult, logger, progressState, dryRun);
     await migrateWorldScenes(
       itemMigrations,
       actorMigrations,
       migrationResult,
       logger,
       progressState,
+      dryRun,
     );
     await migrateWorldCompendiumPacks(
       itemMigrations,
@@ -139,6 +156,8 @@ export async function applyMigrations(
       migrationResult,
       logger,
       progressState,
+      dryRun,
+      scope,
     );
   } catch (err: unknown) {
     // An error here means something escaped the fine-grained per-document/per-pack
@@ -176,6 +195,7 @@ async function migrateWorldActors(
   migrationResult: MigrationResult,
   logger: MigrationLogger,
   progressState: MigrationProgressState,
+  dryRun: boolean,
 ): Promise<void> {
   const actorArray = game.actors?.contents;
   const actorCount = actorArray?.length ?? 0;
@@ -209,8 +229,10 @@ async function migrateWorldActors(
           changes: actorChangeSummary.changeRows,
           hiddenChangeCount: actorChangeSummary.hiddenChangeCount,
         });
-        // @ts-expect-error enforceTypes TODO it does exists
-        await actor.update(actorUpdateData, { enforceTypes: false });
+        if (!dryRun) {
+          // @ts-expect-error enforceTypes TODO it does exists
+          await actor.update(actorUpdateData, { enforceTypes: false });
+        }
       }
 
       if (itemUpdateData.length > 0) {
@@ -226,7 +248,9 @@ async function migrateWorldActors(
           changes: itemChangeSummary.changeRows,
           hiddenChangeCount: itemChangeSummary.hiddenChangeCount,
         });
-        await actor.updateEmbeddedDocuments("Item", itemUpdateData);
+        if (!dryRun) {
+          await actor.updateEmbeddedDocuments("Item", itemUpdateData);
+        }
       }
     } catch (err: any) {
       migrationResult.errorCount += 1;
@@ -246,6 +270,7 @@ async function migrateWorldItems(
   migrationResult: MigrationResult,
   logger: MigrationLogger,
   progressState: MigrationProgressState,
+  dryRun: boolean,
 ): Promise<void> {
   const itemArray = game.items?.contents as RqgItem[] | undefined;
   const itemCount = itemArray?.length ?? 0;
@@ -278,8 +303,10 @@ async function migrateWorldItems(
           changes: itemChangeSummary.changeRows,
           hiddenChangeCount: itemChangeSummary.hiddenChangeCount,
         });
-        // @ts-expect-error enforceTypes TODO it does exists
-        await item.update(updateData, { enforceTypes: false });
+        if (!dryRun) {
+          // @ts-expect-error enforceTypes TODO it does exists
+          await item.update(updateData, { enforceTypes: false });
+        }
       }
     } catch (err: any) {
       migrationResult.errorCount += 1;
@@ -300,6 +327,7 @@ async function migrateWorldScenes(
   migrationResult: MigrationResult,
   logger: MigrationLogger,
   progressState: MigrationProgressState,
+  dryRun: boolean,
 ): Promise<void> {
   const scenes = game.scenes?.contents;
   const scenesCount = scenes?.length ?? 0;
@@ -322,6 +350,7 @@ async function migrateWorldScenes(
         actorMigrations,
         migrationResult,
         logger,
+        dryRun,
       );
     } catch (err: any) {
       migrationResult.errorCount += 1;
@@ -343,15 +372,23 @@ async function migrateWorldCompendiumPacks(
   migrationResult: MigrationResult,
   logger: MigrationLogger,
   progressState: MigrationProgressState,
+  dryRun: boolean,
+  scope: MigrationScope,
 ): Promise<void> {
   const allPacks = game.packs?.contents ?? [];
-  const packs = allPacks.filter((pack) => {
+  const migratablePacks = allPacks.filter((pack) => {
     if (pack.metadata.packageName === systemId) {
       return false;
     }
     return ["Actor", "Item", "Scene", "ActiveEffect"].includes(pack.metadata.type);
   });
-  migrationResult.stats.compendiumsSkippedByDesign = allPacks.length - packs.length;
+  migrationResult.stats.compendiumsSkippedByDesign = allPacks.length - migratablePacks.length;
+  const packs =
+    scope === "all"
+      ? migratablePacks
+      : scope === "world"
+        ? []
+        : migratablePacks.filter((pack) => scope.includes(pack.collection));
   const packsCount = packs.length;
   const migrationMsg = localize("RQG.Migration.compendiums", {
     count: packsCount.toString(),
@@ -373,6 +410,7 @@ async function migrateWorldCompendiumPacks(
         activeEffectMigrations,
         migrationResult,
         logger,
+        dryRun,
       );
     } catch (err: any) {
       migrationResult.errorCount += 1;
@@ -408,6 +446,7 @@ async function migrateCompendium(
   activeEffectMigrations: ActiveEffectMigration[],
   migrationResult: MigrationResult,
   logger: MigrationLogger,
+  dryRun: boolean,
 ): Promise<void> {
   const documentType: string = pack.metadata.type;
   if (!["Actor", "Item", "Scene", "ActiveEffect"].includes(documentType)) {
@@ -416,10 +455,12 @@ async function migrateCompendium(
 
   // Unlock the pack for editing
   const wasLocked = pack.locked;
-  await pack.configure({ locked: false });
+  if (!dryRun) {
+    await pack.configure({ locked: false });
 
-  // Begin by requesting server-side data model migration and get the migrated content
-  await pack.migrate({ notify: false });
+    // Begin by requesting server-side data model migration and get the migrated content
+    await pack.migrate({ notify: false });
+  }
   const documents = await pack.getDocuments();
   migrationResult.stats.compendiumDocumentsInspected += documents.length;
 
@@ -448,7 +489,9 @@ async function migrateCompendium(
               changes: actorChangeSummary.changeRows,
               hiddenChangeCount: actorChangeSummary.hiddenChangeCount,
             });
-            await (doc as any).update(actorUpdateData as any);
+            if (!dryRun) {
+              await (doc as any).update(actorUpdateData as any);
+            }
           }
 
           if (itemUpdateData.length > 0) {
@@ -470,7 +513,9 @@ async function migrateCompendium(
                 hiddenChangeCount: itemChangeSummary.hiddenChangeCount,
               },
             );
-            await (doc as RqgActor).updateEmbeddedDocuments("Item", itemUpdateData);
+            if (!dryRun) {
+              await (doc as RqgActor).updateEmbeddedDocuments("Item", itemUpdateData);
+            }
           }
 
           updateData = {};
@@ -506,6 +551,7 @@ async function migrateCompendium(
             actorMigrations,
             migrationResult,
             logger,
+            dryRun,
           );
           break;
       }
@@ -526,7 +572,9 @@ async function migrateCompendium(
           hiddenChangeCount: documentChangeSummary.hiddenChangeCount,
         },
       );
-      await doc.update(updateData);
+      if (!dryRun) {
+        await doc.update(updateData);
+      }
     } catch (err: any) {
       migrationResult.errorCount += 1;
       logger.error(
@@ -544,7 +592,9 @@ async function migrateCompendium(
     }
   }
   // Apply the original locked status for the pack
-  await pack.configure({ locked: wasLocked });
+  if (!dryRun) {
+    await pack.configure({ locked: wasLocked });
+  }
   logger.info(`Migrated all ${documentType} documents from Compendium ${pack.collection}`, {
     documents: [
       {
@@ -667,15 +717,15 @@ async function getActorMigrationUpdates(
   const actorMigrationNames = new Set<string>();
   const itemMigrationNames = new Set<string>();
 
-  actorMigrations.forEach((fn: ActorMigration) => {
+  for (const fn of actorMigrations) {
     const migrationName = getMigrationFunctionName(fn);
     const scopedLogger = logger?.withMigration(migrationName);
-    const fnUpdate = fn(actorData as any, scopedLogger);
+    const fnUpdate = await fn(actorData as any, scopedLogger);
     if (!foundry.utils.isEmpty(pruneNoopUpdateData(fnUpdate, actorSourceData))) {
       actorMigrationNames.add(migrationName);
     }
     actorUpdateData = mergeMigrationUpdateData(actorUpdateData, fnUpdate) as Actor.UpdateData;
-  });
+  }
 
   if ("items" in (actorUpdateData as Record<string, unknown>)) {
     applyMigrationsLogger.warn(
@@ -863,6 +913,7 @@ async function migrateSceneTokenActors(
   actorMigrations: ActorMigration[],
   migrationResult: MigrationResult,
   logger: MigrationLogger,
+  dryRun: boolean,
 ): Promise<void> {
   for (const token of scene.tokens) {
     if (token.actorLink) {
@@ -897,8 +948,10 @@ async function migrateSceneTokenActors(
           changes: actorChangeSummary.changeRows,
           hiddenChangeCount: actorChangeSummary.hiddenChangeCount,
         });
-        // @ts-expect-error enforceTypes TODO it does exist
-        await actor.update(actorUpdateData, { enforceTypes: false });
+        if (!dryRun) {
+          // @ts-expect-error enforceTypes TODO it does exist
+          await actor.update(actorUpdateData, { enforceTypes: false });
+        }
       }
 
       if (itemUpdateData.length > 0) {
@@ -920,7 +973,9 @@ async function migrateSceneTokenActors(
             hiddenChangeCount: itemChangeSummary.hiddenChangeCount,
           },
         );
-        await actor.updateEmbeddedDocuments("Item", itemUpdateData);
+        if (!dryRun) {
+          await actor.updateEmbeddedDocuments("Item", itemUpdateData);
+        }
       }
     } catch (err: any) {
       migrationResult.errorCount += 1;
@@ -1103,7 +1158,9 @@ function asDocumentArray(value: unknown): unknown[] {
   return [];
 }
 
-function getPreviousValueForPath(documentData: object, path: string): unknown {
+function getPreviousValueForPath(document: object, path: string): unknown {
+  // Read the source data, since the live document's getters log v14 deprecation warnings for old paths
+  const documentData = (document as { _source?: object })._source ?? document;
   const directValue = foundry.utils.getProperty(documentData, path);
   if (directValue !== undefined) {
     return directValue;

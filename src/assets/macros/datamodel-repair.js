@@ -2,4 +2,4 @@
  * Thin wrapper around the shared system API implementation.
  */
 
-await game.system.api.migration.openDataModelRepairDialog({ autoReloadAfterFinish: false });
+await game.system.api.maintenance.openDataModelRepairDialog({ autoReloadAfterFinish: false });

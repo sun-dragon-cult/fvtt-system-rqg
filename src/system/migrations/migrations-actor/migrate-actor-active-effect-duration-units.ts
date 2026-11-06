@@ -5,10 +5,10 @@ import { normalizeLegacyActiveEffectDuration } from "../shared-ae-duration-migra
 /**
  * ActorMigration: Normalize legacy ActiveEffect duration data to v14 unit-based shape.
  */
-export const migrateActorActiveEffectDurationUnits: ActorMigration = (
+export const migrateActorActiveEffectDurationUnits: ActorMigration = async (
   actor: RqgActor,
   _logger,
-): Actor.UpdateData => {
+): Promise<Actor.UpdateData> => {
   const updateData: Actor.UpdateData = {};
   const rawEffects = (actor as any).effects;
   const originalEffects = Array.isArray(rawEffects)

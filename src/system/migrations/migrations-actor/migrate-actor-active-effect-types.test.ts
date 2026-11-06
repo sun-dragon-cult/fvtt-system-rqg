@@ -7,7 +7,7 @@ describe("migrateActorActiveEffectTypes", () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
   });
 
-  it("should normalize malformed custom.20 type to custom on actor-owned effects", () => {
+  it("should normalize malformed custom.20 type to custom on actor-owned effects", async () => {
     const mockActor = {
       name: "Malformed Type Actor",
       id: "actor-malformed-type-1",
@@ -29,7 +29,7 @@ describe("migrateActorActiveEffectTypes", () => {
       items: [],
     };
 
-    const updateData = migrateActorActiveEffectTypes(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectTypes(mockActor as unknown as RqgActor);
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].type).toBe("custom");

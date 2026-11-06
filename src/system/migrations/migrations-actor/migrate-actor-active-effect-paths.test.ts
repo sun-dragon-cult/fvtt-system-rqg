@@ -7,7 +7,7 @@ describe("migrateActorActiveEffectPaths", () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
   });
 
-  it("should migrate legacy actor effect paths", () => {
+  it("should migrate legacy actor effect paths", async () => {
     const mockActor = {
       name: "Test Actor",
       id: "actor-1",
@@ -26,7 +26,7 @@ describe("migrateActorActiveEffectPaths", () => {
       items: new Map(),
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
@@ -34,7 +34,7 @@ describe("migrateActorActiveEffectPaths", () => {
     );
   });
 
-  it("should migrate hitPoints.max to system.effect.add.hitPoints.max", () => {
+  it("should migrate hitPoints.max to system.effect.add.hitPoints.max", async () => {
     const mockActor = {
       name: "Test Actor",
       id: "actor-1",
@@ -53,7 +53,7 @@ describe("migrateActorActiveEffectPaths", () => {
       items: new Map(),
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
@@ -61,7 +61,7 @@ describe("migrateActorActiveEffectPaths", () => {
     );
   });
 
-  it("should skip already migrated effects", () => {
+  it("should skip already migrated effects", async () => {
     const migratedEffect = {
       id: "effect-1",
       name: "Test Effect",
@@ -77,12 +77,12 @@ describe("migrateActorActiveEffectPaths", () => {
       items: new Map(),
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect(updateData.effects).toBeUndefined();
   });
 
-  it("should only migrate ADD-type changes", () => {
+  it("should only migrate ADD-type changes", async () => {
     const mockActor = {
       name: "Test Actor",
       id: "actor-1",
@@ -104,7 +104,7 @@ describe("migrateActorActiveEffectPaths", () => {
       items: new Map(),
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
@@ -115,7 +115,7 @@ describe("migrateActorActiveEffectPaths", () => {
     );
   });
 
-  it("should not migrate effects on embedded items", () => {
+  it("should not migrate effects on embedded items", async () => {
     const mockActor = {
       name: "Test Actor",
       id: "actor-1",
@@ -141,13 +141,13 @@ describe("migrateActorActiveEffectPaths", () => {
       ]),
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect((updateData as any)._itemEffectUpdates).toBeUndefined();
     expect(updateData.effects).toBeUndefined();
   });
 
-  it("should return empty updateData if nothing to migrate", () => {
+  it("should return empty updateData if nothing to migrate", async () => {
     const mockActor = {
       name: "Test Actor",
       id: "actor-1",
@@ -166,12 +166,12 @@ describe("migrateActorActiveEffectPaths", () => {
       items: new Map(),
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect(updateData.effects).toBeUndefined();
   });
 
-  it("should migrate legacy paths when actor effects are provided as an array", () => {
+  it("should migrate legacy paths when actor effects are provided as an array", async () => {
     const mockActor = {
       name: "Actor Data",
       id: "actor-array-1",
@@ -187,7 +187,7 @@ describe("migrateActorActiveEffectPaths", () => {
       items: [],
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
@@ -195,7 +195,7 @@ describe("migrateActorActiveEffectPaths", () => {
     );
   });
 
-  it("should migrate legacy itemType:itemName key syntax to rqid when actor match is unique", () => {
+  it("should migrate legacy itemType:itemName key syntax to rqid when actor match is unique", async () => {
     const mockActor = {
       name: "Actor Data",
       id: "actor-legacy-key-1",
@@ -224,7 +224,7 @@ describe("migrateActorActiveEffectPaths", () => {
       ],
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
@@ -232,7 +232,7 @@ describe("migrateActorActiveEffectPaths", () => {
     );
   });
 
-  it("should rewrite a CUSTOM-mode itemType:itemName key all the way to an @-routed ADD key", () => {
+  it("should rewrite a CUSTOM-mode itemType:itemName key all the way to an @-routed ADD key", async () => {
     const mockActor = {
       name: "Actor Data",
       id: "actor-legacy-key-custom-1",
@@ -255,7 +255,7 @@ describe("migrateActorActiveEffectPaths", () => {
       ],
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect((updateData.effects as any[])?.[0].system.changes[0]).toEqual({
       key: "@i.skill.dodge:system.baseChance",
@@ -264,7 +264,7 @@ describe("migrateActorActiveEffectPaths", () => {
     });
   });
 
-  it("should keep legacy itemType:itemName key when actor match is ambiguous", () => {
+  it("should keep legacy itemType:itemName key when actor match is ambiguous", async () => {
     const mockActor = {
       name: "Actor Data",
       id: "actor-legacy-key-ambiguous-1",
@@ -293,7 +293,7 @@ describe("migrateActorActiveEffectPaths", () => {
       ],
     };
 
-    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+    const updateData = await migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
     expect(updateData.effects).toBeUndefined();
   });
