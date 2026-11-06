@@ -12,7 +12,7 @@ globalThis.flattenObject = (obj, _prefix = "") => {
   const step = (o, path) => {
     Object.entries(o).forEach(([k, v]) => {
       const newPath = [...path, k];
-      if (v && typeof v === "object" && !Array.isArray(v)) {
+      if (v && typeof v === "object" && Object.getPrototypeOf(v) === Object.prototype) {
         step(v, newPath);
       } else {
         out[newPath.join(".")] = v;
