@@ -69,7 +69,8 @@
 
 /* Override V1's light-colored context-highlight (#d9d8c8) for ALL V2 context menus — dark
        mode. Specificity: 0,7,0 beats V1's 0,6,0 */
-    & .contextmenu.context.context-highlight {
+    & .contextmenu.context.context-highlight,
+    & .matrix-spell-contextmenu.context.context-highlight {
       mix-blend-mode: normal;
       background: var(--rqg-v2-context-highlight-bg) !important;
       border-color: var(--rqg-v2-context-highlight-border) !important;
@@ -85,7 +86,8 @@
 
 /* Override V1's context-highlight for ALL V2 context menus — light mode. 
    Specificity: 0,7,0 beats V1's 0,6,0 */
-    & .contextmenu.context.context-highlight {
+    & .contextmenu.context.context-highlight,
+    & .matrix-spell-contextmenu.context.context-highlight {
       mix-blend-mode: normal;
       background: var(--rqg-v2-context-highlight-bg) !important;
       border-color: var(--rqg-v2-context-highlight-border) !important;
@@ -2284,6 +2286,16 @@
           border-color: rgb(255 255 255 / 40%);
           box-shadow: none;
         }
+      }
+
+/* Same text size and inset as the focus input of the other rows (input padding + border). */
+      & .matrix-focus,
+      & .grid.spiritmagic .head4 {
+        padding-left: calc(0.5rem + 1px);
+      }
+
+      & .matrix-focus {
+        font-size: 0.75rem;
       }
 
 /* Margin matches the row icon-to-name gap. */
