@@ -450,7 +450,7 @@
                 ]
               },
               "title": "Combat maneuvers",
-              "description": "The maneuvers available this way, each with a name, damage type and description."
+              "description": "The maneuvers available this way, each with a name, damage type and description. A maneuver name from the list is stored as its key, a custom one as typed."
             },
             "damage": {
               "type": "string",
@@ -561,7 +561,7 @@
                 ]
               },
               "title": "Combat maneuvers",
-              "description": "The maneuvers available this way, each with a name, damage type and description."
+              "description": "The maneuvers available this way, each with a name, damage type and description. A maneuver name from the list is stored as its key, a custom one as typed."
             },
             "damage": {
               "type": "string",
@@ -672,7 +672,7 @@
                 ]
               },
               "title": "Combat maneuvers",
-              "description": "The maneuvers available this way, each with a name, damage type and description."
+              "description": "The maneuvers available this way, each with a name, damage type and description. A maneuver name from the list is stored as its key, a custom one as typed."
             },
             "damage": {
               "type": "string",
@@ -783,7 +783,7 @@
                 ]
               },
               "title": "Combat maneuvers",
-              "description": "The maneuvers available this way, each with a name, damage type and description."
+              "description": "The maneuvers available this way, each with a name, damage type and description. A maneuver name from the list is stored as its key, a custom one as typed."
             },
             "damage": {
               "type": "string",
