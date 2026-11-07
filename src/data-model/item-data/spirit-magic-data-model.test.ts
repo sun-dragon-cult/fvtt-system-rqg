@@ -1,5 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { SpiritMagicDataModel } from "./spirit-magic-data-model";
+import { getOwnToken } from "../../system/util";
+
+vi.mock("../../system/util", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../system/util")>()),
+  getOwnToken: vi.fn(),
+}));
 
 describe("SpiritMagicDataModel cast validation", () => {
   it("validates learned level and available magic points", () => {
@@ -111,5 +117,34 @@ describe("SpiritMagicDataModel.migrateData", () => {
     const migrated = SpiritMagicDataModel.migrateData({ isRitual: "true," });
 
     expect(migrated["isRitual"]).toBe(true);
+  });
+});
+
+describe("SpiritMagicDataModel.cast token", () => {
+  const caster = { name: "Sandene" } as any;
+  const castWith = async (options: Record<string, unknown>) => {
+    const castWithoutDialog = vi.fn(async (..._args: unknown[]) => undefined);
+    await SpiritMagicDataModel.prototype.cast.call({ castWithoutDialog } as any, caster, {
+      skipDialog: true,
+      ...options,
+    });
+    return castWithoutDialog;
+  };
+
+  it("uses the caster's token on the scene when none is given", async () => {
+    vi.mocked(getOwnToken).mockReturnValue({ id: "sceneToken" } as any);
+    expect(await castWith({})).toHaveBeenCalledWith(
+      caster,
+      expect.objectContaining({ token: { id: "sceneToken" } }),
+    );
+    expect(getOwnToken).toHaveBeenCalledWith(caster);
+  });
+
+  it("keeps a given token", async () => {
+    vi.mocked(getOwnToken).mockReturnValue({ id: "sceneToken" } as any);
+    expect(await castWith({ token: { id: "given" } })).toHaveBeenCalledWith(
+      caster,
+      expect.objectContaining({ token: { id: "given" } }),
+    );
   });
 });

@@ -1,4 +1,4 @@
-import { getTokenFromActor } from "../util";
+import { getOwnToken } from "../util";
 import { spellBehaviorOf } from "./spell-behavior";
 import { metersToPixels } from "./scene-distance";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -40,7 +40,7 @@ export function casterTokenOnScene(
   token: TokenDocument | null | undefined,
   casterActor: RqgActor,
 ): foundry.canvas.placeables.Token | undefined {
-  const casterToken = token ?? (getTokenFromActor(casterActor) as TokenDocument | undefined);
+  const casterToken = token ?? getOwnToken(casterActor);
   const caster = casterToken?.object;
   return caster && canvas?.ready && casterToken.parent === canvas.scene ? caster : undefined;
 }

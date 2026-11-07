@@ -941,6 +941,23 @@ export function getTokenFromActor(actor: RqgActor | undefined | null): SpeakerTo
 }
 
 /**
+ * The actor's own token, a selected one first: a token actor's token, or a linked token of the
+ * actor on the viewed scene (the active scene without a canvas). Never an unlinked copy of a world
+ * actor, whose actor is a different document.
+ */
+export function getOwnToken(actor: RqgActor): TokenDocument | undefined {
+  if (actor.token) {
+    return actor.token as TokenDocument;
+  }
+  const scene = canvas?.ready ? canvas.scene : game.scenes?.current;
+  if (!scene) {
+    return undefined;
+  }
+  const tokens = actor.getDependentTokens({ scenes: scene, linked: true }) as TokenDocument[];
+  return tokens.find((token) => token.object?.controlled) ?? tokens[0];
+}
+
+/**
  * The V13 Foundry version returns a &minus; sign instead of a normal - which makes it impossible
  * to do a Number(x) on the resulting string to revert into number again.
  */

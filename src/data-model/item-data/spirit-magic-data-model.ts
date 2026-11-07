@@ -6,7 +6,7 @@ import { postSpellCastResult, resolveResistedSpellCastTarget } from "../shared/s
 import { spellMaxTargets, tokensInSpellArea } from "../../system/spell-effects/spell-area-targets";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
-import { RqgError, localize, assertDocumentSubType } from "../../system/util";
+import { RqgError, localize, assertDocumentSubType, getOwnToken } from "../../system/util";
 import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { isForbidden, type RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellCastOptions } from "../../rolls/roll-method-options";
@@ -92,18 +92,20 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     casterActor: RqgActor,
     options: SpellCastOptions = {},
   ): Promise<SpiritMagicRoll | undefined> {
+    // A linked caster has no token of its own; use its token on the scene
+    const token = options.token ?? getOwnToken(casterActor) ?? null;
     if (!options.skipDialog) {
       // Dynamic import to avoid circular dependency through SpiritMagicRollDialogV2 → rqgItem.ts
       const { SpiritMagicRollDialogV2 } =
         await import("../../applications/spirit-magic-roll-dialog/spirit-magic-roll-dialog-v2");
       await new SpiritMagicRollDialogV2(
         this.parent as unknown as SpiritMagicItem,
-        options.token,
+        token,
         casterActor,
       ).render({ force: true });
       return undefined;
     }
-    return await this.castWithoutDialog(casterActor, options);
+    return await this.castWithoutDialog(casterActor, { ...options, token });
   }
 
   /** The options a cast would roll with and what the `rqg.prepareSpellCast` hook made of them. */
