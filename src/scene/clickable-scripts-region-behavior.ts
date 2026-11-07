@@ -60,15 +60,18 @@ export class ClickableScriptsRegionBehavior extends RegionBehaviorType<Clickable
         return;
       }
       const currentPoint = canvas.activeLayer.toLocal(event);
+      const viewedLevel = canvas.level;
 
       const isPointerInsideRegion: boolean | undefined = canvas.scene?.regions?.contents?.some(
         (region: any) =>
+          (!viewedLevel || region.includedInLevel(viewedLevel)) &&
           region.behaviors.some(
             (b: any) =>
               b.system?.showPointerOnHover &&
               !b.disabled &&
               b.system instanceof ClickableScriptsRegionBehavior,
-          ) && region.polygonTree.testPoint(currentPoint),
+          ) &&
+          region.polygonTree.testPoint(currentPoint),
       );
 
       if (isPointerInsideRegion) {
