@@ -1263,11 +1263,11 @@
           },
           "armorType": {
             "label": "Armor type",
-            "hint": "The kind of armor, for example a cuirass or a helm."
+            "hint": "The kind of armor, for example a cuirass or a helm. A type from the list is stored as its key, a custom one as typed."
           },
           "material": {
             "label": "Material",
-            "hint": "What the armor is made of."
+            "hint": "What the armor is made of. A material from the list is stored as its key, a custom one as typed."
           },
           "absorbs": {
             "label": "Absorbs",
@@ -2167,7 +2167,7 @@
               },
               "combatManeuvers": {
                 "label": "Combat maneuvers",
-                "hint": "The maneuvers available this way, each with a name, damage type and description."
+                "hint": "The maneuvers available this way, each with a name, damage type and description. A maneuver name from the list is stored as its key, a custom one as typed."
               },
               "damage": {
                 "label": "Damage",
@@ -2195,7 +2195,7 @@
               },
               "combatManeuvers": {
                 "label": "Combat maneuvers",
-                "hint": "The maneuvers available this way, each with a name, damage type and description."
+                "hint": "The maneuvers available this way, each with a name, damage type and description. A maneuver name from the list is stored as its key, a custom one as typed."
               },
               "damage": {
                 "label": "Damage",
@@ -2223,7 +2223,7 @@
               },
               "combatManeuvers": {
                 "label": "Combat maneuvers",
-                "hint": "The maneuvers available this way, each with a name, damage type and description."
+                "hint": "The maneuvers available this way, each with a name, damage type and description. A maneuver name from the list is stored as its key, a custom one as typed."
               },
               "damage": {
                 "label": "Damage",
@@ -2251,7 +2251,7 @@
               },
               "combatManeuvers": {
                 "label": "Combat maneuvers",
-                "hint": "The maneuvers available this way, each with a name, damage type and description."
+                "hint": "The maneuvers available this way, each with a name, damage type and description. A maneuver name from the list is stored as its key, a custom one as typed."
               },
               "damage": {
                 "label": "Damage",

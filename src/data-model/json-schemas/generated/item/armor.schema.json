@@ -237,13 +237,13 @@
       "type": "string",
       "default": "",
       "title": "Armor type",
-      "description": "The kind of armor, for example a cuirass or a helm."
+      "description": "The kind of armor, for example a cuirass or a helm. A type from the list is stored as its key, a custom one as typed."
     },
     "material": {
       "type": "string",
       "default": "",
       "title": "Material",
-      "description": "What the armor is made of."
+      "description": "What the armor is made of. A material from the list is stored as its key, a custom one as typed."
     },
     "absorbs": {
       "type": "integer",
