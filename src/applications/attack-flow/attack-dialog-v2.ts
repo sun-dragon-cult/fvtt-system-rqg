@@ -20,7 +20,12 @@ import {
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
-import type { CombatManeuver, UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
+import {
+  combatManeuverLabel,
+  type CombatManeuver,
+  type UsageType,
+  type WeaponItem,
+} from "@item-model/weapon-data-model.ts";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import { systemId } from "../../system/config";
 import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
@@ -699,7 +704,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         ui.notifications?.warn(
           localize("RQG.Dialog.Attack.OutOfAmmoWarn", {
             projectileName: projectileItem?.name ?? "???",
-            combatManeuverName: combatManeuver.name,
+            combatManeuverName: combatManeuverLabel(combatManeuver.name),
           }),
         );
         return;

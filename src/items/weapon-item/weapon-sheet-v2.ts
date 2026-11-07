@@ -5,7 +5,11 @@ import { RqgItem } from "../rqg-item";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/i-physical-item.ts";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
 import { getDomDataset, isDocumentSubType, localize } from "../../system/util";
-import { damageTypeOptions, type WeaponItem } from "@item-model/weapon-data-model.ts";
+import {
+  combatManeuverKey,
+  damageTypeOptions,
+  type WeaponItem,
+} from "@item-model/weapon-data-model.ts";
 import type { DamageType } from "@item-model/weapon-enums.ts";
 import { systemId } from "../../system/config";
 import {
@@ -275,38 +279,15 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
     data["system.usage.offHand.strikeRank"] = data["system.usage.oneHand.strikeRank"];
   }
 
-  private static getCombatManeuverInfo(nameInput: unknown): { name: string; configKey?: string } {
-    const name = `${nameInput ?? ""}`.trim();
-    if (!name) {
-      return { name: "" };
-    }
-
-    if (CONFIG.RQG.combatManeuvers.has(name)) {
-      return {
-        name: localize(`RQG.Item.Weapon.combatManeuver.${name}`),
-        configKey: name,
-      };
-    }
-
-    const keyFromLocalizedLabel = Array.from(CONFIG.RQG.combatManeuvers.keys()).find(
-      (key) => localize(`RQG.Item.Weapon.combatManeuver.${key}`) === name,
-    );
-
-    return {
-      name,
-      configKey: keyFromLocalizedLabel,
-    };
-  }
-
   private static getUsageCombatManeuvers(usage: string, data: Record<string, unknown>): any[] {
     const usageNames = data[`system.usage.${usage}.combatManeuvers.name`];
     const usageCombatManeuversNames = Array.isArray(usageNames) ? usageNames : [usageNames];
 
     return foundry.utils.duplicate(
-      usageCombatManeuversNames.reduce((acc: any[], storedNameOrKey: any, i: number) => {
-        const { name, configKey } = WeaponSheetV2.getCombatManeuverInfo(storedNameOrKey);
+      usageCombatManeuversNames.reduce((acc: any[], typedName: any, i: number) => {
+        const name = combatManeuverKey(`${typedName ?? ""}`);
         if (name) {
-          const configManeuver = configKey ? CONFIG.RQG.combatManeuvers.get(configKey) : undefined;
+          const configManeuver = CONFIG.RQG.combatManeuvers.get(name);
           const dmgType =
             data[`system.usage.${usage}.combatManeuvers.damageTypes`] ??
             configManeuver?.defaultDamageType;

@@ -487,14 +487,23 @@ describe("Rqid", () => {
       expect(Rqid.getDefaultRqidSlug("Ernalda", "cult", undefined)).toBe("ernalda");
     });
 
-    it("derives an armor slug from namePrefix, armorType and material", () => {
-      expect(
-        Rqid.getDefaultRqidSlug("Fine Bronze Cuirass", "armor", {
-          namePrefix: "Fine",
-          armorType: "Cuirass",
-          material: "Bronze",
-        }),
-      ).toBe("fine-cuirass-bronze");
+    it("derives an armor slug from namePrefix and the English armorType and material", () => {
+      const i18n = game.i18n as unknown as { _fallback: object };
+      const fallback = i18n._fallback;
+      i18n._fallback = {
+        RQG: { Item: { Armor: { ArmorType: { PantsTrews: "Pants" } } } },
+      };
+      try {
+        expect(
+          Rqid.getDefaultRqidSlug("Fine Bronze Pants", "armor", {
+            namePrefix: "Fine",
+            armorType: "PantsTrews",
+            material: "Bronze",
+          }),
+        ).toBe("fine-pants-bronze");
+      } finally {
+        i18n._fallback = fallback;
+      }
     });
   });
 

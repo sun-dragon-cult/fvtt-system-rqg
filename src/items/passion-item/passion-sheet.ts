@@ -73,7 +73,7 @@ export class PassionSheet extends RqgItemSheet {
   }
 
   protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
-    const passion = passionKey(String(formData["system.passion"] ?? ""));
+    const passion = passionKey(String(formData["system.passion"] ?? this.document.system.passion));
     formData["system.passion"] = passion;
     const subject = formData["system.subject"] ? ` (${formData["system.subject"]})` : "";
     formData["name"] = passionLabel(passion) + subject;

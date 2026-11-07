@@ -16,6 +16,7 @@ import type { SkillItem } from "@item-model/skill-data-model.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { ItemTypeEnum } from "@item-model/item-types";
 import { getDefaultItemIconSettings } from "./settings/default-item-icons";
+import { combatManeuverLabel } from "@item-model/weapon-data-model.ts";
 
 export const registerHandlebarsHelpers = function () {
   const getHelperHash = (options: unknown): Record<string, string> | undefined => {
@@ -111,6 +112,10 @@ export const registerHandlebarsHelpers = function () {
     const itemType: ItemTypeEnum = typeName;
     return localizeItemType(itemType);
   });
+
+  Handlebars.registerHelper("combatManeuverLabel", (name: unknown) =>
+    combatManeuverLabel(String(name ?? "")),
+  );
 
   Handlebars.registerHelper("localizeActiveEffectType", (type: string) => {
     // RQG-TEMP-REMOVE-ACTIVE-EFFECT-CHANGE-TYPES:
