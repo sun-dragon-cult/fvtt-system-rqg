@@ -67,21 +67,17 @@ export class RuneSheetV2 extends RqgItemSheetV2 {
   }
 
   protected static override async onSubmit(
-    event: SubmitEvent | Event,
+    _event: SubmitEvent | Event,
     _form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
     const sheet = this as unknown as RuneSheetV2;
     const data = formData.object as Record<string, unknown>;
 
-    const runeType = data["system.runeType.type"] as string;
+    const runeType = data["system.runeType"] as string;
     const translatedRuneType = localize(`RQG.Item.Rune.RuneType.${runeType}`);
     data["name"] = `${data["system.rune"]} (${translatedRuneType})`;
 
-    // Only update runeType.name if the runeType.type field changed
-    if ((event.target as HTMLSelectElement)?.name === "system.runeType.type") {
-      data["system.runeType.name"] = translatedRuneType;
-    }
     data["system.chance"] = Number(data["system.chance"]);
 
     await sheet.document.update(data);

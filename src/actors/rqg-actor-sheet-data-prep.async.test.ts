@@ -123,14 +123,14 @@ describe("organizeEmbeddedItems", () => {
         id: "rune-valid",
         type: ItemTypeEnum.Rune,
         flags: { rqg: { documentRqidFlags: { id: "i.rune.fire-element" } } },
-        system: { runeType: { type: RuneTypeEnum.Element } },
+        system: { runeType: RuneTypeEnum.Element },
       },
       {
         id: "rune-invalid",
         type: ItemTypeEnum.Rune,
         link: "@UUID[i.rune.invalid]",
         flags: { rqg: { documentRqidFlags: { id: "i.rune.invalid" } } },
-        system: { runeType: { type: "unknown" } },
+        system: { runeType: "unknown" },
       },
       {
         id: "hl-high",

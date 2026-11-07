@@ -659,7 +659,6 @@
       },
       "Rune": {
         "IncorrectRuneWarning": "Rune type is not one of element, power, form, condition or technique. Please update it.",
-        "TypeDontMatchTranslationTip": "Name of rune type does not match current translation in system. Not an error, just inconsistent translations.<br>Reselecting the type will reset it to the system standard.",
         "Condition": "Condition",
         "Elemental": "Elemental",
         "Form": "Form",
@@ -1677,7 +1676,7 @@
           },
           "passion": {
             "label": "Passion",
-            "hint": "Name of the passion, for example Loyalty or Hate."
+            "hint": "The passion, for example Loyalty or Hate. A passion from the list is stored as its key, a custom one as typed."
           },
           "subject": {
             "label": "Subject",

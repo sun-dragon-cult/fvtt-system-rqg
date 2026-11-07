@@ -276,7 +276,7 @@ export function getCharacterElementRuneImgs(actor: CharacterActor): SheetRuneDat
     .reduce((acc: SheetRuneData[], i) => {
       if (
         isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
-        i.system.runeType.type === RuneTypeEnum.Element &&
+        i.system.runeType === RuneTypeEnum.Element &&
         !!i.system.chance
       ) {
         acc.push({
@@ -303,7 +303,7 @@ export function getCharacterPowerRuneImgs(actor: CharacterActor): SheetRuneData[
     .reduce((acc: SheetRuneData[], i) => {
       if (
         isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
-        i.system.runeType.type === RuneTypeEnum.Power &&
+        i.system.runeType === RuneTypeEnum.Power &&
         i.system.chance > 50
       ) {
         acc.push({
@@ -342,7 +342,7 @@ export function getCharacterFormRuneImgs(actor: CharacterActor): SheetRuneData[]
     .reduce((acc: SheetRuneData[], i) => {
       if (
         isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
-        i.system.runeType.type === RuneTypeEnum.Form &&
+        i.system.runeType === RuneTypeEnum.Form &&
         (!i.system.opposingRuneRqidLink?.rqid ||
           !hasOpposingRuneOnActor(i.system.opposingRuneRqidLink?.rqid) ||
           i.system.chance > 50)
@@ -692,7 +692,7 @@ export async function organizeEmbeddedItems(
       const runeItem = rune as RuneItem;
       const runeRqid = runeItem.flags?.rqg?.documentRqidFlags?.id;
       const runeRqidName = runeRqid?.split(".").pop()?.split("-").shift();
-      const runeType = runeItem.system.runeType.type;
+      const runeType = runeItem.system.runeType;
       // Runes must have a valid RQID to be categorized by type
       if (Object.values(RuneTypeEnum).includes(runeType) && runeRqid) {
         acc[runeType][runeRqidName ?? ""] = runeItem;
@@ -880,7 +880,7 @@ export function getUiSectionVisibility(actor: CharacterActor): UiSections {
       actor.items.some(
         (i) =>
           isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
-          (i.system.isMastered || i.system.runeType.type === RuneTypeEnum.Technique),
+          (i.system.isMastered || i.system.runeType === RuneTypeEnum.Technique),
       ),
     skills:
       CONFIG.RQG.debug.showAllUiSections ||

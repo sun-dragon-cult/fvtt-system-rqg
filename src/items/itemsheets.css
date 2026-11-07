@@ -102,8 +102,10 @@
         line-height: var(--input-height);
       }
 
+/* Wide enough for the longest option, also when a long input shares the line */
       & select {
         display: block;
+        min-width: max-content;
       }
     }
 

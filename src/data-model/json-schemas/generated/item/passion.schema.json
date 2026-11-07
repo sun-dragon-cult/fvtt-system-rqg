@@ -28,7 +28,7 @@
       "type": "string",
       "default": "",
       "title": "Passion",
-      "description": "Name of the passion, for example Loyalty or Hate."
+      "description": "The passion, for example Loyalty or Hate. A passion from the list is stored as its key, a custom one as typed."
     },
     "subject": {
       "type": "string",

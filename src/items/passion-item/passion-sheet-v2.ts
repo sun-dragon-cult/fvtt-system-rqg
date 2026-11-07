@@ -1,5 +1,5 @@
-import type { PassionItem } from "@item-model/passion-data-model.ts";
-import { PassionsEnum } from "@item-model/passion-enums.ts";
+import { passionKey, passionLabel, type PassionItem } from "@item-model/passion-data-model.ts";
+import { PassionsEnum, passionKeys } from "@item-model/passion-enums.ts";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
@@ -7,12 +7,15 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 interface PassionSheetContext extends RqgItemSheetContext {
   enrichedDescription: string;
   enrichedGmNotes: string;
-  passionTypes: PassionsEnum[];
+  /** The stored passion as shown in the current language */
+  passionLabel: string;
+  /** Labels of the known passions */
+  passionTypes: string[];
 }
 
 export class PassionSheetV2 extends RqgItemSheetV2 {
   /** Map passion type → image path */
-  static passionImgUrl = new Map([
+  static passionImgUrl = new Map<string, string>([
     [PassionsEnum.Ambition, "systems/rqg/assets/images/passion/ambition.svg"],
     [PassionsEnum.Cowardly, "systems/rqg/assets/images/passion/cowardly.svg"],
     [PassionsEnum.Devotion, "systems/rqg/assets/images/passion/devotion.svg"],
@@ -68,7 +71,8 @@ export class PassionSheetV2 extends RqgItemSheetV2 {
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),
-      passionTypes: Object.values(PassionsEnum),
+      passionLabel: passionLabel(system.passion),
+      passionTypes: passionKeys.map(passionLabel),
     };
 
     if (!context.isGM && this.tabGroups?.["sheet"] === "gm") {
@@ -92,14 +96,14 @@ export class PassionSheetV2 extends RqgItemSheetV2 {
     const sheet = this as unknown as PassionSheetV2;
     const data = formData.object as Record<string, unknown>;
 
+    const passion = passionKey(String(data["system.passion"] ?? ""));
+    data["system.passion"] = passion;
     const subject = data["system.subject"] ? ` (${data["system.subject"]})` : "";
-    data["name"] = String(data["system.passion"]) + subject;
+    data["name"] = passionLabel(passion) + subject;
 
-    if (Object.values(PassionsEnum).includes(data["system.passion"] as PassionsEnum)) {
-      const img = PassionSheetV2.passionImgUrl.get(data["system.passion"] as string as any);
-      if (img) {
-        data["img"] = img;
-      }
+    const img = PassionSheetV2.passionImgUrl.get(passion);
+    if (img) {
+      data["img"] = img;
     }
 
     await sheet.document.update(data);

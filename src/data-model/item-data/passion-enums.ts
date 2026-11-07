@@ -17,3 +17,7 @@ export const PassionsEnum = {
   Custom: "",
 } as const;
 export type PassionsEnum = (typeof PassionsEnum)[keyof typeof PassionsEnum];
+
+/** The keys of the known passions, stored in `system.passion` instead of their labels. */
+export const passionKeys: readonly string[] = Object.values(PassionsEnum).filter((value) => value);
+export const passionLabelPrefix = "RQG.Item.Passion.PassionEnum.";

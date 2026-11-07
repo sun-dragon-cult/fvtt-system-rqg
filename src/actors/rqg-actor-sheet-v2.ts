@@ -29,6 +29,7 @@ import {
 import type { RqgItem } from "../items/rqg-item";
 import type { RqgActor } from "./rqg-actor";
 import type { AbilityItem, PhysicalItem, RqgItemType } from "@item-model/item-types.ts";
+import { PassionsEnum } from "@item-model/passion-enums.ts";
 import type { ArmorItem } from "@item-model/armor-data-model.ts";
 import type { OccupationItem } from "@item-model/occupation-data-model.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/item-types.ts";
@@ -1259,7 +1260,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       name: newPassionName,
       type: ItemTypeEnum.Passion,
       img: getDefaultItemIconSettings()[ItemTypeEnum.Passion as RqgItemType],
-      system: { passion: newPassionName },
+      system: { passion: PassionsEnum.Loyalty },
     };
     const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
     // @ts-expect-error render signature varies between V1/V2 sheet implementations

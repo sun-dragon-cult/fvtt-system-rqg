@@ -8,6 +8,7 @@ import {
   type PhysicalItem,
   type RqgItemType,
 } from "@item-model/item-types.ts";
+import { PassionsEnum } from "@item-model/passion-enums.ts";
 import {
   showHitLocationAddWoundDialog,
   showHitLocationHealWoundDialog,
@@ -788,7 +789,7 @@ export class RqgActorSheet<
           name: newPassionName,
           type: ItemTypeEnum.Passion,
           img: getDefaultItemIconSettings()[ItemTypeEnum.Passion as RqgItemType],
-          system: { passion: newPassionName },
+          system: { passion: PassionsEnum.Loyalty },
         };
         const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
         (createdItems[0] as RqgItem)?.sheet?.render(true);

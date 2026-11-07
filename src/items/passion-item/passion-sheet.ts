@@ -1,6 +1,6 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
-import type { PassionItem } from "@item-model/passion-data-model.ts";
-import { PassionsEnum } from "@item-model/passion-enums.ts";
+import { passionKey, passionLabel, type PassionItem } from "@item-model/passion-data-model.ts";
+import { PassionsEnum, passionKeys } from "@item-model/passion-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { RqgItemSheet } from "../rqg-item-sheet";
 import { systemId } from "../../system/config";
@@ -10,12 +10,13 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 export interface PassionSheetData {
   enrichedDescription: string;
   enrichedGmNotes: string;
-  passionTypes: PassionsEnum[];
+  passionLabel: string;
+  passionTypes: string[];
 }
 
 export class PassionSheet extends RqgItemSheet {
   // TODO move to config?
-  static passionImgUrl = new Map([
+  static passionImgUrl = new Map<string, string>([
     [PassionsEnum.Ambition, "systems/rqg/assets/images/passion/ambition.svg"],
     [PassionsEnum.Cowardly, "systems/rqg/assets/images/passion/cowardly.svg"],
     [PassionsEnum.Devotion, "systems/rqg/assets/images/passion/devotion.svg"],
@@ -66,17 +67,20 @@ export class PassionSheet extends RqgItemSheet {
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),
-      passionTypes: Object.values(PassionsEnum),
+      passionLabel: passionLabel(system.passion),
+      passionTypes: passionKeys.map(passionLabel),
     };
   }
 
   protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
-    const passion = formData["system.passion"] as PassionsEnum;
+    const passion = passionKey(String(formData["system.passion"] ?? ""));
+    formData["system.passion"] = passion;
     const subject = formData["system.subject"] ? ` (${formData["system.subject"]})` : "";
-    formData["name"] = passion + subject;
+    formData["name"] = passionLabel(passion) + subject;
 
-    if (passion !== PassionsEnum.Custom) {
-      formData["img"] = PassionSheet.passionImgUrl.get(passion);
+    const img = PassionSheet.passionImgUrl.get(passion);
+    if (img) {
+      formData["img"] = img;
     }
 
     return super._updateObject(event, formData);
