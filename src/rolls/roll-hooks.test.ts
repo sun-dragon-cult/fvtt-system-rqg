@@ -218,6 +218,15 @@ describe("roll hooks (#1132)", () => {
   describe("spell casts", () => {
     const caster = { type: "character", system: { characteristics: { power: { value: 12 } } } };
 
+    const originalCanvas = (globalThis as any).canvas;
+    beforeEach(() => {
+      // cast() looks for the caster's token on the scene
+      (globalThis as any).canvas = undefined;
+    });
+    afterEach(() => {
+      (globalThis as any).canvas = originalCanvas;
+    });
+
     it("passes the spirit magic cast options to rqg.preSpellCast, and a false stops the cast", async () => {
       const before = vi.fn().mockReturnValue(false);
       on("rqg.preSpellCast", before);

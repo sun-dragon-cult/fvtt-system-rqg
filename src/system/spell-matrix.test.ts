@@ -92,6 +92,24 @@ describe("getMatrixSpellRows", () => {
 
     expect(await getMatrixSpellRows(fakeActor([matrixItem]))).toEqual([]);
   });
+  it("leaves out an unresolvable entry, quietly when asked", async () => {
+    const fromRqid = vi.spyOn(Rqid, "fromRqid").mockResolvedValue(undefined);
+    const warn = vi.fn();
+    const originalUi = (globalThis as any).ui;
+    (globalThis as any).ui = { notifications: { warn } };
+    try {
+      const actor = fakeActor([fakeMatrixItem("m1", [{ rqid: "spell.gone", name: "Gone" }])]);
+
+      expect(await getMatrixSpellRows(actor, { quiet: true })).toEqual([]);
+      expect(fromRqid).toHaveBeenCalledWith("spell.gone", undefined, true);
+      expect(warn).not.toHaveBeenCalled();
+
+      expect(await getMatrixSpellRows(actor)).toEqual([]);
+      expect(warn).toHaveBeenCalledTimes(1);
+    } finally {
+      (globalThis as any).ui = originalUi;
+    }
+  });
 });
 
 describe("getMatrixSpellSlots", () => {

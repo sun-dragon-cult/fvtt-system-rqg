@@ -39,6 +39,7 @@ export async function resolveMatrixSpellItem(
   item: PhysicalItem,
   entryIndex: number,
   canonicalCache?: Map<string, Promise<RqgItem | undefined>>,
+  quiet = false,
 ): Promise<SpiritMagicItem | undefined> {
   const matrixSpell = item.system.matrixSpells?.[entryIndex];
   const rqid = matrixSpell?.spellRqidLink?.rqid;
@@ -48,11 +49,14 @@ export async function resolveMatrixSpellItem(
 
   let canonicalPromise = canonicalCache?.get(rqid);
   if (!canonicalPromise) {
-    canonicalPromise = Rqid.fromRqid<any>(rqid) as Promise<RqgItem | undefined>;
+    canonicalPromise = Rqid.fromRqid<any>(rqid, undefined, quiet) as Promise<RqgItem | undefined>;
     canonicalCache?.set(rqid, canonicalPromise);
   }
   const canonical = await canonicalPromise;
   if (!isDocumentSubType<SpiritMagicItem>(canonical, ItemTypeEnum.SpiritMagic)) {
+    if (quiet) {
+      return undefined;
+    }
     ui.notifications?.warn(
       localize("RQG.Item.Gear.MatrixSpellNotFoundWarn", {
         rqid: rqid,
@@ -105,8 +109,11 @@ export type MatrixSpellRow = {
   sort: number;
 };
 
-/** Flattened, not grouped by item. */
-export async function getMatrixSpellRows(actor: RqgActor): Promise<MatrixSpellRow[]> {
+/** Flattened, not grouped by item. `quiet` leaves out an unresolvable entry without a warning. */
+export async function getMatrixSpellRows(
+  actor: RqgActor,
+  { quiet = false }: { quiet?: boolean } = {},
+): Promise<MatrixSpellRow[]> {
   const matrixItems = getEquippedMatrixItems(actor);
 
   // Shared across every entry resolved below, so items/entries enchanted with the same spell
@@ -118,7 +125,7 @@ export async function getMatrixSpellRows(actor: RqgActor): Promise<MatrixSpellRo
       const spellEntries = sourceItem.system.matrixSpells ?? [];
       const resolved = await Promise.all(
         spellEntries.map(async (entry, entryIndex) => {
-          const item = await resolveMatrixSpellItem(sourceItem, entryIndex, canonicalCache);
+          const item = await resolveMatrixSpellItem(sourceItem, entryIndex, canonicalCache, quiet);
           return item ? { sourceItem, entryIndex, item, sort: entry.sort ?? 0 } : undefined;
         }),
       );
