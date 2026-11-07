@@ -8,11 +8,11 @@
     {{#each combatManeuverNames}}
       {{#if ../isSelectedWeaponBroken}}
         <button data-combat-maneuver-name="{{this}}" name="combatManeuverRoll" disabled>
-          {{this}}
+          {{combatManeuverLabel this}}
         </button>
       {{else}}
         <button data-combat-maneuver-name="{{this}}" name="combatManeuverRoll">
-          {{this}}
+          {{combatManeuverLabel this}}
         </button>
       {{/if}}
     {{/each}}

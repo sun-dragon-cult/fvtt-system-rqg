@@ -12,6 +12,9 @@ export const damageType = {
 } as const;
 export type DamageType = (typeof damageType)[keyof typeof damageType];
 
+export const combatManeuverPrefix = "RQG.Item.Weapon.combatManeuver.";
+
+/** The keys of the known combat maneuvers, stored as the maneuver name instead of its label. */
 export const combatManeuverNames = [
   "Throw",
   "Shoot",

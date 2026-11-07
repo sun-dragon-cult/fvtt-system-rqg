@@ -1,8 +1,11 @@
 import {
-  armorTypeTranslationKeys,
-  materialTranslationKeys,
+  armorTypeKey,
+  armorTypeLabel,
+  materialKey,
+  materialLabel,
   type ArmorItem,
 } from "@item-model/armor-data-model.ts";
+import { armorTypeKeys, materialKeys } from "@item-model/armor-enums.ts";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/i-physical-item.ts";
 import {
   RqgItemSheetV2,
@@ -14,7 +17,6 @@ import {
   convertFormValueToString,
   getAvailableHitLocations,
   getSelectHitLocationOptions,
-  localize,
 } from "../../system/util";
 import { systemId } from "../../system/config";
 import { RqidLink } from "../../data-model/shared/rqid-link";
@@ -23,6 +25,10 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 interface ArmorSheetContext extends RqgItemSheetContext {
   allHitLocationOptions: SelectOptionData<string>[];
   equippedStatusOptions: SelectOptionData<EquippedStatus>[];
+  /** The stored armor type and material as shown in the current language */
+  armorTypeLabel: string;
+  materialLabel: string;
+  /** Labels of the known armor types and materials */
   armorTypeNames: string[];
   materialNames: string[];
   enrichedDescription: string;
@@ -83,8 +89,10 @@ export class ArmorSheetV2 extends RqgItemSheetV2 {
         "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder",
       ),
       equippedStatusOptions: equippedStatusOptions,
-      armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
-      materialNames: materialTranslationKeys.map((key) => localize(key)),
+      armorTypeLabel: armorTypeLabel(system.armorType),
+      materialLabel: materialLabel(system.material),
+      armorTypeNames: armorTypeKeys.map(armorTypeLabel),
+      materialNames: materialKeys.map(materialLabel),
     };
 
     if (!context.isGM && ["gm", "effects"].includes(this.tabGroups?.["sheet"] ?? "")) {
@@ -131,8 +139,13 @@ export class ArmorSheetV2 extends RqgItemSheetV2 {
   ): Promise<void> {
     const sheet = this as unknown as ArmorSheetV2;
     const data = formData.object as Record<string, unknown>;
+    const { system } = sheet.document;
+    const armorType = armorTypeKey(String(data["system.armorType"] ?? system.armorType));
+    const material = materialKey(String(data["system.material"] ?? system.material));
+    data["system.armorType"] = armorType;
+    data["system.material"] = material;
     data["name"] =
-      `${data["system.namePrefix"]} ${data["system.armorType"]} (${data["system.material"]})`;
+      `${data["system.namePrefix"]} ${armorTypeLabel(armorType)} (${materialLabel(material)})`;
     await sheet.document.update(data);
   }
 }

@@ -22,8 +22,10 @@ import {
 } from "../src/data-model/item-data/hit-location-enums";
 import { damageType, combatManeuverNames } from "../src/data-model/item-data/weapon-enums";
 import {
-  armorTypeTranslationKeys,
-  materialTranslationKeys,
+  armorTypeKeys,
+  armorTypePrefix,
+  materialKeys,
+  materialPrefix,
 } from "../src/data-model/item-data/armor-enums";
 import {
   equippedStatuses,
@@ -147,13 +149,9 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   "RQG.Game.DodgeResults.": combatResultCombinations,
   "RQG.Game.WeaponUsage.": [...weaponUsageTypes],
 
-  // Item - Armor (these are already full keys, treated as literal entries)
-  "RQG.Item.Armor.ArmorMaterial.": materialTranslationKeys.map((k) =>
-    k.replace("RQG.Item.Armor.ArmorMaterial.", ""),
-  ),
-  "RQG.Item.Armor.ArmorType.": armorTypeTranslationKeys.map((k) =>
-    k.replace("RQG.Item.Armor.ArmorType.", ""),
-  ),
+  // Item - Armor
+  [materialPrefix]: [...materialKeys],
+  [armorTypePrefix]: [...armorTypeKeys],
 
   // Item - Equipment
   "RQG.Item.EquippedStatus.": [...equippedStatuses],

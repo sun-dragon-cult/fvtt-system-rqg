@@ -1,17 +1,19 @@
 import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import {
-  armorTypeTranslationKeys,
-  materialTranslationKeys,
+  armorTypeKey,
+  armorTypeLabel,
+  materialKey,
+  materialLabel,
   type ArmorItem,
 } from "@item-model/armor-data-model.ts";
+import { armorTypeKeys, materialKeys } from "@item-model/armor-enums.ts";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/i-physical-item.ts";
 import { RqgItemSheet } from "../rqg-item-sheet";
 import {
   convertFormValueToString,
   getAvailableHitLocations,
   getSelectHitLocationOptions,
-  localize,
 } from "../../system/util";
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheet-interfaces.types.ts";
@@ -21,6 +23,10 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 interface ArmorSheetData {
   allHitLocationOptions: SelectOptionData<string>[];
   equippedStatusOptions: SelectOptionData<EquippedStatus>[];
+  /** The stored armor type and material as shown in the current language */
+  armorTypeLabel: string;
+  materialLabel: string;
+  /** Labels of the known armor types and materials */
   armorTypeNames: string[];
   materialNames: string[];
   enrichedDescription: string;
@@ -65,8 +71,10 @@ export class ArmorSheet extends RqgItemSheet {
         "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder",
       ),
       equippedStatusOptions: equippedStatusOptions,
-      armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
-      materialNames: materialTranslationKeys.map((key) => localize(key)),
+      armorTypeLabel: armorTypeLabel(system.armorType),
+      materialLabel: materialLabel(system.material),
+      armorTypeNames: armorTypeKeys.map(armorTypeLabel),
+      materialNames: materialKeys.map(materialLabel),
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.description,
       ),
@@ -82,8 +90,13 @@ export class ArmorSheet extends RqgItemSheet {
   }
 
   protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
+    const { system } = this.document;
+    const armorType = armorTypeKey(String(formData["system.armorType"] ?? system.armorType));
+    const material = materialKey(String(formData["system.material"] ?? system.material));
+    formData["system.armorType"] = armorType;
+    formData["system.material"] = material;
     formData["name"] =
-      `${formData["system.namePrefix"]} ${formData["system.armorType"]} (${formData["system.material"]})`;
+      `${formData["system.namePrefix"]} ${armorTypeLabel(armorType)} (${materialLabel(material)})`;
     return super._updateObject(event, formData);
   }
 

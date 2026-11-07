@@ -11,6 +11,11 @@ export function toLabel(value: string, prefix: string, keys: readonly string[]):
   return keys.includes(value) ? localize(`${prefix}${value}`) : value;
 }
 
+/** The English label for a stored value: the English label of a known key, otherwise the value. */
+export function toEnglishLabel(value: string, prefix: string, keys: readonly string[]): string {
+  return keys.includes(value) ? localizeEnglish(`${prefix}${value}`) : value;
+}
+
 /**
  * The value to store for typed or picked text: the key when the text is a key or the label of one,
  * in the current language or in English, otherwise the trimmed text.

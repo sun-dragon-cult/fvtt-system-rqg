@@ -6,7 +6,11 @@ import { RqgItem } from "../rqg-item";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/i-physical-item.ts";
 import { RqgItemSheet } from "../rqg-item-sheet";
 import { getDomDataset, isDocumentSubType, localize } from "../../system/util";
-import { damageTypeOptions, type WeaponItem } from "@item-model/weapon-data-model.ts";
+import {
+  combatManeuverKey,
+  damageTypeOptions,
+  type WeaponItem,
+} from "@item-model/weapon-data-model.ts";
 import type { DamageType } from "@item-model/weapon-enums.ts";
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheet-interfaces.types.ts";
@@ -181,7 +185,8 @@ export class WeaponSheet extends RqgItemSheet {
     const usageNames = formData[`system.usage.${usage}.combatManeuvers.name`];
     const usageCombatManueversNames = Array.isArray(usageNames) ? usageNames : [usageNames];
 
-    const usageCombatManeuvers = usageCombatManueversNames.reduce((acc, name, i) => {
+    const usageCombatManeuvers = usageCombatManueversNames.reduce((acc, typedName, i) => {
+      const name = combatManeuverKey(`${typedName ?? ""}`);
       if (name) {
         const dmgType =
           formData[`system.usage.${usage}.combatManeuvers.damageTypes`] ??

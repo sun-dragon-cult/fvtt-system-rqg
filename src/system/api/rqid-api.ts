@@ -2,6 +2,13 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { systemId } from "../config";
 import { getDefaultItemIconSettings } from "../settings/default-item-icons";
 import { getAvailableRunes, localize, RqgError, toKebabCase, trimChars } from "../util";
+import { toEnglishLabel } from "../localized-key";
+import {
+  armorTypeKeys,
+  armorTypePrefix,
+  materialKeys,
+  materialPrefix,
+} from "@item-model/armor-enums.ts";
 import {
   documentRqidFlags,
   type DocumentRqidFlags,
@@ -397,11 +404,16 @@ export class Rqid {
       );
     }
     if (type === ItemTypeEnum.Armor) {
+      const prefix = (system?.["namePrefix"] as string) ?? "";
+      const armorType = (system?.["armorType"] as string) ?? "";
+      const material = (system?.["material"] as string) ?? "";
       slug = trimChars(
         toKebabCase(
-          `${(system?.["namePrefix"] as string) ?? ""}-${(system?.["armorType"] as string) ?? ""}-${
-            (system?.["material"] as string) ?? ""
-          }`,
+          `${prefix}-${toEnglishLabel(armorType, armorTypePrefix, armorTypeKeys)}-${toEnglishLabel(
+            material,
+            materialPrefix,
+            materialKeys,
+          )}`,
         ),
         "-",
       );

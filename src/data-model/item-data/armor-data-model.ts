@@ -2,10 +2,24 @@ import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { physicalItemSchemaFields } from "../shared/physical-item-schema-fields";
 import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
+import { armorTypeKeys, armorTypePrefix, materialKeys, materialPrefix } from "./armor-enums";
+import { toKey, toLabel } from "../../system/localized-key";
 
 export type ArmorItem = RqgItem & { system: Item.SystemOfType<"armor"> };
 
-export { armorTypeTranslationKeys, materialTranslationKeys } from "./armor-enums";
+/** The stored value of `system.armorType` as shown in the current language. */
+export const armorTypeLabel = (value: string): string =>
+  toLabel(value, armorTypePrefix, armorTypeKeys);
+
+/** The value to store in `system.armorType` for typed or picked text. */
+export const armorTypeKey = (text: string): string => toKey(text, armorTypePrefix, armorTypeKeys);
+
+/** The stored value of `system.material` as shown in the current language. */
+export const materialLabel = (value: string): string =>
+  toLabel(value, materialPrefix, materialKeys);
+
+/** The value to store in `system.material` for typed or picked text. */
+export const materialKey = (text: string): string => toKey(text, materialPrefix, materialKeys);
 
 const { NumberField, StringField } = foundry.data.fields;
 
@@ -29,5 +43,16 @@ export class ArmorDataModel extends RqgItemDataModel<ArmorSchema> {
 
   static override defineSchema() {
     return defineArmorSchema();
+  }
+
+  static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
+    // Older data stores labels in the language the item was edited in
+    if (typeof source["armorType"] === "string") {
+      source["armorType"] = armorTypeKey(source["armorType"]);
+    }
+    if (typeof source["material"] === "string") {
+      source["material"] = materialKey(source["material"]);
+    }
+    return super.migrateData(source);
   }
 }

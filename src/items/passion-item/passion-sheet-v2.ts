@@ -96,7 +96,7 @@ export class PassionSheetV2 extends RqgItemSheetV2 {
     const sheet = this as unknown as PassionSheetV2;
     const data = formData.object as Record<string, unknown>;
 
-    const passion = passionKey(String(data["system.passion"] ?? ""));
+    const passion = passionKey(String(data["system.passion"] ?? sheet.document.system.passion));
     data["system.passion"] = passion;
     const subject = data["system.subject"] ? ` (${data["system.subject"]})` : "";
     data["name"] = passionLabel(passion) + subject;
