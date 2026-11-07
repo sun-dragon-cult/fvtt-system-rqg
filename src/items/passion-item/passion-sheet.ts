@@ -6,6 +6,7 @@ import { RqgItemSheet } from "../rqg-item-sheet";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheet-interfaces.types.ts";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { buildItemName } from "../item-name";
 
 export interface PassionSheetData {
   enrichedDescription: string;
@@ -75,8 +76,13 @@ export class PassionSheet extends RqgItemSheet {
   protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
     const passion = passionKey(String(formData["system.passion"] ?? this.document.system.passion));
     formData["system.passion"] = passion;
-    const subject = formData["system.subject"] ? ` (${formData["system.subject"]})` : "";
-    formData["name"] = passionLabel(passion) + subject;
+    const name = buildItemName(ItemTypeEnum.Passion, {
+      passion,
+      subject: formData["system.subject"] ?? this.document.system.subject,
+    });
+    if (name) {
+      formData["name"] = name;
+    }
 
     const img = PassionSheet.passionImgUrl.get(passion);
     if (img) {

@@ -7,6 +7,7 @@ import { RqgItemSheet } from "../rqg-item-sheet";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheet-interfaces.types.ts";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { buildItemName } from "../item-name";
 
 interface RuneSheetData {
   opposingRuneOptions: SelectOptionData<string>[];
@@ -68,9 +69,13 @@ export class RuneSheet extends RqgItemSheet {
   }
 
   protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
-    const runeType = formData["system.runeType"];
-    const translatedRuneType = localize(`RQG.Item.Rune.RuneType.${runeType}`);
-    formData["name"] = `${formData["system.rune"]} (${translatedRuneType})`;
+    const name = buildItemName(ItemTypeEnum.Rune, {
+      rune: formData["system.rune"] ?? this.document.system.rune,
+      runeType: formData["system.runeType"] ?? this.document.system.runeType,
+    });
+    if (name) {
+      formData["name"] = name;
+    }
     formData["system.chance"] = Number(formData["system.chance"]);
     return super._updateObject(event, formData);
   }

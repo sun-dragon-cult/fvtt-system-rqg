@@ -19,6 +19,7 @@ import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheet-interfaces.types.ts";
 import { RqidLink } from "../../data-model/shared/rqid-link";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { buildItemName } from "../item-name";
 
 interface ArmorSheetData {
   allHitLocationOptions: SelectOptionData<string>[];
@@ -95,8 +96,14 @@ export class ArmorSheet extends RqgItemSheet {
     const material = materialKey(String(formData["system.material"] ?? system.material));
     formData["system.armorType"] = armorType;
     formData["system.material"] = material;
-    formData["name"] =
-      `${formData["system.namePrefix"]} ${armorTypeLabel(armorType)} (${materialLabel(material)})`;
+    const name = buildItemName(ItemTypeEnum.Armor, {
+      namePrefix: formData["system.namePrefix"] ?? system.namePrefix,
+      armorType,
+      material,
+    });
+    if (name) {
+      formData["name"] = name;
+    }
     return super._updateObject(event, formData);
   }
 

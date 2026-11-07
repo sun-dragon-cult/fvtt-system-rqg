@@ -5,9 +5,9 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { RqgItemSheet } from "../rqg-item-sheet";
 import { assertDocumentSubType, getSelectRuneOptions } from "../../system/util";
 import { systemId } from "../../system/config";
-import { concatenateSkillName } from "./concatenate-skill-name";
 import type { ItemSheetData } from "../shared/sheet-interfaces.types.ts";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { buildItemName } from "../item-name";
 
 interface SkillSheetData {
   skillCategoryOptions: SelectOptionData<SkillCategoryEnum>[];
@@ -65,10 +65,13 @@ export class SkillSheet extends RqgItemSheet {
   }
 
   protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
-    formData["name"] = concatenateSkillName(
-      formData["system.skillName"] as string,
-      formData["system.specialization"] as string | undefined,
-    );
+    const name = buildItemName(ItemTypeEnum.Skill, {
+      skillName: formData["system.skillName"] ?? this.document.system.skillName,
+      specialization: formData["system.specialization"] ?? this.document.system.specialization,
+    });
+    if (name) {
+      formData["name"] = name;
+    }
 
     if (!this.document.isEmbedded) {
       formData["system.gainedChance"] = 0;

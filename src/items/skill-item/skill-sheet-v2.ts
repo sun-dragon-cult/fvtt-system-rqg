@@ -4,8 +4,8 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
 import { assertDocumentSubType, getSelectRuneOptions } from "../../system/util";
 import { systemId } from "../../system/config";
-import { concatenateSkillName } from "./concatenate-skill-name";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { buildItemName } from "../item-name";
 
 interface SkillSheetContext extends RqgItemSheetContext {
   skillCategoryOptions: SelectOptionData<SkillCategoryEnum>[];
@@ -90,10 +90,13 @@ export class SkillSheetV2 extends RqgItemSheetV2 {
     const sheet = this as unknown as SkillSheetV2;
     const data = formData.object as Record<string, unknown>;
 
-    data["name"] = concatenateSkillName(
-      data["system.skillName"] as string,
-      data["system.specialization"] as string,
-    );
+    const name = buildItemName(ItemTypeEnum.Skill, {
+      skillName: data["system.skillName"] ?? sheet.document.system.skillName,
+      specialization: data["system.specialization"] ?? sheet.document.system.specialization,
+    });
+    if (name) {
+      data["name"] = name;
+    }
 
     if (!sheet.document.isEmbedded) {
       data["system.gainedChance"] = 0;

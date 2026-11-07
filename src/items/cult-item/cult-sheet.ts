@@ -2,16 +2,12 @@ import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { CultItem } from "@item-model/cult-data-model.ts";
 import { CultRankEnum } from "@item-model/cult-enums.ts";
-import {
-  isTruthy,
-  getRequiredDomDataset,
-  formatListByWorldLanguage,
-  getSelectRuneOptions,
-} from "../../system/util";
+import { getRequiredDomDataset, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../rqg-item-sheet";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheet-interfaces.types.ts";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { buildItemName } from "../item-name";
 
 interface CultSheetData {
   allRuneOptions: SelectOptionData<string>[];
@@ -98,7 +94,10 @@ export class CultSheet extends RqgItemSheet {
       rank: rank,
     }));
 
-    formData["name"] = CultSheet.deriveItemName(formData["system.deity"] as string, cultNames);
+    const name = CultSheet.deriveItemName(formData["system.deity"] as string, cultNames);
+    if (name) {
+      formData["name"] = name;
+    }
 
     return super._updateObject(event, formData);
   }
@@ -128,7 +127,7 @@ export class CultSheet extends RqgItemSheet {
         this.document.system.joinedCults.splice(indexToDelete, 1);
         const newName = this.deriveItemName();
         await this.document.update({
-          name: newName,
+          ...(newName ? { name: newName } : {}),
           system: { joinedCults: this.document.system.joinedCults },
         });
       });
@@ -142,14 +141,10 @@ export class CultSheet extends RqgItemSheet {
     );
   }
 
-  static deriveItemName(deity: string, cultNames: string[]): string {
-    const joinedCultsFormatted = formatListByWorldLanguage(
-      cultNames.filter(isTruthy).map((c) => c.trim()),
-    );
-
-    if (!joinedCultsFormatted || joinedCultsFormatted === deity) {
-      return deity.trim();
-    }
-    return joinedCultsFormatted + ` (${deity.trim()})`;
+  static deriveItemName(deity: string, cultNames: (string | undefined)[]): string {
+    return buildItemName(ItemTypeEnum.Cult, {
+      deity,
+      joinedCults: cultNames.map((cultName) => ({ cultName })),
+    });
   }
 }

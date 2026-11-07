@@ -12,6 +12,7 @@ import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../docume
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type { HomelandItem } from "@item-model/homeland-data-model.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
+import { buildItemName } from "../item-name";
 
 export interface OccupationSheetData {
   homelandsJoined: string;
@@ -161,13 +162,12 @@ export class OccupationSheet extends RqgItemSheet {
       }
     }
 
-    const specializationFormatted = formData["system.specialization"]
-      ? ` (${formData["system.specialization"]})`
-      : "";
-    const newName = formData["system.occupation"] + specializationFormatted;
-    if (newName) {
-      // If there's nothing in the occupation or region, don't rename
-      formData["name"] = newName;
+    const name = buildItemName(ItemTypeEnum.Occupation, {
+      occupation: formData["system.occupation"] ?? this.document.system.occupation,
+      specialization: formData["system.specialization"] ?? this.document.system.specialization,
+    });
+    if (name) {
+      formData["name"] = name;
     }
     return super._updateObject(event, formData);
   }

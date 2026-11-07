@@ -1206,6 +1206,8 @@
     "Item": {
       "Armor": {
         "NamePrefix": "Name Prefix",
+        "NamePattern": "{armorType} ({material})",
+        "NamePrefixPattern": "{prefix} {name}",
         "ArmorTypeLabel": "Armor Type",
         "Material": "Material",
         "HitLocations": "Hit Locations",
@@ -1283,6 +1285,7 @@
         "AddNewSubCult": "Add new Sub Cult",
         "AddCultRunePlaceholder": "Add Cult Rune",
         "Name": "Name",
+        "NamePattern": "{cults} ({deity})",
         "Deity": "Deity",
         "CultName": "Cult Name",
         "CultTagline": "Cult Tagline",
@@ -1564,7 +1567,8 @@
             "label": "Wizard instructions",
             "hint": "Text shown to the player in the actor wizard when they pick this homeland."
           }
-        }
+        },
+        "NamePattern": "{homeland} ({region})"
       },
       "Notification": {
         "CantFindRuneInAvailableRunesError": "Can't find rune \"{rqid}\" in any compendium",
@@ -1647,10 +1651,12 @@
             "label": "Starting equipment",
             "hint": "Links to the items a character starts with."
           }
-        }
+        },
+        "NamePattern": "{occupation} ({specialization})"
       },
       "Passion": {
         "Name": "Name",
+        "NamePattern": "{passion} ({subject})",
         "NamePlaceholder": "Passion Type",
         "Passion": "Passion",
         "Subject": "Subject",
@@ -1714,6 +1720,7 @@
         "AddMinorRunePlaceholder": "Add Minor Rune",
         "SetOpposingRunePlaceholder": "Set Opposing Rune",
         "Name": "Name",
+        "NamePattern": "{rune} ({runeType})",
         "Rune": "Rune",
         "Type": "Type",
         "PercentageChance": "Chance",
@@ -1831,6 +1838,7 @@
       "Skill": {
         "AddSorceryRunePlaceholder": "Add Sorcery Rune",
         "Name": "Name",
+        "NamePattern": "{skill} ({specialization})",
         "Specialization": "Specialization",
         "Category": "Category",
         "CategoryModifier": "{category} Modifier",
