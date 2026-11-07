@@ -68,13 +68,9 @@ export class RuneSheet extends RqgItemSheet {
   }
 
   protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
-    const runeType = formData["system.runeType.type"];
+    const runeType = formData["system.runeType"];
     const translatedRuneType = localize(`RQG.Item.Rune.RuneType.${runeType}`);
     formData["name"] = `${formData["system.rune"]} (${translatedRuneType})`;
-    // Only update runeType if it is changed
-    if ((event.currentTarget as HTMLSelectElement)?.name === "system.runeType.type") {
-      formData["system.runeType.name"] = translatedRuneType;
-    }
     formData["system.chance"] = Number(formData["system.chance"]);
     return super._updateObject(event, formData);
   }

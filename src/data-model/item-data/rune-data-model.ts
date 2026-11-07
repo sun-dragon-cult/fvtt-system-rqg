@@ -9,18 +9,7 @@ import { RuneTypeEnum } from "./rune-enums";
 
 export type RuneItem = RqgItem & { system: Item.SystemOfType<"rune"> };
 
-export type RuneType = {
-  type: RuneTypeEnum;
-  /** Translated name of the runeType */
-  name: string;
-};
-
-export const defaultRuneType = {
-  type: RuneTypeEnum.Form,
-  name: RuneTypeEnum.Form,
-};
-
-const { BooleanField, SchemaField, StringField } = foundry.data.fields;
+const { BooleanField, StringField } = foundry.data.fields;
 
 function defineRuneSchema() {
   return {
@@ -28,14 +17,11 @@ function defineRuneSchema() {
     ...persistedChanceSchemaField(),
     descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
     rune: new StringField({ blank: true, nullable: false, initial: "" }),
-    runeType: new SchemaField({
-      type: new StringField({
-        blank: false,
-        nullable: false,
-        initial: defaultRuneType.type,
-        choices: enumChoices(RuneTypeEnum, "RQG.Item.Rune.RuneType."),
-      }),
-      name: new StringField({ blank: true, nullable: false, initial: defaultRuneType.name }),
+    runeType: new StringField({
+      blank: false,
+      nullable: false,
+      initial: RuneTypeEnum.Form,
+      choices: enumChoices(RuneTypeEnum, "RQG.Item.Rune.RuneType."),
     }),
     opposingRuneRqidLink: rqidLinkSchemaField({ nullable: true }),
     minorRuneRqidLinks: rqidLinkArraySchemaField(),
@@ -57,13 +43,16 @@ export class RuneDataModel extends AbilityDataModel<RuneSchema> {
   }
 
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
-    // Legacy data stored runeType as a plain string (e.g. "power") instead of {type, name}
-    if (typeof source["runeType"] === "string") {
-      const legacy = source["runeType"].toLowerCase();
-      source["runeType"] = {
-        type: runeTypeValues.has(legacy) ? legacy : defaultRuneType.type,
-        name: source["runeType"],
-      };
+    let stored = source["runeType"];
+    if (stored && typeof stored === "object") {
+      // Before 6.2.0 runeType was {type, name}
+      stored = (stored as { type?: unknown }).type ?? RuneTypeEnum.Form;
+      source["runeType"] = stored;
+    }
+    if (typeof stored === "string" && !runeTypeValues.has(stored)) {
+      // Older data stored a capitalised name, e.g. "Power"
+      const lower = stored.toLowerCase();
+      source["runeType"] = runeTypeValues.has(lower) ? lower : RuneTypeEnum.Form;
     }
     return super.migrateData(source);
   }

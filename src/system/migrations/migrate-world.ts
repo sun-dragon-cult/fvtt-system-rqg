@@ -18,7 +18,6 @@ import {
   RqidBatchEditor,
 } from "../../applications/rqid-batch-editor/rqid-batch-editor";
 import { openDataModelRepairDialog } from "../api/data-model-repair";
-import { migrateRuneItemType } from "./migrations-item/migrate-rune-item-type";
 import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabel-rune-magic-command-cult-spirit-rqid";
 import { migrateHitLocationConnectedToAndType } from "./migrations-item/migrate-hit-location-connected-to-and-type";
 import { migrateActorActiveEffectPaths } from "./migrations-actor/migrate-actor-active-effect-paths";
@@ -29,6 +28,7 @@ import { migrateItemActiveEffectDurationUnits } from "./migrations-item/migrate-
 import { migrateItemPowCrystalToStoredMagicPoints } from "./migrations-item/migrate-item-pow-crystal-to-stored-magic-points";
 import { migrateActiveEffectDurationUnits } from "./migrations-effect/migrate-active-effect-duration-units";
 import { resyncSpellFieldsFromCompendium } from "./migrations-item/resync-spell-fields-from-compendium";
+import { persistConvertedItemFields } from "./persist-converted-item-fields";
 import { templatePaths } from "../load-handlebars-templates";
 import type { MigrationDocumentLink, MigrationLogEntry } from "./apply-migrations";
 import { RqgLogger } from "../logging/rqg-logger";
@@ -85,6 +85,12 @@ export async function migrateWorld(): Promise<void> {
       ...getSystemMigrations(),
       notification: migrationNotification,
     });
+    // Only worlds from before 6.2.0 hold passion labels and the {type, name} rune type
+    if (foundry.utils.isNewerVersion("6.2.0", worldVersion)) {
+      const persistErrors = await persistConvertedItemFields();
+      migrationResult.logEntries.push(...persistErrors);
+      migrationResult.errorCount += persistErrors.length;
+    }
     await logMigrationReport(systemVersion, migrationResult);
 
     if (migrationResult.errorCount === 0) {
@@ -132,7 +138,6 @@ export function getSystemMigrations(): {
     items: [
       tagSkillNameSkillsWithRqid,
       migrateWeaponSkillLinks,
-      migrateRuneItemType,
       relabelRuneMagicCommandCultSpiritRqid,
       migrateHitLocationConnectedToAndType,
       migrateItemActiveEffectPaths,

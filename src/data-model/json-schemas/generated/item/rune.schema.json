@@ -60,30 +60,16 @@
       "description": "Name of the rune."
     },
     "runeType": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "element",
-            "power",
-            "form",
-            "condition",
-            "technique"
-          ],
-          "minLength": 1,
-          "default": "form"
-        },
-        "name": {
-          "type": "string",
-          "default": "form"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "type",
-        "name"
+      "type": "string",
+      "enum": [
+        "element",
+        "power",
+        "form",
+        "condition",
+        "technique"
       ],
+      "minLength": 1,
+      "default": "form",
       "title": "Rune type",
       "description": "The kind of rune."
     },

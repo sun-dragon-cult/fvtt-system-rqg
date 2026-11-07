@@ -13,12 +13,9 @@
         <label for="rune-type-{{id}}">{{localize "RQG.Item.Rune.Type"}}</label>
         <div class="nowrap">
           (
-          <select id="rune-type-{{id}}" name="system.runeType.type">
-            {{selectOptions runeTypeOption selected=system.runeType.type localize=false}}
+          <select id="rune-type-{{id}}" name="system.runeType">
+            {{selectOptions runeTypeOption selected=system.runeType localize=false}}
           </select>
-          {{#unless  (eq system.runeType.name (localize (concat "RQG.Item.Rune.RuneType." system.runeType.type)))}}
-            <span data-tooltip="{{localize "RQG.Actor.Rune.TypeDontMatchTranslationTip"}}">⚠ {{system.runeType.name}}</span>
-          {{/unless}}
           )
         </div>
       </div>

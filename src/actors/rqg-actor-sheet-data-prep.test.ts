@@ -272,7 +272,7 @@ describe("rune image selectors", () => {
         img: "earth.png",
         type: ItemTypeEnum.Rune,
         system: {
-          runeType: { type: RuneTypeEnum.Element },
+          runeType: RuneTypeEnum.Element,
           rune: "Earth",
           chance: 20,
           descriptionRqidLink: { rqid: "i.rune.earth" },
@@ -283,7 +283,7 @@ describe("rune image selectors", () => {
         img: "air.png",
         type: ItemTypeEnum.Rune,
         system: {
-          runeType: { type: RuneTypeEnum.Element },
+          runeType: RuneTypeEnum.Element,
           rune: "Air",
           chance: 90,
           descriptionRqidLink: { rqid: "i.rune.air" },
@@ -294,7 +294,7 @@ describe("rune image selectors", () => {
         img: "truth.png",
         type: ItemTypeEnum.Rune,
         system: {
-          runeType: { type: RuneTypeEnum.Power },
+          runeType: RuneTypeEnum.Power,
           rune: "Truth",
           chance: 75,
           descriptionRqidLink: { rqid: "i.rune.truth" },
@@ -314,7 +314,7 @@ describe("rune image selectors", () => {
         img: "illusion.png",
         type: ItemTypeEnum.Rune,
         system: {
-          runeType: { type: RuneTypeEnum.Power },
+          runeType: RuneTypeEnum.Power,
           rune: "Illusion",
           chance: 50,
           descriptionRqidLink: { rqid: "i.rune.illusion" },
@@ -325,7 +325,7 @@ describe("rune image selectors", () => {
         img: "truth.png",
         type: ItemTypeEnum.Rune,
         system: {
-          runeType: { type: RuneTypeEnum.Power },
+          runeType: RuneTypeEnum.Power,
           rune: "Truth",
           chance: 51,
           descriptionRqidLink: { rqid: "i.rune.truth" },
@@ -346,7 +346,7 @@ describe("rune image selectors", () => {
         type: ItemTypeEnum.Rune,
         flags: { rqg: { documentRqidFlags: { id: "i.rune.beast-form" } } },
         system: {
-          runeType: { type: RuneTypeEnum.Form },
+          runeType: RuneTypeEnum.Form,
           rune: "Beast",
           chance: 60,
           opposingRuneRqidLink: { rqid: "i.rune.man-form" },
@@ -359,7 +359,7 @@ describe("rune image selectors", () => {
         type: ItemTypeEnum.Rune,
         flags: { rqg: { documentRqidFlags: { id: "i.rune.man-form" } } },
         system: {
-          runeType: { type: RuneTypeEnum.Form },
+          runeType: RuneTypeEnum.Form,
           rune: "Man",
           chance: 10,
           opposingRuneRqidLink: undefined,
@@ -372,7 +372,7 @@ describe("rune image selectors", () => {
         type: ItemTypeEnum.Rune,
         flags: { rqg: { documentRqidFlags: { id: "i.rune.plant-form" } } },
         system: {
-          runeType: { type: RuneTypeEnum.Form },
+          runeType: RuneTypeEnum.Form,
           rune: "Plant",
           chance: 25,
           opposingRuneRqidLink: { rqid: "i.rune.beast-form" },
@@ -394,7 +394,7 @@ describe("rune image selectors", () => {
         type: ItemTypeEnum.Rune,
         flags: { rqg: { documentRqidFlags: { id: "i.rune.plant-form" } } },
         system: {
-          runeType: { type: RuneTypeEnum.Form },
+          runeType: RuneTypeEnum.Form,
           rune: "Plant",
           chance: 25,
           opposingRuneRqidLink: { rqid: "i.rune.beast-form" },
