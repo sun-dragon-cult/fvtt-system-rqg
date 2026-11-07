@@ -196,7 +196,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       {}) as SpiritMagicRollDialogFormData;
 
     const speaker = getSpeakerCompat({
-      actor: this.spellItem.actor ?? undefined,
+      actor: this.casterActor,
       token: this.token,
     });
 
