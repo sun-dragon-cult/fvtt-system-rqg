@@ -6,6 +6,7 @@ import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheet-interfaces.types.ts";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type { HomelandItem } from "@item-model/homeland-data-model.ts";
+import { buildItemName } from "../item-name";
 
 export interface HomelandSheetData {
   allRuneOptions: SelectOptionData<string>[];
@@ -54,11 +55,12 @@ export class HomelandSheet extends RqgItemSheet {
   }
 
   protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
-    const region = formData["system.region"] ? ` (${formData["system.region"]})` : "";
-    const newName = formData["system.homeland"] + region;
-    if (newName) {
-      // If there's nothing in the homeland or region, don't rename
-      formData["name"] = newName;
+    const name = buildItemName(ItemTypeEnum.Homeland, {
+      homeland: formData["system.homeland"] ?? this.document.system.homeland,
+      region: formData["system.region"] ?? this.document.system.region,
+    });
+    if (name) {
+      formData["name"] = name;
     }
     return super._updateObject(event, formData);
   }

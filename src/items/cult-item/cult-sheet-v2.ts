@@ -1,11 +1,6 @@
 import type { CultItem } from "@item-model/cult-data-model.ts";
 import { CultRankEnum } from "@item-model/cult-enums.ts";
-import {
-  isTruthy,
-  getRequiredDomDataset,
-  formatListByWorldLanguage,
-  getSelectRuneOptions,
-} from "../../system/util";
+import { getRequiredDomDataset, getSelectRuneOptions } from "../../system/util";
 import {
   RqgItemSheetV2,
   type RqgItemSheetContext,
@@ -14,6 +9,8 @@ import {
 } from "../rqg-item-sheet-v2";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { buildItemName } from "../item-name";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 
 interface CultSheetContext extends RqgItemSheetContext {
   allRuneOptions: SelectOptionData<string>[];
@@ -119,7 +116,7 @@ export class CultSheetV2 extends RqgItemSheetV2 {
         this.document.system.joinedCults.splice(indexToDelete, 1);
         const newName = this.deriveItemName();
         await this.document.update({
-          name: newName,
+          ...(newName ? { name: newName } : {}),
           system: { joinedCults: this.document.system.joinedCults },
         });
       });
@@ -133,15 +130,11 @@ export class CultSheetV2 extends RqgItemSheetV2 {
     );
   }
 
-  static deriveItemName(deity: string, cultNames: string[]): string {
-    const joinedCultsFormatted = formatListByWorldLanguage(
-      cultNames.filter(isTruthy).map((c) => c.trim()),
-    );
-
-    if (!joinedCultsFormatted || joinedCultsFormatted === deity) {
-      return deity.trim();
-    }
-    return joinedCultsFormatted + ` (${deity.trim()})`;
+  static deriveItemName(deity: string, cultNames: (string | undefined)[]): string {
+    return buildItemName(ItemTypeEnum.Cult, {
+      deity,
+      joinedCults: cultNames.map((cultName) => ({ cultName })),
+    });
   }
 
   protected static override async onSubmit(
@@ -168,10 +161,10 @@ export class CultSheetV2 extends RqgItemSheetV2 {
       rank: rank,
     }));
 
-    data["name"] = CultSheetV2.deriveItemName(
-      data["system.deity"] as string,
-      cultNames as string[],
-    );
+    const name = CultSheetV2.deriveItemName(data["system.deity"] as string, cultNames as string[]);
+    if (name) {
+      data["name"] = name;
+    }
 
     await sheet.document.update(data);
   }

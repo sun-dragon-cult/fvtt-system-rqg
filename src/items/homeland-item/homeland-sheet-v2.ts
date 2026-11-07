@@ -3,6 +3,8 @@ import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type { HomelandItem } from "@item-model/homeland-data-model.ts";
+import { buildItemName } from "../item-name";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 
 interface HomelandSheetContext extends RqgItemSheetContext {
   allRuneOptions: SelectOptionData<string>[];
@@ -68,10 +70,12 @@ export class HomelandSheetV2 extends RqgItemSheetV2 {
     const sheet = this as unknown as HomelandSheetV2;
     const data = formData.object as Record<string, unknown>;
 
-    const region = data["system.region"] ? ` (${data["system.region"]})` : "";
-    const newName = String(data["system.homeland"]) + region;
-    if (newName) {
-      data["name"] = newName;
+    const name = buildItemName(ItemTypeEnum.Homeland, {
+      homeland: data["system.homeland"] ?? sheet.document.system.homeland,
+      region: data["system.region"] ?? sheet.document.system.region,
+    });
+    if (name) {
+      data["name"] = name;
     }
 
     await sheet.document.update(data);

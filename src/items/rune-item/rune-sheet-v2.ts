@@ -4,6 +4,8 @@ import { localize, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { buildItemName } from "../item-name";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 
 interface RuneSheetContext extends RqgItemSheetContext {
   opposingRuneOptions: SelectOptionData<string>[];
@@ -74,9 +76,13 @@ export class RuneSheetV2 extends RqgItemSheetV2 {
     const sheet = this as unknown as RuneSheetV2;
     const data = formData.object as Record<string, unknown>;
 
-    const runeType = data["system.runeType"] as string;
-    const translatedRuneType = localize(`RQG.Item.Rune.RuneType.${runeType}`);
-    data["name"] = `${data["system.rune"]} (${translatedRuneType})`;
+    const name = buildItemName(ItemTypeEnum.Rune, {
+      rune: data["system.rune"] ?? sheet.document.system.rune,
+      runeType: data["system.runeType"] ?? sheet.document.system.runeType,
+    });
+    if (name) {
+      data["name"] = name;
+    }
 
     data["system.chance"] = Number(data["system.chance"]);
 

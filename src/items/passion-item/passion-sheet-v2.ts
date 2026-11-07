@@ -3,6 +3,8 @@ import { PassionsEnum, passionKeys } from "@item-model/passion-enums.ts";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { buildItemName } from "../item-name";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 
 interface PassionSheetContext extends RqgItemSheetContext {
   enrichedDescription: string;
@@ -98,8 +100,13 @@ export class PassionSheetV2 extends RqgItemSheetV2 {
 
     const passion = passionKey(String(data["system.passion"] ?? sheet.document.system.passion));
     data["system.passion"] = passion;
-    const subject = data["system.subject"] ? ` (${data["system.subject"]})` : "";
-    data["name"] = passionLabel(passion) + subject;
+    const name = buildItemName(ItemTypeEnum.Passion, {
+      passion,
+      subject: data["system.subject"] ?? sheet.document.system.subject,
+    });
+    if (name) {
+      data["name"] = name;
+    }
 
     const img = PassionSheetV2.passionImgUrl.get(passion);
     if (img) {

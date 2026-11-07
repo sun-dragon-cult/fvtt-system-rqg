@@ -19,6 +19,7 @@ import {
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type { HomelandItem } from "@item-model/homeland-data-model.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
+import { buildItemName } from "../item-name";
 
 interface OccupationSheetContext extends RqgItemSheetContext {
   homelandsJoined: string;
@@ -277,12 +278,12 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
     const sheet = this as unknown as OccupationSheetV2;
     const data = formData.object as Record<string, unknown>;
 
-    const specializationFormatted = data["system.specialization"]
-      ? ` (${data["system.specialization"]})`
-      : "";
-    const newName = String(data["system.occupation"]) + specializationFormatted;
-    if (newName) {
-      data["name"] = newName;
+    const name = buildItemName(ItemTypeEnum.Occupation, {
+      occupation: data["system.occupation"] ?? sheet.document.system.occupation,
+      specialization: data["system.specialization"] ?? sheet.document.system.specialization,
+    });
+    if (name) {
+      data["name"] = name;
     }
 
     await sheet.document.update(data);
