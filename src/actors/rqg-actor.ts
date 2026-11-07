@@ -417,7 +417,7 @@ export class RqgActor extends Actor {
    *
    * @public since 6.2.0
    */
-  public getCastableSpells(): CastableSpell[] {
+  public async getCastableSpells(): Promise<CastableSpell[]> {
     return getCastableSpells(this);
   }
 

@@ -7,7 +7,13 @@ import { spellMaxTargets, tokensInSpellArea } from "../../system/spell-effects/s
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
-import { localize, assertDocumentSubType, isDocumentSubType, isTruthy } from "../../system/util";
+import {
+  localize,
+  assertDocumentSubType,
+  getOwnToken,
+  isDocumentSubType,
+  isTruthy,
+} from "../../system/util";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
 import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
@@ -253,18 +259,20 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema> {
     casterActor: RqgActor,
     options: SpellCastOptions = {},
   ): Promise<RuneMagicRoll | undefined> {
+    // A linked caster has no token of its own; use its token on the scene
+    const token = options.token ?? getOwnToken(casterActor) ?? null;
     if (!options.skipDialog) {
       // Dynamic import to avoid circular dependency through RuneMagicRollDialogV2 → rqgItem.ts
       const { RuneMagicRollDialogV2 } =
         await import("../../applications/rune-magic-roll-dialog/rune-magic-roll-dialog-v2");
       await new RuneMagicRollDialogV2(
         this.parent as unknown as RuneMagicItem,
-        options.token,
+        token,
         casterActor,
       ).render({ force: true });
       return undefined;
     }
-    return await this.castWithoutDialog(casterActor, options);
+    return await this.castWithoutDialog(casterActor, { ...options, token });
   }
 
   /**

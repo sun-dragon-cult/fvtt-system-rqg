@@ -1,6 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { RuneMagicDataModel } from "./rune-magic-data-model";
+import { getOwnToken } from "../../system/util";
+
+vi.mock("../../system/util", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../system/util")>()),
+  getOwnToken: vi.fn(),
+}));
 
 describe("RuneMagicDataModel chance helpers", () => {
   it("chooses the strongest eligible rune by chance", () => {
@@ -223,5 +229,22 @@ describe("RuneMagicDataModel.migrateData", () => {
     const migrated = RuneMagicDataModel.migrateData({ isRitual: "true," });
 
     expect(migrated["isRitual"]).toBe(true);
+  });
+});
+
+describe("RuneMagicDataModel.cast token", () => {
+  it("uses the caster's token on the scene when none is given", async () => {
+    const caster = { name: "Sandene" } as any;
+    const castWithoutDialog = vi.fn(async () => undefined);
+    vi.mocked(getOwnToken).mockReturnValue({ id: "sceneToken" } as any);
+
+    await RuneMagicDataModel.prototype.cast.call({ castWithoutDialog } as any, caster, {
+      skipDialog: true,
+    });
+
+    expect(castWithoutDialog).toHaveBeenCalledWith(
+      caster,
+      expect.objectContaining({ token: { id: "sceneToken" } }),
+    );
   });
 });
