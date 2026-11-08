@@ -18,6 +18,7 @@ import {
   setMagicPointDrawOrder,
 } from "../../system/magic-point-source";
 import { isFoundryElementInstanceOf, requireValue } from "../../system/util";
+import { DocumentAppsLink, RelatedDocumentsAppsLink } from "../app-parts/document-apps-link";
 import type {
   MagicPointSourcesAppContext,
   MagicPointSourcesAppRow,
@@ -98,6 +99,9 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
   private readonly actor: CharacterActor;
   private draggedSourceId: string | undefined;
   private _rqgDragDrop?: foundry.applications.ux.DragDrop.Implementation;
+  // Rerender on outside changes, or a submit writes stale values of the other rows back
+  private readonly actorLink = new DocumentAppsLink(this);
+  private readonly relatedActorsLink = new RelatedDocumentsAppsLink(this);
 
   // Mirrors RqgActorSheetV2's _dragDrop getter: Foundry's DragDrop controller binds handlers as
   // element properties (element.ondragover = fn, etc.) rather than addEventListener, so rebinding
@@ -171,7 +175,17 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
 
   override async _prepareContext(): Promise<MagicPointSourcesAppContext> {
     let priority = 0;
-    const rows = getMagicPointDrawOrder(this.actor).map((entry) => {
+    const drawOrder = getMagicPointDrawOrder(this.actor);
+    this.relatedActorsLink.link(
+      drawOrder.map((entry) =>
+        entry.type === "ally"
+          ? entry.actor
+          : entry.type === "boundSpirit"
+            ? entry.spiritActor
+            : null,
+      ),
+    );
+    const rows = drawOrder.map((entry) => {
       let base: Omit<MagicPointSourcesAppRow, "priority">;
       switch (entry.type) {
         case "self":
@@ -237,8 +251,17 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
     options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
   ): Promise<void> {
     await super._onRender(context, options);
+    this.actorLink.link(this.actor);
 
     this._dragDrop.bind(this.element);
+  }
+
+  protected override _onClose(
+    options: Parameters<foundry.applications.api.ApplicationV2["_onClose"]>[0],
+  ): void {
+    this.actorLink.unlink();
+    this.relatedActorsLink.unlink();
+    super._onClose(options);
   }
 
   /**

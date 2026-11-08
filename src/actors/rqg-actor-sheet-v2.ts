@@ -114,6 +114,7 @@ import {
   getExternalRuneMagicItems,
   getExternalSpiritMagicItems,
 } from "../system/spell-source";
+import { RelatedDocumentsAppsLink } from "../applications/app-parts/document-apps-link";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -159,6 +160,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   #skillFilterQuery = "";
 
   private _rqgDragDrop?: foundry.applications.ux.DragDrop.Implementation;
+  // Rerender when the Allied Spirit bond partner or a bound spirit changes - their MP and spells
+  // are shown here
+  private readonly relatedActorsLink = new RelatedDocumentsAppsLink(this);
 
   override get actor(): CharacterActor {
     return this.document as CharacterActor;
@@ -314,6 +318,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // #999: spirits bound in this actor's own items - shown as a summary alongside the Allied
     // Spirit bond, with a CHA÷3 cap warning (RQG p.250, GM-adjudicated, not enforced).
     const boundSpiritItems = getBoundSpiritItems(this.actor, alliedBondActor);
+    this.relatedActorsLink.link([
+      alliedBondActor,
+      ...boundSpiritItems.map(({ spiritActor }) => spiritActor),
+    ]);
     const boundSpiritCap = CharacterDataModel.getBoundSpiritCap(this.actor);
     // #1002: Spirit Magic spells known via the linked Allied Spirit bond, not this actor - a live
     // computed view (never merged into this actor's own Items), see getExternalSpiritMagicItems.
@@ -598,6 +606,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         }, resolvedTimeout);
       }
     });
+  }
+
+  protected override _onClose(
+    options: Parameters<foundry.applications.api.ApplicationV2["_onClose"]>[0],
+  ): void {
+    this.relatedActorsLink.unlink();
+    super._onClose(options);
   }
 
   override async _onRender(
