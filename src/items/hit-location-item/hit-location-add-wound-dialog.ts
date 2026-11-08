@@ -9,9 +9,23 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 
 import { type ArmorLayerDialogData, withNaturalArmorLayer } from "./hit-location-armor-layers";
 
+/**
+ * What the Add Wound dialog starts with; the user can change it.
+ *
+ * @public since 6.2.0
+ */
+export type AddWoundInitial = {
+  damage?: number;
+  /** Default true */
+  subtractArmorPoints?: boolean;
+  /** Default true */
+  applyToTotalHp?: boolean;
+};
+
 export async function showHitLocationAddWoundDialog(
   actor: RqgActor,
   hitLocationItemId: string,
+  initial: AddWoundInitial = {},
 ): Promise<void> {
   const hitLocation = actor.items.get(hitLocationItemId) as RqgItem | undefined;
   assertDocumentSubType<HitLocationItem>(
@@ -37,6 +51,9 @@ export async function showHitLocationAddWoundDialog(
       actorMaxHp: actor.system.attributes.hitPoints.max ?? 0,
       hitLocationAp: hitLocation.system.armorPoints ?? 0,
       armorLayers,
+      damage: Number.isFinite(initial.damage) ? initial.damage : undefined,
+      subtractArmorPoints: initial.subtractArmorPoints ?? true,
+      applyToTotalHp: initial.applyToTotalHp ?? true,
     },
   );
   void foundry.applications.api.DialogV2.wait({

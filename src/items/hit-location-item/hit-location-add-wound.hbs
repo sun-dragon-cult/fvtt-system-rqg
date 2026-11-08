@@ -21,6 +21,7 @@
             type="number"
             id="inflictDamagePoints"
             name="damage"
+            value="{{damage}}"
             min="0"
             step="1"
           />
@@ -48,6 +49,7 @@
         type="number"
         id="inflictDamagePoints"
         name="damage"
+        value="{{damage}}"
         min="0"
         step="1"
       />
@@ -57,7 +59,7 @@
   <div class="linked-preview hp-preview formula-preview" id="totalHpPreviewRow">
     <div class="hp-formula-header">
       <label class="wound-dialog-checkbox-row">
-        <input type="checkbox" name="toTotalHp" checked />
+        <input type="checkbox" name="toTotalHp" {{checked applyToTotalHp}} />
         <span>{{localize "RQG.Item.HitLocation.AddWound.ApplyToTotalHitPointsQ"}}</span>
       </label>
       <span class="context-label hp-formula-right-label">{{localize "RQG.Item.HitLocation.AddWound.TotalHpAfter"}}</span>
@@ -77,7 +79,7 @@
   {{#if armorLayers.length}}
     <div class="add-wound-context armor-layers-row" role="list" aria-label="{{localize "RQG.Actor.Gear.Armor"}}">
       <label class="wound-dialog-checkbox-row armor-subtract-row">
-        <input type="checkbox" name="subtractAP" checked />
+        <input type="checkbox" name="subtractAP" {{checked subtractArmorPoints}} />
         <span>{{localize "RQG.Item.HitLocation.AddWound.SubtractArmorPointsQ"}}</span>
         <span class="armor-subtract-value">(<span id="selectedApLabel">{{hitLocationAp}}</span>)</span>
       </label>
@@ -94,7 +96,7 @@
                 type="checkbox"
                 id="armor-layer-toggle-{{../hitLocationItemId}}-{{@index}}"
                 data-absorbs="{{absorbs}}"
-                checked
+                {{checked ../subtractArmorPoints}}
               />
               <label for="armor-layer-toggle-{{../hitLocationItemId}}-{{@index}}" class="armor-layer-toggle-label">{{name}}</label>
             </span>
