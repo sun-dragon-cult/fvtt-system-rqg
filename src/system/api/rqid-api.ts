@@ -81,6 +81,8 @@ type DocumentRqidString = ItemRqidString | `${NonItemRqidKind}.${string}.${strin
  * Supports:
  * - top-level document rqids (`i.skill.jump`, `a.character.sartar`)
  * - embedded rqids (`a.character.sartar.i.skill.jump`)
+ *
+ * @public since 6.2.0
  */
 export type RqidString = DocumentRqidString | `${DocumentRqidString}.${DocumentRqidString}`;
 

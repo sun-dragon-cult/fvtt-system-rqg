@@ -9,10 +9,16 @@ const logger = new RqgLogger("Api");
 /**
  * An actor, a token (document or placeable), or the uuid, id or name of an actor or token.
  * Leaving it out means the first controlled token, falling back to the user's assigned character.
+ *
+ * @public since 6.2.0
  */
 export type ActorRef = RqgActor | TokenDocument | foundry.canvas.placeables.Token | string;
 
-/** An embedded item, or its id, uuid, rqid or name. */
+/**
+ * An embedded item, or its id, uuid, rqid or name.
+ *
+ * @public since 6.2.0
+ */
 export type ItemRef = RqgItem | string;
 
 export type ResolvedActor = { actor: RqgActor; token: TokenDocument | null };
