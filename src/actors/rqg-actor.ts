@@ -54,6 +54,8 @@ import { type SpellItem, spellItemTypes } from "@item-model/spell.ts";
 import type { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
 import {
+  getMagicPointSources,
+  type MagicPointSource,
   type MagicPointSourceSelection,
   SELF_MAGIC_POINT_SOURCE,
   spendMagicPoints,
@@ -419,6 +421,15 @@ export class RqgActor extends Actor {
    */
   public async getCastableSpells(): Promise<CastableSpell[]> {
     return getCastableSpells(this);
+  }
+
+  /**
+   * The sources the actor can draw Magic Points from, in the order a cast draws from them.
+   *
+   * @public since 6.2.0
+   */
+  public getMagicPointSources(): MagicPointSource[] {
+    return getMagicPointSources(this);
   }
 
   /**

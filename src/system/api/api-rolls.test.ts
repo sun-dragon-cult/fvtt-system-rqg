@@ -14,6 +14,7 @@ describe("rolls with a castable spell", () => {
     name: "Sandene",
     uuid: "Actor.sandene",
     castSpell: vi.fn(async () => undefined),
+    getMagicPointSources: () => [{ id: "self" }, { id: "crystal" }],
   };
   const castable = (type: string, casterUuid = "Actor.sandene") =>
     ({
@@ -43,6 +44,41 @@ describe("rolls with a castable spell", () => {
     expect(caster.castSpell).toHaveBeenCalledWith(
       expect.objectContaining({ name: "Heal" }),
       expect.anything(),
+    );
+  });
+
+  it("refuses a missing spell with a clear error", async () => {
+    await expect(spiritMagic(undefined as any)).rejects.toThrow(/No spell given/);
+  });
+
+  it("explains a spell list that wasn't awaited, or a list instead of one spell", async () => {
+    const promise = Promise.resolve([castable("spiritMagic")]);
+    await expect(spiritMagic(promise as any)).rejects.toThrow(/is a Promise/);
+    await expect(spiritMagic([castable("spiritMagic")] as any)).rejects.toThrow(/not a list/);
+    await expect(spiritMagic({ name: "Heal" } as any)).rejects.toThrow(/Give a spell item/);
+  });
+
+  it("refuses a magic point source the caster doesn't have", async () => {
+    await expect(
+      spiritMagic(castable("spiritMagic"), { magicPointSource: "unequippedCrystal" }),
+    ).rejects.toThrow(/not one of the magic point sources of "Sandene"/);
+    await expect(runeMagic(castable("runeMagic"), { magicPointSource: "ally" })).rejects.toThrow(
+      /not one of the magic point sources/,
+    );
+    expect(caster.castSpell).not.toHaveBeenCalled();
+  });
+
+  it("accepts auto without looking it up", async () => {
+    await spiritMagic(castable("spiritMagic"), { magicPointSource: "auto" });
+    expect(caster.castSpell).toHaveBeenCalled();
+  });
+
+  it("passes the magic point source on to the cast", async () => {
+    await spiritMagic(castable("spiritMagic"), { magicPointSource: "self" });
+
+    expect(caster.castSpell).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ magicPointSource: "self" }),
     );
   });
 

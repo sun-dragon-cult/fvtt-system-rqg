@@ -2,6 +2,18 @@ import { describe, expect, it, vi } from "vitest";
 import { SpiritMagicDataModel } from "./spirit-magic-data-model";
 import { getTokenFromActor } from "../../system/util";
 
+const dialog = vi.hoisted(() => ({
+  constructed: vi.fn(),
+}));
+vi.mock("../../applications/spirit-magic-roll-dialog/spirit-magic-roll-dialog-v2", () => ({
+  SpiritMagicRollDialogV2: class {
+    constructor(...args: unknown[]) {
+      dialog.constructed(...args);
+    }
+    render = vi.fn(async () => undefined);
+  },
+}));
+
 vi.mock("../../system/util", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../system/util")>()),
   getTokenFromActor: vi.fn(),
@@ -11,6 +23,7 @@ describe("SpiritMagicDataModel cast validation", () => {
   it("validates learned level and available magic points", () => {
     const fakeModel = {
       points: 3,
+      isVariable: true,
       parent: { actor: { system: { attributes: { magicPoints: { value: 6 } } } } },
     } as unknown as SpiritMagicDataModel;
 
@@ -25,6 +38,25 @@ describe("SpiritMagicDataModel cast validation", () => {
     expect(SpiritMagicDataModel.prototype.getCastValidationError.call(fakeModel, 3, 4)).toContain(
       "RQG.Item.SpiritMagic.NotEnoughMagicPoints",
     );
+  });
+
+  it("refuses fewer points than a fixed spell's, below 1, fractions and a negative boost", () => {
+    const model = (isVariable: boolean) =>
+      ({
+        points: 3,
+        isVariable,
+        parent: { actor: { system: { attributes: { magicPoints: { value: 10 } } } } },
+      }) as unknown as SpiritMagicDataModel;
+    const validate = (m: SpiritMagicDataModel, level: number, boost = 0) =>
+      SpiritMagicDataModel.prototype.getCastValidationError.call(m, level, boost);
+
+    expect(validate(model(false), 2)).toContain("RQG.Item.Spell.CantCastBelowPoints");
+    expect(validate(model(false), 3)).toBeUndefined();
+    expect(validate(model(true), 1)).toBeUndefined();
+    expect(validate(model(true), 0)).toContain("RQG.Item.Spell.CantCastBelowPoints");
+    expect(validate(model(true), -2)).toContain("RQG.Item.Spell.CantCastBelowPoints");
+    expect(validate(model(true), 1.5)).toContain("RQG.Item.Spell.PointsNotWholeNumber");
+    expect(validate(model(true), 3, -2)).toContain("RQG.Item.Spell.NegativeBoost");
   });
 
   it("lets a hook raise the level above the learned one, up to the magic points", () => {
@@ -90,6 +122,7 @@ describe("SpiritMagicDataModel cast validation with an external caster (#1002)",
   it("checks the caster's own available Magic Points, not the spell owner's", () => {
     const fakeModel = {
       points: 3,
+      isVariable: true,
       parent: { actor: { system: { attributes: { magicPoints: { value: 0 } } } } },
     } as unknown as SpiritMagicDataModel;
     const casterActor = { system: { attributes: { magicPoints: { value: 6 } } } } as any;
@@ -138,6 +171,15 @@ describe("SpiritMagicDataModel.cast token", () => {
       expect.objectContaining({ token: { id: "sceneToken" } }),
     );
     expect(getTokenFromActor).toHaveBeenCalledWith(caster, { linked: true });
+  });
+
+  it("opens the dialog with the cast options to start from", async () => {
+    vi.mocked(getTokenFromActor).mockReturnValue({ id: "sceneToken" } as any);
+    const options = { levelUsed: 2, magicPointSource: "self", rollMode: "gmroll" };
+    const parent = { name: "Heal" };
+    await SpiritMagicDataModel.prototype.cast.call({ parent } as any, caster, options as any);
+
+    expect(dialog.constructed).toHaveBeenCalledWith(parent, { id: "sceneToken" }, caster, options);
   });
 
   it("keeps a given token", async () => {

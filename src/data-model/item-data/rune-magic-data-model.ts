@@ -2,6 +2,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
+import { getSpellPointsError } from "../shared/spell-cast-points";
 import { postSpellCastResult, resolveResistedSpellCastTarget } from "../shared/spell-resisted-by";
 import { spellMaxTargets, tokensInSpellArea } from "../../system/spell-effects/spell-area-targets";
 import type { RqidLink } from "../shared/rqid-link";
@@ -199,10 +200,24 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema> {
     const availableMagicPoints = casterActor
       ? getAvailableMagicPoints(casterActor, magicPointSource)
       : 0;
-    if (runePointCost == null || runePointCost > availableRunePoints) {
+    if (runePointCost == null) {
       return game.i18n?.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
     }
-    if (magicPointsBoost > availableMagicPoints) {
+    const boost = Number(magicPointsBoost) || 0;
+    const pointsError = getSpellPointsError(
+      runePointCost,
+      boost,
+      this.points,
+      // Only a stackable spell can be cast with more Rune Points than its own
+      this.isStackable ? Infinity : this.points,
+    );
+    if (pointsError) {
+      return pointsError;
+    }
+    if (runePointCost > availableRunePoints) {
+      return game.i18n?.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
+    }
+    if (boost > availableMagicPoints) {
       return localize("RQG.Item.RuneMagic.validationNotEnoughMagicPoints");
     }
     return undefined;
@@ -269,6 +284,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema> {
         this.parent as unknown as RuneMagicItem,
         token,
         casterActor,
+        options,
       ).render({ force: true });
       return undefined;
     }

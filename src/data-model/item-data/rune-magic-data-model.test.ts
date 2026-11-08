@@ -65,6 +65,27 @@ describe("RuneMagicDataModel chance helpers", () => {
     );
   });
 
+  it("refuses a Rune Point cost the spell doesn't allow, fractions and a negative boost", () => {
+    const model = (isStackable: boolean) =>
+      ({
+        points: 2,
+        isStackable,
+        getCastingCult: () => ({ system: { runePoints: { value: 9 } } }),
+        parent: { actor: { system: { attributes: { magicPoints: { value: 9 } } } } },
+      }) as unknown as RuneMagicDataModel;
+    const validate = (m: RuneMagicDataModel, cost: number, boost = 0) =>
+      RuneMagicDataModel.prototype.getCastValidationError.call(m, cost, boost);
+
+    expect(validate(model(false), 2)).toBeUndefined();
+    expect(validate(model(false), 1)).toContain("RQG.Item.Spell.CantCastBelowPoints");
+    expect(validate(model(false), 0)).toContain("RQG.Item.Spell.CantCastBelowPoints");
+    expect(validate(model(false), 3)).toContain("CantCastSpellAboveLearnedLevel");
+    expect(validate(model(true), 5)).toBeUndefined();
+    expect(validate(model(true), 1)).toContain("RQG.Item.Spell.CantCastBelowPoints");
+    expect(validate(model(true), 2.5)).toContain("RQG.Item.Spell.PointsNotWholeNumber");
+    expect(validate(model(false), 2, -1)).toContain("RQG.Item.Spell.NegativeBoost");
+  });
+
   it("counts a chosen magic point source's stored points for the boost, leaving Rune Points cult-sourced (#956)", () => {
     const fakeModel = {
       getCult: () => ({ system: { runePoints: { value: 4 } } }),
