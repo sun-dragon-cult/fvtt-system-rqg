@@ -22,7 +22,9 @@ describe("game.system.api", () => {
     expect(surface(createRqgApi())).toMatchInlineSnapshot(`
       {
         "dialogs": {
+          "addWound": "function",
           "chooseWounds": "function",
+          "healWounds": "function",
         },
         "maintenance": {
           "applyWorldMigrations": "function",

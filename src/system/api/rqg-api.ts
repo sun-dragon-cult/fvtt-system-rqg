@@ -11,6 +11,7 @@ import { dealSpellDamage } from "../spell-effects/spell-damage";
 import { postMagicMissiles as postAttackMagicMissiles } from "../../applications/attack-flow/magic-missiles";
 import type { MissileFiredScope } from "../spell-effects/spell-behavior";
 import * as rolls from "./api-rolls";
+import { addWound, healWounds } from "./api-dialogs";
 import { openDataModelRepairDialog } from "./data-model-repair";
 import { applyWorldMigrations, openRqidBatchEditor } from "./maintenance-api";
 import { Rqid } from "./rqid-api";
@@ -49,6 +50,8 @@ export function createRqgApi() {
     },
     dialogs: {
       chooseWounds,
+      addWound,
+      healWounds,
     },
     spellEffects: {
       list: listSpellEffects,
