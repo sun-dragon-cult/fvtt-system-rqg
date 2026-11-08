@@ -363,7 +363,6 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
     const item = getStorageItems(this.actor).find((i) => i.id === itemId);
     requireValue(item, `Couldn't find storage item [${itemId}] to feed Magic Points into`);
     await feedStorageFromSelf(this.actor, item);
-    await this.render();
   }
 
   private getRows(): HTMLElement[] {
@@ -448,7 +447,6 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
     const currentOrder = rows.map((r) => r.dataset["sourceId"] ?? "");
     const newOrder = moveSourceBefore(currentOrder, draggedId, beforeId);
     await setMagicPointDrawOrder(this.actor, newOrder);
-    await this.render();
   }
 
   private _onDragEnd(event: DragEvent): void {

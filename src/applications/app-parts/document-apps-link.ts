@@ -32,7 +32,7 @@ export class DocumentAppsLink {
 type RenderableApp = {
   id: string;
   readonly rendered: boolean;
-  render(...args: any[]): unknown;
+  render(...args: unknown[]): unknown;
 };
 
 /**
