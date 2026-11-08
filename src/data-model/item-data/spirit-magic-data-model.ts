@@ -2,6 +2,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
+import { getSpellPointsError } from "../shared/spell-cast-points";
 import { postSpellCastResult, resolveResistedSpellCastTarget } from "../shared/spell-resisted-by";
 import { spellMaxTargets, tokensInSpellArea } from "../../system/spell-effects/spell-area-targets";
 import type { RqidLink } from "../shared/rqid-link";
@@ -69,12 +70,17 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       ? getAvailableMagicPoints(casterActor, magicPointSource)
       : 0;
 
-    if (
-      normalizedLevelUsed == null ||
-      !Number.isFinite(normalizedLevelUsed) ||
-      normalizedLevelUsed > Math.max(this.points, maxLevel)
-    ) {
+    if (normalizedLevelUsed == null || !Number.isFinite(normalizedLevelUsed)) {
       return localize("RQG.Item.SpiritMagic.CantCastSpellAboveLearnedLevel");
+    }
+    const pointsError = getSpellPointsError(
+      normalizedLevelUsed,
+      normalizedBoost,
+      this.isVariable ? 1 : this.points,
+      Math.max(this.points, maxLevel),
+    );
+    if (pointsError) {
+      return pointsError;
     }
 
     if (normalizedLevelUsed + normalizedBoost > availableMagicPoints) {
@@ -102,6 +108,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
         this.parent as unknown as SpiritMagicItem,
         token,
         casterActor,
+        options,
       ).render({ force: true });
       return undefined;
     }

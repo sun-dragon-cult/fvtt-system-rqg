@@ -1014,3 +1014,12 @@ export function warnIfMultipleTargets(): void {
     ui.notifications?.info(localize("RQG.Notification.Warn.TargetOneTokenOnly"));
   }
 }
+
+/** `value` when it's one of the select's options, otherwise `fallback`. */
+export function offeredOr(
+  value: string | undefined,
+  options: readonly { value: string }[],
+  fallback: string,
+): string {
+  return value != null && options.some((o) => o.value === value) ? value : fallback;
+}

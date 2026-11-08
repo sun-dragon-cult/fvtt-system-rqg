@@ -10,6 +10,7 @@ import {
   getSpeakerDisplayName,
   localize,
   normalizeOtherModifierDescriptionForRoll,
+  offeredOr,
 } from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpellCastOptions } from "../../rolls/roll-method-options";
@@ -22,7 +23,6 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 import {
   canChooseSpellCastRollMode,
   getConfiguredRollModeOptions,
-  getDefaultRollMode,
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
@@ -110,6 +110,8 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   private powX5: number;
   private token: TokenDocument | null | undefined;
   private castTargets: SpellCastTargets;
+  /** Cast options the dialog starts with, e.g. from the roll API */
+  private initial: SpellCastOptions;
 
   protected override async _onRender(
     context: DeepPartial<any>,
@@ -147,9 +149,14 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     spellItem: SpiritMagicItem,
     token?: TokenDocument | null,
     casterActor?: RqgActor,
+    initial: SpellCastOptions = {},
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
+    this.initial = initial;
+    if (initial.rollMode) {
+      this.rollMode = initial.rollMode;
+    }
 
     const caster = casterActor ?? spellItem.parent;
     assertDocumentSubType<CharacterActor>(caster, ActorTypeEnum.Character);
@@ -200,9 +207,17 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       token: this.token,
     });
 
-    formData.levelUsed ??= this.spellItem.system.points;
-    formData.boost ??= 0;
-    formData.magicPointSource ??= AUTO_MAGIC_POINT_SOURCE;
+    const magicPointSourceOptions = getMagicPointSourceOptions(this.casterActor);
+    const { isVariable, points } = this.spellItem.system;
+    const levelEditable = isVariable && points > 1;
+    // A given level the player couldn't change in the readonly field isn't used
+    formData.levelUsed ??= (levelEditable ? this.initial.levelUsed : undefined) ?? points;
+    formData.boost ??= this.initial.magicPointBoost ?? 0;
+    formData.magicPointSource ??= offeredOr(
+      this.initial.magicPointSource,
+      magicPointSourceOptions,
+      AUTO_MAGIC_POINT_SOURCE,
+    );
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
     formData.otherModifier ??= 0;
@@ -229,12 +244,10 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       selectedTarget: targetNote.selectedTarget,
       disableRoll: targetNote.tooManyTargets,
       areaTargets: this.castTargets.areaLabel(Number(formData.levelUsed)),
-      isVariable:
-        (this.spellItem.system.isVariable && this.spellItem.system.points > 1) ||
-        (this.prepared?.maxLevel ?? 0) > this.spellItem.system.points,
+      isVariable: levelEditable || (this.prepared?.maxLevel ?? 0) > points,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,
-      magicPointSourceOptions: getMagicPointSourceOptions(this.casterActor),
+      magicPointSourceOptions,
 
       // RollHeader
       rollType: localize("TYPES.Item.spiritMagic"),
@@ -278,7 +291,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
         form?.querySelector<HTMLButtonElement>(
           'button[data-action="rollMode"][aria-pressed="true"]',
         )?.dataset["rollMode"],
-      ) ?? getDefaultRollMode();
+      ) ?? this.rollMode;
 
     let spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",

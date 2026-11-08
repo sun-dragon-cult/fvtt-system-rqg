@@ -307,6 +307,65 @@ export function getMagicPointDrawOrder(
 }
 
 /**
+ * A source an actor can draw Magic Points from, from `actor.getMagicPointSources()`.
+ *
+ * @public since 6.2.0
+ */
+export type MagicPointSource = {
+  /** The `magicPointSource` option that draws only from this source */
+  id: string;
+  type: "self" | "item" | "ally" | "boundSpirit";
+  name: string;
+  magicPoints: { value: number; max: number };
+  /** Uuid of the actor, or of the item for a storage item */
+  uuid: string;
+};
+
+/** The actor's Magic Point sources in draw order, the order `"auto"` draws in. */
+export function getMagicPointSources(actor: RqgActor): MagicPointSource[] {
+  const points = (mp: { value?: number | null; max?: number | null } | undefined) => ({
+    value: Number(mp?.value) || 0,
+    max: Number(mp?.max) || 0,
+  });
+  return getMagicPointDrawOrder(actor).map((entry): MagicPointSource => {
+    switch (entry.type) {
+      case "self":
+        return {
+          id: SELF_MAGIC_POINT_SOURCE,
+          type: "self",
+          name: actor.name ?? "",
+          magicPoints: points(actor.system.attributes.magicPoints),
+          uuid: actor.uuid ?? "",
+        };
+      case "ally":
+        return {
+          id: ALLY_MAGIC_POINT_SOURCE,
+          type: "ally",
+          name: entry.actor.name ?? "",
+          magicPoints: points(entry.actor.system.attributes.magicPoints),
+          uuid: entry.actor.uuid ?? "",
+        };
+      case "item":
+        return {
+          id: entry.item.id ?? "",
+          type: "item",
+          name: entry.item.name ?? "",
+          magicPoints: points(entry.item.system.storedMagicPoints),
+          uuid: entry.item.uuid ?? "",
+        };
+      case "boundSpirit":
+        return {
+          id: boundSpiritSourceId(entry.item, entry.spiritActor),
+          type: "boundSpirit",
+          name: entry.spiritActor.name ?? "",
+          magicPoints: points(entry.spiritActor.system.attributes.magicPoints),
+          uuid: entry.spiritActor.uuid ?? "",
+        };
+    }
+  });
+}
+
+/**
  * Storage items in draw order (see getMagicPointDrawOrder), excluding "self". Accepts an
  * already-resolved ally - see getMagicPointDrawOrder.
  */
@@ -386,11 +445,7 @@ export function moveSourceBefore(order: string[], id: string, beforeId: string |
 
 /** " (value/max MP)" suffix appended to a source option's label, e.g. " (14/20 MP)" - lets the
  *  picker show how many points are actually available from each source without opening it. */
-function magicPointsSuffix(
-  points: { value?: number | null; max?: number | null } | undefined | null,
-): string {
-  const value = Number(points?.value) || 0;
-  const max = Number(points?.max) || 0;
+function magicPointsSuffix({ value, max }: MagicPointSource["magicPoints"]): string {
   return ` (${value}/${max} MP)`;
 }
 
@@ -406,41 +461,18 @@ function magicPointsSuffix(
 export function getMagicPointSourceOptions(
   actor: RqgActor | null | undefined,
 ): SelectOptionData<string>[] {
-  const drawOrder = actor ? getMagicPointDrawOrder(actor) : [];
-  if (!drawOrder.some((entry) => entry.type !== "self")) {
+  const sources = actor ? getMagicPointSources(actor) : [];
+  if (!sources.some((source) => source.type !== "self")) {
     return [];
   }
   return [
     { value: AUTO_MAGIC_POINT_SOURCE, label: "RQG.Dialog.Common.MagicPointSourceOptions.Auto" },
-    ...drawOrder.map((entry) => {
-      switch (entry.type) {
-        case "self":
-          return {
-            value: SELF_MAGIC_POINT_SOURCE,
-            label: `${localize("RQG.Dialog.Common.MagicPointSourceOptions.Self")}${magicPointsSuffix(actor!.system.attributes.magicPoints)}`,
-          };
-        case "ally":
-          // Just the bond partner's name, not a templated "Allied Spirit (Name)" label: this
-          // option shows up from either side of the bond (see getAlliedBondActor), and "Allied
-          // Spirit" would read backwards when an ally casts using its bonded priest's Magic
-          // Points.
-          return {
-            value: ALLY_MAGIC_POINT_SOURCE,
-            label: `${entry.actor.name ?? ""}${magicPointsSuffix(entry.actor.system.attributes.magicPoints)}`,
-          };
-        case "item":
-          return {
-            value: entry.item.id ?? "",
-            label: `${entry.item.name ?? ""}${magicPointsSuffix(entry.item.system.storedMagicPoints)}`,
-          };
-        case "boundSpirit":
-          // The bound spirit's own name, like ally - see the "ally" case above.
-          return {
-            value: boundSpiritSourceId(entry.item, entry.spiritActor),
-            label: `${entry.spiritActor.name ?? ""}${magicPointsSuffix(entry.spiritActor.system.attributes.magicPoints)}`,
-          };
-      }
-    }),
+    // Other sources go by name only, not e.g. "Allied Spirit (Name)": the ally option shows up
+    // from either side of the bond (see getAlliedBondActor)
+    ...sources.map(({ id, type, name, magicPoints }) => ({
+      value: id,
+      label: `${type === "self" ? localize("RQG.Dialog.Common.MagicPointSourceOptions.Self") : name}${magicPointsSuffix(magicPoints)}`,
+    })),
   ];
 }
 

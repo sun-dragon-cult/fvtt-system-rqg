@@ -1888,6 +1888,9 @@
         }
       },
       "Spell": {
+        "CantCastBelowPoints": "The points to cast with must be at least {points}.",
+        "PointsNotWholeNumber": "Spell points and boost must be whole numbers.",
+        "NegativeBoost": "The magic point boost can't be negative.",
         "Point": "Point",
         "Points": "Points",
         "Ritual": "Ritual",

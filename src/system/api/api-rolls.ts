@@ -11,6 +11,7 @@ import type { CharacteristicRoll } from "../../rolls/characteristic-roll/charact
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { SpellCastOptions } from "../../rolls/roll-method-options";
+import { AUTO_MAGIC_POINT_SOURCE } from "../magic-point-source";
 import { resolveMatrixSpellItem } from "../spell-matrix";
 import { RqgLogger } from "../logging/rqg-logger";
 import { type ActorRef, findItem, type ItemRef, resolveActor, resolveItem } from "./api-resolve";
@@ -89,6 +90,12 @@ export type SpellRollOptions = RollOptions & {
   /** Points to cast with, defaults to the spell's points */
   levelUsed?: number;
   magicPointBoost?: number;
+  /**
+   * Where magic points are drawn from: `"auto"` (the default) follows the caster's draw order;
+   * `"self"`, `"ally"`, the id of a magic point storage item or a bound spirit's `sourceId` draws
+   * only from that source
+   */
+  magicPointSource?: string;
 };
 
 /**
@@ -102,6 +109,7 @@ export async function spiritMagic(
   options: SpellRollOptions = {},
 ): Promise<SpiritMagicRoll | undefined> {
   const { actor, token } = resolveCaster(ref, options.actor);
+  checkMagicPointSource(actor, options.magicPointSource);
   const item = await resolveSpell<SpiritMagicItem>(actor, ref, ItemTypeEnum.SpiritMagic);
   return (await actor.castSpell(item, castOptions(options, token))) as SpiritMagicRoll | undefined;
 }
@@ -115,8 +123,20 @@ export async function runeMagic(
   options: SpellRollOptions = {},
 ): Promise<RuneMagicRoll | undefined> {
   const { actor, token } = resolveCaster(ref, options.actor);
+  checkMagicPointSource(actor, options.magicPointSource);
   const item = await resolveSpell<RuneMagicItem>(actor, ref, ItemTypeEnum.RuneMagic);
   return (await actor.castSpell(item, castOptions(options, token))) as RuneMagicRoll | undefined;
+}
+
+/** A wrong source would otherwise just look like too few magic points. */
+function checkMagicPointSource(caster: RqgActor, source: string | undefined): void {
+  if (
+    source != null &&
+    source !== AUTO_MAGIC_POINT_SOURCE &&
+    !caster.getMagicPointSources().some((s) => s.id === source)
+  ) {
+    logger.throw(`"${source}" is not one of the magic point sources of "${caster.name}"`);
+  }
 }
 
 function castOptions(options: SpellRollOptions, token: TokenDocument | null): SpellCastOptions {
@@ -125,6 +145,7 @@ function castOptions(options: SpellRollOptions, token: TokenDocument | null): Sp
     token,
     levelUsed: options.levelUsed,
     magicPointBoost: options.magicPointBoost,
+    magicPointSource: options.magicPointSource,
     modifiers: options.modifiers,
     rollMode: options.rollMode,
   };
@@ -158,6 +179,10 @@ function resolveCaster(
   ref: ItemRef | CastableSpell,
   actorRef: ActorRef | undefined,
 ): { actor: RqgActor; token: TokenDocument | null } {
+  if (ref == null) {
+    return logger.throw("No spell given");
+  }
+  checkSpellRef(ref);
   if (actorRef == null && typeof ref !== "string") {
     if (isCastableSpell(ref)) {
       return resolveActor(ref.casterUuid || undefined);
@@ -168,6 +193,22 @@ function resolveCaster(
     }
   }
   return resolveActor(actorRef);
+}
+
+/** Common mistakes otherwise fail later with a message about an item of type undefined. */
+function checkSpellRef(ref: unknown): void {
+  if (typeof ref === "string" || isCastableSpell(ref as CastableSpell)) {
+    return;
+  }
+  if (typeof (ref as { then?: unknown }).then === "function") {
+    logger.throw("The spell is a Promise, use `await actor.getCastableSpells()`");
+  }
+  if (Array.isArray(ref)) {
+    logger.throw("Give one spell, not a list of spells");
+  }
+  if (typeof (ref as { type?: unknown }).type !== "string") {
+    logger.throw("Give a spell item, its name, or one entry of `await actor.getCastableSpells()`");
+  }
 }
 
 async function resolveSpell<T extends SpiritMagicItem | RuneMagicItem>(

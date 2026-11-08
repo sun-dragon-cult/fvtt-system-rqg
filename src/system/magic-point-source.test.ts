@@ -14,6 +14,7 @@ import {
   getBoundSpiritDrainWarnings,
   getMagicPointDrawOrder,
   getMagicPointSourceOptions,
+  getMagicPointSources,
   getMaxTransferableToStorage,
   getStorageItems,
   getTotalStoredMagicPoints,
@@ -848,6 +849,58 @@ describe("getBoundSpiritActorByUuid", () => {
     (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4));
 
     expect(getBoundSpiritActorByUuid(item as any, "Actor.someone-else")).toBeUndefined();
+  });
+});
+
+describe("getMagicPointSources", () => {
+  it("lists every source in draw order, with the id that draws only from it", () => {
+    const actor = fakeActor(
+      6,
+      [crystal("c1", "Crystal", 2, 5), boundSpiritItem("i1", "Ring")],
+      {},
+      { alliedSpiritActorUuid: "Actor.ally1", uuid: "Actor.caster", selfMpMax: 12 },
+    );
+    actor.name = "Vasana";
+    actor.items[0].uuid = "Actor.caster.Item.c1";
+    const ally = fakeAlly(4, 6);
+    const spirit = fakeSpirit(3, 9);
+    (globalThis as any).fromUuidSync.mockImplementation((uuid: string) =>
+      uuid === "Actor.ally1" ? ally : spirit,
+    );
+    const spiritId = boundSpiritSourceId(actor.items[1], spirit);
+    actor.getFlag.mockReturnValue(["self", spiritId, "c1", "ally"]);
+
+    expect(getMagicPointSources(actor)).toEqual([
+      {
+        id: "self",
+        type: "self",
+        name: "Vasana",
+        magicPoints: { value: 6, max: 12 },
+        uuid: "Actor.caster",
+      },
+      {
+        id: spiritId,
+        type: "boundSpirit",
+        name: "Wisp",
+        magicPoints: { value: 3, max: 9 },
+        uuid: "Actor.spirit1",
+      },
+      {
+        id: "c1",
+        type: "item",
+        name: "Crystal",
+        magicPoints: { value: 2, max: 5 },
+        uuid: "Actor.caster.Item.c1",
+      },
+      {
+        id: "ally",
+        type: "ally",
+        name: "Whiskers",
+        magicPoints: { value: 4, max: 6 },
+        uuid: "Actor.ally1",
+      },
+    ]);
+    (globalThis as any).fromUuidSync.mockReset();
   });
 });
 
