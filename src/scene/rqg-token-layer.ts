@@ -36,8 +36,12 @@ export class RqgTokenLayer extends TokenLayer {
       return;
     }
 
+    const viewedLevel = canvas.level;
     canvas.scene?.regions?.forEach((region) => {
-      if (region.polygonTree.testPoint(clickedPoint)) {
+      if (
+        (!viewedLevel || region.includedInLevel(viewedLevel)) &&
+        region.polygonTree.testPoint(clickedPoint)
+      ) {
         region.behaviors
           .filter((b: any) => !b.disabled && b.system instanceof ClickableScriptsRegionBehavior)
           .forEach((behavior: any) => {
