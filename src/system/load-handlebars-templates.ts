@@ -96,7 +96,6 @@ export const templatePaths = {
   improvementRollSummary: "systems/rqg/rolls/improvement-roll/improvement-roll-summary.hbs",
 
   // Chat
-  chatMessage: "systems/rqg/chat/chat-message.hbs",
   attackChatMessage: "systems/rqg/applications/attack-flow/attack-chat-template.hbs",
   resistanceRequestChatMessage: "systems/rqg/chat/resistance-request-chat-template.hbs",
   spellCastChatMessage: "systems/rqg/chat/spell-cast-chat-template.hbs",
