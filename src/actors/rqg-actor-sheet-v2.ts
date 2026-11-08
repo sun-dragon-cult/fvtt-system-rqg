@@ -163,6 +163,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   // Rerender when the Allied Spirit bond partner or a bound spirit changes - their MP and spells
   // are shown here
   private readonly relatedActorsLink = new RelatedDocumentsAppsLink(this);
+  // Combatant changes only rerender the Combat's apps, not the actor's - the SR buttons need them
+  private readonly combatLink = new RelatedDocumentsAppsLink(this);
 
   override get actor(): CharacterActor {
     return this.document as CharacterActor;
@@ -405,6 +407,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         : availableCultTabs[0];
 
     // Compute active SRs from combat tracker
+    this.combatLink.link([game.combat]);
     const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
       this.actor as Actor.Stored,
     );
@@ -612,6 +615,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     options: Parameters<foundry.applications.api.ApplicationV2["_onClose"]>[0],
   ): void {
     this.relatedActorsLink.unlink();
+    this.combatLink.unlink();
     super._onClose(options);
   }
 
