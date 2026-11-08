@@ -323,8 +323,8 @@
           {{else}}
             {{#if system.background.cultureJournalRqidLinks.length}}
               <div class="rqid-area">
-                {{#each system.background.cultureJournalRqidLinks}}
-                  {{> rqidLink rqidLink=this}}
+                {{#each (sortRqidLinks system.background.cultureJournalRqidLinks)}}
+                  {{> rqidLink rqidLink=this.link}}
                 {{/each}}
               </div>
             {{/if}}
@@ -350,8 +350,8 @@
             {{else}}
               {{#if system.background.tribeJournalRqidLinks.length}}
                 <div class="rqid-area">
-                  {{#each system.background.tribeJournalRqidLinks}}
-                    {{> rqidLink rqidLink=this}}
+                  {{#each (sortRqidLinks system.background.tribeJournalRqidLinks)}}
+                    {{> rqidLink rqidLink=this.link}}
                   {{/each}}
                 </div>
               {{else}}
@@ -382,8 +382,8 @@
             {{else}}
               {{#if system.background.clanJournalRqidLinks.length}}
                 <div class="rqid-area">
-                  {{#each system.background.clanJournalRqidLinks}}
-                    {{> rqidLink rqidLink=this}}
+                  {{#each (sortRqidLinks system.background.clanJournalRqidLinks)}}
+                    {{> rqidLink rqidLink=this.link}}
                   {{/each}}
                 </div>
               {{else}}

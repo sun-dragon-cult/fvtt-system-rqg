@@ -21,10 +21,6 @@
           "type": "string",
           "default": ""
         },
-        "name": {
-          "type": "string",
-          "default": ""
-        },
         "bonus": {
           "type": [
             "integer",
@@ -34,8 +30,7 @@
       },
       "additionalProperties": false,
       "required": [
-        "rqid",
-        "name"
+        "rqid"
       ],
       "title": "Occupation journal",
       "description": "Link to the journal entry about the occupation."
@@ -79,10 +74,6 @@
                 "type": "string",
                 "default": ""
               },
-              "name": {
-                "type": "string",
-                "default": ""
-              },
               "bonus": {
                 "type": [
                   "integer",
@@ -92,8 +83,7 @@
             },
             "additionalProperties": false,
             "required": [
-              "rqid",
-              "name"
+              "rqid"
             ]
           }
         },
@@ -142,10 +132,6 @@
             "type": "string",
             "default": ""
           },
-          "name": {
-            "type": "string",
-            "default": ""
-          },
           "bonus": {
             "type": [
               "integer",
@@ -155,8 +141,7 @@
         },
         "additionalProperties": false,
         "required": [
-          "rqid",
-          "name"
+          "rqid"
         ]
       },
       "title": "Cults",
@@ -178,10 +163,6 @@
             "type": "string",
             "default": ""
           },
-          "name": {
-            "type": "string",
-            "default": ""
-          },
           "bonus": {
             "type": [
               "integer",
@@ -191,8 +172,7 @@
         },
         "additionalProperties": false,
         "required": [
-          "rqid",
-          "name"
+          "rqid"
         ]
       },
       "title": "Starting equipment",

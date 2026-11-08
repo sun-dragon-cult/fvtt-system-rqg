@@ -108,7 +108,7 @@ async function getUsageMigrationUpdate(
   return {
     skillOrigin: _del,
     skillId: _del,
-    skillRqidLink: new RqidLink(currentRqid, currentSkillItem.name ?? ""),
+    skillRqidLink: new RqidLink(currentRqid),
   };
 }
 

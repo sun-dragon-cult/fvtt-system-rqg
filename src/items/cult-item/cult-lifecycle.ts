@@ -20,11 +20,7 @@ function normalizeRqidLinks(
 ): RqidLink[] {
   return (links ?? []).map((link) => {
     const rqid = toCanonicalItemRqid(link.rqid, type);
-    const normalized: RqidLink = {
-      rqid,
-      name: link.name,
-      bonus: undefined,
-    };
+    const normalized: RqidLink = { rqid, bonus: undefined };
     if (Number.isFinite(link.bonus)) {
       normalized.bonus = Number(link.bonus);
     }

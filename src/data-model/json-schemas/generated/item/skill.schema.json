@@ -27,10 +27,6 @@
           "type": "string",
           "default": ""
         },
-        "name": {
-          "type": "string",
-          "default": ""
-        },
         "bonus": {
           "type": [
             "integer",
@@ -40,8 +36,7 @@
       },
       "additionalProperties": false,
       "required": [
-        "rqid",
-        "name"
+        "rqid"
       ],
       "title": "Description",
       "description": "Link to the journal entry that describes the skill."
@@ -102,10 +97,6 @@
             "type": "string",
             "default": ""
           },
-          "name": {
-            "type": "string",
-            "default": ""
-          },
           "bonus": {
             "type": [
               "integer",
@@ -115,8 +106,7 @@
         },
         "additionalProperties": false,
         "required": [
-          "rqid",
-          "name"
+          "rqid"
         ]
       },
       "title": "Runes",

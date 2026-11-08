@@ -13,11 +13,7 @@ import {
   type AppV2RenderContext,
   type AppV2RenderOptions,
 } from "../rqg-item-sheet-v2";
-import {
-  convertFormValueToString,
-  getAvailableHitLocations,
-  getSelectHitLocationOptions,
-} from "../../system/util";
+import { convertFormValueToString, getSelectHitLocationOptions } from "../../system/util";
 import { systemId } from "../../system/config";
 import { RqidLink } from "../../data-model/shared/rqid-link";
 import { templatePaths } from "../../system/load-handlebars-templates";
@@ -126,8 +122,7 @@ export class ArmorSheetV2 extends RqgItemSheetV2 {
     const newRqid = convertFormValueToString(target.value);
 
     if (!this.document.system.hitLocationRqidLinks.some((l: RqidLink) => l.rqid === newRqid)) {
-      const newName = getAvailableHitLocations().find((l) => l.rqid === target.value)?.name ?? "";
-      const newHitLocationRqidLink = new RqidLink(newRqid, newName);
+      const newHitLocationRqidLink = new RqidLink(newRqid);
       const updatedLinks = [...this.document.system.hitLocationRqidLinks, newHitLocationRqidLink];
       await this.document.update({ system: { hitLocationRqidLinks: updatedLinks } });
     }

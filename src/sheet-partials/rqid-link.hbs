@@ -2,7 +2,8 @@
 
 Parameters:
 
-rqidLink: RqidLink {rqid, documentType, name, bonus}
+rqidLink: RqidLink {rqid, documentType, bonus}
+rqidLinkIndex: number - index in the array property, for deleting it
 showDeleteFromPropertyName: string - added to data-delete-from-property DOMdata Handle deleting RqidLinks from RqidLink Array Properties
 showInfoCircleConnect: string - translation key for tooltip content if not linked
 showInfoCircleReplace: string - translation key for tooltip content if linked
@@ -13,11 +14,11 @@ editBonusPropertyName: string - example "skillRqidLinks"
 {{#if rqidLink.rqid}}
   <div class="rqidlink">
     <a
-      class="rqid-content-link"
+      class="rqid-content-link{{#if (rqidLinkMissing rqidLink.rqid)}} broken{{/if}}"
       data-rqid-link="{{rqidLink.rqid}}"
       data-document-type="{{rqidLink.documentType}}"
-      data-tooltip="{{rqidLinkTooltip rqidLink.rqid}}"
-    >{{{rqidLinkIcon rqidLink.rqid}}}{{rqidLink.name}}</a>
+      data-tooltip="{{#if (rqidLinkMissing rqidLink.rqid)}}{{localize 'RQG.Foundry.ContentLink.RqidLinkMissing' rqid=rqidLink.rqid}}{{else}}{{rqidLinkTooltip rqidLink.rqid}}{{/if}}"
+    >{{{rqidLinkIcon rqidLink.rqid}}}{{rqidLinkName rqidLink.rqid}}</a>
 
     {{#if showBonus}}
       {{#if editBonusPropertyName}}
@@ -37,7 +38,7 @@ editBonusPropertyName: string - example "skillRqidLinks"
           data-delete-rqid="{{rqidLink.rqid}}"
           {{#if (or (eq rqidLinkIndex 0) rqidLinkIndex)}}data-delete-index="{{rqidLinkIndex}}"{{/if}}
           data-delete-from-property="{{showDeleteFromPropertyName}}"
-          data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=rqidLink.rqid name=rqidLink.name}}"
+          data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=rqidLink.rqid name=(rqidLinkName rqidLink.rqid)}}"
         ></i>
       {{/if}}
     {{/if}}

@@ -125,7 +125,7 @@
   {{#each system.matrixSpells}}
     <div class="bond-actor-link matrix-spell-link">
       <span data-rqid-link="{{this.spellRqidLink.rqid}}">
-        {{this.spellRqidLink.name}}
+        {{rqidLinkName this.spellRqidLink.rqid}}
       </span>
       {{#if ../isGM}}
         {{#if this.isVariable}}
@@ -144,7 +144,7 @@
       {{#if ../isEditable}}
         <a data-action="unlinkMatrixSpell"
            data-index="{{this.storageIndex}}"
-           data-tooltip="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=this.spellRqidLink.name}}">
+           data-tooltip="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=(rqidLinkName this.spellRqidLink.rqid)}}">
           <i class="fas fa-unlink"></i>
         </a>
       {{/if}}

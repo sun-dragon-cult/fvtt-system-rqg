@@ -138,10 +138,6 @@
           "type": "string",
           "default": ""
         },
-        "name": {
-          "type": "string",
-          "default": ""
-        },
         "bonus": {
           "type": [
             "integer",
@@ -151,8 +147,7 @@
       },
       "additionalProperties": false,
       "required": [
-        "rqid",
-        "name"
+        "rqid"
       ],
       "title": "Description",
       "description": "Link to the journal entry that describes the spell."
@@ -167,10 +162,6 @@
           "type": "string",
           "default": ""
         },
-        "name": {
-          "type": "string",
-          "default": ""
-        },
         "bonus": {
           "type": [
             "integer",
@@ -180,8 +171,7 @@
       },
       "additionalProperties": false,
       "required": [
-        "rqid",
-        "name"
+        "rqid"
       ],
       "title": "Effect",
       "description": "Link to the Active Effect template applied when the spell is cast."
@@ -201,10 +191,6 @@
             "type": "string",
             "default": ""
           },
-          "name": {
-            "type": "string",
-            "default": ""
-          },
           "bonus": {
             "type": [
               "integer",
@@ -214,8 +200,7 @@
         },
         "additionalProperties": false,
         "required": [
-          "rqid",
-          "name"
+          "rqid"
         ]
       },
       "title": "Runes",

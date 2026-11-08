@@ -175,7 +175,9 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       // Displayed alphabetically; storageIndex keeps edit/unlink actions pointed at the real
       // array index.
       system.matrixSpells.sort((a, b) =>
-        (a.spellRqidLink?.name ?? "").localeCompare(b.spellRqidLink?.name ?? ""),
+        RqidLink.displayName(a.spellRqidLink?.rqid).localeCompare(
+          RqidLink.displayName(b.spellRqidLink?.rqid),
+        ),
       );
     }
     return {
@@ -242,8 +244,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
         const targetRqidLinks = normalizeSourceRqidLinks(sourceLinks);
 
         if (allowDuplicates || !targetRqidLinks.some((l) => l.rqid === newRqid)) {
-          const newName = selectElem?.selectedOptions[0]?.innerText?.trim() || newRqid;
-          const newRqidLink = { rqid: newRqid, name: newName };
+          const newRqidLink = { rqid: newRqid };
           const updatedLinks = [...targetRqidLinks, newRqidLink];
           await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
         }
@@ -268,8 +269,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
           targetProperty,
         ) as { rqid?: string } | null | undefined;
         if (currentLink?.rqid !== newRqid) {
-          const newName = selectElem?.selectedOptions[0]?.innerText?.trim() ?? "";
-          const newRqidLink = { rqid: newRqid, name: newName };
+          const newRqidLink = { rqid: newRqid };
           await this.document.update({ [`system.${targetProperty}`]: newRqidLink });
         }
       });

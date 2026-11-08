@@ -202,10 +202,7 @@ describe("weapon skill link handling", () => {
       system: {
         usage: {
           oneHand: {
-            skillRqidLink: {
-              rqid: "i.skill.bite",
-              name: "Bite",
-            },
+            skillRqidLink: { rqid: "i.skill.bite" },
           },
         },
       },

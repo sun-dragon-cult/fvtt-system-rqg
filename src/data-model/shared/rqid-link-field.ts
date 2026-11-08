@@ -5,7 +5,7 @@ import { isValidRqidString } from "../../system/api/rqid-validation";
 type RqidOrEmpty = RqidString | "";
 
 /**
- * Returns a SchemaField representing a single RqidLink (rqid + name + optional bonus).
+ * Returns a SchemaField representing a single RqidLink (rqid + optional bonus).
  * Use this for fields like `descriptionRqidLink`.
  */
 export function rqidLinkSchemaField(
@@ -27,7 +27,6 @@ export function rqidLinkSchemaField(
         initial: "",
         validate: validateRqid,
       }),
-      name: new StringField({ blank: true, nullable: false, initial: "" }),
       bonus: new NumberField({ integer: true, nullable: true, initial: undefined }),
     },
     { nullable: options.nullable, initial: options.initial },

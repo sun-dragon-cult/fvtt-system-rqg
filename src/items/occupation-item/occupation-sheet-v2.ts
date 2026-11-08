@@ -1,4 +1,5 @@
 import { OccupationalSkill, type OccupationItem } from "@item-model/occupation-data-model.ts";
+import { RqidLink } from "../../data-model/shared/rqid-link";
 import { StandardOfLivingEnum } from "@item-model/occupation-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { getDomDataset, isDocumentSubType, localize } from "../../system/util";
@@ -30,9 +31,8 @@ interface OccupationSheetContext extends RqgItemSheetContext {
 type OccupationalSkillLike = {
   incomeSkill?: unknown;
   bonus?: unknown;
-  skillRqidLink?: { rqid?: unknown; name?: unknown };
+  skillRqidLink?: { rqid?: unknown };
   rqid?: unknown;
-  name?: unknown;
 };
 
 function normalizeOccupationalSkills(skills: unknown): OccupationalSkill[] {
@@ -49,15 +49,12 @@ function normalizeOccupationalSkills(skills: unknown): OccupationalSkill[] {
       if (!rqid) {
         return undefined;
       }
-      const name =
-        String(occupationalSkill.skillRqidLink?.name ?? occupationalSkill.name ?? "").trim() ||
-        rqid;
       const bonusValue = Number(occupationalSkill.bonus ?? 0);
 
       return {
         incomeSkill: Boolean(occupationalSkill.incomeSkill),
         bonus: Number.isFinite(bonusValue) ? bonusValue : 0,
-        skillRqidLink: { rqid, name, bonus: undefined },
+        skillRqidLink: { rqid, bonus: undefined },
       };
     })
     .filter((skill): skill is OccupationalSkill => skill !== undefined);
@@ -106,9 +103,9 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
         .map((skill: OccupationalSkill) => {
           const bonus = `${skill.bonus >= 0 ? "+" : ""}${skill.bonus}%`;
           if (skill.incomeSkill) {
-            return `<span class="income-skill-text">${skill.skillRqidLink?.name} ${bonus}</span>`;
+            return `<span class="income-skill-text">${RqidLink.displayName(skill.skillRqidLink?.rqid)} ${bonus}</span>`;
           } else {
-            return `<span>${skill.skillRqidLink?.name} ${bonus}</span>`;
+            return `<span>${RqidLink.displayName(skill.skillRqidLink?.rqid)} ${bonus}</span>`;
           }
         })
         .join(", "),
@@ -252,11 +249,7 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
         const occSkill: OccupationalSkill = {
           bonus: 0,
           incomeSkill: false,
-          skillRqidLink: {
-            rqid: droppedRqid.id,
-            name: droppedItem.name || "",
-            bonus: undefined,
-          },
+          skillRqidLink: { rqid: droppedRqid.id, bonus: undefined },
         };
         const occSkills = normalizeOccupationalSkills(this.document.system.occupationalSkills);
         occSkills.push(occSkill);

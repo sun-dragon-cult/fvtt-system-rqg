@@ -11,14 +11,43 @@ type RqidDocument = foundry.abstract.Document.Any;
 export class RqidLink<R extends string = string> {
   /** The rqid to link to */
   readonly rqid: R;
-  /** Display name of the link */
-  readonly name: string;
 
   bonus: number | null | undefined;
 
-  constructor(rqid: R, name: string) {
+  constructor(rqid: R) {
     this.rqid = rqid;
-    this.name = name;
+  }
+
+  /**
+   * What a link shows: the name of the document its rqid resolves to, or the rqid's last part
+   * when nothing matches (`missing`) or the rqid points into an embedded document.
+   */
+  static display(rqid: string | undefined): { name: string; missing: boolean } {
+    const slug = rqid?.split(".").at(-1) ?? "";
+    if (!rqid) {
+      return { name: "", missing: false };
+    }
+    const name = Rqid.nameFromRqid(rqid);
+    if (name) {
+      return { name, missing: false };
+    }
+    const isEmbedded = rqid.split(".").length > 3;
+    const missing = !isEmbedded || !Rqid.nameFromRqid(rqid.split(".").slice(0, 3).join("."));
+    return { name: slug, missing };
+  }
+
+  static displayName(rqid: string | undefined): string {
+    return RqidLink.display(rqid).name;
+  }
+
+  /** The links sorted by their shown names, each with its index in `links`. */
+  static sortedByName<T extends { rqid: string }>(
+    links: readonly T[] | undefined,
+  ): { link: T; index: number }[] {
+    return (links ?? [])
+      .map((link, index) => ({ link, index, name: RqidLink.displayName(link.rqid) }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(({ link, index }) => ({ link, index }));
   }
 
   /**

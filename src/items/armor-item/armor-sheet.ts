@@ -10,11 +10,7 @@ import {
 import { armorTypeKeys, materialKeys } from "@item-model/armor-enums.ts";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/i-physical-item.ts";
 import { RqgItemSheet } from "../rqg-item-sheet";
-import {
-  convertFormValueToString,
-  getAvailableHitLocations,
-  getSelectHitLocationOptions,
-} from "../../system/util";
+import { convertFormValueToString, getSelectHitLocationOptions } from "../../system/util";
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheet-interfaces.types.ts";
 import { RqidLink } from "../../data-model/shared/rqid-link";
@@ -111,9 +107,7 @@ export class ArmorSheet extends RqgItemSheet {
     const newRqid = convertFormValueToString(event.currentTarget?.value);
 
     if (!this.document.system.hitLocationRqidLinks.some((l: RqidLink) => l.rqid === newRqid)) {
-      const newName =
-        getAvailableHitLocations().find((l) => l.rqid === event.currentTarget.value)?.name ?? "";
-      const newHitLocationRqidLink = new RqidLink(newRqid, newName);
+      const newHitLocationRqidLink = new RqidLink(newRqid);
       const updatedLinks = [...this.document.system.hitLocationRqidLinks, newHitLocationRqidLink];
       await this.document.update({ system: { hitLocationRqidLinks: updatedLinks } });
     }

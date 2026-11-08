@@ -11,6 +11,7 @@ import {
 } from "./util";
 
 import { Rqid } from "./api/rqid-api";
+import { RqidLink } from "../data-model/shared/rqid-link";
 import type { RqgItem } from "../items/rqg-item";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
@@ -357,11 +358,11 @@ export const registerHandlebarsHelpers = function () {
   // than one) into one multi-line tooltip for the Gear tab's matrix-spell indicator icon.
   Handlebars.registerHelper(
     "matrixSpellsTooltip",
-    (matrixSpells: { spellRqidLink?: { name?: string }; points?: number }[]): string => {
+    (matrixSpells: { spellRqidLink?: { rqid?: string } | null; points?: number }[]): string => {
       return (matrixSpells ?? [])
         .map((entry) =>
           localize("RQG.Item.Gear.MatrixSpellIndicatorTooltip", {
-            spellName: entry.spellRqidLink?.name ?? "",
+            spellName: RqidLink.displayName(entry.spellRqidLink?.rqid),
             points: String(entry.points ?? 0),
           }),
         )
@@ -436,6 +437,14 @@ export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("rqidLinkIcon", function (rqid: string) {
     return Rqid.getRqidIcon(rqid) || "";
   });
+
+  Handlebars.registerHelper("rqidLinkName", (rqid: string) => RqidLink.displayName(rqid));
+
+  Handlebars.registerHelper("rqidLinkMissing", (rqid: string) => RqidLink.display(rqid).missing);
+
+  Handlebars.registerHelper("sortRqidLinks", (links: { rqid: string }[] | undefined) =>
+    RqidLink.sortedByName(links),
+  );
 
   Handlebars.registerHelper("edit-mode", function (this: any, editMode, forUserTypes, options) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias

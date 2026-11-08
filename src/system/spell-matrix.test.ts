@@ -14,15 +14,15 @@ function fakeCanonicalSpell(rqid: string, name: string) {
 /** A fake physical item carrying one or more Spell Matrix Enchantment entries (#959). */
 function fakeMatrixItem(
   id: string,
-  matrixSpells: { rqid: string; name: string; points?: number; sort?: number }[],
+  matrixSpells: { rqid: string; name?: string; points?: number; sort?: number }[],
 ) {
   return {
     id,
     type: "gear",
     system: {
       equippedStatus: "equipped",
-      matrixSpells: matrixSpells.map(({ rqid, name, points, sort }) => ({
-        spellRqidLink: { rqid, name },
+      matrixSpells: matrixSpells.map(({ rqid, points, sort }) => ({
+        spellRqidLink: { rqid },
         points: points ?? 1,
         sort: sort ?? 0,
       })),
@@ -113,7 +113,10 @@ describe("getMatrixSpellRows", () => {
 });
 
 describe("getMatrixSpellSlots", () => {
-  it("reads sort and name straight off the stored entries, without resolving the canonical spell", () => {
+  it("reads sort off the stored entries and the name from the rqid, without loading the spell", () => {
+    vi.spyOn(Rqid, "nameFromRqid").mockImplementation((rqid) =>
+      rqid === "spell.dullblade" ? "Dullblade" : "Bladesharp",
+    );
     const matrixItem = fakeMatrixItem("m1", [
       { rqid: "spell.dullblade", name: "Dullblade", sort: 300000 },
       { rqid: "spell.bladesharp", name: "Bladesharp", sort: 100000 },

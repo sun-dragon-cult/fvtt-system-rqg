@@ -9,6 +9,8 @@ allowDuplicates: boolean - allow multiple copies of the same document
 rqidLinkArray: RqidLink[]
 dropdownOptions: {rqid: string, name: string}[]
 
+The links are shown sorted by name.
+
 
 Nested: {{> rqidLink
     rqidLink
@@ -25,10 +27,10 @@ Nested: {{> rqidLink
      data-dropzone-document-types="{{dropDocumentTypes}}"
      {{#if allowDuplicates}}data-allow-duplicates="true"{{/if}}>
   <div class="rqid-area">
-    {{#each rqidLinkArray}}
+    {{#each (sortRqidLinks rqidLinkArray)}}
       {{> rqidLink
-        rqidLink=this
-        rqidLinkIndex=@index
+        rqidLink=this.link
+        rqidLinkIndex=this.index
         showDeleteFromPropertyName=../showDeleteFromPropertyName
         showBonus=../showBonus
         editBonusPropertyName=../editBonusPropertyName

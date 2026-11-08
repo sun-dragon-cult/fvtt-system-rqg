@@ -1,5 +1,6 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { systemId } from "../config";
+import { onUntypedHook } from "../fvtt-type-compat";
 import { getDefaultItemIconSettings } from "../settings/default-item-icons";
 import { getAvailableRunes, localize, RqgError, toKebabCase, trimChars } from "../util";
 import { toEnglishLabel } from "../localized-key";
@@ -130,6 +131,14 @@ type RqidIndexEntry = {
 
 type IndexCandidate = { pack: CompendiumCollection.Any; indexData: RqidIndexEntry };
 
+/** A world document or pack index entry that an rqid can resolve to, for looking up its name. */
+type RqidNameCandidate = {
+  name: string;
+  flags: DocumentRqidFlags;
+  /** Set for world documents, whose embedded documents are loaded. */
+  document?: RqidEnabledDocument;
+};
+
 /**
  * Handles rqid ids. These IDs are a string that is constructed like `i.skill.act`.
  * The first part (kind) is a shorthand to the foundry Document names (like Item, Actor) for the supported documents. See Rqid.documentNameLookup
@@ -152,6 +161,28 @@ export class Rqid {
     CONFIG.Playlist.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
     CONFIG.RollTable.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
     CONFIG.Scene.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+
+    for (const documentName of new Set(Object.values(Rqid.documentNameLookup))) {
+      for (const action of ["create", "update", "delete"]) {
+        onUntypedHook(`${action}${documentName}`, (document: Document.Any) => {
+          // Embedded documents (an actor's items) are never rqid targets
+          if (!document.parent) {
+            Rqid.nameCandidatesByDocumentName.delete(documentName);
+          }
+        });
+      }
+    }
+  }
+
+  /**
+   * Index every pack with the rqid flags, so nameFromRqid can find pack documents. Call once
+   * when the game is ready.
+   */
+  public static async indexPacksForNames(): Promise<void> {
+    await Promise.all(
+      (game.packs?.contents ?? []).filter((pack) => !pack.indexed).map((pack) => pack.getIndex()),
+    );
+    Rqid.nameCandidatesByDocumentName.clear();
   }
 
   /**
@@ -181,7 +212,7 @@ export class Rqid {
 
     // If a world document exists and its priority is high enough, return it
     // without fetching pack documents.
-    if (worldItem && worldPriority >= maxPackPriority) {
+    if (worldItem && Rqid.worldWins(worldPriority, maxPackPriority)) {
       return worldItem;
     }
 
@@ -209,6 +240,129 @@ export class Rqid {
       console.warn("RQG |", msg);
     }
     return undefined;
+  }
+
+  /**
+   * The name of the document `rqid` resolves to, chosen as fromRqid chooses it, without loading
+   * the document. Undefined when nothing matches. An embedded rqid (a journal page) only gets a
+   * name when its journal is a world document: pack indexes don't hold page names.
+   */
+  public static nameFromRqid(rqid: string | undefined, lang?: string): string | undefined {
+    if (!rqid) {
+      return undefined;
+    }
+    const candidates = Rqid.getNameCandidates(rqid);
+    if (!candidates?.length) {
+      return undefined;
+    }
+    lang ??= game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
+    const chosen =
+      Rqid.pickNameCandidate(candidates, lang) ??
+      (lang.toLowerCase() !== CONFIG.RQG.fallbackLanguage
+        ? Rqid.pickNameCandidate(candidates, CONFIG.RQG.fallbackLanguage)
+        : undefined);
+    const embeddedRqid = Rqid.embeddedRqid(rqid);
+    if (!embeddedRqid) {
+      return chosen?.name;
+    }
+    const pages = (chosen?.document as { pages?: Iterable<RqidEnabledDocument> } | undefined)
+      ?.pages;
+    for (const page of pages ?? []) {
+      if (Rqid.getDocumentFlag(page)?.id === embeddedRqid) {
+        return page.name ?? undefined;
+      }
+    }
+    return undefined;
+  }
+
+  /** A world document wins over the packs when its priority is at least as high. */
+  private static worldWins(worldPriority: number, maxPackPriority: number): boolean {
+    return worldPriority >= maxPackPriority;
+  }
+
+  private static pickNameCandidate(
+    candidates: RqidNameCandidate[],
+    lang: string,
+  ): RqidNameCandidate | undefined {
+    const inLang = candidates.filter((c) => c.flags.lang === lang);
+    const worldBest = inLang
+      .filter((c) => c.document)
+      .reduce<RqidNameCandidate | undefined>(
+        (best, c) =>
+          !best || (c.flags.priority ?? -Infinity) > (best.flags.priority ?? -Infinity) ? c : best,
+        undefined,
+      );
+    const packCandidates = inLang.filter((c) => !c.document);
+    const maxPackPriority = Math.max(
+      -Infinity,
+      ...packCandidates.map((c) => c.flags.priority ?? -Infinity),
+    );
+    if (worldBest && Rqid.worldWins(worldBest.flags.priority ?? -Infinity, maxPackPriority)) {
+      return worldBest;
+    }
+    const packBest = packCandidates.reduce<RqidNameCandidate | undefined>(
+      (best, c) => (!best || (c.flags.priority ?? 0) > (best.flags.priority ?? 0) ? c : best),
+      undefined,
+    );
+    return packBest ?? worldBest;
+  }
+
+  /** documentName -> document rqid -> candidates in every language, rebuilt after changes. */
+  private static readonly nameCandidatesByDocumentName = new Map<
+    string,
+    Map<string, RqidNameCandidate[]>
+  >();
+
+  private static getNameCandidates(rqid: string): RqidNameCandidate[] | undefined {
+    const kind = rqid.split(".")[0];
+    if (!isRqidKind(kind)) {
+      return undefined;
+    }
+    const documentName = Rqid.documentNameLookup[kind]!;
+    let byRqid = Rqid.nameCandidatesByDocumentName.get(documentName);
+    if (!byRqid) {
+      byRqid = Rqid.buildNameCandidates(kind, documentName);
+      Rqid.nameCandidatesByDocumentName.set(documentName, byRqid);
+    }
+    return byRqid.get(Rqid.documentRqid(rqid));
+  }
+
+  private static buildNameCandidates(
+    kind: RqidKind,
+    documentName: string,
+  ): Map<string, RqidNameCandidate[]> {
+    const byRqid = new Map<string, RqidNameCandidate[]>();
+    const add = (
+      name: string | undefined,
+      flags: DocumentRqidFlags | undefined,
+      document?: RqidEnabledDocument,
+    ) => {
+      if (!flags?.id || !name) {
+        return;
+      }
+      const candidates = byRqid.get(flags.id) ?? [];
+      candidates.push({ name, flags, document });
+      byRqid.set(flags.id, candidates);
+    };
+
+    for (const document of (Rqid.getGameCollection(`${kind}..`)?.contents ??
+      []) as RqidEnabledDocument[]) {
+      add(document.name ?? undefined, Rqid.getDocumentFlag(document), document);
+    }
+    for (const pack of game.packs ?? []) {
+      if (pack.documentClass.documentName !== documentName) {
+        continue;
+      }
+      if (!pack.indexed) {
+        // Indexed with the rqid flags later; rebuild then
+        void pack.getIndex().then(() => Rqid.nameCandidatesByDocumentName.delete(documentName));
+        continue;
+      }
+      for (const entry of pack.index.values() as Iterable<RqidIndexEntry>) {
+        add(entry.name, entry.flags?.rqg?.documentRqidFlags);
+      }
+    }
+    return byRqid;
   }
 
   /**

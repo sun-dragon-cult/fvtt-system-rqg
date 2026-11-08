@@ -155,10 +155,6 @@
                 "type": "string",
                 "default": ""
               },
-              "name": {
-                "type": "string",
-                "default": ""
-              },
               "bonus": {
                 "type": [
                   "integer",
@@ -168,8 +164,7 @@
             },
             "additionalProperties": false,
             "required": [
-              "rqid",
-              "name"
+              "rqid"
             ]
           },
           "points": {
@@ -207,10 +202,6 @@
             "type": "string",
             "default": ""
           },
-          "name": {
-            "type": "string",
-            "default": ""
-          },
           "bonus": {
             "type": [
               "integer",
@@ -220,8 +211,7 @@
         },
         "additionalProperties": false,
         "required": [
-          "rqid",
-          "name"
+          "rqid"
         ]
       },
       "title": "Hit locations",

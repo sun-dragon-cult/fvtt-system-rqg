@@ -15,7 +15,7 @@ describe("getDroppedDocumentRqidLink", () => {
       name: "Jump",
     } as any);
 
-    expect(result).toEqual({ rqid: "i.skill.jump", name: "Jump" });
+    expect(result).toEqual({ rqid: "i.skill.jump" });
   });
 
   it("prefixes journal pages with their parent journal rqid", () => {
@@ -29,7 +29,7 @@ describe("getDroppedDocumentRqidLink", () => {
       parent: {},
     } as any);
 
-    expect(result).toEqual({ rqid: "je.rulebook.jp.rule.page", name: "Page" });
+    expect(result).toEqual({ rqid: "je.rulebook.jp.rule.page" });
   });
 
   it("returns undefined for journal pages without a parent rqid", () => {
