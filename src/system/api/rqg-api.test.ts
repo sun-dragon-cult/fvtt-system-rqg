@@ -52,6 +52,7 @@ describe("game.system.api", () => {
           "fromRqidRegex": "function",
           "fromRqidRegexBest": "function",
           "getDefaultRqid": "function",
+          "nameFromRqid": "function",
           "renderRqidDocument": "function",
           "setDefaultRqid": "function",
           "setRqid": "function",

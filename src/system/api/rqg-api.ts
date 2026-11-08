@@ -43,6 +43,7 @@ export function createRqgApi() {
       fromRqidRegex: Rqid.fromRqidRegex.bind(Rqid),
       fromRqidRegexBest: Rqid.fromRqidRegexBest.bind(Rqid),
       fromRqidCount: Rqid.fromRqidCount.bind(Rqid),
+      nameFromRqid: Rqid.nameFromRqid.bind(Rqid),
       getDefaultRqid: Rqid.getDefaultRqid.bind(Rqid),
       setRqid: Rqid.setRqid.bind(Rqid),
       setDefaultRqid: Rqid.setDefaultRqid.bind(Rqid),
