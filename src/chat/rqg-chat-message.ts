@@ -23,7 +23,6 @@ import { ResistanceRoll } from "../rolls/resistance-roll/resistance-roll";
 
 import Roll = foundry.dice.Roll;
 
-import { templatePaths } from "../system/load-handlebars-templates";
 import { CombatChatMessageData } from "./data-model/combat-chat-message.data-model.ts";
 import type { CombatDataProperties } from "./data-model/combat-chat-message.types.ts";
 import { ResistanceRequestChatMessageData } from "./data-model/resistance-request-chat-message.data-model.ts";
@@ -34,7 +33,6 @@ import { SpellCastChatMessageData } from "./data-model/spell-cast-chat-message.d
 export class RqgChatMessage extends ChatMessage {
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
-    CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
     CONFIG.ChatMessage.dataModels["combat"] = CombatChatMessageData;
     CONFIG.ChatMessage.dataModels["resistanceRequest"] = ResistanceRequestChatMessageData;
