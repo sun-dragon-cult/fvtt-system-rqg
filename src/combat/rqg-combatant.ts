@@ -5,8 +5,8 @@ export class RqgCombatant extends Combatant {
     CONFIG.Combatant.documentClass = RqgCombatant;
   }
 
-  /** Collect unique actors from combatant documents and re-render their sheets. */
-  private static rerenderActorSheets(documents: Combatant.Implementation[]): void {
+  /** Rerender the apps of each actor among the combatants, as Combat#updateCombatantActors does. */
+  private static rerenderActors(documents: Combatant.Implementation[]): void {
     const actors = new Set<RqgActor>();
     for (const combatant of documents) {
       if (combatant.actor) {
@@ -14,7 +14,7 @@ export class RqgCombatant extends Combatant {
       }
     }
     for (const actor of actors) {
-      actor.sheet?.render();
+      actor.render();
     }
   }
 
@@ -26,7 +26,7 @@ export class RqgCombatant extends Combatant {
   ): Promise<void> {
     // @ts-expect-error TEMP(v14-types) base static hook expects stricter Stored and User shapes
     await Combatant._onCreateOperation(documents, operation, user);
-    RqgCombatant.rerenderActorSheets(documents);
+    RqgCombatant.rerenderActors(documents);
   }
 
   /**
@@ -63,7 +63,7 @@ export class RqgCombatant extends Combatant {
   ): Promise<void> {
     // @ts-expect-error TEMP(v14-types) base static hook expects stricter Stored and User shapes
     await Combatant._onDeleteOperation(documents, operation, user);
-    RqgCombatant.rerenderActorSheets(documents);
+    RqgCombatant.rerenderActors(documents);
   }
 
   /** @override Rerender actor sheets when combatant initiative changes. */
@@ -74,6 +74,6 @@ export class RqgCombatant extends Combatant {
   ): Promise<void> {
     // @ts-expect-error TEMP(v14-types) base static hook expects stricter Stored and User shapes
     await Combatant._onUpdateOperation(documents, operation, user);
-    RqgCombatant.rerenderActorSheets(documents);
+    RqgCombatant.rerenderActors(documents);
   }
 }
