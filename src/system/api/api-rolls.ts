@@ -20,8 +20,10 @@ import type { CastableSpell } from "../castable-spells";
 
 const logger = new RqgLogger("Api");
 
+/** @public since 6.2.0 */
 export type CharacteristicName = keyof Characteristics;
 
+/** @public since 6.2.0 */
 export type RollOptions = {
   /** Who rolls. Only needed when the item is given by name/id/rqid, or to pick the speaking token. */
   actor?: ActorRef;
@@ -86,6 +88,7 @@ export async function attack(
   await item.attack({ usage: options.usage });
 }
 
+/** @public since 6.2.0 */
 export type SpellRollOptions = RollOptions & {
   /** Points to cast with, defaults to the spell's points */
   levelUsed?: number;

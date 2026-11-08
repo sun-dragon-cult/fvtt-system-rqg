@@ -3,10 +3,12 @@ import { RqgLogger } from "../logging/rqg-logger";
 
 const logger = new RqgLogger("DataModelRepair");
 
+/** @public since 6.2.0 */
 export type DataModelRepairOptions = {
   autoReloadAfterFinish?: boolean;
 };
 
+/** @public since 6.2.0 */
 export type DataModelRepairResult = {
   needsReload: boolean;
 };

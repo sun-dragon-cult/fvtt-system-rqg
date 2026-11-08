@@ -45,7 +45,11 @@ export async function openRqidBatchEditor(...itemTypes: string[]): Promise<void>
   await RqidBatchEditor.factory(...types);
 }
 
-/** A migration of your own: gets the document, returns the update to apply, or nothing. */
+/**
+ * A migration of your own: gets the document, returns the update to apply, or nothing.
+ *
+ * @public since 6.2.0
+ */
 export type CustomMigration<TDocument, TUpdate> = (
   document: TDocument,
 ) => Promise<TUpdate | undefined>;
