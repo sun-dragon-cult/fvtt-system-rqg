@@ -597,17 +597,14 @@ describe("Rqid", () => {
     });
   });
   describe("nameFromRqid", () => {
-    function worldDoc(
-      rqid: string,
-      name: string,
-      priority: number,
-      lang = "en",
-      pages?: unknown[],
-    ) {
+    function worldDoc(rqid: string, name: string, priority: number, lang = "en", pages?: any[]) {
       return {
         name,
-        pages,
         getFlag: vi.fn().mockReturnValue({ id: rqid, priority, lang }),
+        ...(pages && {
+          getBestEmbeddedDocumentByRqid: (embedded: string) =>
+            pages.find((p: any) => p.getFlag().id === embedded),
+        }),
       };
     }
     function pack(documentName: string, entries: [string, string, number, string?][]) {
@@ -701,6 +698,30 @@ describe("Rqid", () => {
       ]);
       expect(Rqid.nameFromRqid("je..rules.jp..rule")).toBe("The Rule");
       expect(Rqid.nameFromRqid("je..pack-rules.jp..rule")).toBeUndefined();
+    });
+
+    it("shows the slug, marked missing, only when the link can't be resolved", () => {
+      const page = worldDoc("jp..rule", "The Rule", 0);
+      setGame(
+        [worldDoc("i.skill.jump", "Jump", 1)],
+        [pack("JournalEntry", [["je..pack-rules", "Pack Rules", 1]])],
+        undefined,
+        [worldDoc("je..rules", "Rules", 1, "en", [page])],
+      );
+      expect(Rqid.displayFromRqid("i.skill.jump")).toEqual({ name: "Jump", missing: false });
+      expect(Rqid.displayFromRqid("i.skill.gone")).toEqual({ name: "gone", missing: true });
+      expect(Rqid.displayFromRqid("je..rules.jp..rule")).toEqual({
+        name: "The Rule",
+        missing: false,
+      });
+      // A pack journal's pages can't be named, a world journal's can
+      expect(Rqid.displayFromRqid("je..pack-rules.jp..rule")).toEqual({
+        name: "rule",
+        missing: false,
+      });
+      expect(Rqid.displayFromRqid("je..rules.jp..gone")).toEqual({ name: "gone", missing: true });
+      expect(Rqid.displayFromRqid("je..gone.jp..rule")).toEqual({ name: "rule", missing: true });
+      expect(Rqid.displayFromRqid("")).toEqual({ name: "", missing: false });
     });
 
     it("reads the candidates again after the cache is cleared", () => {

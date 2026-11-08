@@ -164,12 +164,21 @@ export class Rqid {
 
     for (const documentName of new Set(Object.values(Rqid.documentNameLookup))) {
       for (const action of ["create", "update", "delete"]) {
-        onUntypedHook(`${action}${documentName}`, (document: Document.Any) => {
-          // Embedded documents (an actor's items) are never rqid targets
-          if (!document.parent) {
-            Rqid.nameCandidatesByDocumentName.delete(documentName);
-          }
-        });
+        onUntypedHook(
+          `${action}${documentName}`,
+          (document: Document.Any, changed?: Record<string, unknown>) => {
+            // Embedded documents (an actor's items) are never rqid targets
+            if (document.parent) {
+              return;
+            }
+            if (
+              action !== "update" ||
+              (changed && ("name" in changed || foundry.utils.hasProperty(changed, "flags.rqg")))
+            ) {
+              Rqid.nameCandidatesByDocumentName.delete(documentName);
+            }
+          },
+        );
       }
     }
   }
@@ -202,7 +211,7 @@ export class Rqid {
       return undefined;
     }
 
-    lang ??= game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
+    lang ??= Rqid.worldLanguage();
 
     const [worldItem, maxPackPriority] = await Promise.all([
       Rqid.documentFromWorld(rqid, lang),
@@ -212,7 +221,7 @@ export class Rqid {
 
     // If a world document exists and its priority is high enough, return it
     // without fetching pack documents.
-    if (worldItem && Rqid.worldWins(worldPriority, maxPackPriority)) {
+    if (worldItem && worldPriority >= maxPackPriority) {
       return worldItem;
     }
 
@@ -251,60 +260,81 @@ export class Rqid {
     if (!rqid) {
       return undefined;
     }
+    const chosen = Rqid.chooseNameCandidate(rqid, lang);
+    const embeddedRqid = Rqid.embeddedRqid(rqid);
+    return embeddedRqid ? Rqid.embeddedName(chosen, embeddedRqid) : chosen?.name;
+  }
+
+  /**
+   * What a link to `rqid` shows: the resolved name, or the rqid's last part when nothing matches
+   * (`missing`) or the page of a pack journal can't be named.
+   */
+  public static displayFromRqid(rqid: string | undefined): { name: string; missing: boolean } {
+    if (!rqid) {
+      return { name: "", missing: false };
+    }
+    const chosen = Rqid.chooseNameCandidate(rqid);
+    const embeddedRqid = Rqid.embeddedRqid(rqid);
+    const name = embeddedRqid ? Rqid.embeddedName(chosen, embeddedRqid) : chosen?.name;
+    if (name) {
+      return { name, missing: false };
+    }
+    return { name: rqid.split(".").at(-1)!, missing: !chosen || !!chosen.document };
+  }
+
+  private static chooseNameCandidate(rqid: string, lang?: string): RqidNameCandidate | undefined {
     const candidates = Rqid.getNameCandidates(rqid);
     if (!candidates?.length) {
       return undefined;
     }
-    lang ??= game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
-    const chosen =
+    lang ??= Rqid.worldLanguage();
+    return (
       Rqid.pickNameCandidate(candidates, lang) ??
       (lang.toLowerCase() !== CONFIG.RQG.fallbackLanguage
         ? Rqid.pickNameCandidate(candidates, CONFIG.RQG.fallbackLanguage)
-        : undefined);
-    const embeddedRqid = Rqid.embeddedRqid(rqid);
-    if (!embeddedRqid) {
-      return chosen?.name;
-    }
-    const pages = (chosen?.document as { pages?: Iterable<RqidEnabledDocument> } | undefined)
-      ?.pages;
-    for (const page of pages ?? []) {
-      if (Rqid.getDocumentFlag(page)?.id === embeddedRqid) {
-        return page.name ?? undefined;
-      }
-    }
-    return undefined;
+        : undefined)
+    );
   }
 
-  /** A world document wins over the packs when its priority is at least as high. */
-  private static worldWins(worldPriority: number, maxPackPriority: number): boolean {
-    return worldPriority >= maxPackPriority;
+  private static embeddedName(
+    parent: RqidNameCandidate | undefined,
+    embeddedRqid: string,
+  ): string | undefined {
+    const document = parent?.document as
+      | { getBestEmbeddedDocumentByRqid?: (rqid: string) => RqidEnabledDocument | undefined }
+      | undefined;
+    return document?.getBestEmbeddedDocumentByRqid?.(embeddedRqid)?.name ?? undefined;
   }
 
+  private static worldLanguage(): string {
+    return game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
+  }
+
+  /** Chooses as fromRqid does: the best world document unless a pack entry has higher priority. */
   private static pickNameCandidate(
     candidates: RqidNameCandidate[],
     lang: string,
   ): RqidNameCandidate | undefined {
-    const inLang = candidates.filter((c) => c.flags.lang === lang);
-    const worldBest = inLang
-      .filter((c) => c.document)
-      .reduce<RqidNameCandidate | undefined>(
-        (best, c) =>
-          !best || (c.flags.priority ?? -Infinity) > (best.flags.priority ?? -Infinity) ? c : best,
+    const priority = (c: RqidNameCandidate, missing: number) => c.flags.priority ?? missing;
+    const best = (list: RqidNameCandidate[], missing: number) =>
+      list.reduce<RqidNameCandidate | undefined>(
+        (b, c) => (!b || priority(c, missing) > priority(b, missing) ? c : b),
         undefined,
       );
+    const inLang = candidates.filter((c) => c.flags.lang === lang);
     const packCandidates = inLang.filter((c) => !c.document);
+    const worldBest = best(
+      inLang.filter((c) => c.document),
+      -Infinity,
+    );
     const maxPackPriority = Math.max(
       -Infinity,
-      ...packCandidates.map((c) => c.flags.priority ?? -Infinity),
+      ...packCandidates.map((c) => priority(c, -Infinity)),
     );
-    if (worldBest && Rqid.worldWins(worldBest.flags.priority ?? -Infinity, maxPackPriority)) {
+    if (worldBest && priority(worldBest, -Infinity) >= maxPackPriority) {
       return worldBest;
     }
-    const packBest = packCandidates.reduce<RqidNameCandidate | undefined>(
-      (best, c) => (!best || (c.flags.priority ?? 0) > (best.flags.priority ?? 0) ? c : best),
-      undefined,
-    );
-    return packBest ?? worldBest;
+    return best(packCandidates, 0) ?? worldBest;
   }
 
   /** documentName -> document rqid -> candidates in every language, rebuilt after changes. */

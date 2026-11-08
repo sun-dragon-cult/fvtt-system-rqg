@@ -146,7 +146,11 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     // other item type - no type-narrowing needed here.
     const boundSpiritActors = getBoundSpiritActors(this.document as unknown as PhysicalItem);
     const system = foundry.utils.duplicate(this.document._source.system) as {
-      matrixSpells?: (MatrixSpellStorageEntry & { isVariable?: boolean; storageIndex?: number })[];
+      matrixSpells?: (MatrixSpellStorageEntry & {
+        isVariable?: boolean;
+        storageIndex?: number;
+        spellName?: string;
+      })[];
     };
     if (system.matrixSpells) {
       // Only a variable spell's (e.g. Bladesharp 1-4) enchanted level is a per-matrix choice -
@@ -169,16 +173,13 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
             ...entry,
             isVariable: resolved?.system.isVariable ?? false,
             storageIndex: index,
+            spellName: RqidLink.displayName(entry.spellRqidLink?.rqid),
           };
         }),
       );
       // Displayed alphabetically; storageIndex keeps edit/unlink actions pointed at the real
       // array index.
-      system.matrixSpells.sort((a, b) =>
-        RqidLink.displayName(a.spellRqidLink?.rqid).localeCompare(
-          RqidLink.displayName(b.spellRqidLink?.rqid),
-        ),
-      );
+      system.matrixSpells.sort((a, b) => (a.spellName ?? "").localeCompare(b.spellName ?? ""));
     }
     return {
       id: this.document.id ?? "",

@@ -12,47 +12,45 @@ editBonusPropertyName: string - example "skillRqidLinks"
 --}}
 
 {{#if rqidLink.rqid}}
+  {{#with (rqidLinkDisplay rqidLink.rqid) as |shown|}}
   <div class="rqidlink">
     <a
-      class="rqid-content-link{{#if (rqidLinkMissing rqidLink.rqid)}} broken{{/if}}"
-      data-rqid-link="{{rqidLink.rqid}}"
-      data-document-type="{{rqidLink.documentType}}"
-      data-tooltip="{{#if (rqidLinkMissing rqidLink.rqid)}}{{localize 'RQG.Foundry.ContentLink.RqidLinkMissing' rqid=rqidLink.rqid}}{{else}}{{rqidLinkTooltip rqidLink.rqid}}{{/if}}"
-    >{{{rqidLinkIcon rqidLink.rqid}}}{{rqidLinkName rqidLink.rqid}}</a>
+      class="rqid-content-link{{#if shown.missing}} broken{{/if}}"
+      data-rqid-link="{{../rqidLink.rqid}}"
+      data-document-type="{{../rqidLink.documentType}}"
+      data-tooltip="{{#if shown.missing}}{{localize 'RQG.Foundry.ContentLink.RqidLinkMissing' rqid=../rqidLink.rqid}}{{else}}{{rqidLinkTooltip ../rqidLink.rqid}}{{/if}}"
+    >{{{rqidLinkIcon ../rqidLink.rqid}}}{{shown.name}}</a>
 
-    {{#if showBonus}}
-      {{#if editBonusPropertyName}}
+    {{#if ../showBonus}}
+      {{#if ../editBonusPropertyName}}
         +
-        <input type="number" value="{{rqidLink.bonus}}"
-               data-edit-bonus-property-name="{{editBonusPropertyName}}"
-               data-rqid="{{rqidLink.rqid}}">%
+        <input type="number" value="{{../rqidLink.bonus}}"
+               data-edit-bonus-property-name="{{../editBonusPropertyName}}"
+               data-rqid="{{../rqidLink.rqid}}">%
       {{else}}
-        <span>+{{rqidLink.bonus}}%</span>
+        <span>+{{../rqidLink.bonus}}%</span>
       {{/if}}
     {{/if}}
 
-    {{#if rqidLink.rqid}}
-      {{#if showDeleteFromPropertyName}}
-        <i
-          class="fas fa-times icon"
-          data-delete-rqid="{{rqidLink.rqid}}"
-          {{#if (or (eq rqidLinkIndex 0) rqidLinkIndex)}}data-delete-index="{{rqidLinkIndex}}"{{/if}}
-          data-delete-from-property="{{showDeleteFromPropertyName}}"
-          data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=rqidLink.rqid name=(rqidLinkName rqidLink.rqid)}}"
-        ></i>
-      {{/if}}
+    {{#if ../showDeleteFromPropertyName}}
+      <i
+        class="fas fa-times icon"
+        data-delete-rqid="{{../rqidLink.rqid}}"
+        {{#if (or (eq ../rqidLinkIndex 0) ../rqidLinkIndex)}}data-delete-index="{{../rqidLinkIndex}}"{{/if}}
+        data-delete-from-property="{{../showDeleteFromPropertyName}}"
+        data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=../rqidLink.rqid name=shown.name}}"
+      ></i>
     {{/if}}
 
-    {{#if rqidLink.rqid}}
-      {{#if showInfoCircleReplace}}
-        <i
-          class="fas fa-info-circle icon"
-          data-tooltip="{{localize showInfoCircleReplace}}"
-        ></i>
-      {{/if}}
+    {{#if ../showInfoCircleReplace}}
+      <i
+        class="fas fa-info-circle icon"
+        data-tooltip="{{localize ../showInfoCircleReplace}}"
+      ></i>
     {{/if}}
 
   </div>
+  {{/with}}
 
 {{else}}
 

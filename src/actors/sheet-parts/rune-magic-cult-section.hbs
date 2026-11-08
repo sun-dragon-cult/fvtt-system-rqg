@@ -2,8 +2,8 @@
   <header {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
     <h2 class="cult contextmenu">
       {{system.deity}}
-      {{#each system.runeRqidLinks}}
-        <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+      {{#each (sortRqidLinks system.runeRqidLinks)}}
+        <img class="rune" src="{{rqidImgSrc this.link.rqid}}" data-tooltip="{{this.name}}">
       {{/each}}
       {{#if hasAccessToRuneMagic}}
         {{#if (lte (difference @root.system.characteristics.charisma.value system.runePoints.max) -1)}}
@@ -89,8 +89,8 @@
               <img class="common" src="systems/rqg/assets/images/items/cult.svg"
                    data-tooltip="{{localize "RQG.Actor.RuneMagic.CommonRuneMagicTooltip"}}">
             {{/if}}
-            {{#each system.runeRqidLinks}}
-              <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+            {{#each (sortRqidLinks system.runeRqidLinks)}}
+              <img class="rune" src="{{rqidImgSrc this.link.rqid}}" data-tooltip="{{this.name}}">
             {{/each}}
           </div>
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"

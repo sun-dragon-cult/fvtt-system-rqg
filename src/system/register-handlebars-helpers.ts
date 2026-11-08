@@ -440,7 +440,7 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("rqidLinkName", (rqid: string) => RqidLink.displayName(rqid));
 
-  Handlebars.registerHelper("rqidLinkMissing", (rqid: string) => RqidLink.display(rqid).missing);
+  Handlebars.registerHelper("rqidLinkDisplay", (rqid: string) => RqidLink.display(rqid));
 
   Handlebars.registerHelper("sortRqidLinks", (links: { rqid: string }[] | undefined) =>
     RqidLink.sortedByName(links),

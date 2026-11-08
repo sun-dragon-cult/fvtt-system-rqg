@@ -114,7 +114,7 @@ async function migrateIsMatrixSpells() {
               system: {
                 matrixSpells: [
                   {
-                    spellRqidLink: { rqid, name: item.name },
+                    spellRqidLink: { rqid },
                     points: item.system.points,
                   },
                 ],

@@ -25,7 +25,7 @@ rqidLinkArray: RqidLink[]
             {{#if this.link.choice}}
             {{#if (lookup this.link.choice ../checkedProperty)}}checked{{/if}}
             {{/if}}
-            data-tooltip="{{localize ../title name=(rqidLinkName this.link.rqid)}}"
+            data-tooltip="{{localize ../title name=this.name}}"
             />
     {{> rqidLink
         rqidLink=this.link

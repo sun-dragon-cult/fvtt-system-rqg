@@ -57,7 +57,7 @@ export function normalizeSourceRqidLinks(sourceLinks: unknown): NormalizedRqidLi
       if (!rqid) {
         return undefined;
       }
-      const normalizedLink: NormalizedRqidLink = { rqid: rqid };
+      const normalizedLink: NormalizedRqidLink = { rqid };
       const bonus = Number(sourceRqidLink?.bonus);
       if (Number.isFinite(bonus)) {
         normalizedLink.bonus = bonus;

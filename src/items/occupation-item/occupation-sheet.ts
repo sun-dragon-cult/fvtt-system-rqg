@@ -96,10 +96,11 @@ export class OccupationSheet extends RqgItemSheet {
       skillsJoined: occupationalSkills
         .map((skill: OccupationalSkill) => {
           const bonus = `${skill.bonus >= 0 ? "+" : ""}${skill.bonus}%`;
+          const name = RqidLink.displayName(skill.skillRqidLink?.rqid);
           if (skill.incomeSkill) {
-            return `<span class="income-skill-text">${RqidLink.displayName(skill.skillRqidLink?.rqid)} ${bonus}</span>`;
+            return `<span class="income-skill-text">${name} ${bonus}</span>`;
           } else {
-            return `<span>${RqidLink.displayName(skill.skillRqidLink?.rqid)} ${bonus}</span>`;
+            return `<span>${name} ${bonus}</span>`;
           }
         })
         .join(", "),
