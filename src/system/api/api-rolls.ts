@@ -93,7 +93,8 @@ export type SpellRollOptions = RollOptions & {
 
 /**
  * Cast a spirit magic spell. The spell can be given as one of the `CastableSpell`s from
- * `actor.getCastableSpells()`, which also covers spells from Allied Spirits, bound spirits and matrices.
+ * `actor.getCastableSpells()`, which also covers spells from Allied Spirits, bound spirits and matrices,
+ * and is cast by that actor.
  * Returns the roll when `skipDialog` is set and the spell was cast.
  */
 export async function spiritMagic(
@@ -149,14 +150,22 @@ function isCastableSpell(ref: ItemRef | CastableSpell): ref is CastableSpell {
   return typeof ref === "object" && "source" in ref && !("documentName" in ref);
 }
 
-/** The caster defaults to the owner of a given spell item, else the selected token. */
+/**
+ * The caster defaults to the owner of a given spell item, or the actor a `CastableSpell` was listed
+ * for, else the selected token.
+ */
 function resolveCaster(
   ref: ItemRef | CastableSpell,
   actorRef: ActorRef | undefined,
 ): { actor: RqgActor; token: TokenDocument | null } {
-  if (actorRef == null && typeof ref !== "string" && !isCastableSpell(ref) && ref.actor) {
-    const actor = ref.actor as RqgActor;
-    return { actor, token: actor.token ?? null };
+  if (actorRef == null && typeof ref !== "string") {
+    if (isCastableSpell(ref)) {
+      return resolveActor(ref.casterUuid || undefined);
+    }
+    if (ref.actor) {
+      const actor = ref.actor as RqgActor;
+      return { actor, token: actor.token ?? null };
+    }
   }
   return resolveActor(actorRef);
 }
@@ -166,6 +175,12 @@ async function resolveSpell<T extends SpiritMagicItem | RuneMagicItem>(
   ref: ItemRef | CastableSpell,
   type: string,
 ): Promise<T> {
+  // A listed spell is cast by the actor it was listed for
+  if (isCastableSpell(ref) && ref.casterUuid && caster.uuid !== ref.casterUuid) {
+    return logger.throw(
+      `"${ref.name}" is from the castable spells of ${ref.casterUuid}, not of "${caster.name}"`,
+    );
+  }
   if (typeof ref !== "string" && !isCastableSpell(ref)) {
     return resolveItem<T>(ref.actor as RqgActor, ref, [type]);
   }
@@ -173,13 +188,21 @@ async function resolveSpell<T extends SpiritMagicItem | RuneMagicItem>(
   if (ownMatch?.type === type) {
     return ownMatch as T;
   }
-  const spell = isCastableSpell(ref) ? ref : findCastableSpellByName(caster, ref, type);
+  const spell = isCastableSpell(ref) ? ref : await findCastableSpellByName(caster, ref, type);
   if (!spell || spell.type !== type) {
     return logger.throw(`No ${type} spell "${isCastableSpell(ref) ? ref.name : ref}" found`);
   }
   if (spell.matrix) {
     const matrixItem = caster.items.get(spell.matrix.itemId) as PhysicalItem | undefined;
-    const item = matrixItem && (await resolveMatrixSpellItem(matrixItem, spell.matrix.entryIndex));
+    // A kept list can be stale: the matrix unequipped, or its entries changed since
+    const entry = matrixItem?.system.matrixSpells?.[spell.matrix.entryIndex];
+    if (
+      matrixItem?.system.equippedStatus !== "equipped" ||
+      (entry?.spellRqidLink?.rqid || undefined) !== spell.rqid
+    ) {
+      return logger.throw(`"${spell.name}" is no longer in an equipped matrix`);
+    }
+    const item = await resolveMatrixSpellItem(matrixItem, spell.matrix.entryIndex);
     if (!item) {
       return logger.throw(`Could not resolve matrix spell "${spell.name}"`);
     }
@@ -192,12 +215,12 @@ async function resolveSpell<T extends SpiritMagicItem | RuneMagicItem>(
   return item as T;
 }
 
-function findCastableSpellByName(
+async function findCastableSpellByName(
   caster: RqgActor,
   name: string,
   type: string,
-): CastableSpell | undefined {
-  const candidates = caster.getCastableSpells().filter((s) => s.type === type);
+): Promise<CastableSpell | undefined> {
+  const candidates = (await caster.getCastableSpells()).filter((s) => s.type === type);
   const lowerName = name.toLowerCase();
   return (
     candidates.find((s) => s.name === name) ??

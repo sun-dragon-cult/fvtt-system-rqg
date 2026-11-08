@@ -889,7 +889,7 @@ export function getTokenFromItem(item: RqgItem | PartialAbilityItem): SpeakerTok
   const token = getTokenFromActor(item.parent as RqgActor | null | undefined);
 
   if (token) {
-    return token;
+    return token as SpeakerToken;
   } else {
     return (item as PartialAbilityItem).actingToken as SpeakerToken | undefined;
   }
@@ -906,7 +906,7 @@ export function getTokenOrActorFromItem(
   const token = getTokenFromActor(item.parent as RqgActor | null | undefined);
 
   if (token) {
-    return token;
+    return token as SpeakerToken;
   } else if ((item as PartialAbilityItem).actingToken) {
     return (item as PartialAbilityItem).actingToken as SpeakerToken;
   } else {
@@ -916,27 +916,36 @@ export function getTokenOrActorFromItem(
 
 /**
  * Get the token that is associated with actor, by looking at the tokens in the active scene.
+ * `linked` leaves out unlinked copies of a world actor, whose actor is a different document.
  */
-export function getTokenFromActor(actor: RqgActor | undefined | null): SpeakerToken | undefined {
+export function getTokenFromActor(
+  actor: RqgActor | undefined | null,
+  { linked = false }: { linked?: boolean } = {},
+): TokenDocument | undefined {
   if (!actor) {
     return undefined;
   }
 
   // Synthetic token actors resolve to their owning TokenDocument even when canvas is not ready.
   if (actor.token) {
-    return actor.token as SpeakerToken;
+    return actor.token as TokenDocument;
   }
 
   // Prefer tokens in the current viewed scene, mirroring ChatMessage speaker inference.
   if (canvas?.ready && canvas.scene) {
-    const dependentTokensInScene = actor.getDependentTokens({ scenes: canvas.scene });
+    const scene = canvas.scene;
+    // Like Actor#getActiveTokens, skip a just-deleted token still in the dependents
+    const dependentTokensInScene = actor
+      .getDependentTokens({ scenes: scene, linked })
+      .filter((tokenDoc) => tokenDoc === scene.tokens.get(tokenDoc.id ?? ""));
     const controlledToken = dependentTokensInScene.find((tokenDoc) => tokenDoc.object?.controlled);
-    return (controlledToken ?? dependentTokensInScene[0]) as SpeakerToken | undefined;
+    return (controlledToken ?? dependentTokensInScene[0]) as TokenDocument | undefined;
   }
 
   return (
-    (game.scenes?.current?.tokens.find((tokenDoc) => tokenDoc.actorId === actor.id) as
-      SpeakerToken | undefined) ?? undefined
+    (game.scenes?.current?.tokens.find(
+      (tokenDoc) => tokenDoc.actorId === actor.id && (!linked || tokenDoc.actorLink),
+    ) as TokenDocument | undefined) ?? undefined
   );
 }
 

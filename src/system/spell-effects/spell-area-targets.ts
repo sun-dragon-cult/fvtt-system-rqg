@@ -40,7 +40,7 @@ export function casterTokenOnScene(
   token: TokenDocument | null | undefined,
   casterActor: RqgActor,
 ): foundry.canvas.placeables.Token | undefined {
-  const casterToken = token ?? (getTokenFromActor(casterActor) as TokenDocument | undefined);
+  const casterToken = token ?? getTokenFromActor(casterActor, { linked: true });
   const caster = casterToken?.object;
   return caster && canvas?.ready && casterToken.parent === canvas.scene ? caster : undefined;
 }
