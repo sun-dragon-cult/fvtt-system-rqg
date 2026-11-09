@@ -205,28 +205,32 @@
                   "default": 0,
                   "title": "Attack",
                   "description": "Added to the attack chance.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "parry": {
                   "type": "integer",
                   "default": 0,
                   "title": "Parry",
                   "description": "Added to the parry chance.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "magicDamage": {
                   "type": "integer",
                   "default": 0,
                   "title": "Magic damage",
                   "description": "Flat magical damage added to the damage roll.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "magicDamageDice": {
                   "type": "string",
                   "default": "",
                   "title": "Magic damage dice",
                   "description": "Magical damage dice added to the damage roll.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 }
               },
               "additionalProperties": false,
@@ -247,28 +251,32 @@
                   "default": 0,
                   "title": "Attack",
                   "description": "Added to the attack chance.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "parry": {
                   "type": "integer",
                   "default": 0,
                   "title": "Parry",
                   "description": "Added to the parry chance.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "magicDamage": {
                   "type": "integer",
                   "default": 0,
                   "title": "Magic damage",
                   "description": "Flat magical damage added to the damage roll.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "magicDamageDice": {
                   "type": "string",
                   "default": "",
                   "title": "Magic damage dice",
                   "description": "Magical damage dice added to the damage roll.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 }
               },
               "additionalProperties": false,
@@ -302,7 +310,8 @@
                   "default": 1,
                   "title": "Damage multiplier",
                   "description": "Number the weapon dice are multiplied by.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 }
               },
               "additionalProperties": false,
@@ -321,7 +330,8 @@
                   "default": 1,
                   "title": "Damage multiplier",
                   "description": "Number the weapon dice are multiplied by.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 }
               },
               "additionalProperties": false,
@@ -351,7 +361,8 @@
                   "default": "",
                   "title": "Damage",
                   "description": "Damage dice that replace the missile's own, for example from Firearrow.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 }
               },
               "additionalProperties": false,
@@ -377,7 +388,7 @@
         "override"
       ],
       "title": "Effects",
-      "description": "Calculated values that active effects change. Never stored."
+      "description": "Targets for Active Effects on this weapon. They are reset every time the weapon is prepared and are never stored."
     },
     "usage": {
       "type": "object",

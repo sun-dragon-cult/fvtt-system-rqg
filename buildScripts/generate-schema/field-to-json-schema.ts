@@ -136,9 +136,12 @@ export function schemaToJsonSchema(
     if (text?.hint) {
       node["description"] = text.hint;
     }
-    // Foundry's `persisted: false` marks values calculated on every prepare, never stored.
+    // Not `readOnly`: the pads under `effect` are not stored either, but Active Effects write to them.
     if (fieldOptions(field)["persisted"] === false) {
-      node["readOnly"] = true;
+      node["x-rqg-stored"] = false;
+      if (fieldPath[0] === "effect") {
+        node["x-rqg-effectTarget"] = true;
+      }
     }
     properties[key] = node;
     if (!isNullable(fieldOptions(field))) {

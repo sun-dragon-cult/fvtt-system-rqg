@@ -238,7 +238,7 @@
       "default": 0,
       "title": "Chance",
       "description": "The chance used when casting: the strongest of the spell's runes. Calculated, never stored.",
-      "readOnly": true
+      "x-rqg-stored": false
     }
   },
   "additionalProperties": false,

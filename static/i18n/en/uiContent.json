@@ -227,7 +227,7 @@
               },
               "max": {
                 "label": "Maximum magic points",
-                "hint": "Calculated from POW plus effects, never stored. To change it, add an Active Effect that writes to system.effect.add.magicPoints.max."
+                "hint": "Calculated from POW plus effects, never stored. To change it with an effect, write to system.effect.add.magicPoints.max."
               }
             },
             "magicPointRecoveryRateFactor": {
@@ -245,7 +245,7 @@
               },
               "max": {
                 "label": "Maximum hit points",
-                "hint": "Calculated from CON, SIZ and POW plus effects, never stored. To change it, add an Active Effect that writes to system.effect.add.hitPoints.max."
+                "hint": "Calculated from CON, SIZ and POW plus effects, never stored. To change it with an effect, write to system.effect.add.hitPoints.max."
               }
             },
             "healingSettledWorldTime": {
@@ -365,7 +365,7 @@
           },
           "effect": {
             "label": "Effects",
-            "hint": "Calculated pads that Active Effects write to. They are reset to 0 (1 for multipliers) every time the character is prepared and are never stored. The calculated values read them, so use these as targets for effects instead of writing to the calculated values.",
+            "hint": "Targets for Active Effects. They are reset to 0 (1 for multipliers) every time the character is prepared and are never stored. The calculated values read them, so an effect that changes a calculated value writes here instead of to the value itself.",
             "multiply": {
               "label": "Multipliers",
               "healingRate": {
@@ -2088,7 +2088,7 @@
         "FIELDS": {
           "effect": {
             "label": "Effects",
-            "hint": "Calculated values that active effects change. Never stored.",
+            "hint": "Targets for Active Effects on this weapon. They are reset every time the weapon is prepared and are never stored.",
             "add": {
               "label": "Added",
               "hint": "Values added to the weapon's own.",

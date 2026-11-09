@@ -127,14 +127,14 @@
       "default": 0,
       "title": "Category modifier",
       "description": "The character's modifier for this skill's category. Calculated, never stored.",
-      "readOnly": true
+      "x-rqg-stored": false
     },
     "chance": {
       "type": "integer",
       "default": 0,
       "title": "Chance",
       "description": "The chance used when rolling: base and gained chance plus the category modifier and other modifiers. Calculated, never stored.",
-      "readOnly": true
+      "x-rqg-stored": false
     }
   },
   "additionalProperties": false,

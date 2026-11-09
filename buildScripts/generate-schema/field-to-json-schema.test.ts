@@ -129,10 +129,27 @@ describe("schemaToJsonSchema labels and calculated fields", () => {
     expect(schema.properties.hitPoints.properties.value.title).toBeUndefined();
   });
 
-  it("marks persisted: false fields as readOnly, with or without a describer", () => {
+  it("marks persisted: false fields as not stored, with or without a describer", () => {
     const schema = schemaToJsonSchema(fields) as any;
 
-    expect(schema.properties.hitPoints.properties.max.readOnly).toBe(true);
-    expect(schema.properties.hitPoints.properties.value.readOnly).toBeUndefined();
+    expect(schema.properties.hitPoints.properties.max["x-rqg-stored"]).toBe(false);
+    expect(schema.properties.hitPoints.properties.max["x-rqg-effectTarget"]).toBeUndefined();
+    expect(schema.properties.hitPoints.properties.value["x-rqg-stored"]).toBeUndefined();
+  });
+
+  it("marks not stored fields under effect as effect targets", () => {
+    const schema = schemaToJsonSchema({
+      ...fields,
+      effect: new SchemaFieldShim({
+        add: new SchemaFieldShim({
+          hitPoints: new NumberFieldShim({ integer: true, initial: 0, persisted: false }),
+        }),
+      }),
+    }) as any;
+
+    expect(schema.properties.effect.properties.add.properties.hitPoints).toMatchObject({
+      "x-rqg-stored": false,
+      "x-rqg-effectTarget": true,
+    });
   });
 });
