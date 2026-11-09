@@ -724,6 +724,52 @@ describe("Rqid", () => {
       expect(Rqid.displayFromRqid("")).toEqual({ name: "", missing: false });
     });
 
+    it("names a link nothing else resolves from the owning actor's items", () => {
+      setGame([worldDoc("i.skill.jump", "Jump", 1)], []);
+      const actor = {
+        getBestEmbeddedDocumentByRqid: (rqid: string) =>
+          rqid === "i.skill.tail-lash" ? { name: "Tail Lash" } : undefined,
+      } as any;
+      expect(Rqid.displayFromRqid("i.skill.tail-lash", actor)).toEqual({
+        name: "Tail Lash",
+        missing: false,
+      });
+      expect(Rqid.displayFromRqid("i.skill.jump", actor)).toEqual({ name: "Jump", missing: false });
+      expect(Rqid.displayFromRqid("i.skill.gone", actor)).toEqual({ name: "gone", missing: true });
+    });
+
+    it("indexes an unindexed pack once and survives a failing one", async () => {
+      let resolveIndex!: () => void;
+      const slow = {
+        ...pack("Item", [["i.skill.jump", "Jump", 1]]),
+        collection: "slow",
+        indexed: false,
+        getIndex: vi.fn(() => new Promise<void>((r) => (resolveIndex = r))),
+      };
+      const broken = {
+        ...pack("Item", []),
+        collection: "broken",
+        indexed: false,
+        getIndex: vi.fn().mockRejectedValue(new Error("boom")),
+      };
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      setGame([], [slow, broken]);
+
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBeUndefined();
+      (Rqid as any).nameCandidatesByDocumentName.clear();
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBeUndefined();
+      expect(slow.getIndex).toHaveBeenCalledTimes(1);
+
+      const ready = Rqid.indexPacksForNames();
+      slow.indexed = true;
+      resolveIndex();
+      await expect(ready).resolves.toBeUndefined();
+      expect(slow.getIndex).toHaveBeenCalledTimes(1);
+      expect(warn).toHaveBeenCalled();
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBe("Jump");
+      warn.mockRestore();
+    });
+
     it("reads the candidates again after the cache is cleared", () => {
       const items = [worldDoc("i.skill.jump", "Old", 1)];
       setGame(items, []);

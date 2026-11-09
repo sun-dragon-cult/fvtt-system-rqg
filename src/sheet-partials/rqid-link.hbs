@@ -12,7 +12,7 @@ editBonusPropertyName: string - example "skillRqidLinks"
 --}}
 
 {{#if rqidLink.rqid}}
-  {{#with (rqidLinkDisplay rqidLink.rqid) as |shown|}}
+  {{#with (rqidLinkDisplay rqidLink.rqid @root.uuid) as |shown|}}
   <div class="rqidlink">
     <a
       class="rqid-content-link{{#if shown.missing}} broken{{/if}}"

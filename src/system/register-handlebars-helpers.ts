@@ -440,7 +440,17 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("rqidLinkName", (rqid: string) => RqidLink.displayName(rqid));
 
-  Handlebars.registerHelper("rqidLinkDisplay", (rqid: string) => RqidLink.display(rqid));
+  // ownerUuid: the sheet's document; its actor's items name links nothing else resolves.
+  // Resolve the actor part, as fromUuidSync can't reach items of compendium actors.
+  Handlebars.registerHelper("rqidLinkDisplay", (rqid: string, ownerUuid: unknown) => {
+    const actorUuid =
+      typeof ownerUuid === "string" ? /^(.*?\bActor\.[^.]+)/.exec(ownerUuid)?.[1] : undefined;
+    const actor = actorUuid ? fromUuidSync(actorUuid, { strict: false }) : undefined;
+    return RqidLink.display(
+      rqid,
+      actor instanceof Actor ? (actor as unknown as RqgActor) : undefined,
+    );
+  });
 
   Handlebars.registerHelper("sortRqidLinks", (links: { rqid: string }[] | undefined) =>
     RqidLink.sortedByName(links),

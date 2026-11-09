@@ -1,4 +1,5 @@
 import { Rqid } from "../../system/api/rqid-api";
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import { isValidRqidString } from "../../system/api/rqid-validation";
 import {
   getDomDataset,
@@ -20,8 +21,8 @@ export class RqidLink<R extends string = string> {
     this.rqid = rqid;
   }
 
-  static display(rqid: string | undefined): RqidLinkDisplay {
-    return Rqid.displayFromRqid(rqid);
+  static display(rqid: string | undefined, actor?: RqgActor | null): RqidLinkDisplay {
+    return Rqid.displayFromRqid(rqid, actor);
   }
 
   static displayName(rqid: string | undefined): string {

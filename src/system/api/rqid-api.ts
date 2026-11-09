@@ -29,6 +29,7 @@ import type { HomelandItem } from "@item-model/homeland-data-model.ts";
 import type { OccupationItem } from "@item-model/occupation-data-model.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RqidEnabledDocument } from "../../global";
+import type { RqgActor } from "@actors/rqg-actor.ts";
 
 // Add a map from item-document-type (the second segment of an `i.xxx.yyy` rqid) to concrete TS types.
 // Extend this map with more concrete item types as you add them.
@@ -171,10 +172,7 @@ export class Rqid {
             if (document.parent) {
               return;
             }
-            if (
-              action !== "update" ||
-              (changed && ("name" in changed || foundry.utils.hasProperty(changed, "flags.rqg")))
-            ) {
+            if (action !== "update" || (changed && ("name" in changed || "flags" in changed))) {
               Rqid.nameCandidatesByDocumentName.delete(documentName);
             }
           },
@@ -189,9 +187,29 @@ export class Rqid {
    */
   public static async indexPacksForNames(): Promise<void> {
     await Promise.all(
-      (game.packs?.contents ?? []).filter((pack) => !pack.indexed).map((pack) => pack.getIndex()),
+      (game.packs?.contents ?? []).filter((pack) => !pack.indexed).map(Rqid.indexPackForNames),
     );
     Rqid.nameCandidatesByDocumentName.clear();
+  }
+
+  private static readonly packIndexing = new Map<string, Promise<void>>();
+
+  /** Indexes `pack` once, then drops the name cache for its document type. Never rejects. */
+  private static indexPackForNames(pack: CompendiumCollection.Any): Promise<void> {
+    let indexing = Rqid.packIndexing.get(pack.collection);
+    if (!indexing) {
+      indexing = pack
+        .getIndex()
+        .then(() => {
+          Rqid.nameCandidatesByDocumentName.delete(pack.documentClass.documentName);
+        })
+        .catch((error: unknown) => {
+          console.warn(`RQG | Could not index pack ${pack.collection} for rqid names`, error);
+        })
+        .finally(() => Rqid.packIndexing.delete(pack.collection));
+      Rqid.packIndexing.set(pack.collection, indexing);
+    }
+    return indexing;
   }
 
   /**
@@ -257,29 +275,44 @@ export class Rqid {
    * name when its journal is a world document: pack indexes don't hold page names.
    */
   public static nameFromRqid(rqid: string | undefined, lang?: string): string | undefined {
-    if (!rqid) {
-      return undefined;
-    }
-    const chosen = Rqid.chooseNameCandidate(rqid, lang);
-    const embeddedRqid = Rqid.embeddedRqid(rqid);
-    return embeddedRqid ? Rqid.embeddedName(chosen, embeddedRqid) : chosen?.name;
+    return rqid ? Rqid.resolveName(rqid, lang).name : undefined;
   }
 
   /**
    * What a link to `rqid` shows: the resolved name, or the rqid's last part when nothing matches
-   * (`missing`) or the page of a pack journal can't be named.
+   * (`missing`) or the page of a pack journal can't be named. When nothing else matches, an item
+   * on `actor` (the owner of the item holding the link) names it.
    */
-  public static displayFromRqid(rqid: string | undefined): { name: string; missing: boolean } {
+  public static displayFromRqid(
+    rqid: string | undefined,
+    actor?: RqgActor | null,
+  ): { name: string; missing: boolean } {
     if (!rqid) {
       return { name: "", missing: false };
     }
-    const chosen = Rqid.chooseNameCandidate(rqid);
-    const embeddedRqid = Rqid.embeddedRqid(rqid);
-    const name = embeddedRqid ? Rqid.embeddedName(chosen, embeddedRqid) : chosen?.name;
+    const { chosen, name } = Rqid.resolveName(rqid);
     if (name) {
       return { name, missing: false };
     }
+    const actorItemName = chosen
+      ? undefined
+      : actor?.getBestEmbeddedDocumentByRqid(rqid as RqidString)?.name;
+    if (actorItemName) {
+      return { name: actorItemName, missing: false };
+    }
     return { name: rqid.split(".").at(-1)!, missing: !chosen || !!chosen.document };
+  }
+
+  private static resolveName(
+    rqid: string,
+    lang?: string,
+  ): { chosen: RqidNameCandidate | undefined; name: string | undefined } {
+    const chosen = Rqid.chooseNameCandidate(rqid, lang);
+    const embeddedRqid = Rqid.embeddedRqid(rqid);
+    return {
+      chosen,
+      name: embeddedRqid ? Rqid.embeddedName(chosen, embeddedRqid) : chosen?.name,
+    };
   }
 
   private static chooseNameCandidate(rqid: string, lang?: string): RqidNameCandidate | undefined {
@@ -384,8 +417,7 @@ export class Rqid {
         continue;
       }
       if (!pack.indexed) {
-        // Indexed with the rqid flags later; rebuild then
-        void pack.getIndex().then(() => Rqid.nameCandidatesByDocumentName.delete(documentName));
+        void Rqid.indexPackForNames(pack);
         continue;
       }
       for (const entry of pack.index.values() as Iterable<RqidIndexEntry>) {
