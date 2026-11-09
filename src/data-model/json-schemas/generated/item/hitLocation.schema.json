@@ -115,7 +115,7 @@
       "default": 0,
       "title": "Armor points",
       "description": "Natural armor points plus what equipped armor adds. Calculated, never stored.",
-      "readOnly": true
+      "x-rqg-stored": false
     }
   },
   "additionalProperties": false,

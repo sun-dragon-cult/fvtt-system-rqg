@@ -549,8 +549,8 @@
               "type": "integer",
               "default": 0,
               "title": "Maximum magic points",
-              "description": "Calculated from POW plus effects, never stored. To change it, add an Active Effect that writes to system.effect.add.magicPoints.max.",
-              "readOnly": true
+              "description": "Calculated from POW plus effects, never stored. To change it with an effect, write to system.effect.add.magicPoints.max.",
+              "x-rqg-stored": false
             }
           },
           "additionalProperties": false,
@@ -589,8 +589,8 @@
               "type": "integer",
               "default": 0,
               "title": "Maximum hit points",
-              "description": "Calculated from CON, SIZ and POW plus effects, never stored. To change it, add an Active Effect that writes to system.effect.add.hitPoints.max.",
-              "readOnly": true
+              "description": "Calculated from CON, SIZ and POW plus effects, never stored. To change it with an effect, write to system.effect.add.hitPoints.max.",
+              "x-rqg-stored": false
             }
           },
           "additionalProperties": false,
@@ -700,21 +700,21 @@
               "default": 0,
               "title": "Movement",
               "description": "Calculated from the movement rate of the current movement mode.",
-              "readOnly": true
+              "x-rqg-stored": false
             },
             "equipped": {
               "type": "number",
               "default": 0,
               "title": "Movement when equipped",
               "description": "Calculated: the movement reduced by the equipped encumbrance over the limit.",
-              "readOnly": true
+              "x-rqg-stored": false
             },
             "travel": {
               "type": "number",
               "default": 0,
               "title": "Movement when traveling",
               "description": "Calculated: the movement reduced by the travel encumbrance over the limit.",
-              "readOnly": true
+              "x-rqg-stored": false
             }
           },
           "additionalProperties": false,
@@ -737,21 +737,21 @@
               "default": 0,
               "title": "Maximum encumbrance",
               "description": "Calculated from STR, CON and the carrying factor of the current movement mode.",
-              "readOnly": true
+              "x-rqg-stored": false
             },
             "equipped": {
               "type": "number",
               "default": 0,
               "title": "Equipped encumbrance",
               "description": "Calculated from the equipped items.",
-              "readOnly": true
+              "x-rqg-stored": false
             },
             "travel": {
               "type": "number",
               "default": 0,
               "title": "Travel encumbrance",
               "description": "Calculated from the carried and equipped items.",
-              "readOnly": true
+              "x-rqg-stored": false
             }
           },
           "additionalProperties": false,
@@ -769,7 +769,7 @@
           ],
           "title": "DEX strike rank",
           "description": "Calculated from DEX plus effect.add.strikeRank. null when DEX is not set.",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "sizStrikeRank": {
           "type": [
@@ -778,14 +778,14 @@
           ],
           "title": "SIZ strike rank",
           "description": "Calculated from SIZ. null when SIZ is not set.",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "damageBonus": {
           "type": "string",
           "default": "",
           "title": "Damage bonus",
           "description": "Calculated from STR and SIZ, as a dice expression like 1d4.",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "healingRate": {
           "type": [
@@ -794,35 +794,35 @@
           ],
           "title": "Healing rate",
           "description": "Calculated from CON, times effect.multiply.healingRate.",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "spiritCombatDamage": {
           "type": "string",
           "default": "",
           "title": "Spirit combat damage",
           "description": "Calculated from POW and CHA, as a dice expression.",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "magicPointRecoveryPointsPerDay": {
           "type": "number",
           "default": 0,
           "title": "Magic points recovered per day",
           "description": "Calculated from the maximum magic points and the recovery rate.",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "magicPointRecoveryHoursPerPoint": {
           "type": "number",
           "default": 0,
           "title": "Hours per recovered magic point",
           "description": "Calculated together with the minutes per point.",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "magicPointRecoveryMinutesPerPoint": {
           "type": "number",
           "default": 0,
           "title": "Minutes per recovered magic point",
           "description": "Calculated together with the hours per point.",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "heroPoints": {
           "type": "integer",
@@ -849,7 +849,7 @@
           "default": "healthy",
           "title": "Health status",
           "description": "Calculated from the hit locations and hit points, never stored.",
-          "readOnly": true
+          "x-rqg-stored": false
         }
       },
       "additionalProperties": false,
@@ -877,73 +877,73 @@
           "type": "integer",
           "default": 0,
           "title": "Agility",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "communication": {
           "type": "integer",
           "default": 0,
           "title": "Communication",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "knowledge": {
           "type": "integer",
           "default": 0,
           "title": "Knowledge",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "magic": {
           "type": "integer",
           "default": 0,
           "title": "Magic",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "manipulation": {
           "type": "integer",
           "default": 0,
           "title": "Manipulation",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "perception": {
           "type": "integer",
           "default": 0,
           "title": "Perception",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "stealth": {
           "type": "integer",
           "default": 0,
           "title": "Stealth",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "meleeWeapons": {
           "type": "integer",
           "default": 0,
           "title": "Melee Weapons",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "missileWeapons": {
           "type": "integer",
           "default": 0,
           "title": "Missile Weapons",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "shields": {
           "type": "integer",
           "default": 0,
           "title": "Shields",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "naturalWeapons": {
           "type": "integer",
           "default": 0,
           "title": "Natural Weapons",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "otherSkills": {
           "type": "integer",
           "default": 0,
           "title": "Other Skills",
-          "readOnly": true
+          "x-rqg-stored": false
         }
       },
       "additionalProperties": false,
@@ -971,73 +971,73 @@
           "type": "integer",
           "default": 0,
           "title": "Agility",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "communication": {
           "type": "integer",
           "default": 0,
           "title": "Communication",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "knowledge": {
           "type": "integer",
           "default": 0,
           "title": "Knowledge",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "magic": {
           "type": "integer",
           "default": 0,
           "title": "Magic",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "manipulation": {
           "type": "integer",
           "default": 0,
           "title": "Manipulation",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "perception": {
           "type": "integer",
           "default": 0,
           "title": "Perception",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "stealth": {
           "type": "integer",
           "default": 0,
           "title": "Stealth",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "meleeWeapons": {
           "type": "integer",
           "default": 0,
           "title": "Melee Weapons",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "missileWeapons": {
           "type": "integer",
           "default": 0,
           "title": "Missile Weapons",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "shields": {
           "type": "integer",
           "default": 0,
           "title": "Shields",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "naturalWeapons": {
           "type": "integer",
           "default": 0,
           "title": "Natural Weapons",
-          "readOnly": true
+          "x-rqg-stored": false
         },
         "otherSkills": {
           "type": "integer",
           "default": 0,
           "title": "Other Skills",
-          "readOnly": true
+          "x-rqg-stored": false
         }
       },
       "additionalProperties": false,
@@ -1069,7 +1069,8 @@
               "default": 1,
               "title": "Healing rate multiplier",
               "description": "Multiplies the calculated healing rate.",
-              "readOnly": true
+              "x-rqg-stored": false,
+              "x-rqg-effectTarget": true
             }
           },
           "additionalProperties": false,
@@ -1086,7 +1087,8 @@
               "default": 0,
               "title": "Strike rank modifier",
               "description": "Added to the DEX strike rank.",
-              "readOnly": true
+              "x-rqg-stored": false,
+              "x-rqg-effectTarget": true
             },
             "magicPoints": {
               "type": "object",
@@ -1096,7 +1098,8 @@
                   "default": 0,
                   "title": "Maximum magic points modifier",
                   "description": "Added to the maximum magic points.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 }
               },
               "additionalProperties": false,
@@ -1112,7 +1115,8 @@
                   "default": 0,
                   "title": "Maximum hit points modifier",
                   "description": "Added to the maximum hit points.",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 }
               },
               "additionalProperties": false,
@@ -1127,73 +1131,85 @@
                   "type": "integer",
                   "default": 0,
                   "title": "Agility modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "communication": {
                   "type": "integer",
                   "default": 0,
                   "title": "Communication modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "knowledge": {
                   "type": "integer",
                   "default": 0,
                   "title": "Knowledge modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "magic": {
                   "type": "integer",
                   "default": 0,
                   "title": "Magic modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "manipulation": {
                   "type": "integer",
                   "default": 0,
                   "title": "Manipulation modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "perception": {
                   "type": "integer",
                   "default": 0,
                   "title": "Perception modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "stealth": {
                   "type": "integer",
                   "default": 0,
                   "title": "Stealth modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "meleeWeapons": {
                   "type": "integer",
                   "default": 0,
                   "title": "Melee Weapons modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "missileWeapons": {
                   "type": "integer",
                   "default": 0,
                   "title": "Missile Weapons modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "shields": {
                   "type": "integer",
                   "default": 0,
                   "title": "Shields modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "naturalWeapons": {
                   "type": "integer",
                   "default": 0,
                   "title": "Natural Weapons modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 },
                 "otherSkills": {
                   "type": "integer",
                   "default": 0,
                   "title": "Other Skills modifier",
-                  "readOnly": true
+                  "x-rqg-stored": false,
+                  "x-rqg-effectTarget": true
                 }
               },
               "additionalProperties": false,
@@ -1231,7 +1247,7 @@
         "add"
       ],
       "title": "Effects",
-      "description": "Calculated pads that Active Effects write to. They are reset to 0 (1 for multipliers) every time the character is prepared and are never stored. The calculated values read them, so use these as targets for effects instead of writing to the calculated values."
+      "description": "Targets for Active Effects. They are reset to 0 (1 for multipliers) every time the character is prepared and are never stored. The calculated values read them, so an effect that changes a calculated value writes here instead of to the value itself."
     }
   },
   "additionalProperties": false,
