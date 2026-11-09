@@ -34,10 +34,6 @@
           "type": "string",
           "default": ""
         },
-        "name": {
-          "type": "string",
-          "default": ""
-        },
         "bonus": {
           "type": [
             "integer",
@@ -47,8 +43,7 @@
       },
       "additionalProperties": false,
       "required": [
-        "rqid",
-        "name"
+        "rqid"
       ],
       "title": "Description",
       "description": "Link to the journal entry that describes the rune."
@@ -83,10 +78,6 @@
           "type": "string",
           "default": ""
         },
-        "name": {
-          "type": "string",
-          "default": ""
-        },
         "bonus": {
           "type": [
             "integer",
@@ -96,8 +87,7 @@
       },
       "additionalProperties": false,
       "required": [
-        "rqid",
-        "name"
+        "rqid"
       ],
       "title": "Opposing rune",
       "description": "Link to the rune opposite this one."
@@ -111,10 +101,6 @@
             "type": "string",
             "default": ""
           },
-          "name": {
-            "type": "string",
-            "default": ""
-          },
           "bonus": {
             "type": [
               "integer",
@@ -124,8 +110,7 @@
         },
         "additionalProperties": false,
         "required": [
-          "rqid",
-          "name"
+          "rqid"
         ]
       },
       "title": "Minor runes",

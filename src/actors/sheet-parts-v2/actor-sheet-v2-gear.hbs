@@ -318,8 +318,8 @@
                 <span class="text-right">{{system.absorbs}}</span>
               </div>
               <div data-item-id="{{id}}" class="gear contextmenu item small-size flex-wrap">
-                {{#each system.hitLocationRqidLinks}}
-                  <span>{{name}}{{#unless @last}},&nbsp;{{/unless}}</span>
+                {{#each (sortRqidLinks system.hitLocationRqidLinks)}}
+                  <span>{{this.name}}{{#unless @last}},&nbsp;{{/unless}}</span>
                 {{/each}}
               </div>
               <div data-item-id="{{id}}" class="gear contextmenu item">

@@ -160,7 +160,11 @@ Hooks.once("i18nInit", () => {
 Hooks.once("ready", async () => {
   await migrateWorld();
   // Preload compendium item caches in parallel - both scan all packs but are independent
-  await Promise.all([cacheAvailableRunes(), cacheAvailableHitLocations()]);
+  await Promise.all([
+    cacheAvailableRunes(),
+    cacheAvailableHitLocations(),
+    Rqid.indexPacksForNames(),
+  ]);
 
   // Verify that at least one wiki module is activated
   if (

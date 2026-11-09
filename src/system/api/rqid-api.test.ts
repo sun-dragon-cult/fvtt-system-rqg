@@ -596,4 +596,188 @@ describe("Rqid", () => {
       expect(Rqid.getRqidIcon("x.unknown.id")).toBeUndefined();
     });
   });
+  describe("nameFromRqid", () => {
+    function worldDoc(rqid: string, name: string, priority: number, lang = "en", pages?: any[]) {
+      return {
+        name,
+        getFlag: vi.fn().mockReturnValue({ id: rqid, priority, lang }),
+        ...(pages && {
+          getBestEmbeddedDocumentByRqid: (embedded: string) =>
+            pages.find((p: any) => p.getFlag().id === embedded),
+        }),
+      };
+    }
+    function pack(documentName: string, entries: [string, string, number, string?][]) {
+      return {
+        documentClass: { documentName },
+        indexed: true,
+        getIndex: vi.fn(),
+        index: entries.map(([id, name, priority, lang]) => ({
+          _id: name,
+          name,
+          flags: { rqg: { documentRqidFlags: { id, priority, lang: lang ?? "en" } } },
+        })),
+      };
+    }
+    function setGame(
+      items: unknown[],
+      packs: unknown[],
+      worldLanguage?: string,
+      journal: unknown[] = [],
+    ) {
+      game = {
+        ...originalGame,
+        settings: { get: () => worldLanguage },
+        items: { contents: items },
+        journal: { contents: journal },
+        packs,
+      } as any;
+      (Rqid as any).nameCandidatesByDocumentName.clear();
+    }
+
+    it("uses the highest priority pack entry", () => {
+      setGame(
+        [],
+        [
+          pack("Item", [
+            ["i.skill.jump", "Low", 1],
+            ["i.skill.jump", "High", 5],
+          ]),
+        ],
+      );
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBe("High");
+    });
+
+    it("prefers a world document over packs at the same priority, as fromRqid does", () => {
+      setGame(
+        [worldDoc("i.skill.jump", "World", 5)],
+        [pack("Item", [["i.skill.jump", "Pack", 5]])],
+      );
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBe("World");
+    });
+
+    it("prefers a pack entry with a higher priority than the world document", () => {
+      setGame(
+        [worldDoc("i.skill.jump", "World", 1)],
+        [pack("Item", [["i.skill.jump", "Pack", 5]])],
+      );
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBe("Pack");
+    });
+
+    it("uses the world language, falling back to English", () => {
+      setGame(
+        [],
+        [
+          pack("Item", [
+            ["i.skill.jump", "Hoppa", 1, "sv"],
+            ["i.skill.jump", "Jump", 9],
+            ["i.skill.swim", "Swim", 1],
+          ]),
+        ],
+        "sv",
+      );
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBe("Hoppa");
+      expect(Rqid.nameFromRqid("i.skill.swim")).toBe("Swim");
+    });
+
+    it("finds ActiveEffects in packs", () => {
+      setGame([], [pack("ActiveEffect", [["ae..bladesharp", "Bladesharp", 1]])]);
+      expect(Rqid.nameFromRqid("ae..bladesharp")).toBe("Bladesharp");
+    });
+
+    it("returns undefined when nothing matches", () => {
+      setGame([], [pack("Item", [["i.skill.jump", "Jump", 1]])]);
+      expect(Rqid.nameFromRqid("i.skill.missing")).toBeUndefined();
+      expect(Rqid.nameFromRqid(undefined)).toBeUndefined();
+    });
+
+    it("names a page of a world journal, but not one in a pack", () => {
+      const page = worldDoc("jp..rule", "The Rule", 0);
+      setGame([], [pack("JournalEntry", [["je..pack-rules", "Pack Rules", 1]])], undefined, [
+        worldDoc("je..rules", "Rules", 1, "en", [page]),
+      ]);
+      expect(Rqid.nameFromRqid("je..rules.jp..rule")).toBe("The Rule");
+      expect(Rqid.nameFromRqid("je..pack-rules.jp..rule")).toBeUndefined();
+    });
+
+    it("shows the slug, marked missing, only when the link can't be resolved", () => {
+      const page = worldDoc("jp..rule", "The Rule", 0);
+      setGame(
+        [worldDoc("i.skill.jump", "Jump", 1)],
+        [pack("JournalEntry", [["je..pack-rules", "Pack Rules", 1]])],
+        undefined,
+        [worldDoc("je..rules", "Rules", 1, "en", [page])],
+      );
+      expect(Rqid.displayFromRqid("i.skill.jump")).toEqual({ name: "Jump", missing: false });
+      expect(Rqid.displayFromRqid("i.skill.gone")).toEqual({ name: "gone", missing: true });
+      expect(Rqid.displayFromRqid("je..rules.jp..rule")).toEqual({
+        name: "The Rule",
+        missing: false,
+      });
+      // A pack journal's pages can't be named, a world journal's can
+      expect(Rqid.displayFromRqid("je..pack-rules.jp..rule")).toEqual({
+        name: "rule",
+        missing: false,
+      });
+      expect(Rqid.displayFromRqid("je..rules.jp..gone")).toEqual({ name: "gone", missing: true });
+      expect(Rqid.displayFromRqid("je..gone.jp..rule")).toEqual({ name: "rule", missing: true });
+      expect(Rqid.displayFromRqid("")).toEqual({ name: "", missing: false });
+    });
+
+    it("names a link nothing else resolves from the owning actor's items", () => {
+      setGame([worldDoc("i.skill.jump", "Jump", 1)], []);
+      const actor = {
+        getBestEmbeddedDocumentByRqid: (rqid: string) =>
+          rqid === "i.skill.tail-lash" ? { name: "Tail Lash" } : undefined,
+      } as any;
+      expect(Rqid.displayFromRqid("i.skill.tail-lash", actor)).toEqual({
+        name: "Tail Lash",
+        missing: false,
+      });
+      expect(Rqid.displayFromRqid("i.skill.jump", actor)).toEqual({ name: "Jump", missing: false });
+      expect(Rqid.displayFromRqid("i.skill.gone", actor)).toEqual({ name: "gone", missing: true });
+    });
+
+    it("indexes an unindexed pack once and survives a failing one", async () => {
+      let resolveIndex!: () => void;
+      const slow = {
+        ...pack("Item", [["i.skill.jump", "Jump", 1]]),
+        collection: "slow",
+        indexed: false,
+        getIndex: vi.fn(() => new Promise<void>((r) => (resolveIndex = r))),
+      };
+      const broken = {
+        ...pack("Item", []),
+        collection: "broken",
+        indexed: false,
+        getIndex: vi.fn().mockRejectedValue(new Error("boom")),
+      };
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      setGame([], [slow, broken]);
+
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBeUndefined();
+      (Rqid as any).nameCandidatesByDocumentName.clear();
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBeUndefined();
+      expect(slow.getIndex).toHaveBeenCalledTimes(1);
+
+      const ready = Rqid.indexPacksForNames();
+      slow.indexed = true;
+      resolveIndex();
+      await expect(ready).resolves.toBeUndefined();
+      expect(slow.getIndex).toHaveBeenCalledTimes(1);
+      expect(warn).toHaveBeenCalled();
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBe("Jump");
+      warn.mockRestore();
+    });
+
+    it("reads the candidates again after the cache is cleared", () => {
+      const items = [worldDoc("i.skill.jump", "Old", 1)];
+      setGame(items, []);
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBe("Old");
+      items[0] = worldDoc("i.skill.jump", "New", 1);
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBe("Old");
+      (Rqid as any).nameCandidatesByDocumentName.clear();
+      expect(Rqid.nameFromRqid("i.skill.jump")).toBe("New");
+    });
+  });
 });

@@ -71,7 +71,7 @@ export function getLegacyWeaponSkillReferenceForUsage(
  */
 export function encodeLegacyWeaponSkillReferenceInRqid(
   usage: Record<string, unknown>,
-): { rqid: string; name: string } | undefined {
+): { rqid: string } | undefined {
   const legacyRef = getLegacyWeaponSkillReference(usage);
   if (!legacyRef?.skillOrigin && !legacyRef?.skillId) {
     return undefined;
@@ -85,6 +85,5 @@ export function encodeLegacyWeaponSkillReferenceInRqid(
 
   return {
     rqid: `i.skill.[${legacyRef.skillOrigin ?? ""}] / [${legacyRef.skillId ?? ""}]`,
-    name: (skillRqidLink?.["name"] as string) || "",
   };
 }

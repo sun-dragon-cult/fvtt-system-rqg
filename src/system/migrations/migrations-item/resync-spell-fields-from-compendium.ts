@@ -15,7 +15,7 @@ import {
 } from "../../settings/default-item-icons";
 
 type SpellSurveyFields = {
-  effectRqidLink?: { rqid?: string; name?: string } | null;
+  effectRqidLink?: { rqid?: string } | null;
   targetKind?: string;
   effectTier?: string;
   resistedBy?: string;
@@ -99,7 +99,7 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
   if (needsLink) {
     const link = sources.map((from) => from.effectRqidLink).find((l) => isValidRqidString(l?.rqid));
     if (link) {
-      patch["effectRqidLink"] = { rqid: link.rqid, name: link.name ?? "" };
+      patch["effectRqidLink"] = { rqid: link.rqid };
     }
   }
   const targetKind =

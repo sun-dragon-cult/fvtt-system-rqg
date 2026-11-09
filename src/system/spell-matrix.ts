@@ -1,8 +1,8 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
+import { RqidLink } from "../data-model/shared/rqid-link";
 import type { PhysicalItem } from "@item-model/item-types.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RqgItem } from "../items/rqg-item";
-import type { RqidLink } from "../data-model/shared/rqid-link";
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { Rqid } from "./api/rqid-api";
@@ -60,7 +60,7 @@ export async function resolveMatrixSpellItem(
     ui.notifications?.warn(
       localize("RQG.Item.Gear.MatrixSpellNotFoundWarn", {
         rqid: rqid,
-        name: matrixSpell?.spellRqidLink?.name ?? rqid,
+        name: RqidLink.displayName(rqid),
       }),
     );
     return undefined;
@@ -96,7 +96,7 @@ export function getMatrixSpellSlots(actor: RqgActor): MatrixSpellSlot[] {
       sourceItem,
       entryIndex,
       sort: entry.sort ?? 0,
-      name: entry.spellRqidLink?.name ?? "",
+      name: RqidLink.displayName(entry.spellRqidLink?.rqid),
     })),
   );
 }

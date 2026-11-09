@@ -4,7 +4,6 @@ rqidLinkArray: RqidLink[]
 
   this: RqidLink {
     rqid,
-    name,
     choice ???
    }
 
@@ -17,19 +16,19 @@ rqidLinkArray: RqidLink[]
   editBonusPropertyName -> rqidLink
 --}}
 
-{{#each rqidLinkArray}}
+{{#each (sortRqidLinks rqidLinkArray)}}
     <div class="rqid-link-selector">
         <input type="checkbox"
             class="wizard-choice-input"
-            data-rqid="{{this.rqid}}"
+            data-rqid="{{this.link.rqid}}"
             data-for-choice="{{../forChoice}}"
-            {{#if this.choice}}
-            {{#if (lookup this.choice ../checkedProperty)}}checked{{/if}}
+            {{#if this.link.choice}}
+            {{#if (lookup this.link.choice ../checkedProperty)}}checked{{/if}}
             {{/if}}
             data-tooltip="{{localize ../title name=this.name}}"
             />
     {{> rqidLink
-        rqidLink=this
+        rqidLink=this.link
         showBonus=../showBonus
         editBonusPropertyName=../editBonusPropertyName
     }}

@@ -14,7 +14,7 @@ const spell = (
     uuid,
     type,
     system: {
-      effectRqidLink: { rqid: "", name: "" },
+      effectRqidLink: { rqid: "" },
       targetKind: "none",
       effectTier: "none",
       resistedBy: "none",
@@ -55,7 +55,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
   it("fills an unset link, target kind, effect tier, resistedBy and resistedWith from the compendium spell", async () => {
     const lookup = packsContain(
       compendium("i.spirit-magic.fill-all", {
-        effectRqidLink: { rqid: "ae..fill-all", name: "Fill All" },
+        effectRqidLink: { rqid: "ae..fill-all" },
         targetKind: "weapon",
         effectTier: "effect",
         resistedBy: "resistanceRoll",
@@ -65,7 +65,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
 
     expect(await resyncSpellFieldsFromCompendium(spell("i.spirit-magic.fill-all", {}))).toEqual({
       system: {
-        effectRqidLink: { rqid: "ae..fill-all", name: "Fill All" },
+        effectRqidLink: { rqid: "ae..fill-all" },
         targetKind: "weapon",
         effectTier: "effect",
         resistedBy: "resistanceRoll",
@@ -81,14 +81,14 @@ describe("resyncSpellFieldsFromCompendium", () => {
   it("never overwrites what the copy already has", async () => {
     packsContain(
       compendium("i.spirit-magic.keep", {
-        effectRqidLink: { rqid: "ae..keep", name: "Keep" },
+        effectRqidLink: { rqid: "ae..keep" },
         targetKind: "weapon",
         effectTier: "effect",
         resistedBy: "resistanceRoll",
       }),
     );
     const copy = spell("i.spirit-magic.keep", {
-      effectRqidLink: { rqid: "ae..homebrew", name: "Homebrew" },
+      effectRqidLink: { rqid: "ae..homebrew" },
       targetKind: "creature",
       resistedBy: "resistanceRollArea",
     });
@@ -119,7 +119,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
     packsContain(
       compendium("i.spirit-magic.swedish", { targetKind: "weapon" }, "sv"),
       compendium("i.spirit-magic.swedish", {
-        effectRqidLink: { rqid: "ae..swedish", name: "Swedish" },
+        effectRqidLink: { rqid: "ae..swedish" },
         targetKind: "creature",
         effectTier: "effect",
       }),
@@ -128,7 +128,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
 
     expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({
       system: {
-        effectRqidLink: { rqid: "ae..swedish", name: "Swedish" },
+        effectRqidLink: { rqid: "ae..swedish" },
         targetKind: "weapon",
         effectTier: "effect",
       },

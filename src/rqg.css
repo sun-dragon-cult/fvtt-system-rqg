@@ -1760,6 +1760,13 @@
         filter: invert(50%) sepia(6%) saturate(402%) hue-rotate(16deg) brightness(92%) contrast(88%);
       }
     }
+
+    /* As Foundry's a.content-link.broken */
+    &.broken {
+      cursor: var(--cursor-default);
+      background: rgb(255 0 0 / 5%);
+      border: 1px dashed red;
+    }
   }
 
   .rqid-link-selector {

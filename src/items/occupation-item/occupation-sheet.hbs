@@ -80,7 +80,7 @@
                     <i class="fas fa-times icon"
                        data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
                        data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.skillRqidLink.rqid
-                                         name=this.skillRqidLink.name}}"></i>
+                                         name=(rqidLinkName this.skillRqidLink.rqid)}}"></i>
 
                     {{> rqidLink
                       rqidLink=this.skillRqidLink

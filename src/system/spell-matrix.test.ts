@@ -14,15 +14,15 @@ function fakeCanonicalSpell(rqid: string, name: string) {
 /** A fake physical item carrying one or more Spell Matrix Enchantment entries (#959). */
 function fakeMatrixItem(
   id: string,
-  matrixSpells: { rqid: string; name: string; points?: number; sort?: number }[],
+  matrixSpells: { rqid: string; points?: number; sort?: number }[],
 ) {
   return {
     id,
     type: "gear",
     system: {
       equippedStatus: "equipped",
-      matrixSpells: matrixSpells.map(({ rqid, name, points, sort }) => ({
-        spellRqidLink: { rqid, name },
+      matrixSpells: matrixSpells.map(({ rqid, points, sort }) => ({
+        spellRqidLink: { rqid },
         points: points ?? 1,
         sort: sort ?? 0,
       })),
@@ -57,10 +57,10 @@ describe("getMatrixSpellRows", () => {
     };
 
     const matrixItem1 = fakeMatrixItem("m1", [
-      { rqid: "spell.dullblade", name: "Dullblade", sort: 300000 },
-      { rqid: "spell.bladesharp", name: "Bladesharp", sort: 100000 },
+      { rqid: "spell.dullblade", sort: 300000 },
+      { rqid: "spell.bladesharp", sort: 100000 },
     ]);
-    const matrixItem2 = fakeMatrixItem("m2", [{ rqid: "spell.heal", name: "Heal", sort: 200000 }]);
+    const matrixItem2 = fakeMatrixItem("m2", [{ rqid: "spell.heal", sort: 200000 }]);
 
     const rows = await getMatrixSpellRows(fakeActor([matrixItem1, matrixItem2]));
 
@@ -87,7 +87,7 @@ describe("getMatrixSpellRows", () => {
   });
 
   it("omits an unequipped matrix item entirely", async () => {
-    const matrixItem = fakeMatrixItem("m1", [{ rqid: "spell.heal", name: "Heal" }]);
+    const matrixItem = fakeMatrixItem("m1", [{ rqid: "spell.heal" }]);
     matrixItem.system.equippedStatus = "carried";
 
     expect(await getMatrixSpellRows(fakeActor([matrixItem]))).toEqual([]);
@@ -98,7 +98,7 @@ describe("getMatrixSpellRows", () => {
     const originalUi = (globalThis as any).ui;
     (globalThis as any).ui = { notifications: { warn } };
     try {
-      const actor = fakeActor([fakeMatrixItem("m1", [{ rqid: "spell.gone", name: "Gone" }])]);
+      const actor = fakeActor([fakeMatrixItem("m1", [{ rqid: "spell.gone" }])]);
 
       expect(await getMatrixSpellRows(actor, { quiet: true })).toEqual([]);
       expect(fromRqid).toHaveBeenCalledWith("spell.gone", undefined, true);
@@ -113,10 +113,14 @@ describe("getMatrixSpellRows", () => {
 });
 
 describe("getMatrixSpellSlots", () => {
-  it("reads sort and name straight off the stored entries, without resolving the canonical spell", () => {
+  it("reads sort off the stored entries and the name from the rqid, without loading the spell", () => {
+    vi.spyOn(Rqid, "displayFromRqid").mockImplementation((rqid) => ({
+      name: rqid === "spell.dullblade" ? "Dullblade" : "Bladesharp",
+      missing: false,
+    }));
     const matrixItem = fakeMatrixItem("m1", [
-      { rqid: "spell.dullblade", name: "Dullblade", sort: 300000 },
-      { rqid: "spell.bladesharp", name: "Bladesharp", sort: 100000 },
+      { rqid: "spell.dullblade", sort: 300000 },
+      { rqid: "spell.bladesharp", sort: 100000 },
     ]);
 
     expect(getMatrixSpellSlots(fakeActor([matrixItem]))).toEqual([
@@ -126,7 +130,7 @@ describe("getMatrixSpellSlots", () => {
   });
 
   it("omits an unequipped matrix item entirely", () => {
-    const matrixItem = fakeMatrixItem("m1", [{ rqid: "spell.heal", name: "Heal" }]);
+    const matrixItem = fakeMatrixItem("m1", [{ rqid: "spell.heal" }]);
     matrixItem.system.equippedStatus = "carried";
 
     expect(getMatrixSpellSlots(fakeActor([matrixItem]))).toEqual([]);
@@ -143,7 +147,7 @@ describe("getNextSpiritMagicSort", () => {
     // No spell resolution needed, so no Rqid mock either.
     (globalThis as any).CONST = { SORT_INTEGER_DENSITY: 100000 };
     const ownedSpell = { id: "s1", type: ItemTypeEnum.SpiritMagic, sort: 150000 };
-    const matrixItem = fakeMatrixItem("m1", [{ rqid: "spell.heal", name: "Heal", sort: 250000 }]);
+    const matrixItem = fakeMatrixItem("m1", [{ rqid: "spell.heal", sort: 250000 }]);
 
     expect(getNextSpiritMagicSort(fakeActor([ownedSpell, matrixItem]))).toBe(350000);
   });

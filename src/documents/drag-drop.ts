@@ -206,7 +206,6 @@ export async function updateRqidLink(
     );
     if (allowDuplicates || !targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
       targetPropertyRqidLinkArray.push(newLink);
-      targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
       if (targetDocument.isEmbedded) {
         await (targetDocument.parent as any)?.updateEmbeddedDocuments(targetDocument.documentName, [
           {
@@ -247,16 +246,10 @@ export function getDroppedDocumentRqidLink(
       return undefined;
     }
 
-    return {
-      rqid: `${parentRqid}.${droppedDocumentRqid}`,
-      name: droppedDocument.name ?? "",
-    };
+    return { rqid: `${parentRqid}.${droppedDocumentRqid}` };
   }
 
-  return {
-    rqid: droppedDocumentRqid,
-    name: droppedDocument.name ?? "",
-  };
+  return { rqid: droppedDocumentRqid };
 }
 
 export function getAllowedDropDocumentTypes(event: DragEvent) {

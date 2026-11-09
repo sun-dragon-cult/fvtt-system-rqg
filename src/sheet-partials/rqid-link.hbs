@@ -2,7 +2,8 @@
 
 Parameters:
 
-rqidLink: RqidLink {rqid, documentType, name, bonus}
+rqidLink: RqidLink {rqid, documentType, bonus}
+rqidLinkIndex: number - index in the array property, for deleting it
 showDeleteFromPropertyName: string - added to data-delete-from-property DOMdata Handle deleting RqidLinks from RqidLink Array Properties
 showInfoCircleConnect: string - translation key for tooltip content if not linked
 showInfoCircleReplace: string - translation key for tooltip content if linked
@@ -11,47 +12,45 @@ editBonusPropertyName: string - example "skillRqidLinks"
 --}}
 
 {{#if rqidLink.rqid}}
+  {{#with (rqidLinkDisplay rqidLink.rqid @root.uuid) as |shown|}}
   <div class="rqidlink">
     <a
-      class="rqid-content-link"
-      data-rqid-link="{{rqidLink.rqid}}"
-      data-document-type="{{rqidLink.documentType}}"
-      data-tooltip="{{rqidLinkTooltip rqidLink.rqid}}"
-    >{{{rqidLinkIcon rqidLink.rqid}}}{{rqidLink.name}}</a>
+      class="rqid-content-link{{#if shown.missing}} broken{{/if}}"
+      data-rqid-link="{{../rqidLink.rqid}}"
+      data-document-type="{{../rqidLink.documentType}}"
+      data-tooltip="{{#if shown.missing}}{{localize 'RQG.Foundry.ContentLink.RqidLinkMissing' rqid=../rqidLink.rqid}}{{else}}{{rqidLinkTooltip ../rqidLink.rqid}}{{/if}}"
+    >{{{rqidLinkIcon ../rqidLink.rqid}}}{{shown.name}}</a>
 
-    {{#if showBonus}}
-      {{#if editBonusPropertyName}}
+    {{#if ../showBonus}}
+      {{#if ../editBonusPropertyName}}
         +
-        <input type="number" value="{{rqidLink.bonus}}"
-               data-edit-bonus-property-name="{{editBonusPropertyName}}"
-               data-rqid="{{rqidLink.rqid}}">%
+        <input type="number" value="{{../rqidLink.bonus}}"
+               data-edit-bonus-property-name="{{../editBonusPropertyName}}"
+               data-rqid="{{../rqidLink.rqid}}">%
       {{else}}
-        <span>+{{rqidLink.bonus}}%</span>
+        <span>+{{../rqidLink.bonus}}%</span>
       {{/if}}
     {{/if}}
 
-    {{#if rqidLink.rqid}}
-      {{#if showDeleteFromPropertyName}}
-        <i
-          class="fas fa-times icon"
-          data-delete-rqid="{{rqidLink.rqid}}"
-          {{#if (or (eq rqidLinkIndex 0) rqidLinkIndex)}}data-delete-index="{{rqidLinkIndex}}"{{/if}}
-          data-delete-from-property="{{showDeleteFromPropertyName}}"
-          data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=rqidLink.rqid name=rqidLink.name}}"
-        ></i>
-      {{/if}}
+    {{#if ../showDeleteFromPropertyName}}
+      <i
+        class="fas fa-times icon"
+        data-delete-rqid="{{../rqidLink.rqid}}"
+        {{#if (or (eq ../rqidLinkIndex 0) ../rqidLinkIndex)}}data-delete-index="{{../rqidLinkIndex}}"{{/if}}
+        data-delete-from-property="{{../showDeleteFromPropertyName}}"
+        data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=../rqidLink.rqid name=shown.name}}"
+      ></i>
     {{/if}}
 
-    {{#if rqidLink.rqid}}
-      {{#if showInfoCircleReplace}}
-        <i
-          class="fas fa-info-circle icon"
-          data-tooltip="{{localize showInfoCircleReplace}}"
-        ></i>
-      {{/if}}
+    {{#if ../showInfoCircleReplace}}
+      <i
+        class="fas fa-info-circle icon"
+        data-tooltip="{{localize ../showInfoCircleReplace}}"
+      ></i>
     {{/if}}
 
   </div>
+  {{/with}}
 
 {{else}}
 

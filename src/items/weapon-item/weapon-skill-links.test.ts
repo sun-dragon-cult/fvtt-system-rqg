@@ -119,7 +119,6 @@ describe("weapon skill link handling", () => {
 
     expect(result).toEqual({
       rqid: "i.skill.[Compendium.world.new-attack-type.Item.bite] / [abc123]",
-      name: "",
     });
   });
 
@@ -133,7 +132,6 @@ describe("weapon skill link handling", () => {
 
     expect(result).toEqual({
       rqid: "i.skill.[Compendium.world.old-weapon.Item.sword] / [oldId]",
-      name: "",
     });
   });
 
@@ -156,7 +154,6 @@ describe("weapon skill link handling", () => {
 
     expect(result).toEqual({
       rqid: "i.skill.[Compendium.world.new-attack-type.Item.bite] / [embedded-bite]",
-      name: "NOT-FOUND",
     });
   });
 
@@ -202,10 +199,7 @@ describe("weapon skill link handling", () => {
       system: {
         usage: {
           oneHand: {
-            skillRqidLink: {
-              rqid: "i.skill.bite",
-              name: "Bite",
-            },
+            skillRqidLink: { rqid: "i.skill.bite" },
           },
         },
       },

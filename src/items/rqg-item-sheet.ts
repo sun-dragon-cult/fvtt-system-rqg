@@ -90,8 +90,7 @@ export class RqgItemSheet<
             const targetRqidLinks = normalizeSourceRqidLinks(sourceLinks);
 
             if (allowDuplicates || !targetRqidLinks.some((l) => l.rqid === newRqid)) {
-              const newName = selectElem?.selectedOptions[0]?.innerText?.trim() || newRqid;
-              const newHitLocationRqidLink = { rqid: newRqid, name: newName };
+              const newHitLocationRqidLink = { rqid: newRqid };
               const updatedLinks = [...targetRqidLinks, newHitLocationRqidLink];
               await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
             }
@@ -118,8 +117,7 @@ export class RqgItemSheet<
               targetProperty,
             ) as { rqid?: string } | null | undefined;
             if (currentLink?.rqid !== newRqid) {
-              const newName = selectElem?.selectedOptions[0]?.innerText?.trim() ?? "";
-              const newHitLocationRqidLink = { rqid: newRqid, name: newName };
+              const newHitLocationRqidLink = { rqid: newRqid };
               await this.document.update({ [`system.${targetProperty}`]: newHitLocationRqidLink });
             }
           });

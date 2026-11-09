@@ -12,8 +12,8 @@
     <img class="requires-training" src="systems/rqg/assets/images/ui/skill-requires-training.svg"
          data-tooltip="{{localize 'RQG.Actor.Skill.RequiresTraining'}}">
   {{/unless}}
-  {{#each system.runeRqidLinks}}
-    <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+  {{#each (sortRqidLinks system.runeRqidLinks)}}
+    <img class="rune" src="{{rqidImgSrc this.link.rqid}}" data-tooltip="{{this.name}}">
   {{/each}}
 </div>
 {{#edit-mode @root.system.editMode "all"}}

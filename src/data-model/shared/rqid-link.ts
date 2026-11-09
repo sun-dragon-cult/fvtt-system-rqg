@@ -1,4 +1,5 @@
 import { Rqid } from "../../system/api/rqid-api";
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import { isValidRqidString } from "../../system/api/rqid-validation";
 import {
   getDomDataset,
@@ -8,17 +9,33 @@ import {
 
 type RqidDocument = foundry.abstract.Document.Any;
 
+export type RqidLinkDisplay = { name: string; missing: boolean };
+
 export class RqidLink<R extends string = string> {
   /** The rqid to link to */
   readonly rqid: R;
-  /** Display name of the link */
-  readonly name: string;
 
   bonus: number | null | undefined;
 
-  constructor(rqid: R, name: string) {
+  constructor(rqid: R) {
     this.rqid = rqid;
-    this.name = name;
+  }
+
+  static display(rqid: string | undefined, actor?: RqgActor | null): RqidLinkDisplay {
+    return Rqid.displayFromRqid(rqid, actor);
+  }
+
+  static displayName(rqid: string | undefined): string {
+    return RqidLink.display(rqid).name;
+  }
+
+  /** The links sorted by their shown names, each with its index in `links`. */
+  static sortedByName<T extends { rqid: string }>(
+    links: readonly T[] | undefined,
+  ): ({ link: T; index: number } & RqidLinkDisplay)[] {
+    return (links ?? [])
+      .map((link, index) => ({ link, index, ...RqidLink.display(link.rqid) }))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
 
   /**

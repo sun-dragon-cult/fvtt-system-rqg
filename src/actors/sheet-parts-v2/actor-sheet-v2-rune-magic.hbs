@@ -19,8 +19,8 @@
     {{#each embeddedItems.cult}}
       <h3 class="item cult contextmenu{{#if (eq @root.activeTabs.cultView (concat "cult-" id))}} active{{/if}}" data-action="tab" data-item-id="{{id}}" data-group="cult-view" data-tab="cult-{{id}}">
         {{system.deity}}
-        {{#each system.runeRqidLinks}}
-          <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+        {{#each (sortRqidLinks system.runeRqidLinks)}}
+          <img class="rune" src="{{rqidImgSrc this.link.rqid}}" data-tooltip="{{this.name}}">
         {{/each}}
       </h3>
     {{/each}}
@@ -110,8 +110,8 @@
                     <img class="common" src="systems/rqg/assets/images/items/cult.svg"
                          data-tooltip="{{localize "RQG.Actor.RuneMagic.CommonRuneMagicTooltip"}}">
                   {{/if}}
-                  {{#each system.runeRqidLinks}}
-                    <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+                  {{#each (sortRqidLinks system.runeRqidLinks)}}
+                    <img class="rune" src="{{rqidImgSrc this.link.rqid}}" data-tooltip="{{this.name}}">
                   {{/each}}
                 </div>
                    <div class="rune-magic contextmenu item"
@@ -144,8 +144,8 @@
                     <img class="common" src="systems/rqg/assets/images/items/cult.svg"
                          data-tooltip="{{localize "RQG.Actor.RuneMagic.CommonRuneMagicTooltip"}}">
                   {{/if}}
-                  {{#each system.runeRqidLinks}}
-                    <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+                  {{#each (sortRqidLinks system.runeRqidLinks)}}
+                    <img class="rune" src="{{rqidImgSrc this.link.rqid}}" data-tooltip="{{this.name}}">
                   {{/each}}
                 </div>
                    <div class="rune-magic contextmenu item"

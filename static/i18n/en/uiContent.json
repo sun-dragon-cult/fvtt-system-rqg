@@ -2552,7 +2552,8 @@
       },
       "ContentLink": {
         "RqidLinkTitle": "{documentName}<small> {documentType}</small><br><small>Rqid: {rqid}</small>",
-        "RqidLinkDelete": "Delete link to \"{name}\"<br><small>Rqid: {rqid}</small>"
+        "RqidLinkDelete": "Delete link to \"{name}\"<br><small>Rqid: {rqid}</small>",
+        "RqidLinkMissing": "Can't find what this links to, for example because its module isn't active.<br><small>Rqid: {rqid}</small>"
       },
       "Settings": {
         "Links": {

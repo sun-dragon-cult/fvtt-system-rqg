@@ -146,7 +146,11 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     // other item type - no type-narrowing needed here.
     const boundSpiritActors = getBoundSpiritActors(this.document as unknown as PhysicalItem);
     const system = foundry.utils.duplicate(this.document._source.system) as {
-      matrixSpells?: (MatrixSpellStorageEntry & { isVariable?: boolean; storageIndex?: number })[];
+      matrixSpells?: (MatrixSpellStorageEntry & {
+        isVariable?: boolean;
+        storageIndex?: number;
+        spellName?: string;
+      })[];
     };
     if (system.matrixSpells) {
       // Only a variable spell's (e.g. Bladesharp 1-4) enchanted level is a per-matrix choice -
@@ -169,14 +173,13 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
             ...entry,
             isVariable: resolved?.system.isVariable ?? false,
             storageIndex: index,
+            spellName: RqidLink.displayName(entry.spellRqidLink?.rqid),
           };
         }),
       );
       // Displayed alphabetically; storageIndex keeps edit/unlink actions pointed at the real
       // array index.
-      system.matrixSpells.sort((a, b) =>
-        (a.spellRqidLink?.name ?? "").localeCompare(b.spellRqidLink?.name ?? ""),
-      );
+      system.matrixSpells.sort((a, b) => (a.spellName ?? "").localeCompare(b.spellName ?? ""));
     }
     return {
       id: this.document.id ?? "",
@@ -242,8 +245,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
         const targetRqidLinks = normalizeSourceRqidLinks(sourceLinks);
 
         if (allowDuplicates || !targetRqidLinks.some((l) => l.rqid === newRqid)) {
-          const newName = selectElem?.selectedOptions[0]?.innerText?.trim() || newRqid;
-          const newRqidLink = { rqid: newRqid, name: newName };
+          const newRqidLink = { rqid: newRqid };
           const updatedLinks = [...targetRqidLinks, newRqidLink];
           await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
         }
@@ -268,8 +270,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
           targetProperty,
         ) as { rqid?: string } | null | undefined;
         if (currentLink?.rqid !== newRqid) {
-          const newName = selectElem?.selectedOptions[0]?.innerText?.trim() ?? "";
-          const newRqidLink = { rqid: newRqid, name: newName };
+          const newRqidLink = { rqid: newRqid };
           await this.document.update({ [`system.${targetProperty}`]: newRqidLink });
         }
       });
