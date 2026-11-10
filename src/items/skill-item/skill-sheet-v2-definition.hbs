@@ -25,15 +25,16 @@
     >
 
     <label for="runes-{{id}}">{{localize "RQG.Item.Skill.SorceryRunes"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.runeRqidLinks
-      dropzoneData="runeRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="rune"
-      showDeleteFromPropertyName="runeRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
-      dropdownOptions=allRuneOptions
-    }}
+    <rqg-link-field
+      name="system.runeRqidLinks"
+      value="{{json system.runeRqidLinks}}"
+      documents="Item"
+      types="rune"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Rune"
+      owner="{{@root.uuid}}"
+    >
+      {{selectOptions allRuneOptions localize=false}}
+    </rqg-link-field>
 
   </div>
 </div>

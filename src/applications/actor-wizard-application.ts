@@ -527,7 +527,7 @@ export class ActorWizard extends ActorWizardBase {
 
     // RQID link open/delete handlers (bind once)
     if (options.isFirstRender) {
-      RqidLink.bindHandlers(this.element, this.actor as foundry.abstract.Document.Any);
+      RqidLink.bindHandlers(this.element);
     }
   }
 

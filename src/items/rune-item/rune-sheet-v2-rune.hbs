@@ -27,16 +27,17 @@
 
     {{#if (or (eq system.runeType "power") (eq system.runeType "form"))}}
     <label for="opposing-rune-{{id}}">{{localize "RQG.Item.Rune.OpposingRune"}}</label>
-    {{> rqidLinkDropzone
-      rqidLink=system.opposingRuneRqidLink
-      dropzoneData="opposingRuneRqidLink"
-      dropDocumentNames="Item"
-      dropDocumentTypes="rune"
-      showDeleteFromPropertyName="opposingRuneRqidLink"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
-      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
-      dropdownOptions=opposingRuneOptions
-    }}
+    <rqg-link-field
+      name="system.opposingRuneRqidLink"
+      value="{{json system.opposingRuneRqidLink}}"
+      single
+      documents="Item"
+      types="rune"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Rune"
+      owner="{{@root.uuid}}"
+    >
+      {{selectOptions opposingRuneOptions localize=false}}
+    </rqg-link-field>
     {{/if}}
 
 
@@ -50,15 +51,16 @@
 
     {{#if (or (eq system.runeType "element") (eq system.runeType "technique"))}}
     <label for="minor-runes-{{id}}">{{localize "RQG.Item.Rune.MinorRunes"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.minorRuneRqidLinks
-      dropzoneData="minorRuneRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="rune"
-      showDeleteFromPropertyName="minorRuneRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
-      dropdownOptions=minorRuneOptions
-    }}
+    <rqg-link-field
+      name="system.minorRuneRqidLinks"
+      value="{{json system.minorRuneRqidLinks}}"
+      documents="Item"
+      types="rune"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Rune"
+      owner="{{@root.uuid}}"
+    >
+      {{selectOptions minorRuneOptions localize=false}}
+    </rqg-link-field>
     {{/if}}
 
   </div>

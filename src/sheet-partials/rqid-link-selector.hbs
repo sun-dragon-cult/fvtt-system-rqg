@@ -11,9 +11,6 @@ rqidLinkArray: RqidLink[]
   checkedProperty="homelandCultureChosen"
   forChoice="homelandCultures"
   title="RQG.ActorCreation.Step1.ImportCultureTitle"
-
-  showBonus -> rqidLink
-  editBonusPropertyName -> rqidLink
 --}}
 
 {{#each (sortRqidLinks rqidLinkArray)}}
@@ -27,10 +24,6 @@ rqidLinkArray: RqidLink[]
             {{/if}}
             data-tooltip="{{localize ../title name=this.name}}"
             />
-    {{> rqidLink
-        rqidLink=this.link
-        showBonus=../showBonus
-        editBonusPropertyName=../editBonusPropertyName
-    }}
+    <rqg-link rqid="{{this.link.rqid}}"></rqg-link>
     </div>
 {{/each}}

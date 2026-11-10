@@ -21,27 +21,28 @@
 
     <label for="runes-{{id}}" {{#unless system.runeRqidLinks.length}}class="warning" data-tooltip="{{localize 'RQG.Item.Cult.Notification.NoRunesWarn'}}"{{/unless}}>{{localize "RQG.Item.Cult.Runes"}}</label>
     <div {{#unless system.runeRqidLinks.length}}class="warning" data-tooltip="{{localize 'RQG.Item.Cult.Notification.NoRunesWarn'}}"{{/unless}}>
-      {{> rqidLinkArrayDropzone
-        rqidLinkArray=system.runeRqidLinks
-        dropzoneData="runeRqidLinks"
-        dropDocumentNames="Item"
-        dropDocumentTypes="rune"
-        allowDuplicates="true"
-        showDeleteFromPropertyName="runeRqidLinks"
-        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
-        dropdownOptions=allRuneOptions
-      }}
+      <rqg-link-field
+        name="system.runeRqidLinks"
+        value="{{json system.runeRqidLinks}}"
+        documents="Item"
+        types="rune"
+        allow-duplicates
+        hint="RQG.Foundry.ContentLink.Field.Empty.Rune"
+        owner="{{@root.uuid}}"
+      >
+        {{selectOptions allRuneOptions localize=false}}
+      </rqg-link-field>
     </div>
 
     <label>{{localize "RQG.Item.Cult.CommonRuneMagic"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.commonRuneMagicRqidLinks
-      dropzoneData="commonRuneMagicRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="runeMagic"
-      showDeleteFromPropertyName="commonRuneMagicRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRuneMagic"
-    }}
+    <rqg-link-field
+      name="system.commonRuneMagicRqidLinks"
+      value="{{json system.commonRuneMagicRqidLinks}}"
+      documents="Item"
+      types="runeMagic"
+      hint="RQG.Foundry.ContentLink.Field.Empty.RuneMagic"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
     <label class="editor-label">{{localize "RQG.Item.Cult.HolyDays"}}</label>
     <div class="editor-container">

@@ -4,40 +4,35 @@
   <div class="flex-column gap03rem">
     <div class="property-line">
 
-      <div class="label-above"
-           data-dropzone="homelandJournalRqidLink"
-           data-dropzone-document-names="JournalEntry, JournalEntryPage">
+      <div class="label-above">
         <label for="homeland-{{id}}">{{localize "RQG.Item.Homeland.Homeland"}}</label>
         <input type="text"
                id="homeland-{{id}}"
                name="system.homeland"
                value="{{system.homeland}}">
-        <div class="drop-target">
-          {{> rqidLink
-            rqidLink=system.homelandJournalRqidLink
-            showDeleteFromPropertyName="homelandJournalRqidLink"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-          }}
-        </div>
+        <rqg-link-field
+            name="system.homelandJournalRqidLink"
+            value="{{json system.homelandJournalRqidLink}}"
+            single
+            documents="JournalEntry,JournalEntryPage"
+            hint="RQG.Foundry.ContentLink.Field.Empty.Journal"
+            owner="{{uuid}}"
+          ></rqg-link-field>
       </div>
 
-      <div class="label-above parens"
-           data-dropzone="regionJournalRqidLink"
-           data-dropzone-document-names="JournalEntry, JournalEntryPage">
+      <div class="label-above parens">
         <label for="region-{{id}}">{{localize "RQG.Item.Homeland.Region"}}</label>
         <div>
           ( <input type="text" id="region-{{id}}" name="system.region" value="{{system.region}}"> )
         </div>
-        <div class="drop-target">
-          {{> rqidLink
-            rqidLink=system.regionJournalRqidLink
-            showDeleteFromPropertyName="regionJournalRqidLink"
-            dropzoneData="regionJournalRqidLink"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-          }}
-        </div>
+        <rqg-link-field
+            name="system.regionJournalRqidLink"
+            value="{{json system.regionJournalRqidLink}}"
+            single
+            documents="JournalEntry,JournalEntryPage"
+            hint="RQG.Foundry.ContentLink.Field.Empty.Journal"
+            owner="{{uuid}}"
+          ></rqg-link-field>
       </div>
     </div>
   </div>

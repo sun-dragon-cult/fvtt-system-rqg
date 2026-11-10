@@ -10,19 +10,15 @@
 
   <label>{{localize "RQG.ActorCreation.Step1.HomelandDescription"}}:</label>
   <div>
-    {{#if homeland.selectedHomeland.system.homelandJournalRqidLink}}
-    {{> rqidLink
-      rqidLink=homeland.selectedHomeland.system.homelandJournalRqidLink
-    }}
+    {{#if homeland.selectedHomeland.system.homelandJournalRqidLink.rqid}}
+    <rqg-link rqid="{{homeland.selectedHomeland.system.homelandJournalRqidLink.rqid}}"></rqg-link>
     {{/if}}
   </div>
 
   <label>{{localize "RQG.ActorCreation.Step1.RegionDescription"}}:</label>
   <div>
-    {{#if homeland.selectedHomeland.system.regionJournalRqidLink}}
-    {{> rqidLink
-      rqidLink=homeland.selectedHomeland.system.regionJournalRqidLink
-    }}
+    {{#if homeland.selectedHomeland.system.regionJournalRqidLink.rqid}}
+    <rqg-link rqid="{{homeland.selectedHomeland.system.regionJournalRqidLink.rqid}}"></rqg-link>
     {{/if}}
   </div>
 

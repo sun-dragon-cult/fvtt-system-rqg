@@ -29,14 +29,7 @@
         <div style="display: flex; flex-wrap: wrap;">
           {{#each system.occupationalSkills}}
             <div class="occupational-skill {{#if this.incomeSkill}}income-skill{{/if}}">
-              <i class="fas fa-times icon"
-                 data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
-                 data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.skillRqidLink.rqid
-                                   name=(rqidLinkName this.skillRqidLink.rqid)}}"></i>
-
-              {{> rqidLink
-                rqidLink=this.skillRqidLink
-              }}
+              <rqg-link rqid="{{this.skillRqidLink.rqid}}" owner="{{@root.uuid}}"></rqg-link>
               <div>
                 <input
                   type="number"
@@ -56,6 +49,13 @@
                   {{checked this.incomeSkill}}>
                 <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}</label>
               </div>
+              <button type="button"
+                      class="rqg-link-remove"
+                      data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
+                      aria-label="{{localize 'RQG.Foundry.ContentLink.Field.Remove' name=(rqidLinkName this.skillRqidLink.rqid)}}"
+                      data-tooltip="{{localize 'RQG.Foundry.ContentLink.Field.Remove' name=(rqidLinkName this.skillRqidLink.rqid)}}">
+                <i class="fa-solid fa-xmark" inert></i>
+              </button>
             </div>
           {{/each}}
         </div>
@@ -81,14 +81,14 @@
            value="{{system.baseIncomeNotes}}">
 
     <label>{{localize "RQG.Item.Occupation.CultLinks"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.cultRqidLinks
-      dropzoneData="cultRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="cult"
-      showDeleteFromPropertyName="cultRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
-    }}
+    <rqg-link-field
+      name="system.cultRqidLinks"
+      value="{{json system.cultRqidLinks}}"
+      documents="Item"
+      types="cult"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Cult"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
     <label for="ransom-{{id}}">{{localize "RQG.Item.Occupation.Ransom"}}</label>
     <div>
@@ -98,13 +98,13 @@
     </div>
 
     <label>{{localize "RQG.Item.Occupation.StartingEquipmentLinks"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.startingEquipmentRqidLinks
-      dropzoneData="startingEquipmentRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="armor,gear,weapon"
-      showDeleteFromPropertyName="startingEquipmentRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
-    }}
+    <rqg-link-field
+      name="system.startingEquipmentRqidLinks"
+      value="{{json system.startingEquipmentRqidLinks}}"
+      documents="Item"
+      types="armor,gear,weapon"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Equipment"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
   </div>
 </div>

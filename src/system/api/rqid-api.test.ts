@@ -718,21 +718,58 @@ describe("Rqid", () => {
       expect(Rqid.displayFromRqid("je..pack-rules.jp..rule")).toEqual({
         name: "rule",
         missing: false,
+        pending: true,
       });
       expect(Rqid.displayFromRqid("je..rules.jp..gone")).toEqual({ name: "gone", missing: true });
       expect(Rqid.displayFromRqid("je..gone.jp..rule")).toEqual({ name: "rule", missing: true });
       expect(Rqid.displayFromRqid("")).toEqual({ name: "", missing: false });
     });
 
+    it("loads a pack journal page's name, keeping it while it loads again", async () => {
+      setGame([], [pack("JournalEntry", [["je..pack-rules", "Pack Rules", 1]])]);
+      (Rqid as any).forgetNames();
+      (Rqid as any).previousLoadedNames.clear();
+      const fromRqid = vi
+        .spyOn(Rqid, "fromRqid")
+        .mockResolvedValue({ name: "The Pack Rule" } as any);
+      const listener = vi.fn();
+      const controller = new AbortController();
+      Rqid.onNamesChanged(listener, controller.signal);
+      const rqid = "je..pack-rules.jp..rule";
+
+      expect(Rqid.displayFromRqid(rqid)).toEqual({ name: "rule", missing: false, pending: true });
+      Rqid.displayFromRqid(rqid);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(fromRqid).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalled();
+      expect(Rqid.displayFromRqid(rqid)).toEqual({ name: "The Pack Rule", missing: false });
+
+      (Rqid as any).forgetNames("JournalEntry");
+      expect(Rqid.displayFromRqid(rqid)).toEqual({
+        name: "The Pack Rule",
+        missing: false,
+        pending: true,
+      });
+
+      fromRqid.mockRejectedValue(new Error("pack unavailable"));
+      (Rqid as any).forgetNames("JournalEntry");
+      Rqid.displayFromRqid(rqid);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(Rqid.displayFromRqid(rqid)).toEqual({ name: "rule", missing: true });
+      controller.abort();
+    });
+
     it("names a link nothing else resolves from the owning actor's items", () => {
       setGame([worldDoc("i.skill.jump", "Jump", 1)], []);
+      const tailLash = { name: "Tail Lash" };
       const actor = {
         getBestEmbeddedDocumentByRqid: (rqid: string) =>
-          rqid === "i.skill.tail-lash" ? { name: "Tail Lash" } : undefined,
+          rqid === "i.skill.tail-lash" ? tailLash : undefined,
       } as any;
       expect(Rqid.displayFromRqid("i.skill.tail-lash", actor)).toEqual({
         name: "Tail Lash",
         missing: false,
+        actorItem: tailLash,
       });
       expect(Rqid.displayFromRqid("i.skill.jump", actor)).toEqual({ name: "Jump", missing: false });
       expect(Rqid.displayFromRqid("i.skill.gone", actor)).toEqual({ name: "gone", missing: true });
@@ -768,6 +805,21 @@ describe("Rqid", () => {
       expect(warn).toHaveBeenCalled();
       expect(Rqid.nameFromRqid("i.skill.jump")).toBe("Jump");
       warn.mockRestore();
+    });
+
+    it("tells listeners once when names may have changed", async () => {
+      setGame([], []);
+      const listener = vi.fn();
+      const controller = new AbortController();
+      Rqid.onNamesChanged(listener, controller.signal);
+      (Rqid as any).forgetNames("Item");
+      (Rqid as any).forgetNames();
+      await Promise.resolve();
+      expect(listener).toHaveBeenCalledTimes(1);
+      controller.abort();
+      (Rqid as any).forgetNames();
+      await Promise.resolve();
+      expect(listener).toHaveBeenCalledTimes(1);
     });
 
     it("reads the candidates again after the cache is cleared", () => {

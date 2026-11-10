@@ -123,10 +123,8 @@
      data-matrix-spell-dropzone
      data-tooltip="{{localize "RQG.Item.Gear.MatrixSpellDropHint"}}">
   {{#each system.matrixSpells}}
-    <div class="bond-actor-link matrix-spell-link">
-      <span data-rqid-link="{{this.spellRqidLink.rqid}}">
-        {{rqidLinkName this.spellRqidLink.rqid}}
-      </span>
+    <div class="matrix-spell-link">
+      <rqg-link rqid="{{this.spellRqidLink.rqid}}" owner="{{@root.uuid}}"></rqg-link>
       {{#if ../isGM}}
         {{#if this.isVariable}}
           <input type="number"
@@ -142,11 +140,14 @@
         {{/if}}
       {{/if}}
       {{#if ../isEditable}}
-        <a data-action="unlinkMatrixSpell"
-           data-index="{{this.storageIndex}}"
-           data-tooltip="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=(rqidLinkName this.spellRqidLink.rqid)}}">
-          <i class="fas fa-unlink"></i>
-        </a>
+        <button type="button"
+                class="rqg-link-remove"
+                data-action="unlinkMatrixSpell"
+                data-index="{{this.storageIndex}}"
+                aria-label="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=(rqidLinkName this.spellRqidLink.rqid)}}"
+                data-tooltip="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=(rqidLinkName this.spellRqidLink.rqid)}}">
+          <i class="fa-solid fa-xmark" inert></i>
+        </button>
       {{/if}}
     </div>
   {{/each}}

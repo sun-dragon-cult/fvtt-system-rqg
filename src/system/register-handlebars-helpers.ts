@@ -7,10 +7,8 @@ import {
   localize,
   localizeDynamic,
   localizeItemType,
-  toCamelCase,
 } from "./util";
 
-import { Rqid } from "./api/rqid-api";
 import { RqidLink } from "../data-model/shared/rqid-link";
 import type { RqgItem } from "../items/rqg-item";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
@@ -422,35 +420,7 @@ export const registerHandlebarsHelpers = function () {
     list.includes(elem) ? options.fn(this) : options.inverse(this),
   );
 
-  Handlebars.registerHelper("rqidLinkTooltip", function (rqid: string) {
-    const documentName = Rqid.getDocumentName(rqid);
-    const itemTypeString = documentName === "Item" ? Rqid.getDocumentType(rqid) : undefined;
-    const itemType = (itemTypeString ? toCamelCase(itemTypeString) : undefined) as
-      ItemTypeEnum | undefined;
-    return localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
-      rqid: rqid,
-      documentName: game.i18n?.localize(`DOCUMENT.${documentName}`) ?? "",
-      documentType: itemType ? localizeItemType(itemType) : "",
-    });
-  });
-
-  Handlebars.registerHelper("rqidLinkIcon", function (rqid: string) {
-    return Rqid.getRqidIcon(rqid) || "";
-  });
-
   Handlebars.registerHelper("rqidLinkName", (rqid: string) => RqidLink.displayName(rqid));
-
-  // ownerUuid: the sheet's document; its actor's items name links nothing else resolves.
-  // Resolve the actor part, as fromUuidSync can't reach items of compendium actors.
-  Handlebars.registerHelper("rqidLinkDisplay", (rqid: string, ownerUuid: unknown) => {
-    const actorUuid =
-      typeof ownerUuid === "string" ? /^(.*?\bActor\.[^.]+)/.exec(ownerUuid)?.[1] : undefined;
-    const actor = actorUuid ? fromUuidSync(actorUuid, { strict: false }) : undefined;
-    return RqidLink.display(
-      rqid,
-      actor instanceof Actor ? (actor as unknown as RqgActor) : undefined,
-    );
-  });
 
   Handlebars.registerHelper("sortRqidLinks", (links: { rqid: string }[] | undefined) =>
     RqidLink.sortedByName(links),

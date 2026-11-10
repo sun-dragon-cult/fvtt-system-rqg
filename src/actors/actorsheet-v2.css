@@ -2639,18 +2639,7 @@
             gap: 0.25em;
           }
 
-/* Global .key-value-grid styles set .drop-target to inline-grid. In the V2 background
-           tab we want rqid dropzones to fill the value column. */
-          & .drop-target.item-sheet-rqid-link {
-            display: grid;
-            width: 100%;
-          }
-
           & .rqid-dropzone-wrap {
-            width: 100%;
-          }
-
-          & .rqid-dropzone-wrap > .drop-target.item-sheet-rqid-link {
             width: 100%;
           }
         }

@@ -3,15 +3,16 @@
     <label for="hitlocations-{{id}}">{{localize "RQG.Item.Armor.HitLocations"}}</label>
 
     <div>
-      {{> rqidLinkArrayDropzone
-        rqidLinkArray=system.hitLocationRqidLinks
-        dropzoneData="hitLocationRqidLinks"
-        dropDocumentNames="Item"
-        dropDocumentTypes="hitLocation"
-        showDeleteFromPropertyName="hitLocationRqidLinks"
-        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectHitLocation"
-        dropdownOptions=allHitLocationOptions
-    }}
+      <rqg-link-field
+        name="system.hitLocationRqidLinks"
+        value="{{json system.hitLocationRqidLinks}}"
+        documents="Item"
+        types="hitLocation"
+        hint="RQG.Foundry.ContentLink.Field.Empty.HitLocation"
+        owner="{{@root.uuid}}"
+      >
+        {{selectOptions allHitLocationOptions localize=false}}
+      </rqg-link-field>
 
   </div>
 

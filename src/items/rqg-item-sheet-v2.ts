@@ -1,12 +1,5 @@
 import { RqidLink } from "../data-model/shared/rqid-link";
-import {
-  getDomDataset,
-  getRequiredDomDataset,
-  localize,
-  localizeItemType,
-  normalizeSourceRqidLinks,
-  parseBooleanString,
-} from "../system/util";
+import { getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { decorateRqidFrameButton, getRqidFrameButton } from "../documents/rqid-sheet-button";
 import type { RqgItem } from "./rqg-item";
 import type { RqgActor } from "@actors/rqg-actor.ts";
@@ -18,15 +11,12 @@ import {
   type MatrixSpellStorageEntry,
 } from "../system/spell-matrix";
 import {
-  extractDropInfo,
   extractDroppedActor,
   getAllowedDropDocumentNames,
   getDroppedDocumentRqidLink,
-  hasRqid,
   isAllowedDocumentNames,
   onDragEnter,
   onDragLeave,
-  updateRqidLink,
 } from "../documents/drag-drop";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
@@ -221,60 +211,8 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
 
     // RQID link open/delete handlers in the sheet body (bind once)
     if (options.isFirstRender) {
-      RqidLink.bindHandlers(this.element, this.document as foundry.abstract.Document.Any);
+      RqidLink.bindHandlers(this.element);
     }
-
-    // Add rqidLink via dropdown to an array of links
-    this.element.querySelectorAll<HTMLElement>("[data-add-to-rqid-array-link]").forEach((elem) => {
-      const targetProperty = getDomDataset(elem, "dropzone");
-      if (!targetProperty) {
-        return;
-      }
-      elem.addEventListener("change", async (event) => {
-        const selectElem = event.currentTarget as HTMLSelectElement;
-        const allowDuplicates = parseBooleanString(getDomDataset(elem, "allow-duplicates"));
-        const newRqid = selectElem?.value?.trim() ?? "";
-        if (!newRqid || newRqid === "empty") {
-          return;
-        }
-
-        const sourceLinks = foundry.utils.getProperty(
-          this.document._source.system as object,
-          targetProperty,
-        );
-        const targetRqidLinks = normalizeSourceRqidLinks(sourceLinks);
-
-        if (allowDuplicates || !targetRqidLinks.some((l) => l.rqid === newRqid)) {
-          const newRqidLink = { rqid: newRqid };
-          const updatedLinks = [...targetRqidLinks, newRqidLink];
-          await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
-        }
-      });
-    });
-
-    // Set a single rqidLink via dropdown
-    this.element.querySelectorAll<HTMLElement>("[data-replace-rqid-link]").forEach((elem) => {
-      const targetProperty = getDomDataset(elem, "dropzone");
-      if (!targetProperty) {
-        return;
-      }
-      elem.addEventListener("change", async (event) => {
-        const selectElem = event.currentTarget as HTMLSelectElement;
-        const newRqid = selectElem?.value?.trim() ?? "";
-        if (!newRqid || newRqid === "empty") {
-          return;
-        }
-
-        const currentLink = foundry.utils.getProperty(
-          this.document.system as object,
-          targetProperty,
-        ) as { rqid?: string } | null | undefined;
-        if (currentLink?.rqid !== newRqid) {
-          const newRqidLink = { rqid: newRqid };
-          await this.document.update({ [`system.${targetProperty}`]: newRqidLink });
-        }
-      });
-    });
 
     // Edit a Matrix Spell entry's enchanted points (#959, GM-only, see item-common-physical.hbs)
     this.element.querySelectorAll<HTMLInputElement>("[data-matrix-spell-points]").forEach((el) => {
@@ -412,12 +350,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       case "JournalEntryPage":
         await this._onDropItemOrJournal(event, droppedDocumentData);
         return;
-      // Only as a link, e.g. a spell's effectRqidLink - never embedded by dropping it on the sheet.
-      case "ActiveEffect":
-        if (target instanceof Element && target.closest("[data-dropzone]")) {
-          await this._onDropItemOrJournal(event, droppedDocumentData);
-        }
-        return;
       default:
         isAllowedDocumentNames(droppedDocumentData?.type, [
           "Item",
@@ -428,26 +360,14 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     }
   }
 
-  // Named distinctly from ItemSheetV2's own _onDropDocument (ActiveEffect-specific in v14 fvtt-types).
+  /**
+   * Handles an Item or journal dropped on a sheet's own `[data-dropzone]`; link fields handle
+   * their drops themselves. Named distinctly from ItemSheetV2's own _onDropDocument.
+   */
   protected async _onDropItemOrJournal(
-    event: DragEvent,
-    data: ActorSheet.DropData,
+    _event: DragEvent,
+    _data: ActorSheet.DropData,
   ): Promise<boolean | RqgItem[]> {
-    const {
-      droppedDocument,
-      dropZoneData: targetPropertyName,
-      isAllowedToDrop,
-      allowDuplicates,
-    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
-    if (isAllowedToDrop && hasRqid(droppedDocument)) {
-      await updateRqidLink(
-        this.document as foundry.abstract.Document.Any,
-        targetPropertyName,
-        droppedDocument,
-        allowDuplicates,
-      );
-      return [this.document];
-    }
     return false;
   }
 
