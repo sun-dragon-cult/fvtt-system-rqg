@@ -11,12 +11,10 @@ import { documentRqidFlags } from "../../data-model/shared/rqg-document-flags";
 import type { DocumentSheetData } from "../shared/sheet-interfaces.types.ts";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/drag-drop";
 import { templatePaths } from "../../system/load-handlebars-templates";
-import type { HomelandItem } from "@item-model/homeland-data-model.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import { buildItemName } from "../item-name";
 
 export interface OccupationSheetData {
-  homelandsJoined: string;
   standardsOfLivingOptions: SelectOptionData<StandardOfLivingEnum>[];
   skillsJoined: string;
 }
@@ -88,7 +86,6 @@ export class OccupationSheet extends RqgItemSheet {
       isGM: game.user?.isGM ?? false,
       system: system,
 
-      homelandsJoined: system.homelands.join(", "),
       standardsOfLivingOptions: Object.values(StandardOfLivingEnum).map((standard) => ({
         value: standard,
         label: localize("RQG.Item.Occupation.StandardOfLivingEnum." + standard),
@@ -248,29 +245,6 @@ export class OccupationSheet extends RqgItemSheet {
       !isAllowedDocumentType(droppedItem as foundry.abstract.Document.Any, allowedDropDocumentTypes)
     ) {
       return false;
-    }
-
-    if (isDocumentSubType<HomelandItem>(droppedItem, ItemTypeEnum.Homeland)) {
-      // For this one we're just saving the name of the homeland, without the region
-      // to an array of strings.
-      const homelands = this.document.system.homelands;
-      const newHomeland = droppedItem.system.homeland;
-      if (!homelands.includes(newHomeland)) {
-        homelands.push(newHomeland);
-        if (this.document.isEmbedded) {
-          await this.document.actor?.updateEmbeddedDocuments("Item", [
-            {
-              _id: this.document.id,
-              system: { homelands: homelands },
-            },
-          ]);
-        } else {
-          await this.document.update({
-            system: { homelands: homelands },
-          });
-        }
-      }
-      return [this.document];
     }
 
     if (isDocumentSubType<SkillItem>(droppedItem, ItemTypeEnum.Skill)) {

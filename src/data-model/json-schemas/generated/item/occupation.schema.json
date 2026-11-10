@@ -41,14 +41,29 @@
       "title": "Specialization",
       "description": "A narrower field within the occupation."
     },
-    "homelands": {
+    "homelandRqidLinks": {
       "type": "array",
       "items": {
-        "type": "string",
-        "default": ""
+        "type": "object",
+        "properties": {
+          "rqid": {
+            "type": "string",
+            "default": ""
+          },
+          "bonus": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "rqid"
+        ]
       },
       "title": "Homelands",
-      "description": "Names of the homelands where the occupation is found."
+      "description": "Links to the homelands where the occupation is found. Empty means all homelands."
     },
     "occupationalSkills": {
       "type": "array",
@@ -183,7 +198,7 @@
   "required": [
     "occupation",
     "specialization",
-    "homelands",
+    "homelandRqidLinks",
     "occupationalSkills",
     "standardOfLiving",
     "baseIncome",

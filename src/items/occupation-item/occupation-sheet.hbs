@@ -51,17 +51,13 @@
         <div class="key-value-grid">
 
           <label>{{localize "RQG.Item.Occupation.Homelands"}}</label>
-          <div class="drop-target"
-               data-dropzone="homelandRqidLinks"
-               data-dropzone-document-types="homeland">
-            <div style="display: flex; flex-wrap: wrap;">
-              {{#if homelandsJoined}}
-                {{homelandsJoined}}
-              {{else}}
-                {{localize "RQG.Item.Occupation.AllHomelands"}}
-              {{/if}}
-            </div>
-          </div>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.homelandRqidLinks
+            dropzoneData="homelandRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="homeland"
+            showDeleteFromPropertyName="homelandRqidLinks"
+          }}
 
           <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}} <i
             id="btn-edit-occupational-skills-{{id}}" class="fas fa-edit"></i></label>

@@ -9,13 +9,24 @@ import {
 } from "../../documents/drag-drop";
 import { localize } from "../../system/util";
 import { RqgLinkElement } from "./rqg-link-element";
-import { parseLinks, toLinks, type RqgLinkFieldEntry } from "./rqg-link-value";
+import { entryFor, parseLinks, rqidOf, toLinks, type RqgLinkFieldEntry } from "./rqg-link-value";
 
-/** Detail of the cancelable `rqg-link-drop` event fired before a dropped document is linked. */
+/**
+ * Detail of the cancelable `rqg-link-drop` event fired before a dropped document is linked.
+ * Properties added to `entry` are stored with the link.
+ */
 export type RqgLinkDropDetail = {
   document: foundry.abstract.Document.Any;
-  link: RqgLinkFieldEntry;
+  rqid: string;
+  entry: RqgLinkFieldEntry;
 };
+
+/** Adds controls to an entry; see RqgLinkFieldElement.renderEntry. */
+export type RqgLinkEntryRenderer = (
+  element: HTMLElement,
+  entry: Readonly<RqgLinkFieldEntry>,
+  editable: boolean,
+) => void;
 
 /**
  * An editable rqid link, or list of them, that takes part in forms like any input:
@@ -24,6 +35,8 @@ export type RqgLinkDropDetail = {
  *
  * Attributes:
  * - `value`: the links as JSON.
+ * - `link-key`: the property of each entry holding the link, when entries hold more than a link,
+ *   like `{ skillRqidLink, bonus, incomeSkill }`.
  * - `single`: one link; a drop replaces it.
  * - `documents`, `types`: comma separated document names and types that may be dropped.
  * - `allow-duplicates`: the same rqid may be linked more than once.
@@ -34,6 +47,7 @@ export type RqgLinkDropDetail = {
  *
  * `<option>` children become an add menu. Before linking a dropped document it fires a cancelable
  * `rqg-link-drop` event (detail: RqgLinkDropDetail), so the sheet can refuse the drop or do more.
+ * `renderEntry` lets the sheet add controls to each entry.
  */
 export class RqgLinkFieldElement extends foundry.applications.elements.AbstractFormInputElement<
   RqgLinkFieldEntry[]
@@ -50,11 +64,30 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
   #addPrompt?: string;
   #list?: HTMLElement;
   #renderedEditable?: boolean;
+  #renderEntry?: RqgLinkEntryRenderer;
 
   constructor() {
     super();
-    this._value = parseLinks(this.getAttribute("value"));
+    this._value = parseLinks(this.getAttribute("value"), this.linkKey);
     this.removeAttribute("value");
+  }
+
+  get linkKey(): string | undefined {
+    return this.getAttribute("link-key") ?? undefined;
+  }
+
+  /**
+   * Called for each entry after its chip and bonus, before the remove button. Inputs and selects it
+   * adds with a `data-key` edit that property of the entry: a checkbox stores a boolean, a number
+   * input a number (0 when empty), others their text.
+   */
+  get renderEntry(): RqgLinkEntryRenderer | undefined {
+    return this.#renderEntry;
+  }
+
+  set renderEntry(renderer: RqgLinkEntryRenderer | undefined) {
+    this.#renderEntry = renderer;
+    this._refresh();
   }
 
   get single(): boolean {
@@ -82,12 +115,12 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
   }
 
   protected override _getValue(): any {
-    const links = this._value.map((link) => ({ ...link }));
-    return this.single ? (links[0] ?? null) : links;
+    const entries = this._value.map((entry) => ({ ...entry }));
+    return this.single ? (entries[0] ?? null) : entries;
   }
 
   protected override _setValue(value: unknown): void {
-    this._value = toLinks(value);
+    this._value = toLinks(value, this.linkKey);
   }
 
   protected override _buildElements(): HTMLElement[] {
@@ -103,14 +136,18 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
     const owner = this.getAttribute("owner") ?? "";
     const actor = RqidLink.ownerActor(owner);
     const editable = this.editable;
+    const linkKey = this.linkKey;
     const entries = RqidLink.sortedByName(
-      this.single ? this._value.slice(0, 1) : this._value,
+      (this.single ? this._value.slice(0, 1) : this._value).map((value) => ({
+        rqid: rqidOf(value, linkKey),
+        value,
+      })),
       actor,
     );
     this.#renderedEditable = editable;
 
-    const children: HTMLElement[] = entries.map(({ link, index, name }) =>
-      this.#buildEntry(link, index, name, owner, editable),
+    const children: HTMLElement[] = entries.map(({ link: { value, rqid }, index, name }) =>
+      this.#buildEntry(value, rqid, index, name, owner, editable),
     );
     if (!entries.length) {
       const placeholder = document.createElement("span");
@@ -133,7 +170,8 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
   }
 
   #buildEntry(
-    link: RqgLinkFieldEntry,
+    value: RqgLinkFieldEntry,
+    rqid: string,
     index: number,
     name: string,
     owner: string,
@@ -144,7 +182,7 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
     entry.dataset["index"] = String(index);
 
     const chip = document.createElement(RqgLinkElement.tagName) as RqgLinkElement;
-    chip.setAttribute("rqid", link.rqid);
+    chip.setAttribute("rqid", rqid);
     if (owner) {
       chip.setAttribute("owner", owner);
     }
@@ -156,14 +194,19 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
       if (editable) {
         const input = document.createElement("input");
         input.type = "number";
-        input.value = link.bonus == null ? "" : String(link.bonus);
+        input.min = "0";
+        input.step = "1";
+        input.dataset["key"] = "bonus";
+        input.value = value["bonus"] == null ? "" : String(value["bonus"]);
         input.ariaLabel = localize("RQG.Foundry.ContentLink.Field.Bonus", { name });
         bonus.append("+", input, "%");
       } else {
-        bonus.textContent = `+${link.bonus ?? 0}%`;
+        bonus.textContent = `+${(value["bonus"] as number | null | undefined) ?? 0}%`;
       }
       entry.append(bonus);
     }
+
+    this.#renderEntry?.(entry, value, editable);
 
     if (editable) {
       const remove = document.createElement("button");
@@ -179,7 +222,7 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
   }
 
   #buildAddMenu(): HTMLSelectElement | undefined {
-    const linked = new Set(this._value.map((link) => link.rqid));
+    const linked = new Set(this._value.map((entry) => rqidOf(entry, this.linkKey)));
     const available = this.#options.filter(
       (option) => this.allowDuplicates || this.single || !linked.has(option.value),
     );
@@ -236,17 +279,17 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
     }
     if (target instanceof HTMLSelectElement && target.classList.contains("add")) {
       if (target.value) {
-        this.#add({ rqid: target.value });
+        this.#add(entryFor({ rqid: target.value }, this.linkKey));
       }
       return;
     }
-    if (target instanceof HTMLInputElement && target.closest(".bonus")) {
+    const key = target.dataset["key"];
+    if (key && (target instanceof HTMLInputElement || target instanceof HTMLSelectElement)) {
       const index = Number(target.closest<HTMLElement>(".entry")?.dataset["index"]);
-      const links = this._value.map((link) => ({ ...link }));
-      if (links[index]) {
-        const bonus = Number(target.value);
-        links[index].bonus = target.value === "" || !Number.isFinite(bonus) ? null : bonus;
-        this.value = links;
+      const entries = this._value.map((entry) => ({ ...entry }));
+      if (entries[index]) {
+        entries[index][key] = inputValue(target);
+        this.value = entries;
       }
     }
   }
@@ -303,24 +346,30 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
       );
       return;
     }
-    const detail: RqgLinkDropDetail = { document, link };
+    const detail: RqgLinkDropDetail = {
+      document,
+      rqid: link.rqid,
+      entry: entryFor(link, this.linkKey),
+    };
     const proceed = this.dispatchEvent(
       new CustomEvent("rqg-link-drop", { bubbles: true, cancelable: true, detail }),
     );
     if (proceed) {
-      this.#add(detail.link);
+      this.#add(detail.entry);
     }
   }
 
-  #add(link: RqgLinkFieldEntry): void {
+  #add(entry: RqgLinkFieldEntry): void {
+    const linkKey = this.linkKey;
+    const rqid = rqidOf(entry, linkKey);
     const isNew = this.single
-      ? this._value[0]?.rqid !== link.rqid
-      : this.allowDuplicates || !this._value.some((l) => l.rqid === link.rqid);
+      ? rqidOf(this._value[0] ?? {}, linkKey) !== rqid
+      : this.allowDuplicates || !this._value.some((e) => rqidOf(e, linkKey) === rqid);
     if (!isNew) {
       this._refresh(); // resets the add menu
       return;
     }
-    this.value = this.single ? [link] : [...this._value, link];
+    this.value = this.single ? [entry] : [...this._value, entry];
   }
 
   #removeAt(index: number): void {
@@ -328,4 +377,16 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
       this.value = this._value.filter((_link, i) => i !== index);
     }
   }
+}
+
+/** A checkbox gives a boolean, a number input a number (0 when empty), others their text. */
+function inputValue(input: HTMLInputElement | HTMLSelectElement): unknown {
+  if (input instanceof HTMLInputElement && input.type === "checkbox") {
+    return input.checked;
+  }
+  if (input instanceof HTMLInputElement && input.type === "number") {
+    const number = Number(input.value);
+    return Number.isFinite(number) ? number : 0;
+  }
+  return input.value;
 }

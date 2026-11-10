@@ -111,49 +111,17 @@
   {{/unless}}
 </div>
 
-{{!-- Matrix Spell(s) (Core p.264-265, #959) - a list, not a single link, like Bound Spirit(s)
-     above: an item can hold more than one enchanted spell (e.g. one 4-point and one 1-point
-     spell), and the dropzone always appends another. Each spell's own mechanics are resolved live
-     from spellRqidLink at cast time (resolveMatrixSpellItem, spell-matrix.ts); only the enchanted
-     level (points) is stored per entry here. Listed alphabetically - use `this.storageIndex`,
-     not `@index`, for the real array position. --}}
-<label for="matrix-spell-{{id}}">{{localize "RQG.Item.Gear.MatrixSpell"}}</label>
-<div id="matrix-spell-{{id}}"
-     class="matrix-spell-dropzone"
-     data-matrix-spell-dropzone
-     data-tooltip="{{localize "RQG.Item.Gear.MatrixSpellDropHint"}}">
-  {{#each system.matrixSpells}}
-    <div class="matrix-spell-link">
-      <rqg-link rqid="{{this.spellRqidLink.rqid}}" owner="{{@root.uuid}}"></rqg-link>
-      {{#if ../isGM}}
-        {{#if this.isVariable}}
-          <input type="number"
-                 data-matrix-spell-points
-                 data-index="{{this.storageIndex}}"
-                 data-tooltip="{{localize "RQG.Item.Gear.MatrixSpellPoints"}}"
-                 value="{{this.points}}"
-                 min="0"
-                 max="99">
-        {{else}}
-          <span class="matrix-spell-points-readonly"
-                data-tooltip="{{localize "RQG.Item.Gear.MatrixSpellPoints"}}">{{this.points}}</span>
-        {{/if}}
-      {{/if}}
-      {{#if ../isEditable}}
-        <button type="button"
-                class="rqg-link-remove"
-                data-action="unlinkMatrixSpell"
-                data-index="{{this.storageIndex}}"
-                aria-label="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=(rqidLinkName this.spellRqidLink.rqid)}}"
-                data-tooltip="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=(rqidLinkName this.spellRqidLink.rqid)}}">
-          <i class="fa-solid fa-xmark" inert></i>
-        </button>
-      {{/if}}
-    </div>
-  {{/each}}
-  {{#unless system.matrixSpells.length}}
-    <div class="bond-actor-link matrix-spell-link empty">
-      <span class="matrix-spell-hint">{{localize "RQG.Item.Gear.MatrixSpellDropHint"}}</span>
-    </div>
-  {{/unless}}
-</div>
+{{!-- Matrix Spell(s) (Core p.264-265, #959): only the enchanted points are stored per entry; the
+     spell itself is resolved from spellRqidLink at cast time (resolveMatrixSpellItem). --}}
+<label>{{localize "RQG.Item.Gear.MatrixSpell"}}</label>
+<rqg-link-field
+  class="matrix-spells"
+  name="system.matrixSpells"
+  value="{{json system.matrixSpells}}"
+  link-key="spellRqidLink"
+  documents="Item"
+  types="spiritMagic"
+  allow-duplicates
+  hint="RQG.Item.Gear.MatrixSpellDropHint"
+  owner="{{@root.uuid}}"
+></rqg-link-field>

@@ -72,8 +72,14 @@
     }
   }
 
+  /* Fills its grid cell, also through a wrapper, so the whole row is the drop target */
+  .key-value-grid > :has(> rqg-link-field) {
+    justify-self: stretch;
+  }
+
   rqg-link-field {
     display: block;
+    justify-self: stretch;
     border-radius: var(--rqg-radius-sm);
 
     & .links {
@@ -92,18 +98,24 @@
       max-width: 100%;
     }
 
-    & .bonus {
+    & .bonus,
+    & .entry label {
       display: inline-flex;
       align-items: center;
       gap: 0.125rem;
       white-space: nowrap;
+      font-weight: normal;
+    }
 
-      & input[type="number"] {
-        flex: 0 0 2.5rem;
-        width: 2.5rem;
-        height: 1.5rem;
-        text-align: right;
-      }
+    & .entry input[type="number"] {
+      flex: 0 0 2.5rem;
+      width: 2.5rem;
+      height: 1.5rem;
+      text-align: right;
+    }
+
+    & .entry input[type="checkbox"] {
+      margin: 0;
     }
 
     & .placeholder {
