@@ -733,7 +733,7 @@
             "null"
           ],
           "title": "DEX strike rank",
-          "description": "Calculated from DEX plus effect.add.strikeRank. null when DEX is not set.",
+          "description": "Calculated from DEX plus effects. null when DEX is not set. To change it with an effect, write to system.effect.add.dexStrikeRank.",
           "x-rqg-stored": false
         },
         "sizStrikeRank": {
@@ -1047,10 +1047,10 @@
         "add": {
           "type": "object",
           "properties": {
-            "strikeRank": {
+            "dexStrikeRank": {
               "type": "integer",
               "default": 0,
-              "title": "Strike rank modifier",
+              "title": "DEX strike rank modifier",
               "description": "Added to the DEX strike rank.",
               "x-rqg-stored": false,
               "x-rqg-effectTarget": true
@@ -1198,7 +1198,7 @@
           },
           "additionalProperties": false,
           "required": [
-            "strikeRank",
+            "dexStrikeRank",
             "magicPoints",
             "hitPoints",
             "skillCategoryModifiers"

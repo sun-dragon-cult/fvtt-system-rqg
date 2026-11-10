@@ -317,7 +317,7 @@
             },
             "dexStrikeRank": {
               "label": "DEX strike rank",
-              "hint": "Calculated from DEX plus effect.add.strikeRank. null when DEX is not set."
+              "hint": "Calculated from DEX plus effects. null when DEX is not set. To change it with an effect, write to system.effect.add.dexStrikeRank."
             },
             "sizStrikeRank": {
               "label": "SIZ strike rank",
@@ -375,8 +375,8 @@
             },
             "add": {
               "label": "Additions",
-              "strikeRank": {
-                "label": "Strike rank modifier",
+              "dexStrikeRank": {
+                "label": "DEX strike rank modifier",
                 "hint": "Added to the DEX strike rank."
               },
               "magicPoints": {

@@ -214,7 +214,7 @@ function defineCharacterSchema() {
         }),
       }),
       add: new SchemaField({
-        strikeRank: new NumberField({
+        dexStrikeRank: new NumberField({
           integer: true,
           nullable: false,
           initial: 0,
@@ -374,7 +374,7 @@ export class CharacterDataModel extends RqgActorDataModel<CharacterSchema> {
     system.attributes.dexStrikeRank =
       characteristicDerived.dexStrikeRank == null
         ? null
-        : characteristicDerived.dexStrikeRank + system.effect.add.strikeRank;
+        : characteristicDerived.dexStrikeRank + system.effect.add.dexStrikeRank;
 
     // Effects that halve movement round down
     for (const locomotion of Object.values(LocomotionEnum)) {
