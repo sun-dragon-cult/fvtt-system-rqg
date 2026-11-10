@@ -22,7 +22,7 @@ function buildSystem() {
     effect: {
       multiply: { healingRate: 1 },
       add: {
-        strikeRank: 0,
+        dexStrikeRank: 0,
         magicPoints: { max: 0 },
         hitPoints: { max: 0 },
         skillCategoryModifiers: {
@@ -238,7 +238,7 @@ describe("CharacterDataModel.prepareDerivedData", () => {
     const base = (model as unknown as { attributes: { dexStrikeRank: number } }).attributes
       .dexStrikeRank;
 
-    system.effect.add.strikeRank = 1;
+    system.effect.add.dexStrikeRank = 1;
     model.prepareDerivedData();
     const attributes = (
       model as unknown as {
