@@ -733,7 +733,7 @@
             "null"
           ],
           "title": "DEX strike rank",
-          "description": "Calculated from DEX plus effect.add.dexStrikeRank. null when DEX is not set.",
+          "description": "Calculated from DEX plus effects. null when DEX is not set. To change it with an effect, write to system.effect.add.dexStrikeRank.",
           "x-rqg-stored": false
         },
         "sizStrikeRank": {
