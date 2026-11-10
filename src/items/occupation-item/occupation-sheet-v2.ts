@@ -2,15 +2,9 @@ import type { OccupationItem } from "@item-model/occupation-data-model.ts";
 import { StandardOfLivingEnum } from "@item-model/occupation-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { localize } from "../../system/util";
-import {
-  RqgItemSheetV2,
-  type RqgItemSheetContext,
-  type AppV2RenderContext,
-  type AppV2RenderOptions,
-} from "../rqg-item-sheet-v2";
+import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
-import type { RqgLinkFieldElement } from "../../applications/rqg-link/rqg-link-field-element";
 import { buildItemName } from "../item-name";
 
 interface OccupationSheetContext extends RqgItemSheetContext {
@@ -56,30 +50,6 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
     context.tabs = this._prepareTabs("sheet");
 
     return context;
-  }
-
-  override async _onRender(
-    context: AppV2RenderContext,
-    options: AppV2RenderOptions,
-  ): Promise<void> {
-    await super._onRender(context, options);
-
-    const skills = this.element.querySelector<RqgLinkFieldElement>(
-      "rqg-link-field.occupational-skills",
-    );
-    if (skills) {
-      const text = localize("RQG.Item.Occupation.IncomeSkillQ");
-      skills.renderEntry = (element, entry, editable) => {
-        const label = document.createElement("label");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.dataset["key"] = "incomeSkill";
-        checkbox.checked = Boolean(entry["incomeSkill"]);
-        checkbox.disabled = !editable;
-        label.append(checkbox, text);
-        element.append(label);
-      };
-    }
   }
 
   protected static override async onSubmit(

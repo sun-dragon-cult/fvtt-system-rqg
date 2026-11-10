@@ -98,7 +98,7 @@
       max-width: 100%;
     }
 
-    & .bonus,
+    & .control,
     & .entry label {
       display: inline-flex;
       align-items: center;

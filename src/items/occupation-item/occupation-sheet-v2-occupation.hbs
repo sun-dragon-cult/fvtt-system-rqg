@@ -21,10 +21,14 @@
       documents="Item"
       types="skill"
       allow-duplicates
-      bonus
       hint="RQG.Foundry.ContentLink.Field.Empty.Skill"
       owner="{{@root.uuid}}"
-    ></rqg-link-field>
+    >
+      <rqg-link-control key="bonus" min="0" step="1" prefix="+" suffix="%"
+                        label="RQG.Foundry.ContentLink.Field.Bonus"></rqg-link-control>
+      <rqg-link-control key="incomeSkill" type="checkbox"
+                        label="RQG.Item.Occupation.IncomeSkillQ"></rqg-link-control>
+    </rqg-link-field>
 
     <label for="standard-of-living-{{id}}">{{localize "RQG.Item.Occupation.StandardOfLiving"}}</label>
     <select id="standard-of-living-{{id}}" name="system.standardOfLiving">

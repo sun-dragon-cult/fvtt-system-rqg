@@ -9,6 +9,7 @@ import {
 } from "../../documents/drag-drop";
 import { localize } from "../../system/util";
 import { RqgLinkElement } from "./rqg-link-element";
+import { buildRqgLinkControl, rqgLinkControlTag } from "./rqg-link-control";
 import { entryFor, parseLinks, rqidOf, toLinks, type RqgLinkFieldEntry } from "./rqg-link-value";
 
 /**
@@ -40,14 +41,14 @@ export type RqgLinkEntryRenderer = (
  * - `single`: one link; a drop replaces it.
  * - `documents`, `types`: comma separated document names and types that may be dropped.
  * - `allow-duplicates`: the same rqid may be linked more than once.
- * - `bonus`: each link has an editable bonus.
  * - `hint`: localization key for the text shown when empty.
  * - `owner`: uuid of the document holding the links, passed to the shown links.
  * - `readonly`, `disabled`: no changes.
  *
- * `<option>` children become an add menu. Before linking a dropped document it fires a cancelable
- * `rqg-link-drop` event (detail: RqgLinkDropDetail), so the sheet can refuse the drop or do more.
- * `renderEntry` lets the sheet add controls to each entry.
+ * `<option>` children become an add menu, and `<rqg-link-control>` children controls in each entry
+ * (see rqg-link-control.ts). Before linking a dropped document it fires a cancelable `rqg-link-drop`
+ * event (detail: RqgLinkDropDetail), so the sheet can refuse the drop or do more. `renderEntry`
+ * lets the sheet add controls that depend on more than the entry.
  */
 export class RqgLinkFieldElement extends foundry.applications.elements.AbstractFormInputElement<
   RqgLinkFieldEntry[]
@@ -61,6 +62,7 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
   }
 
   #options: { value: string; label: string }[] = [];
+  #controls: Element[] = [];
   #addPrompt?: string;
   #list?: HTMLElement;
   #renderedEditable?: boolean;
@@ -77,7 +79,7 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
   }
 
   /**
-   * Called for each entry after its chip and bonus, before the remove button. Inputs and selects it
+   * Called for each entry after its chip and controls, before the remove button. Inputs and selects it
    * adds with a `data-key` edit that property of the entry: a checkbox stores a boolean, a number
    * input a number (0 when empty), others their text.
    */
@@ -98,10 +100,6 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
     return this.hasAttribute("allow-duplicates");
   }
 
-  get hasBonus(): boolean {
-    return this.hasAttribute("bonus");
-  }
-
   override connectedCallback(): void {
     const options = [...this.querySelectorAll("option")];
     if (options.length) {
@@ -110,6 +108,10 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
       this.#options = options
         .filter((option) => !isPrompt(option))
         .map((option) => ({ value: option.value, label: option.textContent ?? option.value }));
+    }
+    const controls = [...this.querySelectorAll(`:scope > ${rqgLinkControlTag}`)];
+    if (controls.length) {
+      this.#controls = controls;
     }
     super.connectedCallback();
   }
@@ -188,22 +190,10 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
     }
     entry.append(chip);
 
-    if (this.hasBonus) {
-      const bonus = document.createElement("span");
-      bonus.className = "bonus";
-      if (editable) {
-        const input = document.createElement("input");
-        input.type = "number";
-        input.min = "0";
-        input.step = "1";
-        input.dataset["key"] = "bonus";
-        input.value = value["bonus"] == null ? "" : String(value["bonus"]);
-        input.ariaLabel = localize("RQG.Foundry.ContentLink.Field.Bonus", { name });
-        bonus.append("+", input, "%");
-      } else {
-        bonus.textContent = `+${(value["bonus"] as number | null | undefined) ?? 0}%`;
-      }
-      entry.append(bonus);
+    for (const spec of this.#controls) {
+      entry.append(
+        buildRqgLinkControl(spec, value[spec.getAttribute("key") ?? ""], editable, name),
+      );
     }
 
     this.#renderEntry?.(entry, value, editable);
