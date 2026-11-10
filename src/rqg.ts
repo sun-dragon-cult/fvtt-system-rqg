@@ -32,6 +32,7 @@ import { HitLocationRoll } from "./rolls/hit-location-roll/hit-location-roll";
 import { DamageRoll } from "./rolls/damage-roll/damage-roll";
 import { ResistanceRoll } from "./rolls/resistance-roll/resistance-roll";
 import { RqgRollTableSheet } from "./roll-tables/rqg-roll-table-sheet";
+import { RqgActiveEffectConfig } from "./active-effect/rqg-active-effect-config";
 import { RqgTokenRuler } from "./combat/rqg-token-ruler";
 import { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior";
 import { RqgTokenLayer } from "./scene/rqg-token-layer";
@@ -146,6 +147,11 @@ Hooks.once("init", () => {
   DocumentSheetConfig.unregisterSheet(RollTable, "core", sheets.RollTableSheet);
   DocumentSheetConfig.registerSheet(RollTable, systemId, RqgRollTableSheet, {
     label: "RQG.SheetName.RollTable",
+    makeDefault: true,
+  });
+  DocumentSheetConfig.unregisterSheet(ActiveEffect, "core", sheets.ActiveEffectConfig);
+  DocumentSheetConfig.registerSheet(ActiveEffect, systemId, RqgActiveEffectConfig, {
+    label: "RQG.SheetName.ActiveEffect",
     makeDefault: true,
   });
 

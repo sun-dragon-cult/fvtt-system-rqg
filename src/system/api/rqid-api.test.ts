@@ -4,6 +4,7 @@ import { RqgError } from "../util";
 import { systemId } from "../config";
 import { documentRqidFlags } from "../../data-model/shared/rqg-document-flags";
 import * as util from "../util";
+import { RqgItem } from "../../items/rqg-item";
 
 type MockRqidDoc = {
   id?: string;
@@ -400,6 +401,21 @@ describe("Rqid", () => {
       game = { ...originalGame, packs: [effectPack] } as any;
 
       await expect(Rqid.fromRqidCount("ae..bladesharp", "en", { source: "all" })).resolves.toBe(1);
+    });
+  });
+
+  describe("embedded rqids", () => {
+    it("resolves an item's embedded Active Effect, highest priority first", () => {
+      const low = mockDoc("ae..bladesharp", 0);
+      const high = mockDoc("ae..bladesharp", 5);
+      const item = {
+        effects: [mockDoc("ae..other", 9), low, high],
+        getBestEmbeddedDocumentByRqid: RqgItem.prototype.getBestEmbeddedDocumentByRqid,
+        getEmbeddedDocumentsByRqid: RqgItem.prototype.getEmbeddedDocumentsByRqid,
+      };
+
+      expect((Rqid as any).getEmbeddedOrProvidedDocument(item, "ae..bladesharp")).toBe(high);
+      expect((Rqid as any).getEmbeddedOrProvidedDocument(item, "")).toBe(item);
     });
   });
 
