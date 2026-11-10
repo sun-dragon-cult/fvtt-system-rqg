@@ -40,7 +40,7 @@
                   <div class="flex-1"></div>
                   <div class="roll-range"><i class="fa-solid fa-dice-d20"></i> {{#if (eq system.dieFrom system.dieTo)}}{{system.dieFrom}}{{else}}{{system.dieFrom}}-{{system.dieTo}}{{/if}}</div>
                 </div>
-                <b>{{name}}</b>
+                <b class="hl-name">{{name}}</b>
                 {{#unless (eq system.hitLocationHealthState "healthy")}}
                   {{#unless (eq system.hitLocationHealthState "wounded")}}
                     <div class="hl-status-row">
@@ -82,7 +82,7 @@
                   <div class="flex-1"></div>
                   <div class="roll-range"><i class="fa-solid fa-dice-d20"></i> {{#if (eq system.dieFrom system.dieTo)}}{{system.dieFrom}}{{else}}{{system.dieFrom}}-{{system.dieTo}}{{/if}}</div>
                 </div>
-                <b>{{name}}</b>
+                <b class="hl-name">{{name}}</b>
                 {{#unless (eq system.hitLocationHealthState "healthy")}}
                   {{#unless (eq system.hitLocationHealthState "wounded")}}
                     <div class="hl-status-row">
