@@ -54,14 +54,14 @@
     <input type="checkbox" id="passes-spell-barriers-{{id}}" name="system.passesSpellBarriers" {{checked system.passesSpellBarriers}}>
 
     <label class="mp">{{localize "RQG.Item.Spell.SpellEffect"}}</label>
-    {{> rqidLinkDropzone
-      rqidLink=system.effectRqidLink
-      dropzoneData="effectRqidLink"
-      dropDocumentNames="ActiveEffect"
-      showDeleteFromPropertyName="effectRqidLink"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectEffect"
-      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceEffect"
-    }}
+    <rqg-link-field
+      name="system.effectRqidLink"
+      value="{{json system.effectRqidLink}}"
+      single
+      documents="ActiveEffect"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Effect"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
     <label for="is-matrix-{{id}}">{{localize "RQG.Item.SpiritMagic.MatrixQ"}}</label>
     <input type="checkbox" id="is-matrix-{{id}}" name="system.isMatrix" {{checked system.isMatrix}}>

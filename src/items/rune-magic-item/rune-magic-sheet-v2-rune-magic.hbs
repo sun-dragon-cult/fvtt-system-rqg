@@ -44,14 +44,14 @@
     <input type="checkbox" id="passes-spell-barriers-{{id}}" name="system.passesSpellBarriers" {{checked system.passesSpellBarriers}}>
 
     <label class="mp">{{localize "RQG.Item.Spell.SpellEffect"}}</label>
-    {{> rqidLinkDropzone
-      rqidLink=system.effectRqidLink
-      dropzoneData="effectRqidLink"
-      dropDocumentNames="ActiveEffect"
-      showDeleteFromPropertyName="effectRqidLink"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectEffect"
-      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceEffect"
-    }}
+    <rqg-link-field
+      name="system.effectRqidLink"
+      value="{{json system.effectRqidLink}}"
+      single
+      documents="ActiveEffect"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Effect"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
     <label for="is-stackable-{{id}}">{{localize "RQG.Item.RuneMagic.Stackable"}}</label>
     <input type="checkbox" id="is-stackable-{{id}}" name="system.isStackable" {{checked system.isStackable}}>
@@ -67,14 +67,15 @@
     {{/if}}
 
     <label for="runes-{{id}}">{{localize "RQG.Item.RuneMagic.Runes"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.runeRqidLinks
-      dropzoneData="runeRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="rune"
-      showDeleteFromPropertyName="runeRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
-      dropdownOptions=allRuneOptions
-    }}
+    <rqg-link-field
+      name="system.runeRqidLinks"
+      value="{{json system.runeRqidLinks}}"
+      documents="Item"
+      types="rune"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Rune"
+      owner="{{@root.uuid}}"
+    >
+      {{selectOptions allRuneOptions localize=false}}
+    </rqg-link-field>
   </div>
 </div>

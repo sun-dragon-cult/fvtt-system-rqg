@@ -89,7 +89,6 @@ export async function extractDroppedActor(event: DragEvent): Promise<Actor | und
 export function isAllowedDocumentNames(
   documentName: string | undefined,
   allowedDocumentNames: string[] | undefined,
-  showWarning: boolean = true,
 ): boolean {
   const allowedNames = allowedDocumentNames ?? [];
 
@@ -103,13 +102,11 @@ export function isAllowedDocumentNames(
       "disjunction",
     );
 
-    if (showWarning) {
-      const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
-        allowedDocumentNames: allowedDocumentNamesString,
-        documentName: translatedDocumentName,
-      });
-      logger.warn(msg);
-    }
+    const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
+      allowedDocumentNames: allowedDocumentNamesString,
+      documentName: translatedDocumentName,
+    });
+    logger.warn(msg);
     return false;
   }
   return true;
@@ -260,6 +257,18 @@ export function getAllowedDropDocumentNames(event: DragEvent) {
   return parseDropzoneList(getDomDataset(event, "dropzone-document-names"));
 }
 
+/** The document a drag payload points at, if any. */
+export async function resolveDroppedDocument(data: {
+  type?: string;
+}): Promise<Document.Any | undefined> {
+  const cls = getDocumentClass(data.type as CONST.ALL_DOCUMENT_TYPES);
+  return await (
+    cls?.implementation as {
+      fromDropData?: (dropData: object) => Promise<Document.Any | undefined>;
+    } | null
+  )?.fromDropData?.(data as object);
+}
+
 export async function extractDropInfo<T extends Document.Any>(
   event: DragEvent,
   data: ActorSheet.DropData,
@@ -270,12 +279,7 @@ export async function extractDropInfo<T extends Document.Any>(
   allowDuplicates: boolean;
 }> {
   const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-  const cls = getDocumentClass(data.type as CONST.ALL_DOCUMENT_TYPES);
-  const droppedDocument = await (
-    cls?.implementation as {
-      fromDropData?: (dropData: object) => Promise<Document.Any | undefined>;
-    } | null
-  )?.fromDropData?.(data as object);
+  const droppedDocument = await resolveDroppedDocument(data);
   const dropZoneData = getDomDataset(event, "dropzone");
   const isAllowedDropDocumentType = isAllowedDocumentType(
     droppedDocument as any,

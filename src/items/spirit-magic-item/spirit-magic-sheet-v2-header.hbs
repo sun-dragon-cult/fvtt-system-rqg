@@ -22,13 +22,13 @@
 
     </div>
 
-    {{> rqidLinkDropzone
-      rqidLink=system.descriptionRqidLink
-      dropzoneData="descriptionRqidLink"
-      dropDocumentNames="JournalEntry, JournalEntryPage"
-      showDeleteFromPropertyName="descriptionRqidLink"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-    }}
+    <rqg-link-field
+      name="system.descriptionRqidLink"
+      value="{{json system.descriptionRqidLink}}"
+      single
+      documents="JournalEntry,JournalEntryPage"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Journal"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
   </div>
 </header>

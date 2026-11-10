@@ -18,7 +18,6 @@ import {
   isFoundryElementInstanceOf,
   isTruthy,
   localize,
-  parseBooleanString,
   localizeDocumentName,
   range,
   requireValue,
@@ -61,16 +60,7 @@ import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-men
 import { matrixSpellMenuOptions } from "./context-menus/matrix-spell-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import { gearMenuOptions } from "./context-menus/gear-context-menu";
-import {
-  extractDroppedActor,
-  getDroppedDocumentRqidLink,
-  hasRqid,
-  isAllowedDocumentNames,
-  isAllowedDocumentType,
-  parseDropzoneList,
-  type DragDropPayloadLike,
-  updateRqidLink,
-} from "../documents/drag-drop";
+import { extractDroppedActor, hasRqid, updateRqidLink } from "../documents/drag-drop";
 import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
 import {
   getMatrixSpellRows,
@@ -176,7 +166,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       // Include a non-root content drop target for generic Foundry handling.
       // Do not include the root selector here: if html.matches(dropSelector),
       // Foundry binds only the root and skips descendant dropzones.
-      dropSelector: ".sheet-content, .contextmenu.item[data-item-id], [data-dropzone]",
+      dropSelector: ".sheet-content, .contextmenu.item[data-item-id]",
       permissions: {
         dragstart: (selector) => this._canDragStart(selector ?? ""),
         drop: (selector) => this._canDragDrop(selector ?? ""),
@@ -766,7 +756,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // RQID link open/delete handlers (bind once; delegated handlers survive re-renders)
     if (options.isFirstRender) {
-      RqidLink.bindHandlers(this.element, this.actor as foundry.abstract.Document.Any);
+      RqidLink.bindHandlers(this.element);
     }
 
     // --- Combat tab event handlers ---
@@ -1588,10 +1578,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     this._clearDragState();
   }
 
-  private _getDropzoneFromEvent(
-    event: DragEvent,
-    selector: string = "[data-dropzone]",
-  ): HTMLElement | null {
+  private _getDropzoneFromEvent(event: DragEvent, selector: string): HTMLElement | null {
     const directTarget = getEventTargetElement(event);
     const directDropzone = directTarget?.closest<HTMLElement>(selector) ?? null;
     if (directDropzone) {
@@ -1638,7 +1625,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // where a rejected drop produces an explicit notification.
     const candidateDropzone = this._getDropzoneFromEvent(
       event,
-      "[data-dropzone], [data-allied-spirit-dropzone]",
+      "[data-allied-spirit-dropzone], rqg-link-field:not(:disabled, [readonly])",
     );
     this._setActiveDropzone(candidateDropzone);
 
@@ -2493,74 +2480,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     return Boolean(result);
   }
 
-  private async _onDropRqidDocument(event: DragEvent): Promise<boolean> {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event) as
-      (DragDropPayloadLike & { uuid?: string }) | null;
-
-    const dropzone = this._getDropzoneFromEvent(event);
-    if (!dropzone) {
-      return false;
-    }
-    const allowedDocumentNames = parseDropzoneList(dropzone.dataset["dropzoneDocumentNames"]);
-    if (!isAllowedDocumentNames(data?.type, allowedDocumentNames, true)) {
-      return false;
-    }
-
-    switch (data?.type) {
-      case "Item":
-      case "JournalEntry":
-      case "JournalEntryPage": {
-        if (!data.uuid) {
-          return false;
-        }
-
-        const cls = getDocumentClass(data.type as CONST.ALL_DOCUMENT_TYPES);
-        const droppedDocument = (await (
-          cls?.implementation as {
-            fromDropData?: (dropData: object) => Promise<foundry.abstract.Document.Any | undefined>;
-          } | null
-        )?.fromDropData?.(data as object)) as foundry.abstract.Document.Any | undefined;
-
-        const allowedDropDocumentTypes = parseDropzoneList(
-          dropzone.dataset["dropzoneDocumentTypes"],
-        );
-        if (!isAllowedDocumentType(droppedDocument, allowedDropDocumentTypes)) {
-          return false;
-        }
-
-        if (!droppedDocument || !hasRqid(droppedDocument)) {
-          return false;
-        }
-
-        // JournalEntryPage links are stored as parentRqid.pageRqid, so a page
-        // without a parent journal RQID cannot be linked.
-        if (!getDroppedDocumentRqidLink(droppedDocument)) {
-          ui.notifications?.warn(
-            localize("RQG.Actor.Notification.JournalPageDropRequiresParentRqidWarn", {
-              pageName: droppedDocument.name ?? "",
-            }),
-          );
-          return false;
-        }
-
-        const targetPropertyName = dropzone.dataset["dropzone"];
-        const allowDuplicates = parseBooleanString(dropzone.dataset["allowDuplicates"]);
-        await updateRqidLink(
-          this.actor as foundry.abstract.Document.Any,
-          targetPropertyName,
-          droppedDocument,
-          allowDuplicates,
-        );
-        return true;
-      }
-      default:
-        return false;
-    }
-  }
-
   /**
    * An event that occurs when data is dropped into a drop target.
    * @param event - The originating drag event.
@@ -2573,11 +2492,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // twice and double up any notification. Handle the drop once.
     event.stopPropagation();
     this._resetDragVisualState();
-
-    if (this._getDropzoneFromEvent(event)) {
-      await this._onDropRqidDocument(event);
-      return;
-    }
 
     if (this._getDropzoneFromEvent(event, "[data-allied-spirit-dropzone]")) {
       await this._onDropAlliedSpirit(event);

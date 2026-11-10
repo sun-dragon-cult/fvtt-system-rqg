@@ -2,9 +2,7 @@
 
   <div class="flex-row flex-wrap">
     {{#each system.usage}}
-      <fieldset data-dropzone="{{@key}}"
-                data-dropzone-document-names="Item"
-                data-dropzone-document-types="skill">
+      <fieldset class="usage">
         <legend>{{localize (concat "RQG.Game.WeaponUsage." @key "-full")}}</legend>
         <div> {{!-- Make dragenter work despite flex--}}
 
@@ -12,12 +10,15 @@
           <div class="flex-row-start flex-align-center">
             <label class="mp">{{localize "TYPES.Item.skill"}}</label>
 
-            {{> rqidLink
-              rqidLink=skillRqidLink
-              showDeleteFromPropertyName=(concat "usage." @key ".skillRqidLink")
-              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
-              showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
-            }}
+            <rqg-link-field
+              name="system.usage.{{@key}}.skillRqidLink"
+              value="{{json skillRqidLink}}"
+              single
+              documents="Item"
+              types="skill"
+              hint="RQG.Foundry.ContentLink.Field.Empty.Skill"
+              owner="{{@root.uuid}}"
+            ></rqg-link-field>
           </div>
           <br>
           {{#unless (eq @key "offHand")}}

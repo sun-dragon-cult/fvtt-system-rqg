@@ -1,10 +1,16 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import { SkillCategoryEnum } from "@item-model/skill-enums.ts";
-import { RqgItem } from "../rqg-item";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/i-physical-item.ts";
-import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
-import { getDomDataset, isDocumentSubType, localize } from "../../system/util";
+import {
+  RqgItemSheetV2,
+  type AppV2RenderContext,
+  type AppV2RenderOptions,
+  type RqgItemSheetContext,
+} from "../rqg-item-sheet-v2";
+import type { RqgLinkDropDetail } from "../../applications/rqg-link/rqg-link-field-element";
+import type { RqidString } from "../../system/api/rqid-api";
+import { isDocumentSubType, localize } from "../../system/util";
 import {
   combatManeuverKey,
   damageTypeOptions,
@@ -12,14 +18,12 @@ import {
 } from "@item-model/weapon-data-model.ts";
 import type { DamageType } from "@item-model/weapon-enums.ts";
 import { systemId } from "../../system/config";
-import {
-  getAllowedDropDocumentTypes,
-  isAllowedDocumentType,
-  isItemDropData,
-} from "../../documents/drag-drop";
-import { documentRqidFlags } from "../../data-model/shared/rqg-document-flags";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import { toEmbeddedSkillCreateData } from "./weapon-skill-links";
+import { RqgLogger } from "../../system/logging/rqg-logger";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+
+const logger = new RqgLogger("WeaponSheetV2");
 
 interface WeaponSheetContext extends RqgItemSheetContext {
   defaultCombatManeuverNames: Record<string, string>;
@@ -132,20 +136,36 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
     return [];
   }
 
-  protected override async _onDropItemOrJournal(
-    event: DragEvent,
-    data: ActorSheet.DropData,
-  ): Promise<boolean | RqgItem[]> {
-    if (!isItemDropData(data)) {
-      return super._onDropItemOrJournal(event, data);
+  override async _onRender(
+    context: AppV2RenderContext,
+    options: AppV2RenderOptions,
+  ): Promise<void> {
+    await super._onRender(context, options);
+    if (options.isFirstRender) {
+      this.element.addEventListener("rqg-link-drop", (event) => {
+        if ((event.target as Element).matches('[name^="system.usage."]')) {
+          this.onDropUsageSkill(event as CustomEvent<RqgLinkDropDetail>);
+        }
+      });
+      // The whole usage fieldset takes a skill, as its link field does
+      for (const type of ["dragover", "dragleave", "drop"] as const) {
+        this.element.addEventListener(type, (event) => {
+          const field = (event.target as Element)
+            .closest("fieldset.usage")
+            ?.querySelector("rqg-link-field");
+          if (field && !field.contains(event.target as Node)) {
+            event.preventDefault();
+            event.stopPropagation();
+            field.dispatchEvent(new DragEvent(type, event));
+          }
+        });
+      }
     }
-    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    const droppedItem = (await Item.implementation.fromDropData(data)) as SkillItem;
-    const usage = getDomDataset(event, "dropzone");
+  }
 
-    if (!isAllowedDocumentType(droppedItem, allowedDropDocumentTypes)) {
-      return false;
-    }
+  /** Only weapon skills may be linked; the owning actor gets the skill if it lacks it. */
+  private onDropUsageSkill(event: CustomEvent<RqgLinkDropDetail>): void {
+    const droppedItem = event.detail.document as SkillItem;
     if (
       !(
         [
@@ -156,50 +176,29 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
         ] as SkillCategoryEnum[]
       ).includes(droppedItem?.system?.category as SkillCategoryEnum)
     ) {
-      const msg = localize("RQG.Item.Weapon.WrongTypeDropped");
-      ui.notifications?.warn(msg, { console: false });
-      console.warn(`RQG | ${msg}`);
-      return false;
+      event.preventDefault();
+      logger.warn(localize("RQG.Item.Weapon.WrongTypeDropped"));
+      return;
     }
-    const droppedItemRqid = droppedItem?.getFlag(systemId, documentRqidFlags)?.id;
-    if (!droppedItemRqid) {
-      const msg = localize("RQG.Item.Weapon.DropSkillMissingRqid");
-      ui.notifications?.warn(msg, { console: false });
-      console.warn(`RQG | ${msg}`);
-      return false;
+    const actor = this.document.actor;
+    if (actor && !actor.getBestEmbeddedDocumentByRqid(event.detail.link.rqid as RqidString)) {
+      void WeaponSheetV2.addSkillToActor(actor, droppedItem);
     }
+  }
 
-    if (!usage || !["oneHand", "twoHand", "offHand", "missile"].includes(usage)) {
-      const msg = localize("RQG.Item.Weapon.WrongDropzone");
-      ui.notifications?.warn(msg, { console: false });
-      console.error(`RQG | ${msg}`);
-      return false;
-    }
-    const actorItemWithSameRqid =
-      this.document.actor?.getBestEmbeddedDocumentByRqid(droppedItemRqid);
-    if (!actorItemWithSameRqid) {
-      await this.document.actor?.createEmbeddedDocuments("Item", [
-        toEmbeddedSkillCreateData(droppedItem),
-      ]);
-    }
+  private static async addSkillToActor(actor: RqgActor, skill: SkillItem): Promise<void> {
     try {
-      await this.document.update({
-        [`system.usage.${usage}.skillRqidLink`]: {
-          rqid: droppedItemRqid,
-          name: droppedItem.name ?? "",
-        },
-      });
+      await actor.createEmbeddedDocuments("Item", [toEmbeddedSkillCreateData(skill)]);
     } catch (error) {
-      const msg = localize("RQG.Item.Weapon.DropSkillUpdateFailed");
-      ui.notifications?.error(msg, { console: false });
-      console.error(`RQG | ${msg}`, error, {
-        weaponUuid: this.document.uuid,
-        usage,
-        droppedItemRqid,
-      });
-      return false;
+      logger.error(
+        localize("RQG.Item.Weapon.AddSkillToActorFailed", {
+          skillName: skill.name ?? "",
+          actorName: actor.name ?? "",
+        }),
+        undefined,
+        error,
+      );
     }
-    return [this.document];
   }
 
   protected static override async onSubmit(

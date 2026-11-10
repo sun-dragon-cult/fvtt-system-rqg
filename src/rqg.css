@@ -10,6 +10,7 @@
 @import url("./items/itemsheets.css");
 @import url("./items/itemsheets-v2.css");
 @import url("./applications/dot-picker/dot-picker.css");
+@import url("./applications/rqg-link/rqg-link.css");
 @import url("./items/hit-location-item/hit-location-wound-dialogs.css");
 @import url("./actors/actorsheets.css");
 @import url("./actors/actorsheet-v2.css");
@@ -1759,13 +1760,6 @@
       &[src*="systems/rqg/images"][src$=".svg"] {
         filter: invert(50%) sepia(6%) saturate(402%) hue-rotate(16deg) brightness(92%) contrast(88%);
       }
-    }
-
-    /* As Foundry's a.content-link.broken */
-    &.broken {
-      cursor: var(--cursor-default);
-      background: rgb(255 0 0 / 5%);
-      border: 1px dashed red;
     }
   }
 

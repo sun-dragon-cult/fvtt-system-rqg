@@ -9,10 +9,8 @@
   </select>
   <label>{{localize "RQG.ActorCreation.Step0.SpeciesDescription"}}:</label>
   <div>
-    {{#if species.selectedSpeciesTemplate.system.background.speciesRqidLink}}
-      {{> rqidLink
-        rqidLink=species.selectedSpeciesTemplate.system.background.speciesRqidLink
-      }}
+    {{#if species.selectedSpeciesTemplate.system.background.speciesRqidLink.rqid}}
+      <rqg-link rqid="{{species.selectedSpeciesTemplate.system.background.speciesRqidLink.rqid}}"></rqg-link>
     {{/if}}
   </div>
 </div>

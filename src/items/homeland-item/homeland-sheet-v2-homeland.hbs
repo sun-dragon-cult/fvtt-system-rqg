@@ -3,73 +3,73 @@
   <div class="key-value-grid">
 
     <label>{{localize "RQG.Item.Homeland.CultureJournalEntries"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.cultureJournalRqidLinks
-      dropzoneData="cultureJournalRqidLinks"
-      dropDocumentNames="JournalEntry, JournalEntryPage"
-      showDeleteFromPropertyName="cultureJournalRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-    }}
+    <rqg-link-field
+      name="system.cultureJournalRqidLinks"
+      value="{{json system.cultureJournalRqidLinks}}"
+      documents="JournalEntry,JournalEntryPage"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Journal"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
     <label>{{localize "RQG.Item.Homeland.TribeJournalEntries"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.tribeJournalRqidLinks
-      dropzoneData="tribeJournalRqidLinks"
-      dropDocumentNames="JournalEntry, JournalEntryPage"
-      showDeleteFromPropertyName="tribeJournalRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-    }}
+    <rqg-link-field
+      name="system.tribeJournalRqidLinks"
+      value="{{json system.tribeJournalRqidLinks}}"
+      documents="JournalEntry,JournalEntryPage"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Journal"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
     <label>{{localize "RQG.Item.Homeland.ClanJournalEntries"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.clanJournalRqidLinks
-      dropzoneData="clanJournalRqidLinks"
-      dropDocumentNames="JournalEntry, JournalEntryPage"
-      showDeleteFromPropertyName="clanJournalRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-    }}
+    <rqg-link-field
+      name="system.clanJournalRqidLinks"
+      value="{{json system.clanJournalRqidLinks}}"
+      documents="JournalEntry,JournalEntryPage"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Journal"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
     <label>{{localize "RQG.Item.Homeland.CultLinks"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.cultRqidLinks
-      dropzoneData="cultRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="cult"
-      showDeleteFromPropertyName="cultRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
-    }}
+    <rqg-link-field
+      name="system.cultRqidLinks"
+      value="{{json system.cultRqidLinks}}"
+      documents="Item"
+      types="cult"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Cult"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
     <label>{{localize "RQG.Item.Homeland.SkillLinks"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.skillRqidLinks
-      dropzoneData="skillRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="skill"
-      showDeleteFromPropertyName="skillRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
-      showBonus=true
-      editBonusPropertyName="skillRqidLinks"
-    }}
+    <rqg-link-field
+      name="system.skillRqidLinks"
+      value="{{json system.skillRqidLinks}}"
+      documents="Item"
+      types="skill"
+      bonus
+      hint="RQG.Foundry.ContentLink.Field.Empty.Skill"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
     <label>{{localize "RQG.Item.Homeland.RuneLinks"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.runeRqidLinks
-      dropzoneData="runeRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="rune"
-      showDeleteFromPropertyName="runeRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
-      dropdownOptions=allRuneOptions
-    }}
+    <rqg-link-field
+      name="system.runeRqidLinks"
+      value="{{json system.runeRqidLinks}}"
+      documents="Item"
+      types="rune"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Rune"
+      owner="{{@root.uuid}}"
+    >
+      {{selectOptions allRuneOptions localize=false}}
+    </rqg-link-field>
 
     <label>{{localize "RQG.Item.Homeland.PassionLinks"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.passionRqidLinks
-      dropzoneData="passionRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="passion"
-      showDeleteFromPropertyName="passionRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectPassion"
-    }}
+    <rqg-link-field
+      name="system.passionRqidLinks"
+      value="{{json system.passionRqidLinks}}"
+      documents="Item"
+      types="passion"
+      hint="RQG.Foundry.ContentLink.Field.Empty.Passion"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
   </div>
 </div>

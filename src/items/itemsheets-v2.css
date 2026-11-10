@@ -104,6 +104,12 @@
 
 /* Read-only points display for a non-variable matrix spell entry (#959) - stands in for the
        editable number input a variable spell gets, so it needs roughly the same footprint. */
+    & .matrix-spell-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
     & .matrix-spell-points-readonly {
       min-width: 1.5em;
       text-align: center;
@@ -111,9 +117,8 @@
     }
 
 /* Base chip styling (.bond-actor-link) is shared with the actor sheet's Allied Spirit link -
-       see rqg.css. Matrix Spell chips (#959) share the same unlink-chip styling as Bound Spirit. */
-    & .bound-spirit-link [data-action="unlinkBoundSpirit"],
-    & .matrix-spell-link [data-action="unlinkMatrixSpell"] {
+       see rqg.css. */
+    & .bound-spirit-link [data-action="unlinkBoundSpirit"] {
       color: var(--rqg-unassigned-rm-action);
       text-shadow: none;
       margin-left: auto;

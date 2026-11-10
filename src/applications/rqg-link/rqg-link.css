@@ -1,0 +1,165 @@
+@layer system.base {
+  /* Looks like Foundry's a.content-link, so it reads as "opens something" as journal links do */
+  rqg-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    max-width: 100%;
+    border-radius: 9px;
+    background: var(--content-link-background);
+    border: 2px dashed var(--content-link-border-color);
+    color: var(--content-link-text-color);
+    padding: 1px 4px 0;
+    white-space: nowrap;
+    cursor: var(--cursor-pointer);
+    vertical-align: middle;
+
+    & .name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    & .icon {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    & .icon:empty {
+      display: none;
+    }
+
+    & .icon i {
+      color: var(--content-link-icon-color);
+      font-size: 0.8em;
+    }
+
+    & .icon img {
+      display: block;
+      border: none;
+      height: 0.8rem;
+
+      &[src*="systems/rqg/images"][src$=".svg"] {
+        filter: invert(50%) sepia(6%) saturate(402%) hue-rotate(16deg) brightness(92%) contrast(88%);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-warm-2);
+      outline-offset: 1px;
+    }
+
+    /* As Foundry's a.content-link.broken */
+    &[missing] {
+      cursor: var(--cursor-default);
+      background: rgb(255 0 0 / 5%);
+      border: 1px dashed red;
+
+      & .icon {
+        display: inline-flex;
+
+        & > * {
+          display: none;
+        }
+
+        &::before {
+          content: "\f071";
+          font-family: var(--font-awesome);
+          font-weight: 900;
+          font-size: 0.8em;
+          color: var(--color-level-error);
+        }
+      }
+    }
+  }
+
+  rqg-link-field {
+    display: block;
+    border-radius: var(--rqg-radius-sm);
+
+    & .links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.25rem 0.5rem;
+      min-height: 1.75rem;
+    }
+
+    /* A chip with its bonus and remove button, wrapping as one unit */
+    & .entry {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      max-width: 100%;
+    }
+
+    & .bonus {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.125rem;
+      white-space: nowrap;
+
+      & input[type="number"] {
+        flex: 0 0 2.5rem;
+        width: 2.5rem;
+        height: 1.5rem;
+        text-align: right;
+      }
+    }
+
+    & .placeholder {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.125rem 0.5rem;
+      border: 1px dashed color-mix(in srgb, currentcolor 50%, transparent);
+      border-radius: var(--rqg-radius-sm);
+      color: var(--color-text-secondary);
+      font-style: italic;
+    }
+
+    & select.add {
+      flex: none;
+      width: auto;
+      height: 1.5rem;
+      padding: 0 0.25rem;
+      border: 1px dashed color-mix(in srgb, currentcolor 50%, transparent);
+      background: transparent;
+      color: var(--color-text-secondary);
+
+      /* The open list takes its colors from the options, not the transparent select */
+      & option {
+        background: var(--input-background-color);
+        color: var(--input-text-color);
+      }
+    }
+  }
+
+  /* Shown on hover or focus of the entry holding it; always shown on touch screens */
+  button.rqg-link-remove {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    line-height: 1;
+    opacity: 0;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-level-error);
+    }
+
+    :hover > &,
+    :focus-within > & {
+      opacity: 1;
+    }
+
+    @media (hover: none) {
+      opacity: 1;
+    }
+  }
+}

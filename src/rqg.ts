@@ -2,6 +2,8 @@ import { registerRqgSystemSettings } from "./system/rqg-system-settings.js";
 import { loadHandlebarsTemplates } from "./system/load-handlebars-templates.js";
 import { RqgActor } from "./actors/rqg-actor.js";
 import { RqgDotPickerElement } from "./applications/dot-picker/dot-picker-element";
+import { RqgLinkElement } from "./applications/rqg-link/rqg-link-element";
+import { RqgLinkFieldElement } from "./applications/rqg-link/rqg-link-field-element";
 import { RqgItem } from "./items/rqg-item";
 import { registerHandlebarsHelpers } from "./system/register-handlebars-helpers";
 import { RqgActiveEffect } from "./active-effect/rqg-active-effect";
@@ -112,6 +114,8 @@ Hooks.once("init", () => {
   initTokenHooks();
   RqgActor.init();
   RqgDotPickerElement.register();
+  RqgLinkElement.register();
+  RqgLinkFieldElement.register();
   initCharacterPassiveRecovery();
   initSpelledProjectiles();
   initSpellBehaviors();

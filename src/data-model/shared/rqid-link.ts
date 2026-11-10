@@ -1,15 +1,17 @@
-import { Rqid } from "../../system/api/rqid-api";
+import { Rqid, type RqidDisplay } from "../../system/api/rqid-api";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { isValidRqidString } from "../../system/api/rqid-validation";
 import {
   getDomDataset,
   getRequiredDomDataset,
   isFoundryElementInstanceOf,
+  localize,
+  localizeItemType,
+  toCamelCase,
 } from "../../system/util";
+import type { ItemTypeEnum } from "@item-model/item-types.ts";
 
 type RqidDocument = foundry.abstract.Document.Any;
-
-export type RqidLinkDisplay = { name: string; missing: boolean };
 
 export class RqidLink<R extends string = string> {
   /** The rqid to link to */
@@ -21,8 +23,32 @@ export class RqidLink<R extends string = string> {
     this.rqid = rqid;
   }
 
-  static display(rqid: string | undefined, actor?: RqgActor | null): RqidLinkDisplay {
+  static display(rqid: string | undefined, actor?: RqgActor | null): RqidDisplay {
     return Rqid.displayFromRqid(rqid, actor);
+  }
+
+  /**
+   * The actor owning the document `ownerUuid` (or that actor itself). Resolves the actor part of the
+   * uuid, as fromUuidSync can't reach items of compendium actors.
+   */
+  static ownerActor(ownerUuid: unknown): RqgActor | undefined {
+    const actorUuid =
+      typeof ownerUuid === "string" ? /^(.*?\bActor\.[^.]+)/.exec(ownerUuid)?.[1] : undefined;
+    const actor = actorUuid ? fromUuidSync(actorUuid, { strict: false }) : undefined;
+    return actor instanceof Actor ? (actor as unknown as RqgActor) : undefined;
+  }
+
+  /** Tooltip naming the document type the rqid links to. */
+  static tooltip(rqid: string): string {
+    const documentName = Rqid.getDocumentName(rqid);
+    const itemTypeString = documentName === "Item" ? Rqid.getDocumentType(rqid) : undefined;
+    const itemType = (itemTypeString ? toCamelCase(itemTypeString) : undefined) as
+      ItemTypeEnum | undefined;
+    return localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
+      rqid: rqid,
+      documentName: game.i18n?.localize(`DOCUMENT.${documentName}`) ?? "",
+      documentType: itemType ? localizeItemType(itemType) : "",
+    });
   }
 
   static displayName(rqid: string | undefined): string {
@@ -32,9 +58,10 @@ export class RqidLink<R extends string = string> {
   /** The links sorted by their shown names, each with its index in `links`. */
   static sortedByName<T extends { rqid: string }>(
     links: readonly T[] | undefined,
-  ): ({ link: T; index: number } & RqidLinkDisplay)[] {
+    actor?: RqgActor | null,
+  ): ({ link: T; index: number } & RqidDisplay)[] {
     return (links ?? [])
-      .map((link, index) => ({ link, index, ...RqidLink.display(link.rqid) }))
+      .map((link, index) => ({ link, index, ...RqidLink.display(link.rqid, actor) }))
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 

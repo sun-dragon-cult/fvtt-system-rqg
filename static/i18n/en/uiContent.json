@@ -1702,8 +1702,6 @@
         "ShowInfoCircle": {
           "DropToConnectJournal": "Drop a Journal Entry on this field to connect.",
           "DropToReplaceJournal": "Drop a Journal Entry on this field to replace.",
-          "DropToConnectEffect": "Drop a spell's Active Effect here to connect it.",
-          "DropToReplaceEffect": "Drop a spell's Active Effect here to replace it.",
           "DropToConnectCult": "Drop a Cult Item on this field to connect.",
           "DropToConnectPassion": "Drop a Passion Item on this field to connect.",
           "DropToConnectRune": "Drop a Rune Item on this field to connect.",
@@ -2039,9 +2037,8 @@
         "Name": "Name",
         "UsageNotAvailable": "{weaponName} has no {usage} usage.",
         "WrongTypeDropped": "The item must be a weapon skill (category melee, shield or natural weapon)",
-        "DropSkillMissingRqid": "The dropped skill has no RQID and cannot be linked to this weapon",
+        "AddSkillToActorFailed": "Could not add {skillName} to {actorName}.",
         "WrongDropzone": "This item cannot be dropped here",
-        "DropSkillUpdateFailed": "Failed to link dropped skill to this weapon usage.",
         "EnterNewAction": "Add Action Label",
         "Damage": "Damage",
         "MinimumStrengthAbbr": "Min STR",
@@ -2553,7 +2550,26 @@
       "ContentLink": {
         "RqidLinkTitle": "{documentName}<small> {documentType}</small><br><small>Rqid: {rqid}</small>",
         "RqidLinkDelete": "Delete link to \"{name}\"<br><small>Rqid: {rqid}</small>",
-        "RqidLinkMissing": "Can't find what this links to, for example because its module isn't active.<br><small>Rqid: {rqid}</small>"
+        "RqidLinkMissing": "Can't find what this links to, for example because its module isn't active.<br><small>Rqid: {rqid}</small>",
+        "Field": {
+          "Add": "Add…",
+          "Remove": "Remove {name}",
+          "Bonus": "Bonus for {name}",
+          "DropToReplace": "Drop to replace",
+          "Empty": {
+            "Default": "Drop here to link",
+            "Journal": "Drop a journal entry here",
+            "Skill": "Drop a skill here",
+            "Rune": "Drop a rune here",
+            "Cult": "Drop a cult here",
+            "Passion": "Drop a passion here",
+            "RuneMagic": "Drop a Rune spell here",
+            "Occupation": "Drop an occupation here",
+            "HitLocation": "Drop a hit location here",
+            "Effect": "Drop an Active Effect here",
+            "Equipment": "Drop armor, gear or weapons here"
+          }
+        }
       },
       "Settings": {
         "Links": {

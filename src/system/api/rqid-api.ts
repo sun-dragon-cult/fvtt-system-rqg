@@ -30,6 +30,7 @@ import type { OccupationItem } from "@item-model/occupation-data-model.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RqidEnabledDocument } from "../../global";
 import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
 
 // Add a map from item-document-type (the second segment of an `i.xxx.yyy` rqid) to concrete TS types.
 // Extend this map with more concrete item types as you add them.
@@ -76,6 +77,16 @@ type RqidKind = keyof typeof RQID_DOCUMENT_DEFINITIONS;
 type NonItemRqidKind = Exclude<RqidKind, "i">;
 type ItemRqidString = `i.${keyof ItemSubtypeMap}.${string}`;
 type DocumentRqidString = ItemRqidString | `${NonItemRqidKind}.${string}.${string}`;
+
+/** What a link to an rqid shows, from Rqid.displayFromRqid. */
+export type RqidDisplay = {
+  name: string;
+  missing: boolean;
+  /** The name is not known until the document has loaded. */
+  pending?: boolean;
+  /** The owning actor's item that named the link. */
+  actorItem?: RqgItem;
+};
 
 /**
  * A typed rqid string.
@@ -173,7 +184,7 @@ export class Rqid {
               return;
             }
             if (action !== "update" || (changed && ("name" in changed || "flags" in changed))) {
-              Rqid.nameCandidatesByDocumentName.delete(documentName);
+              Rqid.forgetNames(documentName);
             }
           },
         );
@@ -189,10 +200,70 @@ export class Rqid {
     await Promise.all(
       (game.packs?.contents ?? []).filter((pack) => !pack.indexed).map(Rqid.indexPackForNames),
     );
-    Rqid.nameCandidatesByDocumentName.clear();
+    Rqid.forgetNames();
   }
 
   private static readonly packIndexing = new Map<string, Promise<void>>();
+
+  private static readonly nameEvents = new EventTarget();
+  private static namesChangedQueued = false;
+
+  /**
+   * Call `listener` after names that displayFromRqid gives may have changed (a document renamed,
+   * created or deleted, or a pack indexed). Several changes in one task call it once.
+   */
+  public static onNamesChanged(listener: () => void, signal?: AbortSignal): void {
+    Rqid.nameEvents.addEventListener("names-changed", listener, { signal });
+  }
+
+  /** Drop cached names for `documentName`, or all of them, and tell the listeners. */
+  private static forgetNames(documentName?: string): void {
+    if (documentName) {
+      Rqid.nameCandidatesByDocumentName.delete(documentName);
+    } else {
+      Rqid.nameCandidatesByDocumentName.clear();
+    }
+    if (!documentName || documentName === "JournalEntry") {
+      Rqid.previousLoadedNames = Rqid.loadedNames;
+      Rqid.loadedNames = new Map();
+      Rqid.nameLoads.clear();
+    }
+    Rqid.queueNamesChanged();
+  }
+
+  /** Names of pack journal pages, which need their journal loaded; null when nothing was found. */
+  private static loadedNames = new Map<string, string | null>();
+  /** Names loaded before the last change, shown until they are loaded again. */
+  private static previousLoadedNames = new Map<string, string | null>();
+  private static readonly nameLoads = new Map<string, Promise<void>>();
+
+  private static loadName(rqid: string): void {
+    if (Rqid.nameLoads.has(rqid)) {
+      return;
+    }
+    const names = Rqid.loadedNames;
+    const load = Rqid.fromRqid(rqid, undefined, true)
+      .then(
+        (document) => void names.set(rqid, document?.name ?? null),
+        () => void names.set(rqid, null),
+      )
+      .then(() => {
+        if (names === Rqid.loadedNames) {
+          Rqid.queueNamesChanged();
+        }
+      });
+    Rqid.nameLoads.set(rqid, load);
+  }
+
+  private static queueNamesChanged(): void {
+    if (!Rqid.namesChangedQueued) {
+      Rqid.namesChangedQueued = true;
+      queueMicrotask(() => {
+        Rqid.namesChangedQueued = false;
+        Rqid.nameEvents.dispatchEvent(new Event("names-changed"));
+      });
+    }
+  }
 
   /** Indexes `pack` once, then drops the name cache for its document type. Never rejects. */
   private static indexPackForNames(pack: CompendiumCollection.Any): Promise<void> {
@@ -201,7 +272,7 @@ export class Rqid {
       indexing = pack
         .getIndex()
         .then(() => {
-          Rqid.nameCandidatesByDocumentName.delete(pack.documentClass.documentName);
+          Rqid.forgetNames(pack.documentClass.documentName);
         })
         .catch((error: unknown) => {
           console.warn(`RQG | Could not index pack ${pack.collection} for rqid names`, error);
@@ -280,13 +351,12 @@ export class Rqid {
 
   /**
    * What a link to `rqid` shows: the resolved name, or the rqid's last part when nothing matches
-   * (`missing`) or the page of a pack journal can't be named. When nothing else matches, an item
-   * on `actor` (the owner of the item holding the link) names it.
+   * (`missing`). The page of a pack journal is `pending` while its journal loads; listeners of
+   * onNamesChanged hear when its name is known.
+   * When nothing else matches, an item on `actor` (the owner of the item holding the link) names
+   * it (`actorItem`).
    */
-  public static displayFromRqid(
-    rqid: string | undefined,
-    actor?: RqgActor | null,
-  ): { name: string; missing: boolean } {
+  public static displayFromRqid(rqid: string | undefined, actor?: RqgActor | null): RqidDisplay {
     if (!rqid) {
       return { name: "", missing: false };
     }
@@ -294,13 +364,20 @@ export class Rqid {
     if (name) {
       return { name, missing: false };
     }
-    const actorItemName = chosen
-      ? undefined
-      : actor?.getBestEmbeddedDocumentByRqid(rqid as RqidString)?.name;
-    if (actorItemName) {
-      return { name: actorItemName, missing: false };
+    const actorItem = chosen ? undefined : actor?.getBestEmbeddedDocumentByRqid(rqid as RqidString);
+    if (actorItem?.name) {
+      return { name: actorItem.name, missing: false, actorItem };
     }
-    return { name: rqid.split(".").at(-1)!, missing: !chosen || !!chosen.document };
+    const slug = rqid.split(".").at(-1)!;
+    if (!chosen || chosen.document) {
+      return { name: slug, missing: true };
+    }
+    const loaded = Rqid.loadedNames.get(rqid);
+    if (loaded !== undefined) {
+      return { name: loaded ?? slug, missing: loaded === null };
+    }
+    Rqid.loadName(rqid);
+    return { name: Rqid.previousLoadedNames.get(rqid) ?? slug, missing: false, pending: true };
   }
 
   private static resolveName(
