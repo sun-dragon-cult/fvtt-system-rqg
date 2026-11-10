@@ -1085,10 +1085,15 @@ export class Rqid {
     if (!kind || !configPart) {
       return undefined;
     }
-    const linkIcon =
-      (CONFIG[configPart as keyof CONFIG] as { sidebarIcon?: string } | undefined)?.sidebarIcon ??
+    return Rqid.getDocumentIcon(configPart);
+  }
+
+  /** Foundry's sidebar icon for a document name, like "Actor", as an `<i>` element. */
+  public static getDocumentIcon(documentName: string | undefined): string {
+    const icon =
+      (CONFIG[documentName as keyof CONFIG] as { sidebarIcon?: string } | undefined)?.sidebarIcon ??
       "fas fa-fingerprint";
-    return `<i class="${linkIcon}"></i>`;
+    return `<i class="${icon}"></i>`;
   }
 
   private static readonly documentLinkIconsConfigName = new Map(

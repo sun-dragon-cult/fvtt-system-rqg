@@ -26,14 +26,24 @@ export function toLinks(value: unknown, linkKey?: string): RqgLinkFieldEntry[] {
   );
 }
 
-/** The entries in a `value` attribute holding JSON; invalid JSON gives no entries. */
-export function parseLinks(raw: string | null, linkKey?: string): RqgLinkFieldEntry[] {
+/** A `value` attribute holding JSON; nothing when it is empty or invalid. */
+export function parseJson(raw: string | null): unknown {
   if (!raw) {
-    return [];
+    return undefined;
   }
   try {
-    return toLinks(JSON.parse(raw), linkKey);
+    return JSON.parse(raw);
   } catch {
-    return [];
+    return undefined;
   }
+}
+
+/** Uuid fields store uuid strings; their entries are `{ uuid }`, which are read too. Entries
+ * without a uuid are dropped. */
+export function toUuidEntries(value: unknown): RqgLinkFieldEntry[] {
+  const entries: unknown[] = Array.isArray(value) ? value : value ? [value] : [];
+  return entries
+    .map((entry) => (typeof entry === "string" ? entry : (entry as { uuid?: unknown })?.uuid))
+    .filter((uuid): uuid is string => typeof uuid === "string" && uuid !== "")
+    .map((uuid) => ({ uuid }));
 }

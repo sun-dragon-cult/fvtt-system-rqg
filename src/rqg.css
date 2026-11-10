@@ -43,26 +43,6 @@
       font-weight: bold;
     }
 
-    /* Shared chip styling for a linked-actor reference: the actor sheet's Allied Spirit link
-       (#957, .allied-spirit-link) and the item sheet's Bound Spirit link (#999,
-       .bound-spirit-link) both extend this rather than each declaring their own copy. Lives in
-       system.base so either sheet's own layer (system.actor-v2/system.item-v2) can still
-       override it. */
-    & .bond-actor-link {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      color: var(--rqg-unassigned-rm-text);
-      background: var(--rqg-unassigned-rm-bg);
-      border: 1px solid var(--rqg-unassigned-rm-border);
-      border-radius: var(--rqg-radius-sm);
-      padding: 4px 8px;
-
-      &.empty {
-        opacity: 0.7;
-        border-style: dashed;
-      }
-    }
   }
 
   #interface img[src="icons/svg/mystery-man.svg"] {

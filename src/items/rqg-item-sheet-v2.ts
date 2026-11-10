@@ -4,14 +4,13 @@ import { decorateRqidFrameButton, getRqidFrameButton } from "../documents/rqid-s
 import type { RqgItem } from "./rqg-item";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { PhysicalItem } from "@item-model/item-types.ts";
-import { getBondRoleConflict, getBoundSpiritActors } from "../system/magic-point-source";
+import { getBondRoleConflict } from "../system/magic-point-source";
 import {
   getNextSpiritMagicSort,
   resolveMatrixSpellItem,
   type MatrixSpellStorageEntry,
 } from "../system/spell-matrix";
 import {
-  extractDroppedActor,
   getAllowedDropDocumentNames,
   isAllowedDocumentNames,
   onDragEnter,
@@ -59,8 +58,6 @@ export interface RqgItemSheetContext {
   isEmbedded: boolean;
   /** The item's active effects collection, used by the Active Effects tab partial. */
   effects: unknown;
-  /** The spirits bound in this item (#999) that are currently usable. */
-  boundSpiritActors: { uuid: string; name: string; img: string }[];
   /** Tab data prepared by _prepareTabs, used by tab-navigation template. */
   tabs?: Record<string, foundry.applications.api.ApplicationV2.Tab>;
   /** Active tab for the current part, set by _preparePartContext. */
@@ -83,9 +80,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     window: {
       resizable: true,
     },
-    actions: {
-      unlinkBoundSpirit: RqgItemSheetV2._unlinkBoundSpiritAction,
-    },
   };
 
   private _rqgDragDrop?: foundry.applications.ux.DragDrop.Implementation;
@@ -96,9 +90,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
   // Override ItemSheetV2 drag-drop controller to use explicit dropzones and callbacks.
   protected override get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
-      // [data-bound-spirit-dropzone] (#999) is checked before the generic Item/JournalEntry switch
-      // below, same two-tier pattern as RqgActorSheetV2's Allied Spirit dropzone.
-      dropSelector: "[data-dropzone], [data-bound-spirit-dropzone]",
+      dropSelector: "[data-dropzone]",
       permissions: {
         drop: () => this.isEditable,
       },
@@ -135,10 +127,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
 
   // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
   override async _prepareContext(): Promise<RqgItemSheetContext> {
-    // Only physical items have boundSpiritActorUuids; getBoundSpiritActors reads it via a plain
-    // property access, which is undefined (and so harmlessly resolves to no spirits) for every
-    // other item type - no type-narrowing needed here.
-    const boundSpiritActors = getBoundSpiritActors(this.document as unknown as PhysicalItem);
     const system = foundry.utils.duplicate(this.document._source.system);
     await this.findVariableMatrixSpells();
     return {
@@ -151,11 +139,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       isEmbedded: this.document.isEmbedded,
       effects: this.document.effects,
       system,
-      boundSpiritActors: boundSpiritActors.map((spiritActor) => ({
-        uuid: spiritActor.uuid ?? "",
-        name: spiritActor.name ?? "",
-        img: spiritActor.img ?? "",
-      })),
     };
   }
 
@@ -185,6 +168,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     }
 
     this.bindMatrixSpells();
+    this.bindBoundSpirits();
 
     // Edit Active Effect
     this.element.querySelectorAll<HTMLElement>("[data-item-effect-edit]").forEach((el) => {
@@ -282,12 +266,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     event.preventDefault();
     event.stopPropagation();
 
-    const target = event.target;
-    if (target instanceof Element && target.closest("[data-bound-spirit-dropzone]")) {
-      await this._onDropBoundSpirit(event);
-      return;
-    }
-
     this.render();
 
     const droppedDocumentData = foundry.applications.ux.TextEditor.implementation.getDragEventData(
@@ -326,14 +304,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     return false;
   }
 
-  /** The item's currently-stored bound-spirit uuids (#999), for _onDropBoundSpirit/
-   *  _unlinkBoundSpiritAction to append to or filter. */
-  private getBoundSpiritActorUuids(): string[] {
-    return (
-      (this.document.system as { boundSpiritActorUuids?: string[] }).boundSpiritActorUuids ?? []
-    );
-  }
-
   /** Only the GM edits matrix points, so only the GM looks the spells up. */
   private async findVariableMatrixSpells(): Promise<void> {
     const matrixSpells =
@@ -362,12 +332,12 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       return;
     }
     field.addEventListener("rqg-link-drop", (event) => {
-      const { document: dropped, rqid, entry } = (event as CustomEvent<RqgLinkDropDetail>).detail;
+      const { document: dropped, ref, entry } = (event as CustomEvent<RqgLinkDropDetail>).detail;
       const spell = dropped as unknown as SpiritMagicItem;
       entry["points"] = spell.system.points;
       entry["sort"] = getNextSpiritMagicSort(this.document.actor as unknown as RqgActor | null);
       if (spell.system.isVariable) {
-        this.variableMatrixSpells.add(rqid);
+        this.variableMatrixSpells.add(ref);
       }
     });
     if (!game.user?.isGM) {
@@ -396,62 +366,23 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     };
   }
 
-  /** Bind the dropped Actor as another spirit trapped in this item (#999), appended to
-   *  boundSpiritActorUuids. Mirrors RqgActorSheetV2._onDropAlliedSpirit. */
-  protected async _onDropBoundSpirit(event: DragEvent): Promise<void> {
-    if (!this.isEditable) {
-      return;
-    }
-    const droppedActor = await extractDroppedActor(event);
-    if (!droppedActor) {
-      ui.notifications?.warn(localize("RQG.Item.Gear.BoundSpiritDropRequiresActorWarn"));
-      return;
-    }
-    // Refuse an actor that's already this item's owner's Allied Spirit bond partner (either
-    // direction, #957) - the same actor filling both roles at once would be double-counted as a
-    // Magic Point source and race on itself when spent (see getBoundSpiritItems).
+  /** Refuse a spirit that is already the owner's Allied Spirit bond partner (#957): it would be
+   *  counted twice as a Magic Point source and race on itself when spent. */
+  private bindBoundSpirits(): void {
+    const field = this.element.querySelector<RqgLinkFieldElement>("rqg-link-field.bound-spirits");
     const ownerActor = this.document.actor as unknown as RqgActor | null | undefined;
-    if (
-      ownerActor &&
-      getBondRoleConflict(ownerActor, droppedActor as unknown as RqgActor) === "ally"
-    ) {
-      ui.notifications?.warn(
-        localize("RQG.Item.Gear.BoundSpiritAlreadyAlliedWarn", {
-          spiritName: droppedActor.name ?? "",
-        }),
-      );
+    if (!field || !ownerActor) {
       return;
     }
-    const boundSpiritActorUuids = this.getBoundSpiritActorUuids();
-    if (boundSpiritActorUuids.includes(droppedActor.uuid ?? "")) {
-      ui.notifications?.warn(
-        localize("RQG.Item.Gear.BoundSpiritAlreadyBoundWarn", {
-          spiritName: droppedActor.name ?? "",
-        }),
-      );
-      return;
-    }
-    await this.document.update({
-      system: { boundSpiritActorUuids: [...boundSpiritActorUuids, droppedActor.uuid ?? ""] },
-    });
-  }
-
-  /** Unlink action for one chip in the Bound Spirit list - see _onDropBoundSpirit. */
-  private static async _unlinkBoundSpiritAction(
-    this: RqgItemSheetV2,
-    _event: PointerEvent,
-    target: HTMLElement,
-  ): Promise<void> {
-    if (!this.isEditable) {
-      return;
-    }
-    const spiritUuid = getRequiredDomDataset(target, "unlink-bound-spirit-uuid");
-    await this.document.update({
-      system: {
-        boundSpiritActorUuids: this.getBoundSpiritActorUuids().filter(
-          (uuid) => uuid !== spiritUuid,
-        ),
-      },
+    field.addEventListener("rqg-link-drop", (event) => {
+      const spirit = (event as CustomEvent<RqgLinkDropDetail>).detail
+        .document as unknown as RqgActor;
+      if (getBondRoleConflict(ownerActor, spirit) === "ally") {
+        event.preventDefault();
+        ui.notifications?.warn(
+          localize("RQG.Item.Gear.BoundSpiritAlreadyAlliedWarn", { spiritName: spirit.name ?? "" }),
+        );
+      }
     });
   }
 
