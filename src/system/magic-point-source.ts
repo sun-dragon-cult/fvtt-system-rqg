@@ -174,7 +174,7 @@ export function getBoundSpiritActorByUuid(
  * spendMagicPoints would fire two concurrent, independently-computed updates against the same
  * Actor document (one via the "ally" draw, one via the "boundSpirit" draw), each racing off a
  * stale pre-update read of its Magic Points - the loser's deduction is silently lost. The item
- * sheet's drop handler also refuses this pairing going forward (_onDropBoundSpirit), but this
+ * sheet also refuses this pairing on drop (bindBoundSpirits), but this
  * exclusion is the actual correctness guarantee, independent of how the overlap arose.
  *
  * Accepts an already-resolved ally - see getMagicPointDrawOrder.
@@ -198,8 +198,8 @@ export function getBoundSpiritItems(
 
 /**
  * Which of the two mutually-exclusive bond roles `candidate` already fills for `actor` (#957 +
- * #999), if any - shared by both drop handlers (RqgActorSheetV2._onDropAlliedSpirit,
- * RqgItemSheetV2._onDropBoundSpirit) so the exclusivity rule enforced by getBoundSpiritItems is
+ * #999), if any - shared by both sheets' drop checks (RqgActorSheetV2.bindAlliedSpirit,
+ * RqgItemSheetV2.bindBoundSpirits) so the exclusivity rule enforced by getBoundSpiritItems is
  * checked the same way wherever a new bond is about to be created.
  */
 export function getBondRoleConflict(

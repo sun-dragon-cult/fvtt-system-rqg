@@ -465,38 +465,38 @@
   {{!-- Allied Spirit bond (#957): actor-wide, editable only in edit mode. --}}
   <div class="spirit-bond-row fullwidth">
     {{#edit-mode system.editMode "all"}}
-      <div class="bond-actor-link allied-spirit-link{{#unless alliedSpirit}} empty{{/unless}}" data-allied-spirit-dropzone
-           data-tooltip="{{localize "RQG.Actor.RuneMagic.AlliedSpiritDropHint"}}">
-        {{#if alliedSpirit}}
-          <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AlliedSpiritLabel"}}</span>
-          {{toAnchor alliedSpirit.uuid}}
-          <a data-action="unlinkAlliedSpirit" data-tooltip="{{localize "RQG.Actor.RuneMagic.UnlinkAlliedSpiritTitle"}}">
-            <i class="fas fa-unlink"></i>
-          </a>
-        {{else}}
-          <img class="rune allied-spirit-icon" src="systems/rqg/assets/images/runes/spirit.svg">
-          <span class="allied-spirit-hint">{{localize "RQG.Actor.RuneMagic.AlliedSpiritDropHint"}}</span>
-        {{/if}}
+      <div class="allied-spirit-link">
+        <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AlliedSpiritLabel"}}</span>
+        <rqg-link-field
+          class="allied-spirit"
+          name="system.alliedSpiritActorUuid"
+          value="{{json system.alliedSpiritActorUuid}}"
+          uuids
+          single
+          documents="Actor"
+          types="character"
+          hint="RQG.Actor.RuneMagic.AlliedSpiritDropHint"
+        ></rqg-link-field>
       </div>
     {{else}}
-      {{#if alliedSpirit}}
-        <div class="bond-actor-link allied-spirit-link view-only">
+      {{#if system.alliedSpiritActorUuid}}
+        <div class="allied-spirit-link view-only">
           <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AlliedSpiritLabel"}}</span>
-          {{toAnchor alliedSpirit.uuid}}
+          <rqg-link uuid="{{system.alliedSpiritActorUuid}}"></rqg-link>
         </div>
       {{/if}}
     {{/edit-mode}}
     {{#if boundPriest}}
-      <div class="bond-actor-link allied-spirit-link view-only">
+      <div class="allied-spirit-link view-only">
         <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AllyOfLabel"}}</span>
-        {{toAnchor boundPriest.uuid}}
+        <rqg-link uuid="{{boundPriest.uuid}}"></rqg-link>
       </div>
     {{/if}}
     {{!-- Bound Spirits (#999) - managed on each item's own sheet; read-only summary here. --}}
     {{#each boundSpirits}}
-      <div class="bond-actor-link allied-spirit-link view-only">
-        <span class="allied-spirit-label">{{toAnchor itemUuid}}:</span>
-        {{toAnchor spiritUuid}}
+      <div class="allied-spirit-link view-only">
+        <span class="allied-spirit-label">{{itemName}}:</span>
+        {{#each spiritUuids}}<rqg-link uuid="{{this}}"></rqg-link>{{/each}}
       </div>
     {{/each}}
   </div>

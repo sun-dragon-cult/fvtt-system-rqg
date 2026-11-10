@@ -48,10 +48,10 @@
       outline-offset: 1px;
     }
 
-    /* As Foundry's a.content-link.broken */
+    /* As Foundry's a.content-link.broken, on the link background so it reads on any surface */
     &[missing] {
       cursor: var(--cursor-default);
-      background: rgb(255 0 0 / 5%);
+      background: color-mix(in srgb, red 15%, var(--content-link-background));
       border: 1px dashed red;
 
       & .icon {

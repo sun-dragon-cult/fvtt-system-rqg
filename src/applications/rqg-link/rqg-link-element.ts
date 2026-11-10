@@ -2,13 +2,21 @@ import { Rqid, type RqidDisplay, type RqidString } from "../../system/api/rqid-a
 import { RqidLink } from "../../data-model/shared/rqid-link";
 import { localize } from "../../system/util";
 
+/** Name of the document `uuid` points to; the uuid itself, marked missing, when none does. */
+export function displayFromUuid(uuid: string): RqidDisplay {
+  const document = uuid ? foundry.utils.fromUuidSync(uuid, { strict: false }) : null;
+  const name = (document as { name?: string } | null)?.name;
+  return name ? { name, missing: false } : { name: uuid, missing: Boolean(uuid) };
+}
+
 /**
- * A link to the document an rqid resolves to: `<rqg-link rqid="i.skill.jump"></rqg-link>`.
+ * A link to the document an rqid resolves to: `<rqg-link rqid="i.skill.jump"></rqg-link>`, or to
+ * one specific document: `<rqg-link uuid="Actor.abc"></rqg-link>`.
  * Shows the type icon and the resolved name, marked when nothing matches, and keeps the name
  * current while it is shown. Click or Enter opens the document.
  *
- * Attributes: `rqid`; `owner`, the uuid of the document holding the link, whose actor's items name
- * links nothing else resolves; `anchor`, a heading on a journal page to open at.
+ * Attributes: `rqid` or `uuid`; `owner`, the uuid of the document holding an rqid link, whose
+ * actor's items name links nothing else resolves; `anchor`, a heading on a journal page to open at.
  */
 export class RqgLinkElement extends foundry.applications.elements.AdoptableHTMLElement {
   static readonly tagName = "rqg-link";
@@ -19,7 +27,7 @@ export class RqgLinkElement extends foundry.applications.elements.AdoptableHTMLE
     }
   }
 
-  static readonly observedAttributes = ["rqid", "owner"];
+  static readonly observedAttributes = ["rqid", "uuid", "owner"];
 
   #abortController?: AbortController;
   #display?: RqidDisplay;
@@ -27,6 +35,10 @@ export class RqgLinkElement extends foundry.applications.elements.AdoptableHTMLE
 
   get rqid(): string {
     return this.getAttribute("rqid") ?? "";
+  }
+
+  get uuid(): string {
+    return this.getAttribute("uuid") ?? "";
   }
 
   connectedCallback(): void {
@@ -46,6 +58,7 @@ export class RqgLinkElement extends foundry.applications.elements.AdoptableHTMLE
       },
       { signal },
     );
+    // Also tells of renamed, created and deleted top-level documents, which uuid links show
     Rqid.onNamesChanged(() => this.refresh(), signal);
     this.refresh();
   }
@@ -66,10 +79,13 @@ export class RqgLinkElement extends foundry.applications.elements.AdoptableHTMLE
   /** Resolve the name again and redraw. */
   refresh(): void {
     const rqid = this.rqid;
-    const display = Rqid.displayFromRqid(rqid, RqidLink.ownerActor(this.getAttribute("owner")));
+    const uuid = this.uuid;
+    const display = uuid
+      ? displayFromUuid(uuid)
+      : Rqid.displayFromRqid(rqid, RqidLink.ownerActor(this.getAttribute("owner")));
     this.#display = display;
 
-    const shown = `${rqid}|${display.name}|${display.missing}`;
+    const shown = `${rqid}|${uuid}|${display.name}|${display.missing}`;
     if (shown === this.#shown) {
       return;
     }
@@ -80,13 +96,24 @@ export class RqgLinkElement extends foundry.applications.elements.AdoptableHTMLE
     name.textContent = display.name;
     const icon = document.createElement("span");
     icon.className = "icon";
-    icon.innerHTML = Rqid.getRqidIcon(rqid) ?? "";
+    icon.innerHTML = uuid
+      ? Rqid.getDocumentIcon(foundry.utils.parseUuid(uuid)?.type)
+      : (Rqid.getRqidIcon(rqid) ?? "");
     this.replaceChildren(icon, name);
 
     this.toggleAttribute("missing", display.missing);
-    this.dataset["tooltip"] = display.missing
-      ? localize("RQG.Foundry.ContentLink.RqidLinkMissing", { rqid })
-      : RqidLink.tooltip(rqid);
+    const tooltip = display.missing
+      ? uuid
+        ? localize("RQG.Foundry.ContentLink.UuidLinkMissing", { uuid })
+        : localize("RQG.Foundry.ContentLink.RqidLinkMissing", { rqid })
+      : uuid
+        ? undefined
+        : RqidLink.tooltip(rqid);
+    if (tooltip) {
+      this.dataset["tooltip"] = tooltip;
+    } else {
+      delete this.dataset["tooltip"];
+    }
   }
 
   async #open(event: Event): Promise<void> {
@@ -95,6 +122,14 @@ export class RqgLinkElement extends foundry.applications.elements.AdoptableHTMLE
     const actorItem = this.#display?.actorItem;
     if (actorItem) {
       await actorItem.sheet?.render(true);
+      return;
+    }
+    if (this.uuid) {
+      // As Foundry's content links: a macro runs, a journal page opens in its journal
+      const document = await foundry.utils.fromUuid(this.uuid);
+      await (
+        document as { _onClickDocumentLink?(event: Event): unknown } | null
+      )?._onClickDocumentLink?.(event);
       return;
     }
     if (this.rqid) {

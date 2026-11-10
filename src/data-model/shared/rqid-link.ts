@@ -55,13 +55,15 @@ export class RqidLink<R extends string = string> {
     return RqidLink.display(rqid).name;
   }
 
-  /** The links sorted by their shown names, each with its index in `links`. */
-  static sortedByName<T extends { rqid: string }>(
+  /** The links sorted by their shown names, each with its index in `links`. `displayOf` names a
+   * link that isn't `{ rqid }`. */
+  static sortedByName<T>(
     links: readonly T[] | undefined,
-    actor?: RqgActor | null,
+    displayOf: (link: T) => RqidDisplay = (link) =>
+      RqidLink.display((link as { rqid?: string }).rqid),
   ): ({ link: T; index: number } & RqidDisplay)[] {
     return (links ?? [])
-      .map((link, index) => ({ link, index, ...RqidLink.display(link.rqid, actor) }))
+      .map((link, index) => ({ link, index, ...displayOf(link) }))
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 

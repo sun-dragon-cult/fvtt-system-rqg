@@ -94,26 +94,11 @@
       min-height: 100px;
     }
 
-/* Bound Spirit dropzone (#999) - a list of chips. */
-    & .bound-spirit-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-
 /* A matrix spell's fixed points, as wide as the input a variable spell gets */
     & span.matrix-spell-points {
       min-width: 1.5em;
       text-align: center;
       opacity: 0.75;
-    }
-
-/* Base chip styling (.bond-actor-link) is shared with the actor sheet's Allied Spirit link -
-       see rqg.css. */
-    & .bound-spirit-link [data-action="unlinkBoundSpirit"] {
-      color: var(--rqg-unassigned-rm-action);
-      text-shadow: none;
-      margin-left: auto;
     }
   }
 }

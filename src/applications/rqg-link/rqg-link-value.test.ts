@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { entryFor, parseLinks, rqidOf, toLinks } from "./rqg-link-value";
+import { entryFor, parseJson, rqidOf, toLinks, toUuidEntries } from "./rqg-link-value";
 
 describe("rqg-link field value", () => {
   it("reads an array, one link or nothing", () => {
@@ -24,12 +24,16 @@ describe("rqg-link field value", () => {
   });
 
   it("parses the value attribute and ignores invalid JSON", () => {
-    expect(parseLinks('[{"rqid":"i.rune.air-element"}]')).toEqual([{ rqid: "i.rune.air-element" }]);
-    expect(parseLinks('{"rqid":"i.rune.air-element"}')).toEqual([{ rqid: "i.rune.air-element" }]);
-    expect(parseLinks("null")).toEqual([]);
-    expect(parseLinks("")).toEqual([]);
-    expect(parseLinks(null)).toEqual([]);
-    expect(parseLinks("[{")).toEqual([]);
+    expect(toLinks(parseJson('[{"rqid":"i.rune.air-element"}]'))).toEqual([
+      { rqid: "i.rune.air-element" },
+    ]);
+    expect(toLinks(parseJson('{"rqid":"i.rune.air-element"}'))).toEqual([
+      { rqid: "i.rune.air-element" },
+    ]);
+    expect(toLinks(parseJson("null"))).toEqual([]);
+    expect(toLinks(parseJson(""))).toEqual([]);
+    expect(toLinks(parseJson(null))).toEqual([]);
+    expect(toLinks(parseJson("[{"))).toEqual([]);
   });
 
   it("reads the link under a link key", () => {
@@ -42,7 +46,7 @@ describe("rqg-link field value", () => {
         "skillRqidLink",
       ),
     ).toEqual([skill]);
-    expect(parseLinks(JSON.stringify([skill]), "skillRqidLink")).toEqual([skill]);
+    expect(toLinks(parseJson(JSON.stringify([skill])), "skillRqidLink")).toEqual([skill]);
   });
 
   it("makes a new entry, under the link key when there is one", () => {
@@ -50,5 +54,18 @@ describe("rqg-link field value", () => {
     expect(entryFor({ rqid: "i.spirit-magic.befuddle" }, "spellRqidLink")).toEqual({
       spellRqidLink: { rqid: "i.spirit-magic.befuddle" },
     });
+  });
+
+  it("reads uuids as { uuid } entries", () => {
+    expect(toUuidEntries(["Actor.a", "", 3, "Actor.b"])).toEqual([
+      { uuid: "Actor.a" },
+      { uuid: "Actor.b" },
+    ]);
+    expect(toUuidEntries("Actor.a")).toEqual([{ uuid: "Actor.a" }]);
+    expect(toUuidEntries([{ uuid: "Actor.a" }, { uuid: "" }, null])).toEqual([{ uuid: "Actor.a" }]);
+    expect(toUuidEntries(null)).toEqual([]);
+    expect(toUuidEntries(parseJson('["Actor.a"]'))).toEqual([{ uuid: "Actor.a" }]);
+    expect(toUuidEntries(parseJson('"Actor.a"'))).toEqual([{ uuid: "Actor.a" }]);
+    expect(toUuidEntries(parseJson("["))).toEqual([]);
   });
 });

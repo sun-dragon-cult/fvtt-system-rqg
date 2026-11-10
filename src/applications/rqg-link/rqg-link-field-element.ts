@@ -8,9 +8,16 @@ import {
   resolveDroppedDocument,
 } from "../../documents/drag-drop";
 import { localize } from "../../system/util";
-import { RqgLinkElement } from "./rqg-link-element";
+import { displayFromUuid, RqgLinkElement } from "./rqg-link-element";
 import { buildRqgLinkControl, rqgLinkControlTag } from "./rqg-link-control";
-import { entryFor, parseLinks, rqidOf, toLinks, type RqgLinkFieldEntry } from "./rqg-link-value";
+import {
+  entryFor,
+  parseJson,
+  rqidOf,
+  toLinks,
+  toUuidEntries,
+  type RqgLinkFieldEntry,
+} from "./rqg-link-value";
 
 /**
  * Detail of the cancelable `rqg-link-drop` event fired before a dropped document is linked.
@@ -18,7 +25,8 @@ import { entryFor, parseLinks, rqidOf, toLinks, type RqgLinkFieldEntry } from ".
  */
 export type RqgLinkDropDetail = {
   document: foundry.abstract.Document.Any;
-  rqid: string;
+  /** The rqid, or the uuid in a `uuids` field. */
+  ref: string;
   entry: RqgLinkFieldEntry;
 };
 
@@ -36,6 +44,7 @@ export type RqgLinkEntryRenderer = (
  *
  * Attributes:
  * - `value`: the links as JSON.
+ * - `uuids`: links to specific documents, stored as uuid strings instead of rqid links.
  * - `link-key`: the property of each entry holding the link, when entries hold more than a link,
  *   like `{ skillRqidLink, bonus, incomeSkill }`.
  * - `single`: one link; a drop replaces it.
@@ -70,8 +79,12 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
 
   constructor() {
     super();
-    this._value = parseLinks(this.getAttribute("value"), this.linkKey);
+    this._setValue(parseJson(this.getAttribute("value")));
     this.removeAttribute("value");
+  }
+
+  get uuids(): boolean {
+    return this.hasAttribute("uuids");
   }
 
   get linkKey(): string | undefined {
@@ -117,12 +130,23 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
   }
 
   protected override _getValue(): any {
-    const entries = this._value.map((entry) => ({ ...entry }));
+    const entries = this.uuids
+      ? this._value.map((entry) => this.#refOf(entry))
+      : this._value.map((entry) => ({ ...entry }));
     return this.single ? (entries[0] ?? null) : entries;
   }
 
   protected override _setValue(value: unknown): void {
-    this._value = toLinks(value, this.linkKey);
+    this._value = this.uuids ? toUuidEntries(value) : toLinks(value, this.linkKey);
+  }
+
+  /** The rqid of an entry, or its uuid in a `uuids` field. */
+  #refOf(entry: RqgLinkFieldEntry): string {
+    return this.uuids ? String(entry["uuid"] ?? "") : rqidOf(entry, this.linkKey);
+  }
+
+  #entryFor(ref: string): RqgLinkFieldEntry {
+    return this.uuids ? { uuid: ref } : entryFor({ rqid: ref }, this.linkKey);
   }
 
   protected override _buildElements(): HTMLElement[] {
@@ -135,21 +159,20 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
     if (!this.#list) {
       return;
     }
-    const owner = this.getAttribute("owner") ?? "";
+    const owner = this.uuids ? "" : (this.getAttribute("owner") ?? "");
     const actor = RqidLink.ownerActor(owner);
     const editable = this.editable;
-    const linkKey = this.linkKey;
     const entries = RqidLink.sortedByName(
       (this.single ? this._value.slice(0, 1) : this._value).map((value) => ({
-        rqid: rqidOf(value, linkKey),
         value,
+        ref: this.#refOf(value),
       })),
-      actor,
+      ({ ref }) => (this.uuids ? displayFromUuid(ref) : RqidLink.display(ref, actor)),
     );
     this.#renderedEditable = editable;
 
-    const children: HTMLElement[] = entries.map(({ link: { value, rqid }, index, name }) =>
-      this.#buildEntry(value, rqid, index, name, owner, editable),
+    const children: HTMLElement[] = entries.map(({ link: { value, ref }, index, name }) =>
+      this.#buildEntry(value, ref, index, name, owner, editable),
     );
     if (!entries.length) {
       const placeholder = document.createElement("span");
@@ -173,7 +196,7 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
 
   #buildEntry(
     value: RqgLinkFieldEntry,
-    rqid: string,
+    ref: string,
     index: number,
     name: string,
     owner: string,
@@ -184,7 +207,7 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
     entry.dataset["index"] = String(index);
 
     const chip = document.createElement(RqgLinkElement.tagName) as RqgLinkElement;
-    chip.setAttribute("rqid", rqid);
+    chip.setAttribute(this.uuids ? "uuid" : "rqid", ref);
     if (owner) {
       chip.setAttribute("owner", owner);
     }
@@ -212,7 +235,7 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
   }
 
   #buildAddMenu(): HTMLSelectElement | undefined {
-    const linked = new Set(this._value.map((entry) => rqidOf(entry, this.linkKey)));
+    const linked = new Set(this._value.map((entry) => this.#refOf(entry)));
     const available = this.#options.filter(
       (option) => this.allowDuplicates || this.single || !linked.has(option.value),
     );
@@ -269,7 +292,7 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
     }
     if (target instanceof HTMLSelectElement && target.classList.contains("add")) {
       if (target.value) {
-        this.#add(entryFor({ rqid: target.value }, this.linkKey));
+        this.#add(this.#entryFor(target.value));
       }
       return;
     }
@@ -323,7 +346,14 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
     }
     const document = await resolveDroppedDocument(data);
     const allowedTypes = parseDropzoneList(this.getAttribute("types") ?? undefined);
-    if (!document || !isAllowedDocumentType(document, allowedTypes) || !hasRqid(document)) {
+    if (!document || !isAllowedDocumentType(document, allowedTypes)) {
+      return;
+    }
+    if (this.uuids) {
+      this.#dispatchDrop(document, document.uuid ?? "");
+      return;
+    }
+    if (!hasRqid(document)) {
       return;
     }
     const link = getDroppedDocumentRqidLink(document);
@@ -336,11 +366,14 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
       );
       return;
     }
-    const detail: RqgLinkDropDetail = {
-      document,
-      rqid: link.rqid,
-      entry: entryFor(link, this.linkKey),
-    };
+    this.#dispatchDrop(document, link.rqid);
+  }
+
+  #dispatchDrop(document: foundry.abstract.Document.Any, ref: string): void {
+    if (!ref) {
+      return;
+    }
+    const detail: RqgLinkDropDetail = { document, ref, entry: this.#entryFor(ref) };
     const proceed = this.dispatchEvent(
       new CustomEvent("rqg-link-drop", { bubbles: true, cancelable: true, detail }),
     );
@@ -350,11 +383,10 @@ export class RqgLinkFieldElement extends foundry.applications.elements.AbstractF
   }
 
   #add(entry: RqgLinkFieldEntry): void {
-    const linkKey = this.linkKey;
-    const rqid = rqidOf(entry, linkKey);
+    const ref = this.#refOf(entry);
     const isNew = this.single
-      ? rqidOf(this._value[0] ?? {}, linkKey) !== rqid
-      : this.allowDuplicates || !this._value.some((e) => rqidOf(e, linkKey) === rqid);
+      ? this.#refOf(this._value[0] ?? {}) !== ref
+      : this.allowDuplicates || !this._value.some((e) => this.#refOf(e) === ref);
     if (!isNew) {
       this._refresh(); // resets the add menu
       return;

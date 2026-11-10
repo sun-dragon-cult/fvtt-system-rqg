@@ -60,7 +60,11 @@ import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-men
 import { matrixSpellMenuOptions } from "./context-menus/matrix-spell-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import { gearMenuOptions } from "./context-menus/gear-context-menu";
-import { extractDroppedActor, hasRqid, updateRqidLink } from "../documents/drag-drop";
+import { hasRqid, updateRqidLink } from "../documents/drag-drop";
+import type {
+  RqgLinkDropDetail,
+  RqgLinkFieldElement,
+} from "../applications/rqg-link/rqg-link-field-element";
 import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
 import {
   getMatrixSpellRows,
@@ -94,6 +98,7 @@ import {
   getStorageItems,
   getTotalStoredMagicPoints,
   MAGIC_POINT_SOURCE_DRAG_TYPE,
+  type BoundSpiritCandidate,
 } from "../system/magic-point-source";
 import {
   getMagicPointSourcesAppId,
@@ -211,7 +216,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       addPassion: RqgActorSheetV2._addPassionAction,
       addGear: RqgActorSheetV2._addGearAction,
       openMagicPointSources: RqgActorSheetV2._openMagicPointSourcesAction,
-      unlinkAlliedSpirit: RqgActorSheetV2._unlinkAlliedSpiritAction,
     },
   } satisfies foundry.applications.api.ApplicationV2.DefaultOptions;
 
@@ -462,12 +466,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         alliedBondActor,
         boundSpiritItems,
       ),
-      alliedSpirit: alliedSpirit ? { uuid: alliedSpirit.uuid ?? "" } : undefined,
       boundPriest: boundPriest ? { uuid: boundPriest.uuid ?? "" } : undefined,
-      boundSpirits: boundSpiritItems.map(({ item, spiritActor }) => ({
-        itemUuid: item.uuid ?? "",
-        spiritUuid: spiritActor.uuid ?? "",
-      })),
+      boundSpirits: groupBoundSpiritsByItem(boundSpiritItems),
       boundSpiritCount: boundSpiritItems.length,
       boundSpiritCap: boundSpiritCap,
       // Gates any "From {name}:" divider (#1002) - individual sections (e.g. externalSpiritMagic
@@ -610,6 +610,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
   ): Promise<void> {
     await super._onRender(context, options);
+
+    this.bindAlliedSpirit();
 
     // Toggle edit-mode class for styling
     const isEditMode = !!this.actor.system.editMode;
@@ -1322,16 +1324,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     }).render({ force: true });
   }
 
-  private static async _unlinkAlliedSpiritAction(this: RqgActorSheetV2): Promise<void> {
-    if (!this.actor.isOwner) {
-      ui.notifications?.warn(
-        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name }),
-      );
-      return;
-    }
-    await this.actor.update({ system: { alliedSpiritActorUuid: null } });
-  }
-
   /**
    * Sync combatants to match the desired set of active SRs.
    * Reuses existing combatants by updating their initiative to minimise
@@ -1625,7 +1617,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // where a rejected drop produces an explicit notification.
     const candidateDropzone = this._getDropzoneFromEvent(
       event,
-      "[data-allied-spirit-dropzone], rqg-link-field:not(:disabled, [readonly])",
+      "rqg-link-field:not(:disabled, [readonly])",
     );
     this._setActiveDropzone(candidateDropzone);
 
@@ -2493,11 +2485,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     event.stopPropagation();
     this._resetDragVisualState();
 
-    if (this._getDropzoneFromEvent(event, "[data-allied-spirit-dropzone]")) {
-      await this._onDropAlliedSpirit(event);
-      return;
-    }
-
     const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
       event,
     ) as ActorSheet.DropData;
@@ -2572,47 +2559,27 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   /**
-   * Link the dropped Actor as this actor's Allied Spirit (#957) - just a pointer field, no
-   * validation of the ally's own stats/cult; that's GM-adjudicated roleplay, same as the bond
-   * itself.
+   * The Allied Spirit (#957) is a character other than this one, and not a spirit already bound in
+   * one of this actor's items (#999): it would be counted twice as a Magic Point source and race on
+   * itself when spent.
    */
-  private async _onDropAlliedSpirit(event: DragEvent): Promise<void> {
-    if (!this.actor.isOwner) {
-      ui.notifications?.warn(
-        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name }),
-      );
-      return;
-    }
-    const droppedActor = await extractDroppedActor(event);
-    if (!droppedActor) {
-      ui.notifications?.warn(localize("RQG.Actor.RuneMagic.AlliedSpiritDropRequiresActorWarn"));
-      return;
-    }
-    if (
-      !isDocumentSubType<CharacterActor>(
-        droppedActor as unknown as RqgActor,
-        ActorTypeEnum.Character,
-      )
-    ) {
-      ui.notifications?.warn(localize("RQG.Actor.RuneMagic.AlliedSpiritDropRequiresCharacterWarn"));
-      return;
-    }
-    if (droppedActor.uuid === this.actor.uuid) {
-      ui.notifications?.warn(localize("RQG.Actor.RuneMagic.AlliedSpiritCannotLinkSelfWarn"));
-      return;
-    }
-    // Refuse an actor that's already bound as a spirit in one of this actor's own items (#999) -
-    // the same actor filling both roles at once would be double-counted as a Magic Point source
-    // and race on itself when spent (see getBoundSpiritItems).
-    if (getBondRoleConflict(this.actor, droppedActor as unknown as RqgActor) === "boundSpirit") {
-      ui.notifications?.warn(
-        localize("RQG.Actor.RuneMagic.AlliedSpiritAlreadyBoundWarn", {
-          spiritName: droppedActor.name ?? "",
-        }),
-      );
-      return;
-    }
-    await this.actor.update({ system: { alliedSpiritActorUuid: droppedActor.uuid } });
+  private bindAlliedSpirit(): void {
+    const field = this.element.querySelector<RqgLinkFieldElement>("rqg-link-field.allied-spirit");
+    field?.addEventListener("rqg-link-drop", (event) => {
+      const ally = (event as CustomEvent<RqgLinkDropDetail>).detail.document as unknown as RqgActor;
+      let warning: string | undefined;
+      if (ally.uuid === this.actor.uuid) {
+        warning = localize("RQG.Actor.RuneMagic.AlliedSpiritCannotLinkSelfWarn");
+      } else if (getBondRoleConflict(this.actor, ally) === "boundSpirit") {
+        warning = localize("RQG.Actor.RuneMagic.AlliedSpiritAlreadyBoundWarn", {
+          spiritName: ally.name ?? "",
+        });
+      }
+      if (warning) {
+        event.preventDefault();
+        ui.notifications?.warn(warning);
+      }
+    });
   }
 
   private async _onDropCompendium(event: DragEvent, data: ActorSheet.DropData): Promise<RqgItem[]> {
@@ -2643,4 +2610,14 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const createdItems = await this.actor.createEmbeddedDocuments("Item", itemDataToCreate);
     return createdItems as RqgItem[];
   }
+}
+
+/** The spirits bound in each item, in the order the items come. */
+function groupBoundSpiritsByItem(
+  boundSpiritItems: readonly BoundSpiritCandidate[],
+): RqgActorSheetV2Context["boundSpirits"] {
+  return [...Map.groupBy(boundSpiritItems, ({ item }) => item)].map(([item, bound]) => ({
+    itemName: item.name ?? "",
+    spiritUuids: bound.map(({ spiritActor }) => spiritActor.uuid ?? ""),
+  }));
 }
