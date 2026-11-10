@@ -1537,164 +1537,46 @@
         }
       }
 
-/* --- Humanoid hit location layout --- */
-      & .humanoid {
-        position: relative;
-        width: 18rem;
-        height: 21rem;
-
-        &::before {
-          content: "";
-          background: center/contain no-repeat url("/systems/rqg/assets/images/runes/man.svg");
-          width: inherit;
-          height: inherit;
-          position: absolute;
-          filter: invert(1);
-          mix-blend-mode: overlay;
-        }
-
-        & .actor-state {
-          position: absolute;
-          top: 0;
-          right: 0;
-
-          & img {
-            height: 5rem;
-            filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-              brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
-          }
-        }
-
-        & .stats {
-          position: absolute !important;
-          border: 1px solid #666;
-          border-radius: var(--rqg-radius-lg);
-          padding: 0.375rem;
-          width: fit-content;
-          min-width: 5rem;
-          max-width: 7rem;
-          background-color: var(--rqg-color-hl-stats-bg);
-
-          &.useless,
-          &.severed {
-            background-color: var(--rqg-color-hl-stats-severed-bg);
-          }
-
-          &:not(.healthy) {
-            border-color: var(--rqg-highlight);
-            border-width: 2px;
-          }
-
-          & .roll-range {
-            font-size: 80%;
-          }
-
-          & .hl-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 0.5rem;
-          }
-
-          & .hl-status-row {
-            text-align: left;
-
-            & .health-state {
-              white-space: nowrap;
-            }
-          }
-
-          & .hl-stat-row {
-            display: flex;
-          }
-
-          & .hl-wounds-row {
-            display: flex;
-            justify-content: space-between;
-
-            & [data-action="addWound"] {
-              cursor: pointer;
-            }
-          }
-
-          &.head {
-            top: 0;
-            left: 0;
-            right: 0;
-            margin: 0 auto;
-          }
-
-          &.left-arm {
-            top: 7rem;
-            right: 0;
-          }
-
-          &.right-arm {
-            top: 7rem;
-            left: 0;
-          }
-
-          &.chest {
-            top: 6.5rem;
-            left: 0;
-            right: 0;
-            margin: 0 auto;
-          }
-
-          &.abdomen {
-            top: 13rem;
-            left: 0;
-            right: 0;
-            margin: 0 auto;
-          }
-
-          &.left-leg {
-            top: 16rem;
-            right: 0;
-          }
-
-          &.right-leg {
-            top: 16rem;
-            left: 0;
-          }
-        }
+/* Even lines when a hit location name wraps ("Right / Hind Leg", not "Right Hind / Leg") */
+      & .hl-name {
+        display: block;
+        text-wrap: balance;
       }
 
-/* --- Quadruped hit location layout --- */
-      & .quadruped {
+/* --- Hit location layouts --- */
+      & :is(.humanoid, .quadruped) {
         position: relative;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
         gap: 0.5rem;
-        width: 24rem;
 
         &::before {
           content: "";
-          background: center/contain no-repeat url("/systems/rqg/assets/images/runes/horse.svg");
           position: absolute;
           inset: 0;
           filter: invert(1);
           mix-blend-mode: overlay;
         }
 
-        & .actor-state {
-          grid-column: 4;
-          grid-row: 1;
-          place-self: start end;
-
-          & img {
-            height: 5rem;
-            filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-              brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
-          }
+        & .actor-state img {
+          height: 5rem;
+          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+            brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
         }
 
+        /* A column with the space after the name, so the stats and wounds line up at the bottom
+           however many lines the name takes */
         & .stats {
           position: relative;
+          display: flex;
+          flex-direction: column;
           border: 1px solid #666;
           border-radius: var(--rqg-radius-lg);
           padding: 0.375rem;
           background-color: var(--rqg-color-hl-stats-bg);
+
+          & .hl-name {
+            margin-bottom: auto;
+          }
 
           &.useless,
           &.severed {
@@ -1737,38 +1619,112 @@
               cursor: pointer;
             }
           }
+        }
+      }
 
+/* Rows sized by their content, so a wrapping name or a wounded card grows only its own row. The
+   abdomen and the legs span two rows each, sharing the middle one, so the legs start halfway down. */
+      & .humanoid {
+        grid-template-columns: repeat(3, 1fr);
+        width: 18rem;
+
+        &::before {
+          background: center/contain no-repeat url("/systems/rqg/assets/images/runes/man.svg");
+        }
+
+        & .actor-state {
+          grid-column: 3;
+          grid-row: 1;
+          place-self: start end;
+        }
+
+        & .stats {
           &.head {
+            grid-column: 2;
+            grid-row: 1;
+          }
+
+          &.right-arm {
             grid-column: 1;
+            grid-row: 2;
+          }
+
+          &.chest {
+            grid-column: 2;
+            grid-row: 2;
+          }
+
+          &.left-arm {
+            grid-column: 3;
+            grid-row: 2;
+          }
+
+          &.abdomen {
+            grid-column: 2;
+            grid-row: 3 / span 2;
+          }
+
+          &.right-leg {
+            grid-column: 1;
+            grid-row: 4 / span 2;
+          }
+
+          &.left-leg {
+            grid-column: 3;
+            grid-row: 4 / span 2;
+          }
+        }
+      }
+
+      & .quadruped {
+        grid-template-columns: repeat(4, 1fr);
+        width: 24rem;
+
+        &::before {
+          background: center/contain no-repeat url("/systems/rqg/assets/images/runes/horse.svg");
+          transform: scaleX(-1); /* head to the right, looking into the sheet */
+        }
+
+        & .actor-state {
+          grid-column: 1;
+          grid-row: 1;
+          place-self: start start;
+        }
+
+        /* Head to the right, so the roll ranges rise from left to right. In each pair of legs the
+           right one comes first, as in the humanoid layout. */
+        & .stats {
+          &.hindquarter {
+            grid-column: 2;
             grid-row: 1;
           }
 
           &.forequarter {
-            grid-column: 2;
-            grid-row: 1;
-          }
-
-          &.hindquarter {
             grid-column: 3;
             grid-row: 1;
           }
 
-          &.left-foreleg {
+          &.head {
+            grid-column: 4;
+            grid-row: 1;
+          }
+
+          &.right-hind-leg {
             grid-column: 1;
             grid-row: 2;
           }
 
-          &.right-foreleg {
+          &.left-hind-leg {
             grid-column: 2;
             grid-row: 2;
           }
 
-          &.left-hind-leg {
+          &.right-foreleg {
             grid-column: 3;
             grid-row: 2;
           }
 
-          &.right-hind-leg {
+          &.left-foreleg {
             grid-column: 4;
             grid-row: 2;
           }
