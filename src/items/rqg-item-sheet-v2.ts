@@ -13,13 +13,16 @@ import {
 import {
   extractDroppedActor,
   getAllowedDropDocumentNames,
-  getDroppedDocumentRqidLink,
   isAllowedDocumentNames,
   onDragEnter,
   onDragLeave,
 } from "../documents/drag-drop";
-import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
+import type {
+  RqgLinkDropDetail,
+  RqgLinkFieldElement,
+} from "../applications/rqg-link/rqg-link-field-element";
+import { rqidOf } from "../applications/rqg-link/rqg-link-value";
 import type { RqgActiveEffect } from "../active-effect/rqg-active-effect.ts";
 import type { DeepPartial } from "fvtt-types/utils";
 
@@ -82,19 +85,20 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     },
     actions: {
       unlinkBoundSpirit: RqgItemSheetV2._unlinkBoundSpiritAction,
-      unlinkMatrixSpell: RqgItemSheetV2._unlinkMatrixSpellAction,
     },
   };
 
   private _rqgDragDrop?: foundry.applications.ux.DragDrop.Implementation;
 
+  /** Rqids of the matrix spells (#959) whose enchanted points are a choice, like Bladesharp 1-4. */
+  private variableMatrixSpells = new Set<string>();
+
   // Override ItemSheetV2 drag-drop controller to use explicit dropzones and callbacks.
   protected override get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
-      // [data-bound-spirit-dropzone] (#999) and [data-matrix-spell-dropzone] (#959) are checked
-      // before the generic Item/JournalEntry switch below, same two-tier pattern as
-      // RqgActorSheetV2's Allied Spirit dropzone.
-      dropSelector: "[data-dropzone], [data-bound-spirit-dropzone], [data-matrix-spell-dropzone]",
+      // [data-bound-spirit-dropzone] (#999) is checked before the generic Item/JournalEntry switch
+      // below, same two-tier pattern as RqgActorSheetV2's Allied Spirit dropzone.
+      dropSelector: "[data-dropzone], [data-bound-spirit-dropzone]",
       permissions: {
         drop: () => this.isEditable,
       },
@@ -135,42 +139,8 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     // property access, which is undefined (and so harmlessly resolves to no spirits) for every
     // other item type - no type-narrowing needed here.
     const boundSpiritActors = getBoundSpiritActors(this.document as unknown as PhysicalItem);
-    const system = foundry.utils.duplicate(this.document._source.system) as {
-      matrixSpells?: (MatrixSpellStorageEntry & {
-        isVariable?: boolean;
-        storageIndex?: number;
-        spellName?: string;
-      })[];
-    };
-    if (system.matrixSpells) {
-      // Only a variable spell's (e.g. Bladesharp 1-4) enchanted level is a per-matrix choice -
-      // for a fixed-level spell the points are intrinsic to the spell itself, so
-      // item-common-physical.hbs shows it read-only rather than as an editable input. isVariable
-      // isn't stored per matrix entry (see physical-item-schema-fields.ts), so it's resolved from
-      // each entry's canonical spell here, display-only - never submitted back (no `name=` on the
-      // read-only branch), so this doesn't risk persisting a stale/wrong value onto the document.
-      // canonicalCache is shared across entries so two entries enchanted with the same spell only
-      // resolve its canonical rqid once (see resolveMatrixSpellItem, spell-matrix.ts).
-      const canonicalCache = new Map<string, Promise<RqgItem | undefined>>();
-      system.matrixSpells = await Promise.all(
-        system.matrixSpells.map(async (entry, index) => {
-          const resolved = await resolveMatrixSpellItem(
-            this.document as unknown as PhysicalItem,
-            index,
-            canonicalCache,
-          );
-          return {
-            ...entry,
-            isVariable: resolved?.system.isVariable ?? false,
-            storageIndex: index,
-            spellName: RqidLink.displayName(entry.spellRqidLink?.rqid),
-          };
-        }),
-      );
-      // Displayed alphabetically; storageIndex keeps edit/unlink actions pointed at the real
-      // array index.
-      system.matrixSpells.sort((a, b) => (a.spellName ?? "").localeCompare(b.spellName ?? ""));
-    }
+    const system = foundry.utils.duplicate(this.document._source.system);
+    await this.findVariableMatrixSpells();
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
@@ -214,18 +184,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       RqidLink.bindHandlers(this.element);
     }
 
-    // Edit a Matrix Spell entry's enchanted points (#959, GM-only, see item-common-physical.hbs)
-    this.element.querySelectorAll<HTMLInputElement>("[data-matrix-spell-points]").forEach((el) => {
-      el.addEventListener("change", async (event) => {
-        const input = event.currentTarget as HTMLInputElement;
-        const index = Number(getRequiredDomDataset(input, "index"));
-        const matrixSpells = [...this.getMatrixSpells()];
-        if (matrixSpells[index]) {
-          matrixSpells[index] = { ...matrixSpells[index], points: Number(input.value) || 0 };
-          await this.document.update({ system: { matrixSpells } });
-        }
-      });
-    });
+    this.bindMatrixSpells();
 
     // Edit Active Effect
     this.element.querySelectorAll<HTMLElement>("[data-item-effect-edit]").forEach((el) => {
@@ -328,10 +287,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       await this._onDropBoundSpirit(event);
       return;
     }
-    if (target instanceof Element && target.closest("[data-matrix-spell-dropzone]")) {
-      await this._onDropMatrixSpell(event);
-      return;
-    }
 
     this.render();
 
@@ -379,12 +334,66 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     );
   }
 
-  /** The item's currently-stored Matrix Spell entries (#959), for _onDropMatrixSpell/
-   *  _unlinkMatrixSpellAction/the points-edit listener to append to, splice, or patch. */
-  private getMatrixSpells(): MatrixSpellStorageEntry[] {
-    return (
-      (this.document.system as { matrixSpells?: MatrixSpellStorageEntry[] }).matrixSpells ?? []
+  /** Only the GM edits matrix points, so only the GM looks the spells up. */
+  private async findVariableMatrixSpells(): Promise<void> {
+    const matrixSpells =
+      (this.document.system as { matrixSpells?: MatrixSpellStorageEntry[] }).matrixSpells ?? [];
+    if (!game.user?.isGM || !this.isEditable || !matrixSpells.length) {
+      this.variableMatrixSpells = new Set();
+      return;
+    }
+    const canonicalCache = new Map<string, Promise<RqgItem | undefined>>();
+    const resolved = await Promise.all(
+      matrixSpells.map((_entry, index) =>
+        resolveMatrixSpellItem(this.document as unknown as PhysicalItem, index, canonicalCache),
+      ),
     );
+    this.variableMatrixSpells = new Set(
+      matrixSpells
+        .filter((_entry, index) => resolved[index]?.system.isVariable)
+        .map((entry) => entry.spellRqidLink?.rqid ?? ""),
+    );
+  }
+
+  /** Matrix spells show their points to the GM, editable for a variable spell. */
+  private bindMatrixSpells(): void {
+    const field = this.element.querySelector<RqgLinkFieldElement>("rqg-link-field.matrix-spells");
+    if (!field) {
+      return;
+    }
+    field.addEventListener("rqg-link-drop", (event) => {
+      const { document: dropped, rqid, entry } = (event as CustomEvent<RqgLinkDropDetail>).detail;
+      const spell = dropped as unknown as SpiritMagicItem;
+      entry["points"] = spell.system.points;
+      entry["sort"] = getNextSpiritMagicSort(this.document.actor as unknown as RqgActor | null);
+      if (spell.system.isVariable) {
+        this.variableMatrixSpells.add(rqid);
+      }
+    });
+    if (!game.user?.isGM) {
+      return;
+    }
+    const label = localize("RQG.Item.Gear.MatrixSpellPoints");
+    field.renderEntry = (element, entry, editable) => {
+      const rqid = rqidOf(entry, "spellRqidLink");
+      let points: HTMLElement;
+      if (editable && this.variableMatrixSpells.has(rqid)) {
+        const input = document.createElement("input");
+        input.type = "number";
+        input.min = "0";
+        input.max = "99";
+        input.dataset["key"] = "points";
+        input.value = String(entry["points"] ?? 0);
+        input.ariaLabel = label;
+        points = input;
+      } else {
+        points = document.createElement("span");
+        points.textContent = String(entry["points"] ?? 0);
+      }
+      points.classList.add("matrix-spell-points");
+      points.dataset["tooltip"] = label;
+      element.append(points);
+    };
   }
 
   /** Bind the dropped Actor as another spirit trapped in this item (#999), appended to
@@ -444,52 +453,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
         ),
       },
     });
-  }
-
-  /** Add the dropped Spirit Magic spell as another Spell Matrix Enchantment entry on this item
-   *  (Core p.264-265, #959) - appended alongside any spells already enchanted into it, since an
-   *  item can hold more than one (e.g. one 4-point and one 1-point spell). Only `spellRqidLink`
-   *  and the initial `points` (seeded from the dropped spell's own level) are stored; the spell's
-   *  other mechanics are resolved live at cast time (resolveMatrixSpellItem, spell-matrix.ts). */
-  protected async _onDropMatrixSpell(event: DragEvent): Promise<void> {
-    if (!this.isEditable) {
-      return;
-    }
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
-      event,
-    ) as Item.DropData;
-    const droppedItem = (await Item.implementation.fromDropData(data)) as RqgItem | undefined;
-    const spellRqidLink =
-      droppedItem?.type === ItemTypeEnum.SpiritMagic
-        ? getDroppedDocumentRqidLink(droppedItem)
-        : undefined;
-    if (!spellRqidLink) {
-      ui.notifications?.warn(localize("RQG.Item.Gear.MatrixSpellDropRequiresSpiritMagicWarn"));
-      return;
-    }
-    const newEntry = {
-      spellRqidLink: spellRqidLink,
-      points: (droppedItem as unknown as SpiritMagicItem).system.points,
-      sort: getNextSpiritMagicSort(this.document.actor as unknown as RqgActor | null),
-    };
-    await this.document.update({
-      system: { matrixSpells: [...this.getMatrixSpells(), newEntry] },
-    });
-  }
-
-  /** Remove one entry from the Matrix Spell list by index - see _onDropMatrixSpell. */
-  private static async _unlinkMatrixSpellAction(
-    this: RqgItemSheetV2,
-    _event: PointerEvent,
-    target: HTMLElement,
-  ): Promise<void> {
-    if (!this.isEditable) {
-      return;
-    }
-    const index = Number(getRequiredDomDataset(target, "index"));
-    const matrixSpells = [...this.getMatrixSpells()];
-    matrixSpells.splice(index, 1);
-    await this.document.update({ system: { matrixSpells } });
   }
 
   /**

@@ -20,7 +20,7 @@ function defineOccupationSchema() {
     occupation: new StringField({ blank: true, nullable: false, initial: "" }),
     occupationRqidLink: rqidLinkSchemaField({ nullable: true }),
     specialization: new StringField({ blank: true, nullable: false, initial: "" }),
-    homelands: new ArrayField(new StringField({ blank: true, nullable: false, initial: "" })),
+    homelandRqidLinks: rqidLinkArraySchemaField(),
     occupationalSkills: new ArrayField(
       new SchemaField({
         incomeSkill: new BooleanField({ nullable: false, initial: false }),

@@ -1373,10 +1373,8 @@
         "MatrixSpell": "Matrix Spells",
         "MatrixSpellDropHint": "Drag a Spirit Magic spell here to enchant this item with a Spell Matrix",
         "MatrixSpellPoints": "Matrix Points",
-        "MatrixSpellDropRequiresSpiritMagicWarn": "Drop a Spirit Magic spell to make this item its Spell Matrix",
         "MatrixSpellIndicatorTooltip": "Spell Matrix: {spellName} ({points})",
         "MatrixSpellNotFoundWarn": "Couldn't find the Spirit Magic spell \"{name}\" ({rqid}) - is the compendium it came from still installed?",
-        "UnlinkMatrixSpellTitle": "Remove {spellName} from this item's Spell Matrix",
         "HitPointsAbbr": "HP",
         "CurrentHitPoints": "Current Hit Points",
         "HitPointLocation": "Hit Point Location",
@@ -1619,9 +1617,9 @@
             "label": "Specialization",
             "hint": "A narrower field within the occupation."
           },
-          "homelands": {
+          "homelandRqidLinks": {
             "label": "Homelands",
-            "hint": "Names of the homelands where the occupation is found."
+            "hint": "Links to the homelands where the occupation is found. Empty means all homelands."
           },
           "occupationalSkills": {
             "label": "Occupational skills",

@@ -3,65 +3,32 @@
   <div class="key-value-grid">
 
     <label>{{localize "RQG.Item.Occupation.Homelands"}}</label>
-    <div class="drop-target"
-         data-dropzone="homelandRqidLinks"
-         data-dropzone-document-types="homeland">
-      <div style="display: flex; flex-wrap: wrap;">
-        {{#if homelandsJoined}}
-          {{homelandsJoined}}
-        {{else}}
-          {{localize "RQG.Item.Occupation.AllHomelands"}}
-        {{/if}}
-      </div>
-    </div>
+    <rqg-link-field
+      name="system.homelandRqidLinks"
+      value="{{json system.homelandRqidLinks}}"
+      documents="Item"
+      types="homeland"
+      hint="RQG.Item.Occupation.AllHomelands"
+      owner="{{@root.uuid}}"
+    ></rqg-link-field>
 
-    <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}} <i
-      id="btn-edit-occupational-skills-{{id}}" class="fas fa-edit"></i></label>
-    <div class="drop-target"
-         data-dropzone="occupationalSkillRqidLinks"
-         data-dropzone-document-types="skill">
-      <div id="occupational-skill-display-{{id}}" style="display: block;">
-        {{{skillsJoined}}}
-      </div>
-      <div
-           style="display: none;"
-           id="occupational-skill-edit-{{id}}">
-        <div style="display: flex; flex-wrap: wrap;">
-          {{#each system.occupationalSkills}}
-            <div class="occupational-skill {{#if this.incomeSkill}}income-skill{{/if}}">
-              <rqg-link rqid="{{this.skillRqidLink.rqid}}" owner="{{@root.uuid}}"></rqg-link>
-              <div>
-                <input
-                  type="number"
-                  min="-100"
-                  max="100"
-                  id="bonus-{{@index}}"
-                  data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                  data-tooltip="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
-                  value="{{this.bonus}}">%
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="income-skill-{{@index}}"
-                  data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                  data-tooltip="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
-                  {{checked this.incomeSkill}}>
-                <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}</label>
-              </div>
-              <button type="button"
-                      class="rqg-link-remove"
-                      data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
-                      aria-label="{{localize 'RQG.Foundry.ContentLink.Field.Remove' name=(rqidLinkName this.skillRqidLink.rqid)}}"
-                      data-tooltip="{{localize 'RQG.Foundry.ContentLink.Field.Remove' name=(rqidLinkName this.skillRqidLink.rqid)}}">
-                <i class="fa-solid fa-xmark" inert></i>
-              </button>
-            </div>
-          {{/each}}
-        </div>
-      </div>
-    </div>
-
+    <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}}</label>
+    <rqg-link-field
+      class="occupational-skills"
+      name="system.occupationalSkills"
+      value="{{json system.occupationalSkills}}"
+      link-key="skillRqidLink"
+      documents="Item"
+      types="skill"
+      allow-duplicates
+      hint="RQG.Foundry.ContentLink.Field.Empty.Skill"
+      owner="{{@root.uuid}}"
+    >
+      <rqg-link-control key="bonus" min="0" step="1" prefix="+" suffix="%"
+                        label="RQG.Foundry.ContentLink.Field.Bonus"></rqg-link-control>
+      <rqg-link-control key="incomeSkill" type="checkbox"
+                        label="RQG.Item.Occupation.IncomeSkillQ"></rqg-link-control>
+    </rqg-link-field>
 
     <label for="standard-of-living-{{id}}">{{localize "RQG.Item.Occupation.StandardOfLiving"}}</label>
     <select id="standard-of-living-{{id}}" name="system.standardOfLiving">

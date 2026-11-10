@@ -181,7 +181,7 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
       return;
     }
     const actor = this.document.actor;
-    if (actor && !actor.getBestEmbeddedDocumentByRqid(event.detail.link.rqid as RqidString)) {
+    if (actor && !actor.getBestEmbeddedDocumentByRqid(event.detail.rqid as RqidString)) {
       void WeaponSheetV2.addSkillToActor(actor, droppedItem);
     }
   }

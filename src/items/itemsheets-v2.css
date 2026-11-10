@@ -94,23 +94,15 @@
       min-height: 100px;
     }
 
-/* Bound Spirit dropzone (#999) and Matrix Spell dropzone (#959) - both lists of chips. */
-    & .bound-spirit-list,
-    & .matrix-spell-dropzone {
+/* Bound Spirit dropzone (#999) - a list of chips. */
+    & .bound-spirit-list {
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
     }
 
-/* Read-only points display for a non-variable matrix spell entry (#959) - stands in for the
-       editable number input a variable spell gets, so it needs roughly the same footprint. */
-    & .matrix-spell-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    & .matrix-spell-points-readonly {
+/* A matrix spell's fixed points, as wide as the input a variable spell gets */
+    & span.matrix-spell-points {
       min-width: 1.5em;
       text-align: center;
       opacity: 0.75;
