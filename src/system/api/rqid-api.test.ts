@@ -4,7 +4,6 @@ import { RqgError } from "../util";
 import { systemId } from "../config";
 import { documentRqidFlags } from "../../data-model/shared/rqg-document-flags";
 import * as util from "../util";
-import { RqgItem } from "../../items/rqg-item";
 
 type MockRqidDoc = {
   id?: string;
@@ -405,17 +404,33 @@ describe("Rqid", () => {
   });
 
   describe("embedded rqids", () => {
-    it("resolves an item's embedded Active Effect, highest priority first", () => {
-      const low = mockDoc("ae..bladesharp", 0);
-      const high = mockDoc("ae..bladesharp", 5);
-      const item = {
-        effects: [mockDoc("ae..other", 9), low, high],
-        getBestEmbeddedDocumentByRqid: RqgItem.prototype.getBestEmbeddedDocumentByRqid,
-        getEmbeddedDocumentsByRqid: RqgItem.prototype.getEmbeddedDocumentsByRqid,
-      };
+    class MockItem {
+      static metadata = { embedded: { ActiveEffect: "effects" } };
+      effects = [
+        mockDoc("ae..other", 9),
+        mockDoc("ae..bladesharp", 0),
+        mockDoc("ae..bladesharp", 5),
+      ];
+      getFlag = vi.fn().mockReturnValue({ id: "i.gear.amulet", priority: 0, lang: "en" });
+    }
 
-      expect((Rqid as any).getEmbeddedOrProvidedDocument(item, "ae..bladesharp")).toBe(high);
-      expect((Rqid as any).getEmbeddedOrProvidedDocument(item, "")).toBe(item);
+    async function fromWorld(rqid: string, parent: object) {
+      vi.spyOn(Rqid as any, "getGameCollection").mockReturnValue({ contents: [parent] });
+      vi.spyOn(Rqid as any, "documentFromPacks").mockResolvedValue(undefined);
+      vi.spyOn(Rqid as any, "getMaxPackDocumentPriority").mockResolvedValue(-Infinity);
+      return await Rqid.fromRqid(rqid, "en");
+    }
+
+    it("resolves an item's Active Effect, highest priority first", async () => {
+      const item = new MockItem();
+      await expect(fromWorld("i.gear.amulet.ae..bladesharp", item)).resolves.toBe(item.effects[2]);
+    });
+
+    it("returns undefined when the parent has no such embedded document", async () => {
+      await expect(fromWorld("i.gear.amulet.ae..missing", new MockItem())).resolves.toBeUndefined();
+      await expect(
+        fromWorld("i.gear.amulet.i.skill.jump", new MockItem()),
+      ).resolves.toBeUndefined();
     });
   });
 
@@ -618,8 +633,8 @@ describe("Rqid", () => {
         name,
         getFlag: vi.fn().mockReturnValue({ id: rqid, priority, lang }),
         ...(pages && {
-          getBestEmbeddedDocumentByRqid: (embedded: string) =>
-            pages.find((p: any) => p.getFlag().id === embedded),
+          constructor: { metadata: { embedded: { JournalEntryPage: "pages" } } },
+          pages,
         }),
       };
     }

@@ -176,9 +176,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       el.addEventListener("click", () => {
         const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
         if (effect) {
-          new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render({
-            force: true,
-          });
+          void effect.sheet?.render(true);
         }
       });
     });
@@ -222,9 +220,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
         if (created[0]?.id) {
           const createdEffect = item.effects.get(created[0].id) as RqgActiveEffect | undefined;
           if (createdEffect) {
-            new foundry.applications.sheets.ActiveEffectConfig({
-              document: createdEffect,
-            }).render({ force: true });
+            void createdEffect.sheet?.render(true);
           }
         }
       });

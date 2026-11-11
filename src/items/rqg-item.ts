@@ -31,7 +31,6 @@ import { HomelandSheetV2 } from "./homeland-item/homeland-sheet-v2";
 import { OccupationSheet } from "./occupation-item/occupation-sheet";
 import { OccupationSheetV2 } from "./occupation-item/occupation-sheet-v2";
 import { systemId } from "../system/config";
-import { Rqid, type RqidString } from "../system/api/rqid-api";
 import { getDefaultItemIconSettings } from "../system/settings/default-item-icons";
 import { AbilitySuccessLevelEnum } from "../rolls/ability-roll/ability-roll.defs";
 import type { AbilityRollOptions } from "../rolls/ability-roll/ability-roll.types";
@@ -411,22 +410,6 @@ export class RqgItem extends Item {
       "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
     );
     await this.system.awardExperience();
-  }
-
-  /**
-   * Only handles embedded ActiveEffects
-   */
-  public getEmbeddedDocumentsByRqid(rqid: RqidString | undefined): ActiveEffect[] {
-    if (!rqid) {
-      return [];
-    }
-    return this.effects.filter(
-      (e) => e.getFlag(systemId, "documentRqidFlags")?.id === rqid,
-    ) as ActiveEffect[];
-  }
-
-  public getBestEmbeddedDocumentByRqid(rqid: RqidString | undefined): ActiveEffect | undefined {
-    return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 
   /**
