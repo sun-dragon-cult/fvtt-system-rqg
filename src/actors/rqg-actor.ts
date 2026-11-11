@@ -448,6 +448,21 @@ export class RqgActor extends Actor {
   }
 
   /**
+   * Open the Add a Spell Effect dialog and put the picked spell's effect on this actor without
+   * casting it, the way the token HUD "+" does. Resolves `true` when the actor's effects changed,
+   * also when the spell was blocked but used up a protective spell or cancelled an active one.
+   * `token` is the target token, for the dialog title and for spells that need it; it defaults to
+   * the actor's token.
+   *
+   * @public since 6.2.0
+   */
+  public async addSpellEffect(options: { token?: TokenDocument | null } = {}): Promise<boolean> {
+    const token = options.token ?? this.token ?? undefined;
+    const { openAddSpellEffectDialog } = await import("../foundry-ui/add-spell-effect-dialog");
+    return await openAddSpellEffectDialog(this, token?.name ?? this.name ?? "", token);
+  }
+
+  /**
    * Roll the actor's Reputation. Opens the roll dialog, or with `skipDialog` rolls at once and
    * returns the roll (undefined if a `rqg.preReputationRoll` hook cancelled it).
    *

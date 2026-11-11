@@ -105,14 +105,7 @@ export class RqgTokenHud {
     button.innerHTML = '<i class="fa-solid fa-plus" inert></i>';
     button.addEventListener("click", async (event) => {
       event.preventDefault();
-      const { addSpellEffectFromHud } = await import("./add-spell-effect-dialog");
-      if (
-        await addSpellEffectFromHud(
-          actor,
-          hud.document?.name ?? actor.name ?? "",
-          hud.document ?? undefined,
-        )
-      ) {
+      if (await actor.addSpellEffect({ token: hud.document })) {
         void hud.render();
       }
     });
