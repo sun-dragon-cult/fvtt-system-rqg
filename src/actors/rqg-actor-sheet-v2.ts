@@ -1181,9 +1181,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
     requireValue(effect, `No active effect id [${effectUuid}] to edit the effect`);
-    new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render({
-      force: true,
-    });
+    void effect.sheet?.render(true);
   }
 
   private static async _deleteActiveEffectAction(

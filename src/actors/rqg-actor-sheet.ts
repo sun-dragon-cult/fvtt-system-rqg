@@ -735,7 +735,7 @@ export class RqgActorSheet<
       el.addEventListener("click", () => {
         const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
         requireValue(effect, `No active effect id [${effectUuid}] to edit the effect`);
-        new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render(true);
+        void effect.sheet?.render(true);
       });
     });
 

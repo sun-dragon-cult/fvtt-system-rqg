@@ -51,9 +51,7 @@ export class RqgTokenHud {
         event.preventDefault();
         const effect = (await fromUuid(entry.uuid)) as ActiveEffect.Implementation | null;
         if (effect) {
-          void new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render({
-            force: true,
-          });
+          void effect.sheet?.render(true);
         }
       });
       icon.addEventListener("contextmenu", async (event) => {

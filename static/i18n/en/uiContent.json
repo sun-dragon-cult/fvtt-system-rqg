@@ -2936,6 +2936,7 @@
       "PortraitTooltip": "Right-click to view larger"
     },
     "SheetName": {
+      "ActiveEffect": "Active Effect Config",
       "Actor": {
         "Character": "Character Sheet",
         "CharacterV2": "Character Sheet V2"

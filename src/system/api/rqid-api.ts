@@ -410,10 +410,9 @@ export class Rqid {
     parent: RqidNameCandidate | undefined,
     embeddedRqid: string,
   ): string | undefined {
-    const document = parent?.document as
-      | { getBestEmbeddedDocumentByRqid?: (rqid: string) => RqidEnabledDocument | undefined }
-      | undefined;
-    return document?.getBestEmbeddedDocumentByRqid?.(embeddedRqid)?.name ?? undefined;
+    return parent?.document
+      ? (Rqid.bestEmbeddedByRqid(parent.document, embeddedRqid)?.name ?? undefined)
+      : undefined;
   }
 
   private static worldLanguage(): string {
@@ -858,19 +857,30 @@ export class Rqid {
     return this.getEmbeddedOrProvidedDocument(highestPrioDocuments[0]!, embeddedRqid);
   }
 
-  private static getEmbeddedOrProvidedDocument(
+  // Callers type the result from the full rqid, which names the embedded kind.
+  private static getEmbeddedOrProvidedDocument<T>(
     document: RqidEnabledDocument,
     embeddedRqid: string,
-  ) {
-    if (
-      embeddedRqid &&
-      "getBestEmbeddedDocumentByRqid" in document &&
-      typeof document.getBestEmbeddedDocumentByRqid === "function" // Not all documents support embedded rqid documents
-    ) {
-      return document.getBestEmbeddedDocumentByRqid(embeddedRqid);
-    } else {
-      return document;
-    }
+  ): T | undefined {
+    return (embeddedRqid ? Rqid.bestEmbeddedByRqid(document, embeddedRqid) : document) as
+      T | undefined;
+  }
+
+  /** The best of `parent`'s embedded documents of the kind `embeddedRqid` names (`ae`, `i`, `jp`). */
+  private static bestEmbeddedByRqid(
+    parent: object,
+    embeddedRqid: string,
+  ): RqidEnabledDocument | undefined {
+    const documentName = Rqid.documentNameLookup[embeddedRqid.split(".")[0] ?? ""];
+    const metadata = (parent.constructor as { metadata?: { embedded?: Record<string, string> } })
+      .metadata;
+    const field = documentName ? metadata?.embedded?.[documentName] : undefined;
+    const collection = field
+      ? (parent as Record<string, Iterable<RqidEnabledDocument> | undefined>)[field]
+      : undefined;
+    return [...(collection ?? [])]
+      .filter((d) => Rqid.getDocumentFlag(d)?.id === embeddedRqid)
+      .sort(Rqid.compareRqidPrio)[0];
   }
 
   /**
