@@ -151,7 +151,7 @@ export async function openAddSpellEffectDialog(
     { levelUsed: Math.max(0, Math.trunc(Number(picked.level) || 0)) },
     {
       caster: picked.selfCast
-        ? { actorUuid: actor.uuid ?? "", tokenUuid: actor.token?.uuid ?? "" }
+        ? { actorUuid: actor.uuid ?? "", tokenUuid: (targetToken ?? actor.token)?.uuid ?? "" }
         : { actorUuid: "", tokenUuid: "" },
       castMessageId: "",
       casterSuccessLevel: undefined,

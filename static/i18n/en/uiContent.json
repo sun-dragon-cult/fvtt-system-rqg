@@ -2983,6 +2983,7 @@
       "AddSpellEffectSearch": "Search spells…",
       "AddSpellEffectButton": "Add",
       "AddSpellEffectSelfCast": "Cast by {targetName}",
+      "AddSpellEffectNotOwner": "You don't own {actorName}, so you can't add a spell effect to it.",
       "NoSpellsWithEffects": "No spells with effects were found in the compendiums."
     }
   }

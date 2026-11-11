@@ -14,7 +14,7 @@ describe("RqgActor.addSpellEffect", () => {
 
   it("targets the given token and returns whether the effects changed", async () => {
     openAddSpellEffectDialog.mockResolvedValue(true);
-    const actor = { name: "Vasana", token: null };
+    const actor = { name: "Vasana", token: null, isOwner: true };
     const token = { name: "Vasana (mounted)" } as TokenDocument;
 
     await expect(addSpellEffect(actor, { token })).resolves.toBe(true);
@@ -25,14 +25,26 @@ describe("RqgActor.addSpellEffect", () => {
     openAddSpellEffectDialog.mockResolvedValue(false);
     const token = { name: "Broo 2" } as TokenDocument;
 
-    await expect(addSpellEffect({ name: "Broo", token })).resolves.toBe(false);
+    await expect(addSpellEffect({ name: "Broo", token, isOwner: true })).resolves.toBe(false);
     expect(openAddSpellEffectDialog).toHaveBeenLastCalledWith(expect.anything(), "Broo 2", token);
 
-    await addSpellEffect({ name: "Vasana", token: null });
+    await addSpellEffect({ name: "Vasana", token: null, isOwner: true });
     expect(openAddSpellEffectDialog).toHaveBeenLastCalledWith(
       expect.anything(),
       "Vasana",
       undefined,
     );
+  });
+
+  it("warns and opens nothing for an actor the user doesn't own", async () => {
+    const warn = vi.fn();
+    vi.stubGlobal("ui", { notifications: { warn } });
+
+    await expect(addSpellEffect({ name: "Broo", token: null, isOwner: false })).resolves.toBe(
+      false,
+    );
+    expect(warn).toHaveBeenCalledOnce();
+    expect(openAddSpellEffectDialog).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
   });
 });
