@@ -138,6 +138,41 @@ export function castsOnCasterOnly(targetKind: string, resistedBy: SpellResistedB
   return casterOnlyKinds.includes(targetKind) && resistedBy === SpellResistedByEnum.None;
 }
 
+const { None, ResistanceRoll, ResistanceRollArea, ResistanceRollPerTarget } = SpellResistedByEnum;
+const { SpiritCombatRound, SpiritCombatDefeat } = SpellResistedByEnum;
+const onlyNone: readonly SpellResistedByEnum[] = [None];
+const oneTarget: readonly SpellResistedByEnum[] = [None, ResistanceRoll, ResistanceRollPerTarget];
+const oneBeing: readonly SpellResistedByEnum[] = [
+  ...oneTarget,
+  SpiritCombatRound,
+  SpiritCombatDefeat,
+];
+const resistedByForTargetKind: Partial<Record<string, readonly SpellResistedByEnum[]>> = {
+  [SpellTargetKindEnum.Self]: onlyNone,
+  [SpellTargetKindEnum.Weapon]: onlyNone,
+  [SpellTargetKindEnum.SpellOrEffect]: onlyNone,
+  [SpellTargetKindEnum.Ritual]: onlyNone,
+  [SpellTargetKindEnum.Radius]: [None, ResistanceRollArea],
+  [SpellTargetKindEnum.Area]: [None, ResistanceRoll, ResistanceRollArea],
+  [SpellTargetKindEnum.Creates]: [None, SpiritCombatRound, SpiritCombatDefeat],
+  [SpellTargetKindEnum.Creature]: oneBeing,
+  [SpellTargetKindEnum.Spirit]: oneBeing,
+  [SpellTargetKindEnum.HitLocation]: oneTarget,
+  [SpellTargetKindEnum.Object]: oneTarget,
+};
+
+/**
+ * The Resisted By choices that make sense for a target kind; an unset or unknown kind allows all.
+ * A stored value outside the list is kept as the last choice, so the sheet doesn't change it.
+ */
+export function resistedByChoices(
+  targetKind: string,
+  current: SpellResistedByEnum,
+): SpellResistedByEnum[] {
+  const choices = [...(resistedByForTargetKind[targetKind] ?? Object.values(SpellResistedByEnum))];
+  return choices.includes(current) ? choices : [...choices, current];
+}
+
 // How much of #1079's application machinery a spell's effect goes through. Data on the spell, not
 // a code branch - most spells are not `behavior`. See #1079 for the mechanism behind each tier.
 export const SpellEffectTierEnum = {

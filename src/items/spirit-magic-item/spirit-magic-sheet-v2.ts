@@ -7,6 +7,7 @@ import {
   SpellResistedByEnum,
   SpellResistedWithEnum,
   isResistanceRoll,
+  resistedByChoices,
   SpellTargetKindEnum,
 } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
@@ -18,6 +19,7 @@ interface SpiritMagicSheetContext extends RqgItemSheetContext {
   durationOptions: SelectOptionData<SpellDurationEnum>[];
   concentrationOptions: SelectOptionData<SpellConcentrationEnum>[];
   resistedByOptions: SelectOptionData<SpellResistedByEnum>[];
+  showResistedBy: boolean;
   resistedWithOptions: SelectOptionData<SpellResistedWithEnum>[];
   showResistedWith: boolean;
   targetKindOptions: SelectOptionData<SpellTargetKindEnum>[];
@@ -57,6 +59,10 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
   override async _prepareContext(): Promise<SpiritMagicSheetContext> {
     const base = await super._prepareContext();
 
+    const resistedBy = resistedByChoices(
+      this.document.system.targetKind,
+      this.document.system.resistedBy,
+    );
     const context: SpiritMagicSheetContext = {
       ...base,
       rangeOptions: Object.values(SpellRangeEnum).map((range) => ({
@@ -71,7 +77,7 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
         value: range,
         label: "RQG.Item.Spell.ConcentrationEnum." + (range || "undefined"),
       })),
-      resistedByOptions: Object.values(SpellResistedByEnum).map((value) => ({
+      resistedByOptions: resistedBy.map((value) => ({
         value: value,
         label: "RQG.Item.Spell.ResistedByEnum." + value,
       })),
@@ -79,6 +85,7 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
         value: value,
         label: "RQG.Item.Spell.ResistedWithEnum." + value,
       })),
+      showResistedBy: resistedBy.some((value) => value !== SpellResistedByEnum.None),
       showResistedWith: isResistanceRoll(this.document.system.resistedBy),
       targetKindOptions: Object.values(SpellTargetKindEnum).map((value) => ({
         value: value,
