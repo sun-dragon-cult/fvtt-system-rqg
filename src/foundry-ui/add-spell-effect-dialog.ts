@@ -75,11 +75,11 @@ function moveSelection(form: HTMLFormElement, step: 1 | -1): void {
 }
 
 /**
- * Let the GM put a spell effect on a token without casting the spell, e.g. one cast off-screen.
+ * Put a spell effect on an actor without casting the spell, e.g. one cast off-screen.
  * Stacking, durations and the target's protective effects work as for a cast by someone else, or
  * by the target itself when "Cast by" is ticked.
  */
-export async function addSpellEffectFromHud(
+export async function openAddSpellEffectDialog(
   actor: RqgActor,
   targetName: string,
   targetToken?: TokenDocument,
@@ -151,7 +151,7 @@ export async function addSpellEffectFromHud(
     { levelUsed: Math.max(0, Math.trunc(Number(picked.level) || 0)) },
     {
       caster: picked.selfCast
-        ? { actorUuid: actor.uuid ?? "", tokenUuid: actor.token?.uuid ?? "" }
+        ? { actorUuid: actor.uuid ?? "", tokenUuid: (targetToken ?? actor.token)?.uuid ?? "" }
         : { actorUuid: "", tokenUuid: "" },
       castMessageId: "",
       casterSuccessLevel: undefined,
