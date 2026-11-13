@@ -13,6 +13,7 @@ const spell = {
 };
 const target = { name: "Harrek", allApplicableEffects: () => [reflection] } as any;
 const cast = {
+  spellRqid: "i.spirit-magic.befuddle",
   caster: { actorUuid: "Actor.c", tokenUuid: "Scene.s.Token.c" },
   castMessageId: "cast",
   level: 2,

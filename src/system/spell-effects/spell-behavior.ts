@@ -174,9 +174,22 @@ export function actsWhileActive(behavior: SpellBehavior | undefined): boolean {
   return !!behavior && actingHookNames.some((name) => !!behavior[name]);
 }
 
+/**
+ * Where a registration comes from: the language of the module's content, and its priority among
+ * registrations for the same rqid.
+ *
+ * @public since 6.2.0
+ */
 export type SpellBehaviorSource = { lang: string; priority: number };
 
-/** What modules get from the `rqg.registerSpellBehaviors` hook. */
+/**
+ * What modules get from the `rqg.registerSpellBehaviors` hook. The hook fires once, at `setup`, so
+ * behaviors registered later are never used. A registration replaces the whole behavior for its
+ * spell rqid: when several are registered for one rqid, the one chosen (see `pickRegistration`)
+ * is used as it is, not merged with the others.
+ *
+ * @public since 6.2.0
+ */
 export type SpellBehaviorRegistry = {
   register(spellRqid: string, behavior: SpellBehavior, source: SpellBehaviorSource): void;
 };

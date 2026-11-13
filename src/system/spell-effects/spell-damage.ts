@@ -11,6 +11,8 @@ import type { DamageResult } from "@actors/rqg-actor.ts";
  * Roll a spell's damage and the hit location it strikes, shown like an attack's, then deal it to
  * the target once the dice have landed. `armorPoints: 0` for damage armor doesn't stop; the
  * location's own armor counts when left out. Run as the GM when the target isn't the user's.
+ *
+ * @public since 6.2.0
  */
 export async function dealSpellDamage(
   scope: SpellApplyScope,
