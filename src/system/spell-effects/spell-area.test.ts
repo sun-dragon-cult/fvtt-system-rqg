@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { areaExtent, spellRangeInMeters } from "./spell-area";
-import { polygonAreaInMeters } from "./place-spell-area";
+import { cornerOutOfReach, polygonAreaInMeters } from "./place-spell-area";
 
 describe("spell areas", () => {
-  it("uses the standard casting range of the spell's magic (RBM p.4)", () => {
+  it("uses the standard casting range of the spell's magic (RBM p.6)", () => {
     expect(spellRangeInMeters({ type: "runeMagic" } as any)).toBe(160);
     expect(spellRangeInMeters({ type: "spiritMagic" } as any)).toBe(50);
   });
@@ -29,5 +29,23 @@ describe("spell areas", () => {
       37.16,
       2,
     );
+  });
+});
+
+describe("cornerOutOfReach", () => {
+  const point = { x: 0, y: 0 };
+  const yes = () => true;
+  const no = () => false;
+
+  it("accepts a corner in range and in sight", () => {
+    expect(cornerOutOfReach(point, yes, yes)).toBeUndefined();
+  });
+
+  it("rejects a corner the caster can't see, like a circle's or square's center (RBM p.6)", () => {
+    expect(cornerOutOfReach(point, yes, no)).toBe("RQG.SpellArea.OutOfSight");
+  });
+
+  it("names range first when a corner is both out of range and out of sight", () => {
+    expect(cornerOutOfReach(point, no, no)).toBe("RQG.SpellArea.OutOfRange");
   });
 });

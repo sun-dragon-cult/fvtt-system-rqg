@@ -14,8 +14,8 @@ export type PlacedAreaShape = Record<string, unknown>;
 
 /**
  * Let the caster place a spell's area on the canvas, snapped to the scene's grid. With a range,
- * the whole area must lie within it of the caster (RBM p.4), around a point the caster can see
- * (RBM p.6); a GM moves the Region afterwards for anywhere else. Without one it goes anywhere, as
+ * the whole area must lie within it of the caster, around a point the caster can see (RBM p.6);
+ * a GM moves the Region afterwards for anywhere else. Without one it goes anywhere, as
  * a ritual is held where its area is. Resolves to the Region shape, or undefined when cancelled.
  */
 export async function placeSpellArea(
@@ -41,7 +41,7 @@ export async function placeSpellArea(
   const ring = ranged ? drawReach(origin, reach, sight) : undefined;
   try {
     return shape.kind === "polygon"
-      ? await pickPolygon(shape.corners, shape.maxArea, inRange, spellName)
+      ? await pickPolygon(shape.corners, shape.maxArea, inRange, inSight, spellName)
       : await placeShape(shape, origin, inRange, inSight, spellName, ranged);
   } finally {
     if (ring && !ring.destroyed) {
@@ -52,7 +52,7 @@ export async function placeSpellArea(
 
 /**
  * What a spell cast from a token reaches: the origin, and whether a point is within range (the
- * whole area of `extentMeters` around it, RBM p.4) and in the caster's sight (RBM p.6). Without a
+ * whole area of `extentMeters` around it) and in the caster's sight (RBM p.6). Without a
  * range, anywhere is in reach.
  */
 export function spellReach(
@@ -255,15 +255,28 @@ export function coveragePreview(spellName: string): {
   };
 }
 
+/** The i18n key of why a polygon corner can't go at a point, if it can't. */
+export function cornerOutOfReach(
+  point: Point,
+  inRange: (point: Point) => boolean,
+  inSight: (point: Point) => boolean,
+): "RQG.SpellArea.OutOfRange" | "RQG.SpellArea.OutOfSight" | undefined {
+  if (!inRange(point)) {
+    return "RQG.SpellArea.OutOfRange";
+  }
+  return inSight(point) ? undefined : "RQG.SpellArea.OutOfSight";
+}
+
 /**
- * Click the corners of an area, like a ward's four wands, snapped to the grid. The area may not
- * exceed `maxArea` square meters. Right click takes back the last corner, or cancels with none;
+ * Click the corners of an area, like a ward's four wands, snapped to the grid, each within range
+ * and sight of the caster. The area may not exceed `maxArea` square meters. Right click takes back the last corner, or cancels with none;
  * Escape cancels.
  */
 function pickPolygon(
   corners: number,
   maxArea: number,
   inRange: (point: Point) => boolean,
+  inSight: (point: Point) => boolean,
   spellName: string,
 ): Promise<PlacedAreaShape | undefined> {
   const grid = canvas!.scene!.grid;
@@ -301,7 +314,7 @@ function pickPolygon(
     drawnAt = pointer;
     const shown = [...points, pointer];
     const area = polygonAreaInMeters(shown, grid);
-    const fits = area <= maxArea && shown.every(inRange);
+    const fits = area <= maxArea && shown.every((p) => !cornerOutOfReach(p, inRange, inSight));
     const color = fits ? 0x7fb3d5 : 0xcc3333;
     coverage.show(shown);
     outline.clear().lineStyle(2, color, 0.9);
@@ -348,8 +361,9 @@ function pickPolygon(
         return;
       }
       const point = snapped();
-      if (!inRange(point)) {
-        ui.notifications?.warn(localize("RQG.SpellArea.OutOfRange", { spellName }));
+      const outOfReach = cornerOutOfReach(point, inRange, inSight);
+      if (outOfReach) {
+        ui.notifications?.warn(localize(outOfReach, { spellName }));
         return;
       }
       const next = [...points, point];
