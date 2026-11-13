@@ -21,9 +21,11 @@ const effect = (
 ) => ({
   parent: parent,
   system: { spell: spellRqid ? { spellRqid } : null },
-  duration: { expired: false },
+  duration: { expired: false, remaining: 1 },
+  isTemporary: true,
   getFlag: (_scope: string, key: string) => flags[key],
   delete: vi.fn(async () => {}),
+  update: vi.fn(async () => {}),
 });
 
 describe("initSpellEnd", () => {
@@ -83,5 +85,34 @@ describe("initSpellEnd", () => {
     const bladesharp = effect("i.spirit-magic.bladesharp");
     await expire(bladesharp);
     expect(bladesharp.delete).not.toHaveBeenCalled();
+  });
+
+  describe("an effect re-enabled when its item is equipped again", () => {
+    const reenable = (e: ReturnType<typeof effect>) =>
+      handlers["updateActiveEffect"]!(e, { disabled: false });
+
+    it("expires a spell effect whose time ran out while it was suspended", async () => {
+      const bladesharp = effect("i.spirit-magic.bladesharp");
+      bladesharp.duration.remaining = -28;
+      await reenable(bladesharp);
+      expect(bladesharp.update).toHaveBeenCalledWith({ duration: { expired: true } });
+    });
+
+    it("keeps a spell effect with time left, or without a duration", async () => {
+      const bladesharp = effect("i.spirit-magic.bladesharp");
+      await reenable(bladesharp);
+      const permanent = { ...effect("i.rune-magic.enchant-iron"), isTemporary: false };
+      permanent.duration.remaining = -1;
+      await reenable(permanent);
+      expect(bladesharp.update).not.toHaveBeenCalled();
+      expect(permanent.update).not.toHaveBeenCalled();
+    });
+
+    it("leaves other effects to Foundry", async () => {
+      const other = effect(undefined);
+      other.duration.remaining = -28;
+      await reenable(other);
+      expect(other.update).not.toHaveBeenCalled();
+    });
   });
 });
