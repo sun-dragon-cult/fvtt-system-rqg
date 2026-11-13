@@ -13,7 +13,7 @@ async function isAdminAccessGateVisible(page: Page) {
   return (await adminHeading.count()) > 0 && (await adminPasswordInput.count()) > 0;
 }
 
-async function loginToSetupIfNeeded(page: Page, adminPassword: string | null) {
+export async function loginToSetupIfNeeded(page: Page, adminPassword: string | null) {
   if (!(await isAdminAccessGateVisible(page))) {
     return;
   }

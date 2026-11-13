@@ -74,6 +74,10 @@ E2E_WORLD_LOAD_TIMEOUT=120000
 
 `E2E_WORLD_LOAD_TIMEOUT` (ms, default 120000) is how long the specs wait for Foundry's pages and for `game.ready`. Raise it for a world with many modules or large compendiums. Specs call `waitForGameReady(page)` from `tests/e2e/utils/foundrySession.ts` rather than their own wait.
 
+To create the world on a running Foundry server, run `pnpm test:e2e:create-world`. It installs the `wiki-en-rqg` content module, creates the world with a password-less `Gamemaster` user, and imports `Vasana` plus one more adventurer. It is safe to re-run.
+
+Set `E2E_CHROMIUM_PATH` to use an already installed Chromium instead of Playwright's own download.
+
 World prerequisites:
 
 - The configured world must exist (`E2E_FOUNDRY_WORLD`).

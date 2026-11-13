@@ -10,6 +10,8 @@ export type E2EConfig = {
   rqgActorName: string;
   /** How long to wait for Foundry pages and the world to load, in ms. */
   worldLoadTimeoutMs: number;
+  /** Chromium binary to use instead of Playwright's own download. */
+  chromiumExecutablePath: string | undefined;
 };
 
 export async function getE2EConfig(): Promise<E2EConfig> {
@@ -33,6 +35,9 @@ export async function getE2EConfig(): Promise<E2EConfig> {
       ? timeoutSetting
       : DEFAULT_WORLD_LOAD_TIMEOUT_MS;
 
+  const chromiumExecutablePath =
+    process.env.E2E_CHROMIUM_PATH || localEnv["E2E_CHROMIUM_PATH"] || undefined;
+
   return {
     foundryWorld,
     GMUser,
@@ -40,5 +45,6 @@ export async function getE2EConfig(): Promise<E2EConfig> {
     foundryAdminPassword,
     rqgActorName,
     worldLoadTimeoutMs,
+    chromiumExecutablePath,
   };
 }
