@@ -173,16 +173,6 @@ export function resistedByChoices(
   return choices.includes(current) ? choices : [...choices, current];
 }
 
-// How much of #1079's application machinery a spell's effect goes through. Data on the spell, not
-// a code branch - most spells are not `behavior`. See #1079 for the mechanism behind each tier.
-export const SpellEffectTierEnum = {
-  None: "none", // nothing to automate (Truespeak, Divination, most rituals)
-  Reminder: "reminder", // GM-adjudicated effect worth tracking - chat note + duration only
-  Effect: "effect", // Active Effect from the effects pack (Bladesharp, Protection...)
-  Behavior: "behavior", // code a module registers as the spell's behavior (Sever Spirit, Heal Wound, summonings)
-} as const;
-export type SpellEffectTierEnum = (typeof SpellEffectTierEnum)[keyof typeof SpellEffectTierEnum];
-
 // Se core book p247
 export interface Spell {
   /** Learned strength */
@@ -199,8 +189,6 @@ export interface Spell {
   resistedWith: SpellResistedWithEnum;
   /** What the spell's effect attaches to (#1080) */
   targetKind: SpellTargetKindEnum;
-  /** How much of #1079's application machinery this spell's effect goes through */
-  effectTier: SpellEffectTierEnum;
   /** Not stopped by spell barriers such as Countermagic and Shield */
   passesSpellBarriers: boolean;
   descriptionRqidLink: RqidLink | undefined;

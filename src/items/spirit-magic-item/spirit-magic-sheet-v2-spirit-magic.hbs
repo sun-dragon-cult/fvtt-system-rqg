@@ -47,11 +47,6 @@
       </select>
     {{/if}}
 
-    <label for="effect-tier-{{id}}" class="mp">{{localize "RQG.Item.Spell.EffectTier"}}</label>
-    <select id="effect-tier-{{id}}" name="system.effectTier">
-      {{selectOptions effectTierOptions selected=system.effectTier localize=true}}
-    </select>
-
     <label for="passes-spell-barriers-{{id}}">{{localize "RQG.Item.Spell.PassesSpellBarriers"}}</label>
     <input type="checkbox" id="passes-spell-barriers-{{id}}" name="system.passesSpellBarriers" {{checked system.passesSpellBarriers}}>
 

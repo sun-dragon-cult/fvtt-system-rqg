@@ -1914,15 +1914,8 @@
           "creates": "Nothing - the spell creates something",
           "ritual": "A social/ritual state"
         },
-        "EffectTier": "Effect Tier",
         "PassesSpellBarriers": "Gets through Countermagic and Shield",
         "SpellEffect": "Spell Effect",
-        "EffectTierEnum": {
-          "none": "None - nothing to automate",
-          "reminder": "Reminder - an effect with no changes, it shows the spell is active",
-          "effect": "Effect - an effect that changes values",
-          "behavior": "Behavior - code registered by a module"
-        },
         "DurationEnum": {
           "undefined": "None",
           "instant": "Instant",
@@ -1979,10 +1972,6 @@
           "targetKind": {
             "label": "Target kind",
             "hint": "What the spell targets: for example a character, a weapon or an area."
-          },
-          "effectTier": {
-            "label": "Effect tier",
-            "hint": "How the system applies the spell effect: not at all, with an Active Effect, or with a macro."
           },
           "passesSpellBarriers": {
             "label": "Passes spell barriers",

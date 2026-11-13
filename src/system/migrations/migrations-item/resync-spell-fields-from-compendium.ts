@@ -1,6 +1,5 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import {
-  SpellEffectTierEnum,
   SpellResistedByEnum,
   SpellResistedWithEnum,
   SpellTargetKindEnum,
@@ -17,7 +16,6 @@ import {
 type SpellSurveyFields = {
   effectRqidLink?: { rqid?: string } | null;
   targetKind?: string;
-  effectTier?: string;
   resistedBy?: string;
   resistedWith?: string;
   passesSpellBarriers?: boolean;
@@ -63,7 +61,6 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
   const system = itemData.system as SpellSurveyFields;
   const needsLink = !isValidRqidString(system.effectRqidLink?.rqid);
   const needsTargetKind = system.targetKind === SpellTargetKindEnum.None;
-  const needsEffectTier = system.effectTier === SpellEffectTierEnum.None;
   const needsResistedBy = system.resistedBy === SpellResistedByEnum.None;
   const needsResistedWith = needsResistedBy && system.resistedWith === SpellResistedWithEnum.Power;
   const needsPassesSpellBarriers = !system.passesSpellBarriers;
@@ -73,7 +70,6 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
     !(
       needsLink ||
       needsTargetKind ||
-      needsEffectTier ||
       needsResistedBy ||
       needsResistedWith ||
       needsPassesSpellBarriers ||
@@ -106,11 +102,6 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
     needsTargetKind && firstSet((from) => from.targetKind, SpellTargetKindEnum.None);
   if (targetKind) {
     patch["targetKind"] = targetKind;
-  }
-  const effectTier =
-    needsEffectTier && firstSet((from) => from.effectTier, SpellEffectTierEnum.None);
-  if (effectTier) {
-    patch["effectTier"] = effectTier;
   }
   const resistedBy =
     needsResistedBy && firstSet((from) => from.resistedBy, SpellResistedByEnum.None);
