@@ -27,14 +27,15 @@ function isOnSplitOffMissile(effect: ActiveEffect): boolean {
 
 /**
  * Foundry only tracks the expiry of active effects, so a spell effect suspended while its item was
- * unequipped (RBM p.6: the duration runs anyway) can come back after its time is up.
+ * unequipped (RBM p.6: the duration runs anyway) can come back after its time is up. Same rule as
+ * Foundry's registry on a time advance, so an effect ending at a combat turn still waits for it.
  */
-function isOverdueOnReenable(effect: ActiveEffect, changed: any): boolean {
+function isOverdueOnReenable(effect: ActiveEffect, changed: { disabled?: unknown }): boolean {
   return (
     changed.disabled === false &&
     !effect.duration.expired &&
-    effect.isTemporary &&
-    effect.duration.remaining <= 0
+    effect.duration.remaining <= 0 &&
+    effect.isExpiryEvent("updateWorldTime", {})
   );
 }
 

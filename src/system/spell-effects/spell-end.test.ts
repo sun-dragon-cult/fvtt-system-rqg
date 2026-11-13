@@ -22,7 +22,7 @@ const effect = (
   parent: parent,
   system: { spell: spellRqid ? { spellRqid } : null },
   duration: { expired: false, remaining: 1 },
-  isTemporary: true,
+  isExpiryEvent: vi.fn(() => true),
   getFlag: (_scope: string, key: string) => flags[key],
   delete: vi.fn(async () => {}),
   update: vi.fn(async () => {}),
@@ -98,14 +98,32 @@ describe("initSpellEnd", () => {
       expect(bladesharp.update).toHaveBeenCalledWith({ duration: { expired: true } });
     });
 
-    it("keeps a spell effect with time left, or without a duration", async () => {
+    it("expires one whose time ends exactly now", async () => {
+      const bladesharp = effect("i.spirit-magic.bladesharp");
+      bladesharp.duration.remaining = 0;
+      await reenable(bladesharp);
+      expect(bladesharp.update).toHaveBeenCalledOnce();
+    });
+
+    it("keeps a spell effect with time left", async () => {
       const bladesharp = effect("i.spirit-magic.bladesharp");
       await reenable(bladesharp);
-      const permanent = { ...effect("i.rune-magic.enchant-iron"), isTemporary: false };
-      permanent.duration.remaining = -1;
-      await reenable(permanent);
       expect(bladesharp.update).not.toHaveBeenCalled();
+    });
+
+    it("keeps a spell effect without a duration", async () => {
+      const permanent = effect("i.rune-magic.enchant-iron");
+      permanent.duration.remaining = Infinity;
+      await reenable(permanent);
       expect(permanent.update).not.toHaveBeenCalled();
+    });
+
+    it("leaves one ending at a combat event to Foundry", async () => {
+      const bladesharp = effect("i.spirit-magic.bladesharp");
+      bladesharp.duration.remaining = 0;
+      bladesharp.isExpiryEvent.mockReturnValue(false);
+      await reenable(bladesharp);
+      expect(bladesharp.update).not.toHaveBeenCalled();
     });
 
     it("leaves other effects to Foundry", async () => {
