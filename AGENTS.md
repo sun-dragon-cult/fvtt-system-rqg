@@ -26,7 +26,11 @@ The `fvtt-system-rqg` cloud environment installs dependencies, builds `dist`, wr
 2. `foundry-activate <license key>` — ask the user for the key; it also signs the EULA, which the owner has agreed to.
 3. `foundry-start` — (re)start the server.
 
-Then run `pnpm test:e2e:create-world` and `pnpm test:e2e --trace off`. A plain `pnpm install` fails there on the `codeload.github.com` tarballs; the environment setup script installs those packages via git with temporary `overrides`, so reuse that approach if dependencies change.
+Then run `pnpm test:e2e:create-world` and `pnpm test:e2e --trace off`. After changing `src/`, run `pnpm build:system` (or `pnpm build` if packs changed) before `pnpm test:e2e`; Foundry serves the system from `dist` and each test reloads the world, so no restart is needed.
+
+Don't use `pnpm foundry` or `pnpm dev` there: `pnpm foundry` runs Foundry on the container's Node 22 (Foundry v14 exits on Node < 24) without `NODE_USE_ENV_PROXY=1` (license signing and package installs need the proxy) and blocks the terminal, and `pnpm dev`'s hot-reload server on port 30001 is for a person watching the game, while Playwright talks to Foundry on 30014 directly.
+
+A plain `pnpm install` fails there on the `codeload.github.com` tarballs; the environment setup script installs those packages via git with temporary `overrides`, so reuse that approach if dependencies change.
 
 ## Default Engineering Rules
 
