@@ -12,7 +12,8 @@ import type { AttackHookData } from "../../rolls/roll-method-options";
 const logger = new RqgLogger("SpelledProjectile");
 
 // Speedart, Multimissile, Firearrow and the like are cast on one missile and used up when it is
-// fired (RBM p.114, p.117, p.119), so the enchanted missile is split off its stack.
+// fired (RBM p.114, p.117, p.119), so the enchanted missile is split off its stack. A thrown
+// weapon is the missile itself, so its spells are used up when it is thrown.
 
 /** The projectile a launcher (e.g. a bow) fires. Thrown weapons are their own projectile. */
 export function getLoadedProjectile(launcher: WeaponItem): WeaponItem | undefined {
@@ -62,11 +63,11 @@ export async function splitOffProjectile(item: WeaponItem): Promise<WeaponItem> 
   data.effects = (data.effects ?? []).filter((effect: any) => !effect.system?.spell);
   foundry.utils.setProperty(data, `flags.${systemId}.${splitFromProjectileIdFlag}`, item.id);
 
-  await item.update({ system: { quantity: item.system.quantity - 1 } });
   const [created] = (await actor.createEmbeddedDocuments("Item", [data])) ?? [];
   if (!created) {
     return item;
   }
+  await item.update({ system: { quantity: item.system.quantity - 1 } });
   await reloadLaunchers(actor, item.id ?? "", created.id ?? "");
   return created as WeaponItem;
 }
@@ -147,7 +148,7 @@ export function initSpelledProjectiles(): void {
     const projectile = attack.projectile;
     if (projectile) {
       const spent = runMissileFiredEntries(weapon, projectile, attack)
-        .then(() => (projectile !== weapon ? spendProjectileSpells(projectile) : undefined))
+        .then(() => spendProjectileSpells(projectile))
         .catch((error: unknown) =>
           logger.error(ERR.projectileSpellsNotSpent, { projectile: projectile.uuid }, error),
         );
