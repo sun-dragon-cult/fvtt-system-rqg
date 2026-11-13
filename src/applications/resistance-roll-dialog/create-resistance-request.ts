@@ -51,6 +51,7 @@ export type CreateResistanceRequestParams = {
         castRoll: SpellCastRoll;
         casterTokenOrActorUuid: string;
         spellUuid: string;
+        spellRqid: string;
       }
     | undefined;
   /** A hidden cast's whispered spellCast message, whose outcome this card settles. */
@@ -62,7 +63,7 @@ export type CreateResistanceRequestParams = {
   /** The entry of the cast record this card answers for. */
   entryId?: string | undefined;
   /** The cast record, when this is the combined card of an open single-target cast. */
-  record?: Omit<SpellCastRecord, "spellUuid"> | undefined;
+  record?: Omit<SpellCastRecord, "spellUuid" | "spellRqid"> | undefined;
   /** Not answerable yet: the combined card waits for the target's protective spells first. */
   waiting?: boolean | undefined;
 };
@@ -138,6 +139,7 @@ export async function createResistanceRequest(
     // attack. "" on a standalone request, which has no spell to hide.
     castFlavor: spellCast ? spellCast.castRoll.flavor : (params.castFlavor ?? ""),
     spellUuid: spellCast ? spellCast.spellUuid : "",
+    spellRqid: spellCast ? spellCast.spellRqid : "",
     spellCastMessageId: params.spellCastMessageId ?? "",
     reflectedFromMessageId: params.reflectedFrom?.messageId ?? "",
     reflectedByName: params.reflectedFrom?.reflectorName ?? "",

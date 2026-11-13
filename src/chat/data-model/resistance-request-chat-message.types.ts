@@ -46,6 +46,8 @@ export interface ResistanceRequestDataSourceData {
   spellHiddenFromUuid: string;
   /** The spell cast on a combined card; "" otherwise. */
   spellUuid: string;
+  /** Its rqid, to find the spell once its item is gone; "" otherwise. */
+  spellRqid: string;
   /** A hidden cast's whispered spellCast message, whose outcome this card settles; "" otherwise. */
   spellCastMessageId: string;
   /** The request whose target reflected this spell back at its caster; "" when not reflected. */
@@ -71,7 +73,9 @@ export interface ResistanceRequestDataSourceData {
 }
 
 export interface ResistanceRequestDataPropertiesData
-  extends ResistanceRequestDataSourceData, Partial<Omit<SpellCastRecord, "spellUuid">> {
+  extends
+    ResistanceRequestDataSourceData,
+    Partial<Omit<SpellCastRecord, "spellUuid" | "spellRqid">> {
   /** The entry of the cast record this card answers for; "" on a request that isn't a spell's. */
   entryId?: string;
 }

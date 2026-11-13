@@ -96,6 +96,7 @@ const resistanceRequestChatMessageSchema = {
   castFlavor: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
   // The spell cast on a combined card, for getSpellCastOutcome.
   spellUuid: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
+  spellRqid: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
   // A hidden cast's whispered spellCast message, whose outcome this anonymous card settles.
   spellCastMessageId: new StringField({
     blank: true,

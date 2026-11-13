@@ -15,6 +15,7 @@ import {
   type SpellCastRecord,
 } from "../../data-model/shared/spell-cast-record";
 import { actorRefUuid } from "../../data-model/shared/actor-ref";
+import { Rqid } from "../api/rqid-api";
 import { SpellResistedWithEnum } from "../../data-model/item-data/spell";
 import type { ResistanceRequestChatMessage } from "../../chat/data-model/resistance-request-chat-message.types.ts";
 import { spellApplyScope, spellEffectCast, type SpellEffectCast } from "./apply-spell-effect";
@@ -82,7 +83,30 @@ function runQueued(data: ContinueSpellCastData): Promise<void> {
   return next;
 }
 
-const recordKeys = ["spellUuid", ...Object.keys(spellCastRecordFields())];
+const spellsByRqid = new Map<string, Promise<RqgItem | undefined>>();
+
+/**
+ * The spell a cast record names: its item, or by its rqid once the item is gone, e.g. with the
+ * unlinked token that cast it. A hidden cast's anonymous request names neither.
+ */
+export async function castSpellOf(names: {
+  spellUuid?: string | undefined;
+  spellRqid?: string | undefined;
+}): Promise<RqgItem | undefined> {
+  const spell = names.spellUuid ? ((await fromUuid(names.spellUuid)) as RqgItem | null) : null;
+  if (spell || !names.spellRqid) {
+    return spell ?? undefined;
+  }
+  // Cached, since every render of the card would otherwise search the compendiums again
+  let found = spellsByRqid.get(names.spellRqid);
+  if (!found) {
+    found = Rqid.fromRqid(names.spellRqid, undefined, true) as Promise<RqgItem | undefined>;
+    spellsByRqid.set(names.spellRqid, found);
+  }
+  return await found;
+}
+
+const recordKeys = ["spellUuid", "spellRqid", ...Object.keys(spellCastRecordFields())];
 
 /** A copy of the cast record a message holds, safe to change. */
 function recordOf(message: RecordMessage): SpellCastRecord {
@@ -147,7 +171,7 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
   if (isLateAnswer(record, data) || (!data.inputs.length && record.targets.every(isEntryDone))) {
     return;
   }
-  const spell = (await fromUuid(record.spellUuid)) as RqgItem | null;
+  const spell = await castSpellOf(record);
   // Dynamic imports to avoid a circular dependency through rqgItem.ts.
   const [{ requestSpellResistance }, { resolveCharacteristicValue }] = await Promise.all([
     import("../../data-model/shared/spell-resisted-by"),
@@ -217,6 +241,7 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
                 castRoll: castRoll,
                 casterTokenOrActorUuid: actorRefUuid(record.caster),
                 spellUuid: record.spellUuid,
+                spellRqid: record.spellRqid,
               }
             : undefined,
         reflectedFrom: reflectedFrom

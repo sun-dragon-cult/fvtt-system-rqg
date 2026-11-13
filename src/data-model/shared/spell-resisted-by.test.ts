@@ -323,6 +323,7 @@ describe("postSpellCastResult", () => {
       casterActor: casterActor,
       casterToken: casterToken,
       spellUuid: "Actor.caster.Item.spell",
+      spellRqid: "i.spirit-magic.demoralize",
       ...overrides,
     } as any);
     return castRoll;
@@ -347,7 +348,11 @@ describe("postSpellCastResult", () => {
       frozenValue: 15,
       rollMode: "public",
       waiting: true,
-      spellCast: { casterTokenOrActorUuid: "Scene.s.Token.caster" },
+      spellCast: {
+        casterTokenOrActorUuid: "Scene.s.Token.caster",
+        spellUuid: "Actor.caster.Item.spell",
+        spellRqid: "i.spirit-magic.demoralize",
+      },
     });
     expect(request.record).toMatchObject({
       caster: { actorUuid: "Actor.caster", tokenUuid: "Scene.s.Token.caster" },
@@ -360,6 +365,10 @@ describe("postSpellCastResult", () => {
   it("posts a spellCast record for a failed cast, every target settled, and continues it", async () => {
     const castRoll = await post({ castRoll: fakeCastRoll("public", 4) });
 
+    expect(postedRecord(castRoll)).toMatchObject({
+      spellUuid: "Actor.caster.Item.spell",
+      spellRqid: "i.spirit-magic.demoralize",
+    });
     expect(postedRecord(castRoll).targets).toEqual([
       expect.objectContaining({ stage: "failed", state: "unaffected", resolvedBy: "castFailed" }),
     ]);

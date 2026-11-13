@@ -13,6 +13,7 @@ const { Success, Failure } = AbilitySuccessLevelEnum;
 function record(resistedBy: SpellResistedByEnum, targets = [target("a")]): SpellCastRecord {
   return {
     spellUuid: "Actor.c.Item.s",
+    spellRqid: "i.spirit-magic.befuddle",
     caster: { actorUuid: "Actor.c", tokenUuid: "Scene.s.Token.c" },
     casterPower: 15,
     castSuccessLevel: Success,

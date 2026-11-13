@@ -159,9 +159,10 @@ export async function postSpellCastResult(params: {
   casterActor: RqgActor;
   casterToken: TokenDocument | null | undefined;
   spellUuid: string;
+  spellRqid: string;
 }): Promise<void> {
-  const { target, resistedBy, resistedWith, castRoll, casterActor, casterToken, spellUuid } =
-    params;
+  const { target, resistedBy, resistedWith, castRoll, casterActor, casterToken } = params;
+  const { spellUuid, spellRqid } = params;
   // Only a GM can hide a cast; a player's always posts a card the whole table can follow.
   const castRollMode = canChooseSpellCastRollMode()
     ? (castRoll.options.rollMode ?? getDefaultRollMode())
@@ -191,6 +192,7 @@ export async function postSpellCastResult(params: {
       : null;
   const record: SpellCastRecord = {
     spellUuid: spellUuid,
+    spellRqid: spellRqid,
     caster: caster,
     casterPower: casterPower,
     castSuccessLevel: castRoll.successLevel ?? null,
@@ -212,7 +214,7 @@ export async function postSpellCastResult(params: {
     resistedBy === SpellResistedByEnum.ResistanceRoll &&
     !!only?.actorUuid &&
     !only.isCaster;
-  const { spellUuid: _spellUuid, ...recordFields } = record;
+  const { spellUuid: _spellUuid, spellRqid: _spellRqid, ...recordFields } = record;
   const message = combined
     ? await requestSpellResistance({
         targetUuid: actorRefUuid(only),
@@ -227,6 +229,7 @@ export async function postSpellCastResult(params: {
           castRoll,
           casterTokenOrActorUuid: actorRefUuid(caster),
           spellUuid,
+          spellRqid,
         },
       })
     : await castRoll.postToChat({

@@ -219,6 +219,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       casterActor: casterActor,
       casterToken: options.token,
       spellUuid: item.uuid ?? "",
+      spellRqid: item.flags?.rqg?.documentRqidFlags?.id ?? "",
     });
 
     await casterActor.drawMagicPoints(
