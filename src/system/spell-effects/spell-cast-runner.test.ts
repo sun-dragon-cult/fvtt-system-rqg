@@ -26,15 +26,14 @@ describe("castSpellOf", () => {
     expect(fromRqid).not.toHaveBeenCalled();
   });
 
-  it("finds the spell by its rqid once its item is gone, and looks it up only once", async () => {
+  it("finds the spell by its rqid once its item is gone", async () => {
     const fromRqid = stub();
     const names = {
       spellUuid: "Scene.s.Token.gone.Actor.a.Item.s",
       spellRqid: "i.spirit-magic.demoralize",
     };
     expect(await castSpellOf(names)).toBe(compendiumCopy);
-    expect(await castSpellOf(names)).toBe(compendiumCopy);
-    expect(fromRqid).toHaveBeenCalledOnce();
+    expect(fromRqid).toHaveBeenCalledWith("i.spirit-magic.demoralize", undefined, true);
   });
 
   it("finds nothing for a hidden cast's request, or a gone spell without an rqid", async () => {

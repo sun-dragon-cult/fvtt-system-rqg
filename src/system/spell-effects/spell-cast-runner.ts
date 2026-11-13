@@ -83,8 +83,6 @@ function runQueued(data: ContinueSpellCastData): Promise<void> {
   return next;
 }
 
-const spellsByRqid = new Map<string, Promise<RqgItem | undefined>>();
-
 /**
  * The spell a cast record names: its item, or by its rqid once the item is gone, e.g. with the
  * unlinked token that cast it. A hidden cast's anonymous request names neither.
@@ -97,13 +95,7 @@ export async function castSpellOf(names: {
   if (spell || !names.spellRqid) {
     return spell ?? undefined;
   }
-  // Cached, since every render of the card would otherwise search the compendiums again
-  let found = spellsByRqid.get(names.spellRqid);
-  if (!found) {
-    found = Rqid.fromRqid(names.spellRqid, undefined, true) as Promise<RqgItem | undefined>;
-    spellsByRqid.set(names.spellRqid, found);
-  }
-  return await found;
+  return (await Rqid.fromRqid(names.spellRqid, undefined, true)) as RqgItem | undefined;
 }
 
 const recordKeys = ["spellUuid", "spellRqid", ...Object.keys(spellCastRecordFields())];
