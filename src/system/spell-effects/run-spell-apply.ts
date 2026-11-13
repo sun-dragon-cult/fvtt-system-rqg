@@ -50,7 +50,8 @@ type RqgQuery =
 
 /**
  * Run one of the system's queries on the active GM's client, for what players may not do. Warns,
- * naming the spell, when no GM is logged in or the query fails.
+ * naming the spell, when no GM is logged in, the user may not query other users, or the query
+ * fails.
  */
 export async function queryActiveGm<Q extends RqgQuery>(
   name: Q,
@@ -61,11 +62,19 @@ export async function queryActiveGm<Q extends RqgQuery>(
   if (!hasActiveGm(spellName) || !gm) {
     return undefined;
   }
-  const needsGm = localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName });
+  if (!game.user?.can("QUERY_USER")) {
+    ui.notifications?.warn(
+      localize("RQG.ChatMessage.SpellCast.QueryNotPermitted", {
+        spellName,
+        permission: game.i18n?.localize(CONST.USER_PERMISSIONS.QUERY_USER.label) ?? "",
+      }),
+    );
+    return undefined;
+  }
   try {
     return (await gm.query(name, data as any)) as Awaited<ReturnType<CONFIG.Queries[Q]>>;
   } catch (error) {
-    logger.warn(needsGm, undefined, error);
+    logger.warn(localize("RQG.ChatMessage.SpellCast.QueryFailed", { spellName }), undefined, error);
     return undefined;
   }
 }
