@@ -67,6 +67,11 @@ export function createRqgApi() {
       moveTokenNear,
       applyAreaEffect,
       metersToPixels,
+      /**
+       * Post `count` magic missiles for the missile fired in `scope` (`onMissileFired`).
+       *
+       * @public since 6.2.0
+       */
       postMagicMissiles: (scope: MissileFiredScope, count: number) =>
         postAttackMagicMissiles(scope.attack.chatMessage, count),
     },

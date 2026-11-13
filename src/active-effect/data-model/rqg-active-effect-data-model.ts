@@ -4,7 +4,11 @@ import { actorRefField } from "../../data-model/shared/actor-ref";
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
-/** What was cast, by whom and how strongly - on spell effects and on spell areas. */
+/**
+ * What was cast, by whom and how strongly - on spell effects and on spell areas.
+ *
+ * @public since 6.2.0
+ */
 export function spellProvenanceFields() {
   return {
     spellRqid: new StringField({ blank: true, nullable: false, initial: "" }),

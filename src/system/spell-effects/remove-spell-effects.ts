@@ -25,6 +25,8 @@ export function matchesSpellEffectRemovalFilter(
  * Remove the spell effects on an actor and its items that match the filter, one delete per parent
  * document. Only effects a cast created (they carry `system.spell`) are touched. Run on a client that
  * owns the target. Returns the removed effects.
+ *
+ * @public since 6.2.0
  */
 export async function removeSpellEffects(
   targetActor: RqgActor,

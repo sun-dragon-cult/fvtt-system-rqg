@@ -9,7 +9,11 @@ export function metersPerSceneUnit(units: string | undefined): number {
   return 1;
 }
 
-/** Canvas pixels for a distance in meters on a scene, by its grid scale. */
+/**
+ * Canvas pixels for a distance in meters on a scene, by its grid scale.
+ *
+ * @public since 6.2.0
+ */
 export function metersToPixels(
   meters: number,
   grid: { size: number; distance: number; units?: string },

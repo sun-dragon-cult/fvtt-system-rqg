@@ -7,6 +7,8 @@ type SpellProvenance = { level?: number; runePointsSpent?: number };
 /**
  * A cast's points against defences: magic points as they are, Rune points double, so a 1-point
  * Rune spell boosted with 5 magic points is a 7-point spell (RBM Q&A on Heal Wound).
+ *
+ * @public since 6.2.0
  */
 export function castPoints(cast: SpentPoints): number {
   return (cast.magicPointsSpent ?? 0) + 2 * (cast.runePointsSpent ?? 0);
@@ -16,6 +18,8 @@ export function castPoints(cast: SpentPoints): number {
  * Dispel Magic points needed to remove a spell effect: 1 per point of spirit magic, 2 per Rune
  * point, boosts not counted (RBM p.112). Spells that count in Dismiss Magic points (RBM p.44)
  * double their own budget instead.
+ *
+ * @public since 6.2.0
  */
 export function effectRemovalCost(effect: { system?: unknown }): number {
   const spell = (effect.system as { spell?: SpellProvenance | null } | undefined)?.spell;
@@ -23,7 +27,11 @@ export function effectRemovalCost(effect: { system?: unknown }): number {
   return (spell?.runePointsSpent ?? 0) > 0 ? level * 2 : level;
 }
 
-/** The spell effects on an actor and its items that haven't expired. */
+/**
+ * The spell effects on an actor and its items that haven't expired.
+ *
+ * @public since 6.2.0
+ */
 export function listSpellEffects(actor: RqgActor): ActiveEffect[] {
   const parents: (RqgActor | RqgItem)[] = [actor, ...(actor.items.contents as RqgItem[])];
   return parents.flatMap((parent) =>

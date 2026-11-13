@@ -109,19 +109,6 @@
       "title": "Target kind",
       "description": "What the spell targets: for example a character, a weapon or an area."
     },
-    "effectTier": {
-      "type": "string",
-      "enum": [
-        "none",
-        "reminder",
-        "effect",
-        "behavior"
-      ],
-      "minLength": 1,
-      "default": "none",
-      "title": "Effect tier",
-      "description": "How the system applies the spell effect: not at all, with an Active Effect, or with a macro."
-    },
     "passesSpellBarriers": {
       "type": "boolean",
       "default": false,
@@ -237,7 +224,6 @@
     "resistedBy",
     "resistedWith",
     "targetKind",
-    "effectTier",
     "passesSpellBarriers",
     "cultId",
     "runeRqidLinks",
