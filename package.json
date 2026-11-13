@@ -42,6 +42,7 @@
     "test:watch": "vitest",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:create-world": "tsx tests/e2e/setup/create-world.ts",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:ui": "playwright test --ui",
     "tsgo": "tsgo",

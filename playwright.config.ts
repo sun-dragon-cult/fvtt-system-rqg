@@ -1,10 +1,12 @@
 /// <reference types="node" />
 import { defineConfig, devices } from "@playwright/test";
 import { getFoundryBaseURL } from "./tests/e2e/utils/foundryRuntime.ts";
+import { getE2EConfig } from "./tests/e2e/utils/e2eConfig.ts";
 import process from "node:process";
 
 export default (async () => {
   const FOUNDRY_BASE_URL = await getFoundryBaseURL();
+  const { chromiumExecutablePath } = await getE2EConfig();
 
   return defineConfig({
     testDir: "./tests/e2e",
@@ -25,6 +27,7 @@ export default (async () => {
         use: {
           ...devices["Desktop Chrome"],
           viewport: { width: 1400, height: 800 },
+          launchOptions: { executablePath: chromiumExecutablePath },
         },
       },
     ],

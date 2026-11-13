@@ -18,6 +18,18 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 - RQG rules formulas/thresholds: when implementing or verifying a game mechanic, cite the specific page and book of the actual rulebook (e.g. "Core p.144" or "RBM p.107") rather than relying on memory. Core = *RuneQuest: Roleplaying in Glorantha* (2nd printing); RBM = *Red Book of Magic* (supersedes Core on magic rules where the two disagree).
 - Only Foundry v14 is currently run for dev and testing. The build scripts still carry multi-version plumbing (`pnpm dev 13` / `pnpm foundry 13`, the `3001X → vX` port convention, `FOUNDRY_V13_*` in `.env.example`) — keep it: it's unused now but makes standing up v15 side-by-side easy when it ships. Treat v14 as the implementation target unless explicitly told otherwise.
 
+## E2E in Claude Code cloud sessions
+
+The `fvtt-system-rqg` cloud environment installs dependencies, builds `dist`, writes `.env.local`, makes Node 24 the default `node` (Foundry v14 needs it; the image ships Node 22), and provides two helpers for a container-local Foundry v14 on port 30014 (data in `/opt/foundry/v14`):
+
+1. `foundry-install <timed Node.js download URL>` — ask the user for the URL (it expires within minutes); installs Foundry and links `dist` as the `rqg` system.
+2. Start Foundry with `pnpm foundry`, run in the background; wait until `http://localhost:30014` answers.
+3. `foundry-activate <license key>` — ask the user for the key; it also signs the EULA, which the owner has agreed to.
+
+Then run `pnpm test:e2e:create-world` and `pnpm test:e2e --trace off`. After changing `src/`, run `pnpm build:system` (or `pnpm build` if packs changed) before `pnpm test:e2e`; Foundry serves the system from `dist` and each test reloads the world, so no restart is needed. `pnpm dev` isn't needed there: its hot-reload server on port 30001 is for a person watching the game, while Playwright talks to Foundry on 30014 directly.
+
+A plain `pnpm install` fails there on the `codeload.github.com` tarballs; the environment setup script installs those packages via git with temporary `overrides`, so reuse that approach if dependencies change.
+
 ## Default Engineering Rules
 
 1. Keep changes minimal and scoped to the request.
