@@ -79,6 +79,9 @@ async function main() {
   const child = spawn("node", [mainJs, `--dataPath=${dataPath}`, `--port=${port}`], {
     stdio: "inherit",
     cwd: appDir,
+    // Node's fetch ignores HTTPS_PROXY unless this is set; Foundry needs it for license
+    // signing and package installs behind a proxy.
+    env: { NODE_USE_ENV_PROXY: "1", ...process.env },
   });
 
   child.on("exit", (code) => {
