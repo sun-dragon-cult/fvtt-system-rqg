@@ -26,6 +26,20 @@ function isOnSplitOffMissile(effect: ActiveEffect): boolean {
 }
 
 /**
+ * Foundry only tracks the expiry of active effects, so a spell effect suspended while its item was
+ * unequipped (RBM p.6: the duration runs anyway) can come back after its time is up. Same rule as
+ * Foundry's registry on a time advance, so an effect ending at a combat turn still waits for it.
+ */
+function isOverdueOnReenable(effect: ActiveEffect, changed: { disabled?: unknown }): boolean {
+  return (
+    changed.disabled === false &&
+    !effect.duration.expired &&
+    effect.duration.remaining <= 0 &&
+    effect.isExpiryEvent("updateWorldTime", {})
+  );
+}
+
+/**
  * End a spell effect once when it expires or is deleted (e.g. by Dispel Magic): run its spell's
  * `onEnd` and remove the token it summoned. An expired spell effect is then deleted, which doesn't
  * end it again. Runs on the active GM's client, which marks expiry.
@@ -38,6 +52,8 @@ export function initSpellEnd(): void {
       if (spellRqidOfEffect(effect) && !areaDeleted && !isOnSplitOffMissile(effect)) {
         await effect.delete();
       }
+    } else if (isOverdueOnReenable(effect, changed) && needsEnding(effect)) {
+      await effect.update({ duration: { expired: true } });
     }
   });
   Hooks.on("deleteActiveEffect", (effect: ActiveEffect) => {
