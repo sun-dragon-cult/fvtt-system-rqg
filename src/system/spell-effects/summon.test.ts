@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nearestFreeCell, summonedTokenCells, tokenCell } from "./token-cells";
+import { summonedFolder } from "./summon";
 
 describe("nearestFreeCell", () => {
   const caster = { col: 5, row: 5, w: 1, h: 1 };
@@ -76,5 +77,67 @@ describe("summonedTokenCells", () => {
 
   it("is exact on a gridless scene", () => {
     expect(summonedTokenCells(large, 1, true)).toBeCloseTo(Math.sqrt(10));
+  });
+});
+
+describe("summonedFolder", () => {
+  const originalFolders = game.folders;
+  // the shared i18n mock formats a key with no placeholders like this
+  const localizedName = "RQG.ChatMessage.SpellCast.Summon.Folder + ";
+  let create: ReturnType<typeof vi.fn>;
+
+  function folder(name: string, type: string, flags: Record<string, unknown> = {}): any {
+    const result: any = {
+      name,
+      type,
+      flags: { rqg: { ...flags } },
+      getFlag: (scope: string, key: string) => result.flags[scope]?.[key],
+      setFlag: vi.fn(async (scope: string, key: string, value: unknown) => {
+        result.flags[scope][key] = value;
+      }),
+    };
+    return result;
+  }
+
+  function withFolders(folders: any[]): void {
+    (game as any).folders = { filter: (fn: (f: any) => boolean) => folders.filter(fn) };
+  }
+
+  beforeEach(() => {
+    create = vi.fn(async (data: any) => data);
+    vi.stubGlobal("Folder", { implementation: { create } });
+  });
+  afterEach(() => {
+    (game as any).folders = originalFolders;
+    vi.unstubAllGlobals();
+  });
+
+  it("finds the flagged folder whatever its name, so a new world language makes no second one", async () => {
+    const flagged = folder("Beschworen", "Actor", { summonedFolder: true });
+    withFolders([folder(localizedName, "Actor"), flagged]);
+
+    expect(await summonedFolder()).toBe(flagged);
+    expect(create).not.toHaveBeenCalled();
+  });
+
+  it("flags a folder made before the flag, found by its localized name", async () => {
+    const old = folder(localizedName, "Actor");
+    withFolders([folder(localizedName, "Item"), old]);
+
+    expect(await summonedFolder()).toBe(old);
+    expect(old.setFlag).toHaveBeenCalledWith("rqg", "summonedFolder", true);
+    expect(create).not.toHaveBeenCalled();
+  });
+
+  it("creates a flagged Actor folder when there is none", async () => {
+    withFolders([]);
+
+    await summonedFolder();
+
+    expect(create).toHaveBeenCalledWith({
+      name: localizedName,
+      type: "Actor",
+      flags: { rqg: { summonedFolder: true } },
+    });
   });
 });

@@ -24,10 +24,28 @@ import type { RqgItem } from "@items/rqg-item.ts";
 
 type Point = { x: number; y: number };
 
-async function summonedFolder(): Promise<Folder | undefined> {
+/**
+ * The Actor folder summoned actors are imported into, found by its flag so that renaming it or
+ * changing the world's language doesn't make another. A folder made before it had the flag is
+ * recognized by its localized name and given the flag.
+ */
+export async function summonedFolder(): Promise<Folder | undefined> {
+  const actorFolders = game.folders?.filter((folder) => folder.type === "Actor") ?? [];
+  const flagged = actorFolders.find((folder) => folder.getFlag(systemId, "summonedFolder"));
+  if (flagged) {
+    return flagged;
+  }
   const name = localize("RQG.ChatMessage.SpellCast.Summon.Folder");
-  const existing = game.folders?.find((folder) => folder.type === "Actor" && folder.name === name);
-  return existing ?? (await Folder.implementation.create({ name: name, type: "Actor" }));
+  const unflagged = actorFolders.find((folder) => folder.name === name);
+  if (unflagged) {
+    await unflagged.setFlag(systemId, "summonedFolder", true);
+    return unflagged;
+  }
+  return Folder.implementation.create({
+    name: name,
+    type: "Actor",
+    flags: { [systemId]: { summonedFolder: true } },
+  });
 }
 
 /** The world copy of the actor, imported from its compendium the first time it's summoned. */
@@ -56,7 +74,7 @@ export type SummonOptions = {
   /** How long the summoning lasts, the scope's Temporal duration by default. */
   duration?: SpellEffectDuration;
   /**
-   * The body's footprint in meters, e.g. 1x3 for a medium elemental (RBM p.90). The token is round
+   * The body's footprint in meters, e.g. 1x3 for a medium elemental (RBM p.91). The token is round
    * with the same ground area, rounded up to whole squares, so it follows the scene's grid scale;
    * the actor's own token size by default.
    */
@@ -94,7 +112,7 @@ function summonedFootprint(
  * the viewed scene that the user owns, or without a caster (token HUD "+"), it goes on the nearest
  * free cell next to the summoner. The active GM creates the token, importing the actor into a Summoned folder the
  * first time, and gives it an effect carrying the spell's provenance that removes it when the
- * summoning ends (RBM p.90). Resolves to undefined, leaving Apply clickable, when the placement is
+ * summoning ends (RBM p.91). Resolves to undefined, leaving Apply clickable, when the placement is
  * cancelled.
  *
  * @public since 6.2.0
