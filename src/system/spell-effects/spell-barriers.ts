@@ -10,7 +10,7 @@ const logger = new RqgLogger("spell-barriers");
 /**
  * The priorities of the system's own layers, with gaps so modules can go between them: `area` for
  * spell areas and other Region barriers, `consumable` for layers a spell uses up
- * (`usedUp: "unlessTwoStronger"`, like Countermagic), and `lasting` for layers that stay (like
+ * (`usedUp: "unlessLayerTwoStronger"`, like Countermagic), and `lasting` for layers that stay (like
  * Shield's protection).
  *
  * @public since 6.2.0
@@ -26,11 +26,11 @@ export const barrierPriorities = { area: 100, consumable: 200, lasting: 300 } as
 type BarrierBase = {
   priority: number;
   /**
-   * "unlessTwoStronger": the layer is used up by any spell except one it is 2+ points stronger
+   * "unlessLayerTwoStronger": the layer is used up by any spell except one it is 2+ points stronger
    * than. It still stops a spell within 1 point of its strength; a spell 2+ points stronger breaks
    * it and goes on.
    */
-  usedUp: "never" | "unlessTwoStronger";
+  usedUp: "never" | "unlessLayerTwoStronger";
 };
 
 /** The barrier of a spell behavior, which judges its effect against the incoming cast. */
@@ -79,7 +79,7 @@ export function walkBarriers(layers: readonly Layer[], points: number): BarrierW
   const usedUp: Layer[] = [];
   for (const priority of [...byPriority.keys()].sort((a, b) => a - b)) {
     const layer = byPriority.get(priority)!;
-    if (layer.usedUp === "unlessTwoStronger") {
+    if (layer.usedUp === "unlessLayerTwoStronger") {
       if (points <= layer.strength - 2) {
         return { stoppedBy: layer, usedUp };
       }
@@ -109,7 +109,7 @@ function guardedStrength(name: string, strength: () => unknown): number {
   }
 }
 
-const usedUpRules: readonly unknown[] = ["never", "unlessTwoStronger"];
+const usedUpRules: readonly unknown[] = ["never", "unlessLayerTwoStronger"];
 const warnedBarriers = new Set<string>();
 
 function warnOnce(key: string, message: string): void {
