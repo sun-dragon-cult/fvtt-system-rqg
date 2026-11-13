@@ -4,7 +4,12 @@ import { getResistanceRequestTargetOutcome } from "../data-model/shared/spell-ca
 import { canApplySpell } from "../system/spell-effects/spell-behavior";
 import { Rqid } from "../system/api/rqid-api";
 import { applySpellEffect } from "../system/spell-effects/apply-spell-effect";
-import { continueSpellCast, recordCast, targetOf } from "../system/spell-effects/spell-cast-runner";
+import {
+  castSpellOf,
+  continueSpellCast,
+  recordCast,
+  targetOf,
+} from "../system/spell-effects/spell-cast-runner";
 import type { RqgItem } from "@items/rqg-item.ts";
 import {
   spellTargetRulingState,
@@ -110,10 +115,9 @@ function targetRows(message: ChatMessage): TargetRow[] {
 }
 
 /** The spell a card can apply an effect from. A hidden cast's anonymous request names no spell. */
-function applicableSpell(message: ChatMessage): RqgItem | undefined {
+async function applicableSpell(message: ChatMessage): Promise<RqgItem | undefined> {
   const record = spellCastRecordMessageOf(message as any) ?? message;
-  const spellUuid = (record.system as any).spellUuid as string | undefined;
-  const spell = spellUuid ? (fromUuidSync(spellUuid) as RqgItem | null) : undefined;
+  const spell = await castSpellOf(record.system as { spellUuid?: string; spellRqid?: string });
   return spell &&
     canApplySpell(Rqid.getDocumentFlag(spell)?.id, (spell.system as any).effectRqidLink)
     ? spell
@@ -144,7 +148,7 @@ export async function renderSpellCastTargets(message: ChatMessage): Promise<stri
   if (!rows.length) {
     return "";
   }
-  const spell = applicableSpell(message);
+  const spell = await applicableSpell(message);
   const record = spellCastRecordMessageOf(message as any);
   const gateLabels = spiritCombatLabels[(record?.system as any)?.resistedBy as SpellResistedByEnum];
   const viewRows = rows.map((row) => {
@@ -222,7 +226,7 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
  */
 export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): Promise<void> {
   const clicked = clickedEntry(clickedButton);
-  const spell = clicked ? applicableSpell(clicked.record) : undefined;
+  const spell = clicked ? await applicableSpell(clicked.record) : undefined;
   if (!clicked || !spell) {
     return;
   }

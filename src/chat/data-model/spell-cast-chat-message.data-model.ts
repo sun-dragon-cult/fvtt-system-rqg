@@ -4,6 +4,7 @@ const { StringField } = foundry.data.fields;
 
 const spellCastChatMessageSchema = {
   spellUuid: new StringField({ blank: true, nullable: false, required: true, initial: "" }),
+  spellRqid: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
   ...spellCastRecordFields(),
 } as const;
 

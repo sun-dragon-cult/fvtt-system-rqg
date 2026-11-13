@@ -420,6 +420,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema> {
       casterActor: casterActor,
       casterToken: options.token,
       spellUuid: item.uuid ?? "",
+      spellRqid: item.flags?.rqg?.documentRqidFlags?.id ?? "",
     });
 
     await handleRollResult(

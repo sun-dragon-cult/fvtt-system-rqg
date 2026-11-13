@@ -76,6 +76,8 @@ export type SpellCastEntry = ActorRef & {
  */
 export type SpellCastRecord = {
   spellUuid: string;
+  /** The spell's rqid, to find it once its item is gone (e.g. with its unlinked token). */
+  spellRqid: string;
   caster: ActorRef;
   /** The caster's POW when they cast it, which a reflected spell attacks them with. */
   casterPower: number;
