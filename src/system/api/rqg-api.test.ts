@@ -61,8 +61,8 @@ describe("game.system.api", () => {
           "applyAreaEffect": "function",
           "barrierPriorities": {
             "area": 100,
-            "countermagic": 200,
-            "shield": 300,
+            "consumable": 200,
+            "lasting": 300,
           },
           "castPoints": "function",
           "createArea": "function",

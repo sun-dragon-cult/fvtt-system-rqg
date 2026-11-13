@@ -7,8 +7,15 @@ import { RqgLogger } from "../logging/rqg-logger";
 
 const logger = new RqgLogger("spell-barriers");
 
-/** The priorities of the system's own layers, with gaps so modules can go between them. */
-export const barrierPriorities = { area: 100, countermagic: 200, shield: 300 } as const;
+/**
+ * The priorities of the system's own layers, with gaps so modules can go between them: `area` for
+ * spell areas and other Region barriers, `consumable` for layers a spell uses up
+ * (`usedUp: "unlessTwoStronger"`, like Countermagic), and `lasting` for layers that stay (like
+ * Shield's protection).
+ *
+ * @public since 6.2.0
+ */
+export const barrierPriorities = { area: 100, consumable: 200, lasting: 300 } as const;
 
 /**
  * What a protective spell or Region gives to the layers an incoming spell must get through. A lower
@@ -18,8 +25,12 @@ export const barrierPriorities = { area: 100, countermagic: 200, shield: 300 } a
  */
 type BarrierBase = {
   priority: number;
-  /** "countermagic": gone within 1 point of the spell, broken by one 2+ points stronger. */
-  usedUp: "never" | "countermagic";
+  /**
+   * "unlessTwoStronger": the layer is used up by any spell except one it is 2+ points stronger
+   * than. It still stops a spell within 1 point of its strength; a spell 2+ points stronger breaks
+   * it and goes on.
+   */
+  usedUp: "never" | "unlessTwoStronger";
 };
 
 /** The barrier of a spell behavior, which judges its effect against the incoming cast. */
@@ -68,7 +79,7 @@ export function walkBarriers(layers: readonly Layer[], points: number): BarrierW
   const usedUp: Layer[] = [];
   for (const priority of [...byPriority.keys()].sort((a, b) => a - b)) {
     const layer = byPriority.get(priority)!;
-    if (layer.usedUp === "countermagic") {
+    if (layer.usedUp === "unlessTwoStronger") {
       if (points <= layer.strength - 2) {
         return { stoppedBy: layer, usedUp };
       }

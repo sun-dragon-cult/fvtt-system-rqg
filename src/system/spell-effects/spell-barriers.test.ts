@@ -5,14 +5,14 @@ const layer = (
   name: string,
   priority: number,
   strength: number,
-  usedUp: "never" | "countermagic" = "never",
+  usedUp: "never" | "unlessTwoStronger" = "never",
 ) => ({ name, priority, strength, usedUp });
 const names = (layers: { name: string }[]) => layers.map((l) => l.name);
 
 describe("walkBarriers", () => {
   const ward = layer("ward", barrierPriorities.area, 4);
-  const countermagic = layer("countermagic", barrierPriorities.countermagic, 4, "countermagic");
-  const shield = layer("shield", barrierPriorities.shield, 4);
+  const countermagic = layer("countermagic", barrierPriorities.consumable, 4, "unlessTwoStronger");
+  const shield = layer("shield", barrierPriorities.lasting, 4);
 
   it("lets a spell through when there are no layers", () => {
     expect(walkBarriers([], 3)).toEqual({ usedUp: [] });
@@ -57,7 +57,7 @@ describe("walkBarriers", () => {
   });
 
   it("counts only the strongest of layers with equal priority", () => {
-    const berserker = layer("berserker", barrierPriorities.countermagic, 2, "countermagic");
+    const berserker = layer("berserker", barrierPriorities.consumable, 2, "unlessTwoStronger");
     const walk = walkBarriers([berserker, countermagic], 6);
     expect(names(walk.usedUp)).toEqual(["countermagic"]);
   });
