@@ -22,9 +22,9 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 
 The `fvtt-system-rqg` cloud environment installs dependencies, builds `dist`, writes `.env.local`, makes Node 24 the default `node` (Foundry v14 needs it; the image ships Node 22), and provides two helpers for a container-local Foundry v14 on port 30014 (data in `/opt/foundry/v14`):
 
-1. `foundry-install <timed Node.js download URL>` — ask the user for the URL (it expires within minutes); installs Foundry and links `dist` as the `rqg` system.
+1. `foundry-install` — fetches the Foundry v14 zip and the signed `license.json` from the owner's file server (the environment's proxy adds the access token) and links `dist` as the `rqg` system. The download takes a few minutes, so only install Foundry when the task needs it. `foundry-install <timed Node.js download URL>` installs from a link the user gives instead.
 2. Start Foundry with `pnpm foundry`, run in the background; wait until `http://localhost:30014` answers.
-3. `foundry-activate <license key>` — ask the user for the key; it also signs the EULA, which the owner has agreed to.
+3. `foundry-activate` — does nothing if Foundry is already licensed; otherwise it activates with the key from the file server (or `foundry-activate <license key>`) and signs the EULA, which the owner has agreed to.
 
 Then run `pnpm test:e2e:create-world` and `pnpm test:e2e --trace off`. After changing `src/`, run `pnpm build:system` (or `pnpm build` if packs changed) before `pnpm test:e2e`; Foundry serves the system from `dist` and each test reloads the world, so no restart is needed. `pnpm dev` isn't needed there: its hot-reload server on port 30001 is for a person watching the game, while Playwright talks to Foundry on 30014 directly.
 
