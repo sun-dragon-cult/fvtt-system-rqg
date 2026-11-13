@@ -874,6 +874,7 @@
         },
         "NotApplied": {
           "strongerActive": "No effect: an equal or stronger casting is already active",
+          "sameActive": "No effect: the same spell is already active",
           "incompatibleActive": "No effect: an incompatible spell is already active",
           "cancelledActive": "Cancelled an opposing spell, so neither remains",
           "counteractedActive": "No effect: counteracted by a stronger calming spell",
@@ -881,6 +882,7 @@
         },
         "NotAppliedDetail": {
           "strongerActive": "{effectName} is already active on {parentName}, so {spellName} has no effect.",
+          "sameActive": "{effectName} is already active on {parentName}, so {spellName} has no effect until it ends.",
           "incompatibleActive": "{spellName} has no effect on {parentName}, which already has the incompatible {effectName}.",
           "cancelledActive": "{spellName} and {effectName} cancel each other on {parentName}, so neither remains.",
           "counteractedActive": "{effectName} on {parentName} counteracts {spellName}, which is weaker, so it has no effect."
@@ -902,6 +904,7 @@
         "TargetOption": {
           "replaces": "{itemName} (replaces {effectName})",
           "strongerActive": "{itemName} (no effect: {effectName} is active)",
+          "sameActive": "{itemName} (no effect: {effectName} is active)",
           "incompatibleActive": "{itemName} (no effect: incompatible with {effectName})",
           "cancelledActive": "{itemName} (cancels {effectName})",
           "counteractedActive": "{itemName} (no effect: {effectName} counteracts it)"
@@ -2816,9 +2819,10 @@
       },
       "SpellStackingRule": {
         "settingName": "Recast Spells Take Effect",
-        "settingHint": "Whether a spell applied to something that already has the same spell, or one incompatible with it, takes effect. Only if stronger (the rules): the new casting replaces the same spell if it is stronger, and otherwise has no effect. Always (an alternative from the official Q&A): each new casting replaces the previous one and any incompatible spell.",
+        "settingHint": "Whether a spell cast on something that already has the same spell active, or one incompatible with it, takes effect. Never (the Q&A \"Replacing an Existing Spell\", Core p.255, read literally): while the same spell is active, a new casting has no effect at any level. Only if stronger (that Q&A, with a stronger casting replacing a weaker one): a casting at a higher level replaces the same spell, otherwise it has no effect. Always (house rule): each new casting replaces the previous one and any incompatible spell, which refreshes its duration. Variable spells never add up (RBM p.5).",
+        "existingStays": "Never",
         "strongestTakesEffect": "Only if stronger",
-        "latestDisplaces": "Always"
+        "latestDisplaces": "Always (house rule)"
       },
       "ShowResistanceRequestTokenHudButton": {
         "settingName": "Resistance Request on Token HUD",
