@@ -39,6 +39,20 @@ describe("spellEffectCast", () => {
     expect(cast.runePointsSpent).toBe(1);
   });
 
+  it("takes the rqid from the spell, not from what the caller passes", () => {
+    const cast = spellEffectCast(
+      spell("spiritMagic", "i.spirit-magic.bladesharp"),
+      { levelUsed: 1 },
+      {
+        caster,
+        castMessageId: "m",
+        casterSuccessLevel: undefined,
+        spellRqid: "i.spirit-magic.other",
+      } as Parameters<typeof spellEffectCast>[2],
+    );
+    expect(cast.spellRqid).toBe("i.spirit-magic.bladesharp");
+  });
+
   it("gives the provenance the spell's own rqid", () => {
     const cast = spellEffectCast(
       spell("spiritMagic", "i.spirit-magic.bladesharp"),

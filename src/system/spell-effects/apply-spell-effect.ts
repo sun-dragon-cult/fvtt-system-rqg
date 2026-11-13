@@ -83,8 +83,8 @@ export function spellEffectCast(
   const boost = Number(rollOptions["magicPointBoost"] ?? 0);
   const isRuneMagic = spell.type === ItemTypeEnum.RuneMagic;
   return {
-    spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
     ...cast,
+    spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
     level: level,
     magicPointsSpent: isRuneMagic ? boost : level + boost,
     runePointsSpent: isRuneMagic ? level : 0,
@@ -107,7 +107,6 @@ export function spellProvenance(spell: RqgItem, cast: SpellEffectCast) {
     spellName: spell.name ?? "",
     spellUuid: spell.uuid,
     ...cast,
-    spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
     casterSuccessLevel: cast.casterSuccessLevel ?? null,
   };
 }

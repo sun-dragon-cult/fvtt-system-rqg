@@ -109,8 +109,36 @@ function guardedStrength(name: string, strength: () => unknown): number {
   }
 }
 
-function isFinitePriority(priority: unknown): priority is number {
-  return typeof priority === "number" && Number.isFinite(priority);
+const usedUpRules: readonly unknown[] = ["never", "unlessTwoStronger"];
+const warnedBarriers = new Set<string>();
+
+function warnOnce(key: string, message: string): void {
+  if (!warnedBarriers.has(key)) {
+    warnedBarriers.add(key);
+    logger.warn(message, { notify: false });
+  }
+}
+
+/**
+ * Whether a module's barrier can be used: one without a finite priority is skipped. An unknown
+ * `usedUp` is met as "never". Both are reported once per barrier, since a module author would
+ * otherwise never learn their barrier doesn't do what they meant.
+ */
+function isUsableBarrier(barrier: BarrierBase, name: string): boolean {
+  if (!usedUpRules.includes(barrier.usedUp)) {
+    warnOnce(
+      `usedUp|${name}|${String(barrier.usedUp)}`,
+      `The barrier of ${name} has an unknown usedUp "${String(barrier.usedUp)}"; it is never used up.`,
+    );
+  }
+  if (typeof barrier.priority !== "number" || !Number.isFinite(barrier.priority)) {
+    warnOnce(
+      `priority|${name}|${String(barrier.priority)}`,
+      `The barrier of ${name} is skipped: its priority ${String(barrier.priority)} isn't a finite number.`,
+    );
+    return false;
+  }
+  return true;
 }
 
 /** The layers the target's own protective spells give. */
@@ -120,7 +148,7 @@ function effectLayers(actor: RqgActor, cast: SpellEffectCast): Layer[] {
     ActiveEffect & { active: boolean }
   >) {
     const barrier = effect.active ? spellBehaviorForEffect(effect)?.barrier : undefined;
-    if (!barrier || !isFinitePriority(barrier.priority)) {
+    if (!barrier || !isUsableBarrier(barrier, effect.name ?? "")) {
       continue;
     }
     const strength = guardedStrength(effect.name ?? "", () => barrier.strength(effect, cast));
@@ -147,7 +175,7 @@ function effectLayers(actor: RqgActor, cast: SpellEffectCast): Layer[] {
 function regionBarrierOf(behavior: RegionBehavior, regionName: string): RegionBarrier | undefined {
   try {
     const barrier = (behavior.system as { barrier?: RegionBarrier } | undefined)?.barrier;
-    return barrier && isFinitePriority(barrier.priority) ? barrier : undefined;
+    return barrier && isUsableBarrier(barrier, regionName) ? barrier : undefined;
   } catch (error) {
     logger.error(
       localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: regionName }),
