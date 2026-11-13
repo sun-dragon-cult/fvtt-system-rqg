@@ -117,13 +117,15 @@ test("Dropping a compendium on an actor sheet embeds all its items", async ({ pa
     await expect
       .poll(
         async () =>
-          page.evaluate((id) => {
+          page.evaluate(async (id) => {
             const gameRef = globalThis as {
               game?: {
                 actors?: {
                   get?: (
                     id: string,
-                  ) => { sheet?: { render?: (force: boolean) => void } } | undefined;
+                  ) =>
+                    | { sheet?: { render?: (options: { force: boolean }) => Promise<unknown> } }
+                    | undefined;
                 };
               };
             };
@@ -131,7 +133,7 @@ test("Dropping a compendium on an actor sheet embeds all its items", async ({ pa
             if (!actor?.sheet?.render) {
               return false;
             }
-            actor.sheet.render(true);
+            await actor.sheet.render({ force: true });
             return true;
           }, actorId!),
         {
