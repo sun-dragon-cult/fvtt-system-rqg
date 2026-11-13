@@ -5,7 +5,7 @@ import {
   newSpellCastEntry,
   type SpellCastRecord,
 } from "./spell-cast-record";
-import { SpellResistedByEnum, SpellResistedWithEnum } from "../item-data/spell";
+import { SpellResistedByEnum } from "../item-data/spell";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 
 const { Success, Failure } = AbilitySuccessLevelEnum;
@@ -18,7 +18,6 @@ function record(resistedBy: SpellResistedByEnum, targets = [target("a")]): Spell
     casterPower: 15,
     castSuccessLevel: Success,
     resistedBy: resistedBy,
-    resistedWith: SpellResistedWithEnum.Power,
     castRollMode: "public",
     castOptions: { levelUsed: 1, magicPointBoost: 0 },
     areaRoll: null,
@@ -40,6 +39,7 @@ function env(overrides: Partial<SpellCastStepEnv> = {}): SpellCastStepEnv {
     crossAreas: vi.fn(async () => {}),
     barrierStops: vi.fn(async () => false),
     areaTargetValue: vi.fn(() => 10),
+    cannotResist: vi.fn(() => false),
     requestResistance: vi.fn(async (entry) => `request-${entry.id}`),
     reflects: vi.fn(async () => false),
     notApplied: vi.fn(async () => {}),
@@ -278,6 +278,47 @@ describe("stepSpellCast", () => {
       env({ areaTargetValue: vi.fn((entry) => values[entry.id]) }),
     );
     expect(next.targets.map((t) => t.state)).toEqual(["affected", "unaffected"]);
+  });
+
+  it("lets a spell take effect on a target with neither POW nor magic points, on a card saying so (RBM p.6)", async () => {
+    const e = env({ cannotResist: vi.fn(() => true) });
+    const next = await stepSpellCast(record(SpellResistedByEnum.ResistanceRoll), [], e);
+    expect(e.requestResistance).toHaveBeenCalledOnce();
+    expect(next.targets[0]).toMatchObject({
+      stage: "affected",
+      state: "affected",
+      resolvedBy: "cannotResist",
+      requestMessageId: "request-a",
+    });
+    expect(e.notApplied).not.toHaveBeenCalled();
+  });
+
+  it("lets an area spell take effect on a target that can't resist, whatever the area roll", async () => {
+    const area = {
+      ...record(SpellResistedByEnum.ResistanceRollArea),
+      areaRoll: { roll: 95, casterValue: 1 },
+    };
+    const e = env({ cannotResist: vi.fn(() => true), areaTargetValue: vi.fn(() => 0) });
+    const next = await stepSpellCast(area, [], e);
+    expect(e.requestResistance).not.toHaveBeenCalled();
+    expect(next.targets[0]).toMatchObject({ state: "affected", resolvedBy: "cannotResist" });
+  });
+
+  it("doesn't ask whether an unresisted or self-cast spell can be resisted", async () => {
+    const cannotResist = vi.fn(() => true);
+    const unresisted = await stepSpellCast(
+      record(SpellResistedByEnum.None),
+      [],
+      env({ cannotResist }),
+    );
+    const self = await stepSpellCast(
+      record(SpellResistedByEnum.ResistanceRoll, [target("c", true)]),
+      [],
+      env({ cannotResist }),
+    );
+    expect(cannotResist).not.toHaveBeenCalled();
+    expect(unresisted.targets[0]!.resolvedBy).toBe("castOnly");
+    expect(self.targets[0]!.resolvedBy).toBe("selfCast");
   });
 
   it("leaves spirit-combat gates and untargeted entries waiting for the GM", async () => {

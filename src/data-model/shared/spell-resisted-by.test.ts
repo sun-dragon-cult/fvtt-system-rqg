@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { postSpellCastResult, resolveResistedSpellCastTarget } from "./spell-resisted-by";
-import { SpellResistedByEnum, SpellResistedWithEnum } from "../item-data/spell";
+import {
+  postSpellCastResult,
+  requestSpellResistance,
+  resolveResistedSpellCastTarget,
+} from "./spell-resisted-by";
+import { SpellResistedByEnum } from "../item-data/spell";
 import { createResistanceRequest } from "../../applications/resistance-roll-dialog/create-resistance-request";
 import { continueSpellCast } from "../../system/spell-effects/spell-cast-runner";
 
@@ -15,13 +19,23 @@ vi.mock("../../applications/resistance-roll-dialog/resistance-roll-shared", () =
     label: "POW",
     actorName: "Vasana",
   })),
-  resolveCharacteristicLabel: vi.fn((name: string) => (name === "power" ? "POW" : "MP")),
+  // "Scene.s.Token.undead" and "Actor.lich" have no POW, so they put up magic points (RBM p.6)
+  resolveCharacteristicLabel: vi.fn((name: string, actor?: { uuid: string }) =>
+    name === "power" && !noPower(actor) ? "POW" : "MP",
+  ),
+  resolveResistanceStat: vi.fn((actor: { uuid: string }, name: string) =>
+    name === "power" && noPower(actor) ? "magicPoints" : name,
+  ),
   // Area spells: the caster has POW 14, every target POW 15 except "Scene.s.Token.strong" (POW 18)
   resolveActorFromUuid: vi.fn((uuid: string) => ({ uuid })),
   resolveCharacteristicValue: vi.fn((actor: { uuid: string }) =>
     actor.uuid === "Scene.s.Token.caster" ? 14 : actor.uuid === "Scene.s.Token.strong" ? 18 : 15,
   ),
 }));
+
+function noPower(actor: { uuid: string } | undefined): boolean {
+  return actor?.uuid === "Scene.s.Token.undead" || actor?.uuid === "Actor.lich";
+}
 
 vi.mock("../../system/spell-effects/spell-cast-runner", () => ({
   continueSpellCast: vi.fn(async () => {}),
@@ -317,7 +331,6 @@ describe("postSpellCastResult", () => {
     await postSpellCastResult({
       target: { proceed: true, targets: [victim] },
       resistedBy: SpellResistedByEnum.ResistanceRoll,
-      resistedWith: SpellResistedWithEnum.Power,
       targetKind: "creature",
       castRoll: castRoll,
       casterActor: casterActor,
@@ -434,5 +447,59 @@ describe("postSpellCastResult", () => {
 
     expect(castRoll.options.rollMode).toBe("public");
     expect(vi.mocked(createResistanceRequest).mock.calls[0]![0].rollMode).toBe("public");
+  });
+});
+
+describe("requestSpellResistance", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  const ask = (targetUuid: string, extra: Record<string, unknown> = {}) =>
+    requestSpellResistance({
+      targetUuid: targetUuid,
+      casterUuid: "Scene.s.Token.caster",
+      rollMode: "public",
+      frozenValue: 14,
+      ...extra,
+    });
+
+  it("asks the target to resist with their POW, read live off their sheet", async () => {
+    await ask("Scene.s.Token.victim");
+    expect(vi.mocked(createResistanceRequest).mock.calls[0]![0]).toMatchObject({
+      rollerSide: "passive",
+      rollerCharacteristics: "power",
+      frozenCharacteristics: "power",
+      activeLabel: "POW",
+      passiveLabel: "POW",
+      allowVoluntaryAccept: true,
+      cannotResist: undefined,
+    });
+  });
+
+  it("labels a target without POW as resisting with magic points (RBM p.6)", async () => {
+    await ask("Scene.s.Token.undead");
+    expect(vi.mocked(createResistanceRequest).mock.calls[0]![0]).toMatchObject({
+      rollerCharacteristics: "power",
+      passiveLabel: "MP",
+    });
+  });
+
+  it("freezes a caster without POW as casting with magic points, so it isn't POW vs POW", async () => {
+    await requestSpellResistance({
+      targetUuid: "Scene.s.Token.victim",
+      casterUuid: "Actor.lich",
+      rollMode: "public",
+      frozenValue: 9,
+    });
+    expect(vi.mocked(createResistanceRequest).mock.calls[0]![0]).toMatchObject({
+      frozenValue: 9,
+      frozenCharacteristics: "magicPoints",
+    });
+  });
+
+  it("passes on that the target can't resist, for the card to say so", async () => {
+    await ask("Scene.s.Token.undead", { cannotResist: true });
+    expect(vi.mocked(createResistanceRequest).mock.calls[0]![0]).toMatchObject({
+      cannotResist: true,
+    });
   });
 });

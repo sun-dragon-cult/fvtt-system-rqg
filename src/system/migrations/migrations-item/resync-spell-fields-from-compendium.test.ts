@@ -18,7 +18,6 @@ const spell = (
       targetKind: "none",
       effectTier: "none",
       resistedBy: "none",
-      resistedWith: "power",
       ...system,
     },
     flags: rqid ? { rqg: { documentRqidFlags: { id: rqid, lang } } } : {},
@@ -52,14 +51,13 @@ describe("resyncSpellFieldsFromCompendium", () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
-  it("fills an unset link, target kind, effect tier, resistedBy and resistedWith from the compendium spell", async () => {
+  it("fills an unset link, target kind, effect tier and resistedBy from the compendium spell", async () => {
     const lookup = packsContain(
       compendium("i.spirit-magic.fill-all", {
         effectRqidLink: { rqid: "ae..fill-all" },
         targetKind: "weapon",
         effectTier: "effect",
         resistedBy: "resistanceRoll",
-        resistedWith: "magicPoints",
       }),
     );
 
@@ -69,7 +67,6 @@ describe("resyncSpellFieldsFromCompendium", () => {
         targetKind: "weapon",
         effectTier: "effect",
         resistedBy: "resistanceRoll",
-        resistedWith: "magicPoints",
       },
     });
     expect(lookup).toHaveBeenCalledWith(expect.any(RegExp), "i", "en", {
@@ -96,23 +93,6 @@ describe("resyncSpellFieldsFromCompendium", () => {
     expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({
       system: { effectTier: "effect" },
     });
-  });
-
-  it("keeps a resisted spell's POW, since a GM may have chosen it over magic points", async () => {
-    packsContain(
-      compendium("i.rune-magic.turn-undead", {
-        resistedBy: "resistanceRollPerTarget",
-        resistedWith: "magicPoints",
-      }),
-    );
-    const copy = spell("i.rune-magic.turn-undead", {
-      targetKind: "creature",
-      effectTier: "effect",
-      resistedBy: "resistanceRollPerTarget",
-      resistedWith: "power",
-    });
-
-    expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({});
   });
 
   it("falls back to the English pack for fields its own language's pack lacks", async () => {

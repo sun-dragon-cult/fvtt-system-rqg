@@ -36,6 +36,8 @@ export type SpellCastStepEnv = {
   barrierStops(entry: SpellCastEntry): Promise<boolean>;
   /** What the entry resists an area roll with; undefined when it can't be read. */
   areaTargetValue(entry: SpellCastEntry): number | undefined;
+  /** Whether the entry's target has neither POW nor magic points to resist with (RBM p.6). */
+  cannotResist(entry: SpellCastEntry): boolean;
   /** Give the entry a resistance request card to answer on, and return that card's id. */
   requestResistance(entry: SpellCastEntry): Promise<string>;
   /** Tell the spell it did not take effect on the entry's target. */
@@ -233,6 +235,17 @@ async function resist(
 ): Promise<boolean> {
   const resistedBy = record.resistedBy;
   const reflected = !!entry.reflectedFromId;
+  if ((reflected || (isResistanceRoll(resistedBy) && !entry.isCaster)) && env.cannotResist(entry)) {
+    // An area roll has no card per target; any other gets one saying it can't resist
+    if (
+      (reflected || resistedBy !== SpellResistedByEnum.ResistanceRollArea) &&
+      !entry.requestMessageId
+    ) {
+      entry.requestMessageId = await env.requestResistance(entry);
+    }
+    settle(entry, "affected", "cannotResist");
+    return true;
+  }
   // The area roll decides the caster's own token too (Inviolable Q&A)
   if (resistedBy === SpellResistedByEnum.ResistanceRollArea && !reflected && record.areaRoll) {
     const value = env.areaTargetValue(entry);

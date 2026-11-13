@@ -55,6 +55,8 @@ const resistanceRequestChatMessageSchema = {
   }),
   // RAW p.242: the target may voluntarily and knowingly accept instead of resisting.
   allowVoluntaryAccept: new BooleanField({ nullable: false, required: false, initial: false }),
+  // The target has neither POW nor magic points, so the spell takes effect unresisted (RBM p.6).
+  cannotResist: new BooleanField({ nullable: false, required: false, initial: false }),
   // What the check is about, e.g. the spell being resisted.
   description: new StringField({
     blank: true,

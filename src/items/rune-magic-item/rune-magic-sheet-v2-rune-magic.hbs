@@ -30,12 +30,6 @@
       </select>
     {{/if}}
 
-    {{#if showResistedWith}}
-      <label for="resisted-with-{{id}}" class="mp">{{localize "RQG.Item.Spell.ResistedWith"}}</label>
-      <select id="resisted-with-{{id}}" name="system.resistedWith">
-        {{selectOptions resistedWithOptions selected=system.resistedWith localize=true}}
-      </select>
-    {{/if}}
 
     <label for="effect-tier-{{id}}" class="mp">{{localize "RQG.Item.Spell.EffectTier"}}</label>
     <select id="effect-tier-{{id}}" name="system.effectTier">

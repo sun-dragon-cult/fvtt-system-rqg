@@ -816,6 +816,7 @@
         "Roll": "Roll",
         "Resist": "Resist",
         "Accept": "Accept",
+        "CannotResist": "Neither POW nor magic points to resist with, so the spell takes effect.",
         "State": {
           "Waiting": "Waiting",
           "Requested": "Requested",
@@ -862,6 +863,7 @@
           "intercepted": "stopped by a protective spell",
           "selfCast": "cast on self",
           "accepted": "accepted",
+          "cannotResist": "cannot resist",
           "resistanceOvercame": "resistance roll overcame",
           "resistanceHeld": "resistance roll held",
           "gmRuling": "GM ruling",
@@ -1889,11 +1891,6 @@
         "Ritual": "Ritual",
         "Enchantment": "Enchantment",
         "ResistedBy": "Resisted By",
-        "ResistedWith": "Resisted With",
-        "ResistedWithEnum": {
-          "power": "POW",
-          "magicPoints": "Current magic points"
-        },
         "ResistedByEnum": {
           "none": "None",
           "resistanceRoll": "Resistance roll (single target)",
@@ -1974,10 +1971,6 @@
           "resistedBy": {
             "label": "Resisted by",
             "hint": "What the target can resist the spell with."
-          },
-          "resistedWith": {
-            "label": "Resisted with",
-            "hint": "The characteristic the target resists with."
           },
           "targetKind": {
             "label": "Target kind",

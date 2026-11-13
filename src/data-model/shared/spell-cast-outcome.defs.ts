@@ -7,6 +7,7 @@ export const spellTargetOutcomeResolvedBy = [
   "intercepted",
   "selfCast",
   "accepted",
+  "cannotResist",
   "resistanceRoll",
   "gmRuling",
   "reflected",
