@@ -154,6 +154,8 @@ function shapeAroundCaster(shape: SpellAreaShape, caster: TokenDocument): Placed
  * Dispel Magic removes it), the Region goes, and deleting the Region ends the effect. Players may
  * not create Regions, so the active GM's client makes it; the caster places it on their own
  * client first.
+ *
+ * @public since 6.2.0
  */
 export async function createArea(
   scope: SpellApplyScope,
@@ -250,6 +252,8 @@ async function createAreaAsGm(
  * Put the spell's effect template on a token in its area, with the usual stacking but no
  * protective spells, since the area isn't cast at the token. It comes off when the token leaves the
  * area or the area goes. For `onAreaEnter`.
+ *
+ * @public since 6.2.0
  */
 export async function applyAreaEffect(scope: SpellAreaScope): Promise<void> {
   await applySpellEffect(

@@ -1080,6 +1080,10 @@
           & .unaffected .spell-cast-target-state {
             color: #8a1c1c;
           }
+
+          & .spell-cast-target-reach {
+            color: #7a4f00;
+          }
         }
       }
 
@@ -1148,6 +1152,11 @@
           width: auto;
           flex: 0 0 auto;
           padding: 0 0.8rem;
+        }
+
+        & .spell-cast-target-reach {
+          color: var(--color-level-warning);
+          font-size: var(--font-size-11);
         }
 
         & .spell-cast-applied,

@@ -16,7 +16,6 @@ const spell = (
     system: {
       effectRqidLink: { rqid: "" },
       targetKind: "none",
-      effectTier: "none",
       resistedBy: "none",
       ...system,
     },
@@ -51,12 +50,11 @@ describe("resyncSpellFieldsFromCompendium", () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
-  it("fills an unset link, target kind, effect tier and resistedBy from the compendium spell", async () => {
+  it("fills an unset link, target kind and resistedBy from the compendium spell", async () => {
     const lookup = packsContain(
       compendium("i.spirit-magic.fill-all", {
         effectRqidLink: { rqid: "ae..fill-all" },
         targetKind: "weapon",
-        effectTier: "effect",
         resistedBy: "resistanceRoll",
       }),
     );
@@ -65,7 +63,6 @@ describe("resyncSpellFieldsFromCompendium", () => {
       system: {
         effectRqidLink: { rqid: "ae..fill-all" },
         targetKind: "weapon",
-        effectTier: "effect",
         resistedBy: "resistanceRoll",
       },
     });
@@ -80,7 +77,6 @@ describe("resyncSpellFieldsFromCompendium", () => {
       compendium("i.spirit-magic.keep", {
         effectRqidLink: { rqid: "ae..keep" },
         targetKind: "weapon",
-        effectTier: "effect",
         resistedBy: "resistanceRoll",
       }),
     );
@@ -90,9 +86,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
       resistedBy: "resistanceRollArea",
     });
 
-    expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({
-      system: { effectTier: "effect" },
-    });
+    expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({});
   });
 
   it("falls back to the English pack for fields its own language's pack lacks", async () => {
@@ -101,7 +95,6 @@ describe("resyncSpellFieldsFromCompendium", () => {
       compendium("i.spirit-magic.swedish", {
         effectRqidLink: { rqid: "ae..swedish" },
         targetKind: "creature",
-        effectTier: "effect",
       }),
     );
     const copy = spell("i.spirit-magic.swedish", {}, "Actor.a.Item.copy", "spiritMagic", "sv");
@@ -110,7 +103,6 @@ describe("resyncSpellFieldsFromCompendium", () => {
       system: {
         effectRqidLink: { rqid: "ae..swedish" },
         targetKind: "weapon",
-        effectTier: "effect",
       },
     });
   });
@@ -118,11 +110,10 @@ describe("resyncSpellFieldsFromCompendium", () => {
   it("marks a spell that gets through spell barriers when its compendium spell does", async () => {
     packsContain(
       compendium("i.spirit-magic.dispel-magic", {
-        effectTier: "behavior",
         passesSpellBarriers: true,
       }),
     );
-    const copy = spell("i.spirit-magic.dispel-magic", { effectTier: "behavior" });
+    const copy = spell("i.spirit-magic.dispel-magic", {});
 
     expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({
       system: { passesSpellBarriers: true },

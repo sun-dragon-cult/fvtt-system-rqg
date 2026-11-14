@@ -45,6 +45,11 @@ async function worldActor(actorRqid: string): Promise<Actor | undefined> {
   return (await Actor.implementation.create(data)) as Actor | undefined;
 }
 
+/**
+ * The options of `spellEffects.summon`.
+ *
+ * @public since 6.2.0
+ */
 export type SummonOptions = {
   /** The summoning's icon on the token, the spell's own by default. */
   img?: string;

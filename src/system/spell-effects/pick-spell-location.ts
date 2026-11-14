@@ -7,6 +7,11 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 
 type Point = { x: number; y: number };
 
+/**
+ * The options of `spellEffects.pickLocation`.
+ *
+ * @public since 6.2.0
+ */
 export type PickLocationOptions = {
   /** Within this many meters of the caster; anywhere when left out. */
   rangeMeters?: number | undefined;

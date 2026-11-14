@@ -3,7 +3,6 @@ import { getSelectRuneOptions, isDocumentSubType } from "../../system/util";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
 import {
   SpellDurationEnum,
-  SpellEffectTierEnum,
   SpellRangeEnum,
   SpellResistedByEnum,
   resistedByChoices,
@@ -22,7 +21,6 @@ interface RuneMagicSheetContext extends RqgItemSheetContext {
   resistedByOptions: SelectOptionData<SpellResistedByEnum>[];
   showResistedBy: boolean;
   targetKindOptions: SelectOptionData<SpellTargetKindEnum>[];
-  effectTierOptions: SelectOptionData<SpellEffectTierEnum>[];
   actorCultOptions: SelectOptionData<string>[];
 }
 
@@ -81,10 +79,6 @@ export class RuneMagicSheetV2 extends RqgItemSheetV2 {
       targetKindOptions: Object.values(SpellTargetKindEnum).map((value) => ({
         value: value,
         label: "RQG.Item.Spell.TargetKindEnum." + value,
-      })),
-      effectTierOptions: Object.values(SpellEffectTierEnum).map((value) => ({
-        value: value,
-        label: "RQG.Item.Spell.EffectTierEnum." + value,
       })),
       actorCultOptions: this.getActorCultOptions(),
       allRuneOptions: getSelectRuneOptions("RQG.Item.RuneMagic.AddRuneMagicRunePlaceholder"),

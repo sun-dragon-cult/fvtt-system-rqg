@@ -25,7 +25,14 @@ import { runSpellApply } from "./run-spell-apply";
 import { castPoints } from "./spell-rules";
 import { isAreaAnchor, spellBehaviorOf } from "./spell-behavior";
 
+/**
+ * A cast of a spell: who cast it, at what level, and the points it spent (see `castPoints`).
+ *
+ * @public since 6.2.0
+ */
 export type SpellEffectCast = {
+  /** The rqid of the spell cast, "" when it has none. */
+  spellRqid: string;
   /** Who cast it, and the token they cast from; both "" without a caster. */
   caster: ActorRef;
   castMessageId: string;
@@ -35,7 +42,11 @@ export type SpellEffectCast = {
   casterSuccessLevel: number | undefined;
 };
 
-/** What Apply did - undefined from applySpellEffect when it did nothing and can be retried. */
+/**
+ * What Apply did - undefined from applySpellEffect when it did nothing and can be retried.
+ *
+ * @public since 6.2.0
+ */
 export type SpellEffectApplied =
   | { outcome: "applied"; effectUuids: string[] }
   | { outcome: "blocked"; reason: SpellEffectBlockedReason }
@@ -73,6 +84,7 @@ export function spellEffectCast(
   const isRuneMagic = spell.type === ItemTypeEnum.RuneMagic;
   return {
     ...cast,
+    spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
     level: level,
     magicPointsSpent: isRuneMagic ? boost : level + boost,
     runePointsSpent: isRuneMagic ? level : 0,
@@ -92,7 +104,6 @@ export function spellApplyScope(
 /** What a spell effect records about the cast that made it, as `system.spell`. */
 export function spellProvenance(spell: RqgItem, cast: SpellEffectCast) {
   return {
-    spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
     spellName: spell.name ?? "",
     spellUuid: spell.uuid,
     ...cast,

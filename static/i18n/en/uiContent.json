@@ -850,6 +850,7 @@
           "Summoned": "{spellName}: {summonedName} appears."
         },
         "NoSpellEffectTarget": "{targetName} has nothing {spellName} can be cast on.",
+        "ReachWarningTooltip": "When the spell was cast, the caster's token may not have reached this target (RBM p.6). The GM decides.",
         "ChooseTargetTitle": "Apply {spellName} to",
         "State": {
           "pending": "Pending",
@@ -1032,7 +1033,12 @@
         "AreaUntargeted": "no target: target everyone in the area",
         "EveryoneInRange": "everyone within {meters} m, the caster included",
         "EveryoneInRangeNoToken": "everyone within {meters} m: the caster has no token, so the GM rules who it reaches",
-        "NoCasterTokenOnScene": "The caster has no token on the viewed scene to measure the range from."
+        "NoCasterTokenOnScene": "The caster has no token on the viewed scene to measure the range from.",
+        "Reach": {
+          "outOfRange": "out of range",
+          "outOfSight": "out of sight",
+          "notTouching": "not in touch"
+        }
       },
       "SpiritMagicRoll": {
         "Title": "Cast Spirit Magic",
@@ -1095,6 +1101,8 @@
         "NoTarget": "No target selected",
         "TargetSelf": "{name} (yourself)",
         "TargetAtDistance": "{name} ({meters} m)",
+        "TargetAtDistanceWarning": "{name} ({meters} m) ⚠ {warning}",
+        "TargetWarning": "{name} ⚠ {warning}",
         "AttackingActor": "Attacker",
         "DefendingActor": "Defender",
         "TargetedToken": "targeted token",
@@ -1914,15 +1922,8 @@
           "creates": "Nothing - the spell creates something",
           "ritual": "A social/ritual state"
         },
-        "EffectTier": "Effect Tier",
         "PassesSpellBarriers": "Gets through Countermagic and Shield",
         "SpellEffect": "Spell Effect",
-        "EffectTierEnum": {
-          "none": "None - nothing to automate",
-          "reminder": "Reminder - an effect with no changes, it shows the spell is active",
-          "effect": "Effect - an effect that changes values",
-          "behavior": "Behavior - code registered by a module"
-        },
         "DurationEnum": {
           "undefined": "None",
           "instant": "Instant",
@@ -1975,10 +1976,6 @@
           "targetKind": {
             "label": "Target kind",
             "hint": "What the spell targets: for example a character, a weapon or an area."
-          },
-          "effectTier": {
-            "label": "Effect tier",
-            "hint": "How the system applies the spell effect: not at all, with an Active Effect, or with a macro."
           },
           "passesSpellBarriers": {
             "label": "Passes spell barriers",

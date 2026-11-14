@@ -2,7 +2,6 @@ import { rqidLinkSchemaField } from "./rqid-link-field";
 import {
   SpellConcentrationEnum,
   SpellDurationEnum,
-  SpellEffectTierEnum,
   SpellRangeEnum,
   SpellResistedByEnum,
   SpellTargetKindEnum,
@@ -51,12 +50,6 @@ export function spellSchemaFields() {
       nullable: false,
       initial: SpellTargetKindEnum.None,
       choices: enumChoices(SpellTargetKindEnum, "RQG.Item.Spell.TargetKindEnum."),
-    }),
-    effectTier: new StringField({
-      blank: false,
-      nullable: false,
-      initial: SpellEffectTierEnum.None,
-      choices: enumChoices(SpellEffectTierEnum, "RQG.Item.Spell.EffectTierEnum."),
     }),
     // Spells that attack defences themselves, like Dispel Magic (RBM p.112) and Dismiss Magic (p.44)
     passesSpellBarriers: new BooleanField({ nullable: false, initial: false }),

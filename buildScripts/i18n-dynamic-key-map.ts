@@ -38,7 +38,6 @@ import {
   SpellConcentrationEnum,
   SpellResistedByEnum,
   SpellTargetKindEnum,
-  SpellEffectTierEnum,
 } from "../src/data-model/item-data/spell";
 import { AbilitySuccessLevelEnum } from "../src/rolls/ability-roll/ability-roll.defs";
 import {
@@ -56,6 +55,7 @@ import {
   spellStackingBlockedReasons,
   spellStackingRules,
 } from "../src/active-effect/data-model/spell-effect.defs";
+import { spellTargetReachWarnings } from "../src/system/spell-effects/spell-target-reach.defs";
 
 // --- Characteristics (defined inline in schema, no separate enum) ---
 const characteristics = [
@@ -124,6 +124,7 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   // ChatMessage
   "RQG.ChatMessage.ResistanceRequest.State.": [...resistanceRequestState],
   "RQG.ChatMessage.SpellCast.State.": [...spellTargetOutcomeState],
+  "RQG.Dialog.SpellCast.Reach.": [...spellTargetReachWarnings],
   "RQG.ChatMessage.SpellCast.Reason.": [
     ...spellTargetOutcomeResolvedBy.filter((r) => r !== "resistanceRoll"),
     "resistanceOvercame",
@@ -178,7 +179,6 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   "RQG.Item.Spell.RangeEnum.": [...Object.values(SpellRangeEnum).filter(Boolean), "undefined"],
   "RQG.Item.Spell.ResistedByEnum.": [...Object.values(SpellResistedByEnum)],
   "RQG.Item.Spell.TargetKindEnum.": [...Object.values(SpellTargetKindEnum)],
-  "RQG.Item.Spell.EffectTierEnum.": [...Object.values(SpellEffectTierEnum)],
 
   // Active Effect - routed key warnings (#920)
   "RQG.Foundry.ActiveEffect.RoutedKey.": [...ROUTED_KEY_WARNING_I18N_SUFFIXES],
