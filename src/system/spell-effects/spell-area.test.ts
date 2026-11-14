@@ -1,10 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { summonerToken } from "./token-cells";
-import { clearApplyClaims } from "./spell-apply-request";
+import { summonerDocument } from "./token-cells";
+import { clearApplyClaims } from "./spell-apply-claims";
 import { areaExtent, handleCreateSpellAreaQuery, spellRangeInMeters } from "./spell-area";
 import { polygonAreaInMeters } from "./place-spell-area";
 
-vi.mock("./token-cells", () => ({ summonerToken: vi.fn(async () => undefined) }));
+vi.mock("./token-cells", () => ({
+  summonerToken: vi.fn(async () => undefined),
+  summonerDocument: vi.fn(async () => undefined),
+}));
 
 describe("spell areas", () => {
   it("uses the standard casting range of the spell's magic (RBM p.4)", () => {
@@ -62,6 +65,6 @@ describe("handleCreateSpellAreaQuery", () => {
     };
     vi.stubGlobal("game", { messages: { get: () => record } });
     expect(await handleCreateSpellAreaQuery(data, { user })).toBeUndefined();
-    expect(summonerToken).not.toHaveBeenCalled();
+    expect(summonerDocument).not.toHaveBeenCalled();
   });
 });

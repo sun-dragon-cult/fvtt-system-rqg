@@ -66,6 +66,7 @@ describe("allowedSpellCastData", () => {
     entryId,
     effectUuids: [],
     blockedReason: "",
+    applyId: "click",
   });
   const patch = (messageId: string) => ({ messageId, system: { state: "Resisted" } });
 

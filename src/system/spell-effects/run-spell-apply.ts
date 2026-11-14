@@ -1,4 +1,5 @@
-import { hasActiveGm, localize } from "../util";
+import { hasActiveGm } from "../util";
+import { queryActiveGm } from "./query-active-gm";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 import { spellBehaviorOf, type SpellBehavior } from "./spell-behavior";
 import {
@@ -6,9 +7,6 @@ import {
   runApplyRequest,
   type SpellApplyRequestData,
 } from "./spell-apply-request";
-import { RqgLogger } from "../logging/rqg-logger";
-
-const logger = new RqgLogger("run-spell-apply");
 
 /** What a player's client sends the GM to run a spell behavior's `apply` that is `runAsGm`. */
 export type ApplySpellBehaviorQueryData = SpellApplyRequestData;
@@ -30,37 +28,6 @@ export async function runSpellApply(
     return behavior.apply(scope);
   }
   return queryActiveGm("rqg.applySpellBehavior", applyRequestData(scope), spellName);
-}
-
-const applyQueryTimeoutMs = 60_000;
-
-type RqgQuery =
-  "rqg.applySpellBehavior" | "rqg.createSpellArea" | "rqg.summon" | "rqg.continueSpellCast";
-
-/**
- * Run one of the system's queries on the active GM's client, for what players may not do. Warns,
- * naming the spell, when no GM is logged in or the query fails.
- */
-export async function queryActiveGm<Q extends RqgQuery>(
-  name: Q,
-  data: Parameters<CONFIG.Queries[Q]>[0],
-  spellName: string,
-): Promise<Awaited<ReturnType<CONFIG.Queries[Q]>> | undefined> {
-  const gm = game.users?.activeGM;
-  if (!hasActiveGm(spellName) || !gm) {
-    return undefined;
-  }
-  const needsGm = localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName });
-  // A GM who leaves mid-Apply would otherwise keep that Apply waiting until a reload
-  const timeout = name === "rqg.continueSpellCast" ? undefined : applyQueryTimeoutMs;
-  try {
-    return (await gm.query(name, data as any, { timeout })) as Awaited<
-      ReturnType<CONFIG.Queries[Q]>
-    >;
-  } catch (error) {
-    logger.warn(needsGm, undefined, error);
-    return undefined;
-  }
 }
 
 /**

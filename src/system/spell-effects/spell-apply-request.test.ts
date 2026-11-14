@@ -3,14 +3,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   applyRequestOf,
   bindApplyRequest,
-  clearApplyClaims,
-  isClaimedByOtherApply,
-  releaseApplyClaim,
   runApplyRequest,
   runClaimedApply,
   type SpellApplyRequest,
 } from "./spell-apply-request";
 import { targetOf } from "./spell-cast-runner";
+import { clearApplyClaims, isClaimedByOtherApply, releaseApplyClaim } from "./spell-apply-claims";
 
 vi.mock("./spell-cast-runner", () => ({
   castSpellOf: vi.fn(async () => ({ name: "Summon Earth Elemental", uuid: "Actor.c.Item.s" })),
@@ -106,7 +104,7 @@ describe("runClaimedApply", () => {
     expect(real).toBe(applied);
   });
 
-  it("keeps the claim of a running Apply, whatever frees it meanwhile", async () => {
+  it("keeps the claim of a running Apply until it ends, then frees it as asked", async () => {
     const { promise: running, resolve: finish } = Promise.withResolvers<SpellEffectApplied>();
     const first = runClaimedApply(request("click-1"), owner, () => running);
     await vi.waitFor(() => expect(isClaimedByOtherApply("record", "entry", "click-2")).toBe(true));
@@ -117,6 +115,8 @@ describe("runClaimedApply", () => {
     expect(await runClaimedApply(request("click-2"), gm, async () => applied)).toBeUndefined();
     finish(applied);
     await first;
+    // A ruling made while it ran frees the entry once it ended, though its work did something
+    expect(await runClaimedApply(request("click-2"), gm, async () => applied)).toBe(applied);
   });
 
   it("tells an Apply's result from another Apply's holding the claim", async () => {
@@ -124,7 +124,6 @@ describe("runClaimedApply", () => {
     await runClaimedApply(request("click-1"), owner, async () => applied);
     expect(isClaimedByOtherApply("record", "entry", "click-1")).toBe(false);
     expect(isClaimedByOtherApply("record", "entry", "click-2")).toBe(true);
-    expect(isClaimedByOtherApply("record", "entry", undefined)).toBe(true);
   });
 
   it("frees the entry once its record notes it applied", async () => {

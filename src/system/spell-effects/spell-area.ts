@@ -12,11 +12,10 @@ import {
   type SpellEffectCast,
   type SpellEffectDuration,
 } from "./apply-spell-effect";
-import { summonerToken } from "./token-cells";
-import { actorRefUuid } from "../../data-model/shared/actor-ref";
+import { summonerDocument, summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
-import { queryActiveGm } from "./run-spell-apply";
+import { queryActiveGm } from "./query-active-gm";
 import { createAnchored } from "./spell-anchor";
 import {
   applyRequestData,
@@ -212,14 +211,14 @@ async function createAreaAsGm(
   data: CreateSpellAreaQueryData,
 ): Promise<SpellEffectApplied | undefined> {
   const spell = scope.spell;
-  const casterUuid = actorRefUuid(scope.cast.caster);
   const [caster, expected] = (await Promise.all([
     fromUuid(data.casterTokenUuid),
-    casterUuid ? fromUuid(casterUuid) : scope.targetActor,
+    summonerDocument(scope),
   ])) as [TokenDocument | null, { uuid?: string } | null];
   const scene = caster?.parent;
   const casterActor = caster?.actor as RqgActor | null | undefined;
-  // The token placed from must be the one summonerToken found for this cast on the client
+  // The token placed from must be the caster's (summonerToken's); which of a linked caster's
+  // tokens depends on the scene the placing client views, so any of them will do
   const isCasterToken =
     !!expected?.uuid && (caster?.uuid === expected.uuid || casterActor?.uuid === expected.uuid);
   if (!scene || !casterActor || !isCasterToken) {
