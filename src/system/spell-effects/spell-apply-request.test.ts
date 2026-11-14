@@ -4,6 +4,7 @@ import {
   applyRequestOf,
   bindApplyRequest,
   clearApplyClaims,
+  releaseApplyClaim,
   runApplyRequest,
   runClaimedApply,
   type SpellApplyRequest,
@@ -93,6 +94,12 @@ describe("runClaimedApply", () => {
   it("lets more work of the same Apply run, e.g. a behavior summoning twice", async () => {
     await runClaimedApply(request("click-1"), owner, async () => applied);
     expect(await runClaimedApply(request("click-1"), owner, async () => applied)).toBe(applied);
+  });
+
+  it("frees the entry once its record notes it applied", async () => {
+    await runClaimedApply(request("click-1"), owner, async () => applied);
+    releaseApplyClaim("record", "entry");
+    expect(await runClaimedApply(request("click-2"), owner, async () => applied)).toBe(applied);
   });
 
   it("frees the entry when the work did nothing, e.g. the placement was cancelled", async () => {

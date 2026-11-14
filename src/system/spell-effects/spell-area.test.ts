@@ -44,6 +44,7 @@ describe("handleCreateSpellAreaQuery", () => {
     targetActorUuid: "",
     targetName: "",
     cast: {} as any,
+    casterTokenUuid: "",
     shape: { type: "circle", x: 0, y: 0, radius: 100 } as any,
     duration: null,
     visible: false,

@@ -136,7 +136,7 @@ export async function summon(
     options: options,
     position: position,
   };
-  return game.user?.isGM
+  return game.users?.activeGM?.isSelf && game.user
     ? handleSummonQuery(data, { user: game.user })
     : queryActiveGm("rqg.summon", data, spellName);
 }
@@ -144,7 +144,7 @@ export async function summon(
 /** Make a summoned token for the summon request of a user, on the GM's client. */
 export async function handleSummonQuery(
   data: SummonQueryData,
-  { user }: { user: User },
+  { user }: RqgQueryContext,
 ): Promise<SpellEffectApplied | undefined> {
   return runApplyRequest(data, user, (scope) => summonAsGm(scope, data));
 }

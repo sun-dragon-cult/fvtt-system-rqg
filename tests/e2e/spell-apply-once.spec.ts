@@ -110,6 +110,7 @@ async function createCasts(page: Page) {
         queriedId: queried.id as string,
         spellUuid: spell.uuid as string,
         actorUuid: actor.uuid as string,
+        tokenUuid: token.uuid as string,
         tokenCenter: token.getCenterPoint() as { x: number; y: number },
       };
     },
@@ -172,6 +173,7 @@ test("spell Apply runs once, and the GM checks spell requests", async ({ page, b
           targetActorUuid: s.actorUuid,
           targetName: "",
           cast: {},
+          casterTokenUuid: s.tokenUuid,
           shape: { type: "circle", ...s.tokenCenter, radius: 100, gridBased: true },
           duration: { value: 10, units: "minutes" },
           visible: false,

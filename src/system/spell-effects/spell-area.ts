@@ -13,6 +13,7 @@ import {
   type SpellEffectDuration,
 } from "./apply-spell-effect";
 import { summonerToken } from "./token-cells";
+import { actorRefUuid } from "../../data-model/shared/actor-ref";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
 import { queryActiveGm } from "./run-spell-apply";
@@ -101,6 +102,8 @@ export type SpellAcrossScope = {
 
 /** What a player's client sends the GM to make a spell area, since players may not create Regions. */
 export type CreateSpellAreaQueryData = SpellApplyRequestData & {
+  /** The caster's token the area was placed from. */
+  casterTokenUuid: string;
   shape: PlacedAreaShape;
   duration: SpellEffectDuration | null;
   visible: boolean;
@@ -186,11 +189,12 @@ export async function createArea(
   }
   const data: CreateSpellAreaQueryData = {
     ...applyRequestData(scope),
+    casterTokenUuid: caster.uuid ?? "",
     shape: shape,
     duration: options.duration === undefined ? (scope.duration ?? null) : options.duration,
     visible: !!options.visible,
   };
-  return game.user?.isGM
+  return game.users?.activeGM?.isSelf && game.user
     ? handleCreateSpellAreaQuery(data, { user: game.user })
     : queryActiveGm("rqg.createSpellArea", data, spellName);
 }
@@ -198,7 +202,7 @@ export async function createArea(
 /** Make a spell area for the createArea request of a user, on the GM's client. */
 export async function handleCreateSpellAreaQuery(
   data: CreateSpellAreaQueryData,
-  { user }: { user: User },
+  { user }: RqgQueryContext,
 ): Promise<SpellEffectApplied | undefined> {
   return runApplyRequest(data, user, (scope) => createAreaAsGm(scope, data));
 }
@@ -208,11 +212,17 @@ async function createAreaAsGm(
   data: CreateSpellAreaQueryData,
 ): Promise<SpellEffectApplied | undefined> {
   const spell = scope.spell;
-  // The caster's token, found the same way as on the client that placed the area
-  const caster = await summonerToken(scope);
+  const casterUuid = actorRefUuid(scope.cast.caster);
+  const [caster, expected] = (await Promise.all([
+    fromUuid(data.casterTokenUuid),
+    casterUuid ? fromUuid(casterUuid) : scope.targetActor,
+  ])) as [TokenDocument | null, { uuid?: string } | null];
   const scene = caster?.parent;
   const casterActor = caster?.actor as RqgActor | null | undefined;
-  if (!scene || !casterActor) {
+  // The token placed from must be the one summonerToken found for this cast on the client
+  const isCasterToken =
+    !!expected?.uuid && (caster?.uuid === expected.uuid || casterActor?.uuid === expected.uuid);
+  if (!scene || !casterActor || !isCasterToken) {
     return undefined;
   }
   const provenance = spellProvenance(spell, scope.cast);

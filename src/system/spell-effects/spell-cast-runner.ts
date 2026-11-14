@@ -24,6 +24,7 @@ import { interceptIncomingSpell } from "./incoming-spell";
 import { reflectsSpell } from "./reflect-spell";
 import { spellBehaviorOf } from "./spell-behavior";
 import { queryActiveGm } from "./run-spell-apply";
+import { isOwnedBy, releaseApplyClaim } from "./spell-apply-request";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 
@@ -78,6 +79,13 @@ function runQueued(data: ContinueSpellCastData): Promise<void> {
   const previous = queues.get(data.messageId) ?? Promise.resolve();
   const next = previous
     .then(() => continueOnGm(data))
+    .then(() => {
+      for (const input of data.inputs) {
+        if (input.kind === "applied") {
+          releaseApplyClaim(data.messageId, input.entryId);
+        }
+      }
+    })
     .catch((error: unknown) => logger.error(ERR.spellCastNotContinued, { data }, error));
   queues.set(data.messageId, next);
   return next;
@@ -419,7 +427,7 @@ export function allowedSpellCastData(
 /** Continue a cast for a client, with what its sender may ask for. */
 export function handleContinueSpellCastQuery(
   data: ContinueSpellCastData,
-  { user }: { user: User },
+  { user }: RqgQueryContext,
 ): Promise<void> {
   const message = game.messages?.get(data?.messageId ?? "") as RecordMessage | undefined;
   if (!message || !isSpellCastRecordMessage(message as any)) {
@@ -427,12 +435,7 @@ export function handleContinueSpellCastQuery(
   }
   const allowed = allowedSpellCastData(data, recordOf(message), {
     isGM: user.isGM,
-    ownsTarget: (entry) =>
-      !!(
-        fromUuidSync(actorRefUuid(entry)) as {
-          testUserPermission?(user: User, level: string): boolean;
-        } | null
-      )?.testUserPermission?.(user, "OWNER"),
+    ownsTarget: (entry) => isOwnedBy(fromUuidSync(actorRefUuid(entry)), user),
   });
   if (allowed.inputs.length < (data.inputs?.length ?? 0)) {
     logger.warn("Dropped spell cast inputs the sender may not give", { notify: false }, data);

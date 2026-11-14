@@ -62,14 +62,10 @@ type Claim = { applyId: string; running: number; worked: boolean };
 /** Entries the active GM is doing spell work for, by `castMessageId.entryId`. */
 const claims = new Map<string, Claim>();
 
-function isOwnedBy(document: unknown, user: User): boolean {
-  return (
-    !!document &&
-    (document as { testUserPermission(user: User, level: string): boolean }).testUserPermission(
-      user,
-      "OWNER",
-    )
-  );
+export function isOwnedBy(document: unknown, user: User): boolean {
+  return !!(
+    document as { testUserPermission?(user: User, level: string): boolean } | null | undefined
+  )?.testUserPermission?.(user, "OWNER");
 }
 
 /**
@@ -164,6 +160,11 @@ export async function runApplyRequest(
   }
   const scope = await requestedApplyScope(data, user);
   return scope ? work(scope) : undefined;
+}
+
+/** Free an entry's claim once its cast record notes it applied. */
+export function releaseApplyClaim(castMessageId: string, entryId: string): void {
+  claims.delete(`${castMessageId}.${entryId}`);
 }
 
 /** Forget every claim; for tests. */

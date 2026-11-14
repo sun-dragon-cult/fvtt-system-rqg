@@ -63,7 +63,7 @@ export async function queryActiveGm<Q extends RqgQuery>(
  */
 export async function handleApplySpellBehaviorQuery(
   data: ApplySpellBehaviorQueryData,
-  { user }: { user: User },
+  { user }: RqgQueryContext,
 ): Promise<SpellEffectApplied | undefined> {
   if (!data.request && !user.isGM) {
     return undefined;
