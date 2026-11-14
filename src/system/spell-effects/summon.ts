@@ -9,7 +9,7 @@ import {
 } from "./apply-spell-effect";
 import { casterTokenOnScene } from "./spell-area-targets";
 import { placeSummonedToken } from "./place-summoned-token";
-import { queryActiveGm } from "./run-spell-apply";
+import { queryActiveGm } from "./query-active-gm";
 import {
   applyRequestData,
   runApplyRequest,

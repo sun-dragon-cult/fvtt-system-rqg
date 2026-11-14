@@ -23,8 +23,8 @@ import { castAcrossSpellAreas, tokenOfUuid } from "./spell-across";
 import { interceptIncomingSpell } from "./incoming-spell";
 import { reflectsSpell } from "./reflect-spell";
 import { spellBehaviorOf } from "./spell-behavior";
-import { queryActiveGm } from "./run-spell-apply";
-import { isClaimedByOtherApply, isOwnedBy, releaseApplyClaim } from "./spell-apply-request";
+import { queryActiveGm } from "./query-active-gm";
+import { isClaimedByOtherApply, isOwnedBy, releaseApplyClaim } from "./spell-apply-claims";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 
@@ -64,7 +64,7 @@ export async function continueSpellCast(
 ): Promise<void> {
   const data: ContinueSpellCastData = { messageId, inputs, requestPatch };
   if (game.user?.isGM && game.users?.activeGM?.isSelf) {
-    await runQueued(data);
+    await runQueued(data, true);
     return;
   }
   const message = game.messages?.get(messageId) as RecordMessage | undefined;
@@ -74,8 +74,12 @@ export async function continueSpellCast(
 
 const queues = new Map<string, Promise<unknown>>();
 
-/** One step per record at a time, so two inputs arriving together can't overwrite each other. */
-function runQueued(data: ContinueSpellCastData): Promise<void> {
+/**
+ * One step per record at a time, so two inputs arriving together can't overwrite each other. A
+ * GM's Apply result settles its entry even while another Apply holds the claim, so a GM can finish
+ * an entry whose Apply never reported.
+ */
+function runQueued(data: ContinueSpellCastData, fromGm: boolean): Promise<void> {
   const previous = queues.get(data.messageId) ?? Promise.resolve();
   const next = previous
     .then(async () => {
@@ -83,6 +87,7 @@ function runQueued(data: ContinueSpellCastData): Promise<void> {
       const inputs = data.inputs.filter(
         (input) =>
           input.kind !== "applied" ||
+          fromGm ||
           !isClaimedByOtherApply(data.messageId, input.entryId, input.applyId),
       );
       await continueOnGm({ ...data, inputs });
@@ -439,14 +444,14 @@ export function handleContinueSpellCastQuery(
   if (!message || !isSpellCastRecordMessage(message as any)) {
     return Promise.resolve();
   }
-  const allowed = allowedSpellCastData(data, recordOf(message), {
+  const allowed = allowedSpellCastData(data, message.system as Pick<SpellCastRecord, "targets">, {
     isGM: user.isGM,
     ownsTarget: (entry) => isOwnedBy(fromUuidSync(actorRefUuid(entry), { strict: false }), user),
   });
   if (allowed.inputs.length < (data.inputs?.length ?? 0)) {
     logger.warn("Dropped spell cast inputs the sender may not give", { notify: false }, data);
   }
-  return runQueued(allowed);
+  return runQueued(allowed, user.isGM);
 }
 
 export function initContinueSpellCastQuery(): void {

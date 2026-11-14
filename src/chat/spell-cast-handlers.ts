@@ -236,10 +236,10 @@ const applying = new Set<string>();
  */
 export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): Promise<void> {
   const clicked = clickedEntry(clickedButton);
-  const key = clicked ? `${clicked.record.id}.${clicked.entry.id}` : "";
   if (!clicked) {
     return;
   }
+  const key = `${clicked.record.id}.${clicked.entry.id}`;
   if (applying.has(key)) {
     ui.notifications?.info(localize("RQG.ChatMessage.SpellCast.ApplyInProgress"));
     return;

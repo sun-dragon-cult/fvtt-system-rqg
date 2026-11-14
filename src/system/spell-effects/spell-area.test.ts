@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { summonerToken } from "./token-cells";
-import { clearApplyClaims } from "./spell-apply-request";
+import { clearApplyClaims } from "./spell-apply-claims";
 import { areaExtent, handleCreateSpellAreaQuery, spellRangeInMeters } from "./spell-area";
 import { polygonAreaInMeters } from "./place-spell-area";
 

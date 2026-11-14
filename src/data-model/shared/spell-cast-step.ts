@@ -28,7 +28,7 @@ export type SpellCastInput =
       effectUuids: string[];
       blockedReason: string;
       /** The Apply that did it, so the GM can tell it from another Apply of the same entry. */
-      applyId?: string | undefined;
+      applyId: string;
     }
   | { kind: "assign"; entryId: string; targets: Omit<SpellCastTarget, "isCaster">[] };
 

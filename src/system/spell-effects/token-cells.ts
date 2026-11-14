@@ -35,13 +35,16 @@ export function nearestFreeCell(
   return best ? { col: best.col, row: best.row } : undefined;
 }
 
+/** Who a spell acts from: the caster's token or actor, or without a caster (token HUD "+") the target. */
+export async function summonerDocument(scope: SpellApplyScope): Promise<unknown> {
+  return actorRefUuid(scope.cast.caster)
+    ? await fromUuid(actorRefUuid(scope.cast.caster))
+    : scope.targetActor;
+}
+
 /** The token to summon next to: the caster's, or without a caster (token HUD "+") the target's. */
 export async function summonerToken(scope: SpellApplyScope): Promise<TokenDocument | undefined> {
-  return tokenOfDocument(
-    actorRefUuid(scope.cast.caster)
-      ? await fromUuid(actorRefUuid(scope.cast.caster))
-      : scope.targetActor,
-  );
+  return tokenOfDocument(await summonerDocument(scope));
 }
 
 /**

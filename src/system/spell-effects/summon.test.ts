@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { handleSummonQuery } from "./summon";
 import { summonerToken } from "./token-cells";
-import { clearApplyClaims } from "./spell-apply-request";
+import { clearApplyClaims } from "./spell-apply-claims";
 import { nearestFreeCell, summonedTokenCells, tokenCell } from "./token-cells";
 
 vi.mock("./token-cells", async (original) => ({
