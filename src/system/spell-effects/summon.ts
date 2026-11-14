@@ -24,11 +24,7 @@ import type { RqgItem } from "@items/rqg-item.ts";
 
 type Point = { x: number; y: number };
 
-/**
- * The Actor folder summoned actors are imported into, found by its flag so that renaming it or
- * changing the world's language doesn't make another. A folder made before it had the flag is
- * recognized by its localized name and given the flag.
- */
+/** Found by its flag, not its localized name, so a language change doesn't make a second one. */
 export async function summonedFolder(): Promise<Folder | undefined> {
   const actorFolders = game.folders?.filter((folder) => folder.type === "Actor") ?? [];
   const flagged = actorFolders.find((folder) => folder.getFlag(systemId, "summonedFolder"));

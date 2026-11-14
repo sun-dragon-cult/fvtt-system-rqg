@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, onTestFinished, vi } from "vitest";
 import { ActorTypeEnum } from "../data-model/actor-data/rqg-actor-data";
 
 const warnDeprecated = vi.hoisted(() => vi.fn());
@@ -285,9 +285,10 @@ describe("RqgActiveEffect.applyChange", () => {
     expect(warn).toHaveBeenCalledTimes(1);
   });
 
-  it("logs but does not toast a regex key that matches none of the actor's items", async () => {
+  it("neither logs nor toasts a regex key that matches none of the actor's items", async () => {
     const { RqgActiveEffect, warn } = await loadSubject();
     const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    onTestFinished(() => consoleWarn.mockRestore());
 
     const actor = makeCharacterActor();
     const effect = { parent: actor, uuid: "Actor.a1.ActiveEffect.axeTrance", disabled: false };
@@ -296,14 +297,14 @@ describe("RqgActiveEffect.applyChange", () => {
       routedChange("@~^i\\.skill\\.axe:system.effect.add.melee.attack", "add", "5", { effect }),
     );
 
-    expect(consoleWarn).toHaveBeenCalledTimes(1);
+    expect(consoleWarn).not.toHaveBeenCalled();
     expect(warn).not.toHaveBeenCalled();
-    consoleWarn.mockRestore();
   });
 
   it("toasts an rqid key that matches none of the actor's items", async () => {
     const { RqgActiveEffect, warn } = await loadSubject();
     const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    onTestFinished(() => consoleWarn.mockRestore());
 
     const actor = makeCharacterActor();
     const effect = { parent: actor, uuid: "Actor.a1.ActiveEffect.e1", disabled: false };
@@ -314,7 +315,6 @@ describe("RqgActiveEffect.applyChange", () => {
 
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn.mock.calls[0]![0]).toContain("RoutedKey.NoMatch");
-    consoleWarn.mockRestore();
   });
 
   it("skips a target whose system is not a DataModel without losing its siblings", async () => {

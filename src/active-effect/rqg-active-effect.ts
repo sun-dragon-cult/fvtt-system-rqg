@@ -378,15 +378,10 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
 
     const resolved = resolveRoutedTarget(selector, { targetActor, owningItem });
     if ("error" in resolved) {
-      // a regex reaching none of the actor's items is normal (Axe Trance on an actor with no axe)
-      const isNormalMiss = selector.kind === "regex" && resolved.error.reason === "no-match";
-      RqgActiveEffect.#warnRoutedKey(
-        effect,
-        change,
-        resolved.error.reason,
-        { actorName: targetDoc.name ?? "", ...resolved.error.detail },
-        isNormalMiss ? false : undefined,
-      );
+      RqgActiveEffect.#warnRoutedKey(effect, change, resolved.error.reason, {
+        actorName: targetDoc.name ?? "",
+        ...resolved.error.detail,
+      });
       return {};
     }
 

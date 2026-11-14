@@ -249,7 +249,6 @@ describe("initSpelledProjectiles", () => {
     await firedMissilesSettled();
 
     expect(arrow.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["speedart"]);
-    // its damage is rolled from its own effects when the defender resolves the attack
     expect(javelin.deleteEmbeddedDocuments).not.toHaveBeenCalled();
     expect(javelinActor.deleteEmbeddedDocuments).not.toHaveBeenCalled();
   });
