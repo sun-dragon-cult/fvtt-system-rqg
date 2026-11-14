@@ -77,17 +77,6 @@
       "title": "Resisted by",
       "description": "What the target can resist the spell with."
     },
-    "resistedWith": {
-      "type": "string",
-      "enum": [
-        "power",
-        "magicPoints"
-      ],
-      "minLength": 1,
-      "default": "power",
-      "title": "Resisted with",
-      "description": "The characteristic the target resists with."
-    },
     "targetKind": {
       "type": "string",
       "enum": [
@@ -191,7 +180,6 @@
     "isRitual",
     "isEnchantment",
     "resistedBy",
-    "resistedWith",
     "targetKind",
     "passesSpellBarriers",
     "isVariable",

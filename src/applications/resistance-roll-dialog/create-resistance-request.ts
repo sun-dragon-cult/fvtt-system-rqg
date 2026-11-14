@@ -38,6 +38,8 @@ export type CreateResistanceRequestParams = {
   otherModifierDescription?: string | undefined;
   rollMode: string;
   allowVoluntaryAccept: boolean;
+  /** The target has neither POW nor magic points: the card says so and the spell takes effect. */
+  cannotResist?: boolean | undefined;
   /** Phrases the outcome as the spell taking effect; false for a plain GM request. */
   isSpellCast?: boolean | undefined;
   /** What the check is about, e.g. the spell being resisted. */
@@ -112,7 +114,7 @@ export async function createResistanceRequest(
   );
 
   const chatSystemData: ResistanceRequestDataSourceData = {
-    state: params.waiting ? "Waiting" : "Requested",
+    state: params.cannotResist ? "Accepted" : params.waiting ? "Waiting" : "Requested",
     targetTokenOrActorUuid: params.targetTokenOrActorUuid,
     rollerSide: params.rollerSide,
     activeCharacteristics: rollerIsPassive
@@ -128,6 +130,7 @@ export async function createResistanceRequest(
     activeActorName: rollerIsPassive ? params.frozenActorName : undefined,
     passiveActorName: rollerIsPassive ? undefined : params.frozenActorName,
     allowVoluntaryAccept: params.allowVoluntaryAccept,
+    cannotResist: !!params.cannotResist,
     description: params.description,
     otherModifier: params.otherModifier,
     otherModifierDescription: params.otherModifierDescription,
@@ -165,7 +168,7 @@ export async function createResistanceRequest(
   const { whisper, blind } =
     spellCast && !hiddenReflection
       ? { whisper: [] as string[], blind: false }
-      : resolveResistanceRequestVisibility(params.rollMode, targetActor, true);
+      : resolveResistanceRequestVisibility(params.rollMode, targetActor, !params.cannotResist);
 
   // The flavor sits outside the card body but still inside the message element, so the same
   // ownership gate reaches it - a concealed spell's name is hidden there too.

@@ -39,7 +39,7 @@ export function encodeCharacteristics(names: (keyof Characteristics)[]): string 
   return names.join("+");
 }
 
-/** What a resistance side can put up: a characteristic, or current magic points (Turn Undead). */
+/** What a resistance side can put up: a characteristic, or current magic points when it has no POW. */
 export type ResistanceStat = keyof Characteristics | "magicPoints";
 
 export function decodeCharacteristics(value: string): ResistanceStat[] {
@@ -148,20 +148,44 @@ export function resolveActorFromUuid(uuid: string): RqgActor | undefined {
   return (doc instanceof TokenDocument ? doc.actor : doc) as RqgActor | undefined;
 }
 
-export function resolveCharacteristicValue(actor: RqgActor, name: ResistanceStat): number {
-  if (name === "magicPoints") {
-    return (actor.system as CharacterActor["system"]).attributes?.magicPoints?.value ?? 0;
-  }
-  const characteristics = (actor.system as unknown as { characteristics: Characteristics })
-    .characteristics;
-  return characteristics?.[name]?.value ?? 0;
+/**
+ * The stat a side puts up for `name`: a side without POW (empty or 0) resists with its current magic
+ * points instead (RBM p.6) - empty is how a creature without POW is stored, and POW 0 kills.
+ */
+export function resolveResistanceStat(actor: RqgActor, name: ResistanceStat): ResistanceStat {
+  return name === "power" && !hasPower(actor) ? "magicPoints" : name;
 }
 
-export function resolveCharacteristicLabel(name: ResistanceStat): string {
-  if (name === "magicPoints") {
+export function hasPower(actor: RqgActor): boolean {
+  return (readCharacteristic(actor, "power") ?? 0) > 0;
+}
+
+/** Neither POW nor magic points to resist with, so a POW resistance roll can't be resisted (RBM p.6). */
+export function cannotResistWithPower(actor: RqgActor): boolean {
+  return resolveCharacteristicValue(actor, "power") <= 0;
+}
+
+export function resolveCharacteristicValue(actor: RqgActor, name: ResistanceStat): number {
+  const stat = resolveResistanceStat(actor, name);
+  if (stat === "magicPoints") {
+    return (actor.system as CharacterActor["system"]).attributes?.magicPoints?.value ?? 0;
+  }
+  return readCharacteristic(actor, stat) ?? 0;
+}
+
+/** `name`'s label, or with `actor` the label of the stat that actor puts up for it. */
+export function resolveCharacteristicLabel(name: ResistanceStat, actor?: RqgActor): string {
+  const stat = actor ? resolveResistanceStat(actor, name) : name;
+  if (stat === "magicPoints") {
     return localize("RQG.Actor.Attributes.MagicPoints");
   }
-  return localize(`RQG.Actor.Characteristics.${name}`);
+  return localize(`RQG.Actor.Characteristics.${stat}`);
+}
+
+function readCharacteristic(actor: RqgActor, name: keyof Characteristics): number | null {
+  const characteristics = (actor.system as unknown as { characteristics: Characteristics })
+    .characteristics;
+  return characteristics?.[name]?.value ?? null;
 }
 
 /**
@@ -191,7 +215,7 @@ export function resolveCharacteristicSide(
   }
 
   const value = names.reduce((sum, name) => sum + resolveCharacteristicValue(sourceActor, name), 0);
-  const label = names.map((name) => resolveCharacteristicLabel(name)).join(" + ");
+  const label = names.map((name) => resolveCharacteristicLabel(name, sourceActor)).join(" + ");
   // A token's own name, like the attack card uses - it tells unlinked tokens apart and keeps a
   // GM-renamed token's actor hidden.
   const name = (fromUuidSync(tokenOrActorUuid) as { name?: string | null } | null)?.name;
@@ -237,7 +261,9 @@ export async function creditResistanceRollPowExperience(
     !rollerActor ||
     !isDocumentSubType<CharacterActor>(rollerActor, ActorTypeEnum.Character) ||
     roll.successLevel == null ||
-    !decodeCharacteristics(activeCharacteristicsEncoded).includes("power")
+    !decodeCharacteristics(activeCharacteristicsEncoded).includes("power") ||
+    // Resisted with magic points instead
+    !hasPower(rollerActor)
   ) {
     return;
   }

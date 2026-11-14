@@ -16,7 +16,6 @@ import {
 } from "../../data-model/shared/spell-cast-record";
 import { actorRefUuid } from "../../data-model/shared/actor-ref";
 import { Rqid } from "../api/rqid-api";
-import { SpellResistedWithEnum } from "../../data-model/item-data/spell";
 import type { ResistanceRequestChatMessage } from "../../chat/data-model/resistance-request-chat-message.types.ts";
 import { spellApplyScope, spellEffectCast, type SpellEffectCast } from "./apply-spell-effect";
 import { castAcrossSpellAreas, tokenOfUuid } from "./spell-across";
@@ -165,10 +164,11 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
   }
   const spell = await castSpellOf(record);
   // Dynamic imports to avoid a circular dependency through rqgItem.ts.
-  const [{ requestSpellResistance }, { resolveCharacteristicValue }] = await Promise.all([
-    import("../../data-model/shared/spell-resisted-by"),
-    import("../../applications/resistance-roll-dialog/resistance-roll-shared"),
-  ]);
+  const [{ requestSpellResistance }, { cannotResistWithPower, resolveCharacteristicValue }] =
+    await Promise.all([
+      import("../../data-model/shared/spell-resisted-by"),
+      import("../../applications/resistance-roll-dialog/resistance-roll-shared"),
+    ]);
   const actors = new Map<string, Awaited<ReturnType<typeof targetOf>>>();
   const target = async (entry: SpellCastEntry) => {
     const key = actorRefUuid(entry);
@@ -205,7 +205,11 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
     },
     areaTargetValue: (entry) => {
       const actor = actors.get(actorRefUuid(entry))?.actor;
-      return actor ? resolveCharacteristicValue(actor, record.resistedWith) : undefined;
+      return actor ? resolveCharacteristicValue(actor, "power") : undefined;
+    },
+    cannotResist: (entry) => {
+      const actor = actors.get(actorRefUuid(entry))?.actor;
+      return !!actor && cannotResistWithPower(actor);
     },
     requestResistance: async (entry) => {
       // The combined card is its own target's request
@@ -219,8 +223,7 @@ async function continueOnGm(data: ContinueSpellCastData): Promise<void> {
       const request = await requestSpellResistance({
         targetUuid: actorRefUuid(entry),
         casterUuid: actorRefUuid(record.caster),
-        // A reflected spell attacks its caster's POW with their POW when they cast it (RBM p.71)
-        resistedWith: reflectedFrom ? SpellResistedWithEnum.Power : record.resistedWith,
+        cannotResist: env.cannotResist(entry),
         rollMode: record.castRollMode,
         frozenValue: record.casterPower,
         spellCastMessageId: message.id ?? "",
@@ -307,6 +310,10 @@ async function writeStep(
     const ruling = rulings.get(entry.id);
     if (ruling) {
       patch["gmRuling"] = ruling;
+    }
+    if (entry.resolvedBy === "cannotResist" && !request.system.cannotResist) {
+      patch["state"] = "Accepted";
+      patch["cannotResist"] = true;
     }
     // A hidden cast's target only sees the request card, so it shows the applied result too
     if (

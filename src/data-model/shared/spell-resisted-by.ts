@@ -2,12 +2,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import { localize } from "../../system/util";
 import { casterTokenOnScene } from "../../system/spell-effects/spell-area-targets";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
-import {
-  isSingleTargetGate,
-  isSpiritCombatGate,
-  SpellResistedByEnum,
-  SpellResistedWithEnum,
-} from "../item-data/spell";
+import { isSingleTargetGate, isSpiritCombatGate, SpellResistedByEnum } from "../item-data/spell";
 import {
   canChooseSpellCastRollMode,
   getDefaultRollMode,
@@ -157,7 +152,6 @@ export async function resolveResistedSpellCastTarget(
 export async function postSpellCastResult(params: {
   target: ResistedSpellTarget;
   resistedBy: SpellResistedByEnum;
-  resistedWith: SpellResistedWithEnum;
   targetKind: string;
   castRoll: SpiritMagicRoll | RuneMagicRoll;
   casterActor: RqgActor;
@@ -165,7 +159,7 @@ export async function postSpellCastResult(params: {
   spellUuid: string;
   spellRqid: string;
 }): Promise<void> {
-  const { target, resistedBy, resistedWith, castRoll, casterActor, casterToken } = params;
+  const { target, resistedBy, castRoll, casterActor, casterToken } = params;
   const { spellUuid, spellRqid } = params;
   // Only a GM can hide a cast; a player's always posts a card the whole table can follow.
   const castRollMode = canChooseSpellCastRollMode()
@@ -185,8 +179,9 @@ export async function postSpellCastResult(params: {
     newId: () => foundry.utils.randomID(),
   });
   // Dynamic import to avoid a circular dependency through rqgItem.ts.
-  const { resolveCharacteristicLabel, resolveCharacteristicValue } =
+  const { resolveCharacteristicValue } =
     await import("../../applications/resistance-roll-dialog/resistance-roll-shared");
+  // A caster without POW casts with their magic points (RBM p.6)
   const casterPower = resolveCharacteristicValue(casterActor, "power");
   const areaRoll =
     resistedBy === SpellResistedByEnum.ResistanceRollArea &&
@@ -201,7 +196,6 @@ export async function postSpellCastResult(params: {
     casterPower: casterPower,
     castSuccessLevel: castRoll.successLevel ?? null,
     resistedBy: resistedBy,
-    resistedWith: resistedWith,
     castRollMode: castRollMode,
     castOptions: {
       levelUsed: castRoll.options.levelUsed ?? 0,
@@ -223,7 +217,6 @@ export async function postSpellCastResult(params: {
     ? await requestSpellResistance({
         targetUuid: actorRefUuid(only),
         casterUuid: actorRefUuid(caster),
-        resistedWith: resistedWith,
         rollMode: castRollMode,
         frozenValue: casterPower,
         entryId: only.id,
@@ -241,9 +234,7 @@ export async function postSpellCastResult(params: {
         content: await foundry.applications.handlebars.renderTemplate(
           templatePaths.spellCastChatMessage,
           {
-            areaResistanceText: areaRoll
-              ? areaResistanceText(areaRoll, resolveCharacteristicLabel(resistedWith), resistedWith)
-              : "",
+            areaResistanceText: areaRoll ? areaResistanceText(areaRoll) : "",
           },
         ),
         system: record,
@@ -258,14 +249,16 @@ export async function postSpellCastResult(params: {
 
 /**
  * Ask a spell's target for a resistance roll against the caster's POW - when the spell is cast,
- * or when Reflection sends it back at its caster. Returns the request card.
+ * or when Reflection sends it back at its caster. A side without POW puts up its current magic
+ * points instead (RBM p.6). Returns the request card.
  */
 export async function requestSpellResistance(params: {
   targetUuid: string;
   casterUuid: string;
-  resistedWith: SpellResistedWithEnum;
+  /** The target has neither POW nor magic points: the card only says the spell takes effect. */
+  cannotResist?: boolean | undefined;
   rollMode: string;
-  /** The caster's POW when they cast it. */
+  /** The caster's POW, or magic points without POW, when they cast it. */
   frozenValue: number;
   spellCast?: CreateResistanceRequestParams["spellCast"];
   spellCastMessageId?: string | undefined;
@@ -276,29 +269,41 @@ export async function requestSpellResistance(params: {
   reflectedFrom?: CreateResistanceRequestParams["reflectedFrom"];
 }): Promise<ChatMessage | undefined> {
   // Dynamic imports to avoid a circular dependency through rqgItem.ts.
-  const [{ createResistanceRequest }, { resolveCharacteristicSide, resolveCharacteristicLabel }] =
-    await Promise.all([
-      import("../../applications/resistance-roll-dialog/create-resistance-request"),
-      import("../../applications/resistance-roll-dialog/resistance-roll-shared"),
-    ]);
+  const [
+    { createResistanceRequest },
+    {
+      resolveActorFromUuid,
+      resolveCharacteristicSide,
+      resolveCharacteristicLabel,
+      resolveResistanceStat,
+    },
+  ] = await Promise.all([
+    import("../../applications/resistance-roll-dialog/create-resistance-request"),
+    import("../../applications/resistance-roll-dialog/resistance-roll-shared"),
+  ]);
   const caster = resolveCharacteristicSide(params.casterUuid, "power", "", 0, "");
+  const casterActor = resolveActorFromUuid(params.casterUuid);
+  const targetActor = resolveActorFromUuid(params.targetUuid);
   const hidden = isHiddenRollMode(params.rollMode as foundry.dice.Roll.Mode);
   return createResistanceRequest({
     targetTokenOrActorUuid: params.targetUuid,
     rollerSide: "passive",
-    rollerCharacteristics: params.resistedWith,
+    // Read live off the target's sheet, so POW or, without it, magic points
+    rollerCharacteristics: "power",
     frozenValue: params.frozenValue,
-    frozenCharacteristics: "power",
+    // Only POW vs POW earns a POW gain roll
+    frozenCharacteristics: casterActor ? resolveResistanceStat(casterActor, "power") : "power",
     // A hidden cast gives the target nothing to identify who or what is testing them, so the
     // caster neither names nor speaks the card.
     frozenActorName: hidden ? undefined : caster.actorName,
     frozenTokenOrActorUuid: hidden ? undefined : params.casterUuid,
     activeLabel: caster.label,
-    passiveLabel: resolveCharacteristicLabel(params.resistedWith),
+    passiveLabel: resolveCharacteristicLabel("power", targetActor),
     otherModifier: 0,
     // "self" would hide the request from the very person who has to answer it.
     rollMode: hidden ? (params.rollMode === "blind" ? "blind" : "gm") : "public",
     allowVoluntaryAccept: true,
+    cannotResist: params.cannotResist,
     isSpellCast: true,
     // Would leak the spell's name as the responder dialog's title.
     description: undefined,
@@ -321,14 +326,9 @@ async function rollAreaDie(rollMode: foundry.dice.Roll.Mode): Promise<number> {
   return roll.total ?? 100;
 }
 
-function areaResistanceText(
-  area: { roll: number; casterValue: number },
-  statLabel: string,
-  resistedWith: SpellResistedWithEnum,
-): string {
-  // Anyone has some POW, while magic points can run out
-  const lowestValue = resistedWith === SpellResistedWithEnum.MagicPoints ? 0 : 1;
-  const threshold = areaResistanceThreshold(area.casterValue, area.roll, lowestValue);
+function areaResistanceText(area: { roll: number; casterValue: number }): string {
+  // A target with neither POW nor magic points is affected whatever the roll, so 1 is the lowest
+  const threshold = areaResistanceThreshold(area.casterValue, area.roll, 1);
   const key =
     threshold === "all"
       ? "RQG.ChatMessage.SpellCast.AreaResistance.AffectsAll"
@@ -338,6 +338,6 @@ function areaResistanceText(
   return localize(key, {
     roll: String(area.roll),
     value: typeof threshold === "number" ? String(threshold) : "",
-    stat: statLabel,
+    stat: localize("RQG.Actor.Characteristics.power"),
   });
 }
