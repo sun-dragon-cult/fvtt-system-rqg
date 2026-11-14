@@ -13,7 +13,8 @@ const logger = new RqgLogger("SpelledProjectile");
 
 // Speedart, Multimissile, Firearrow and the like are cast on one missile and used up when it is
 // fired (RBM p.114, p.117, p.119), so the enchanted missile is split off its stack. A thrown
-// weapon is the missile itself, so its spells are used up when it is thrown.
+// weapon's spells are not spent when it is thrown: its damage is rolled at defence from its own
+// effects, and nothing tells a per-missile spell on it from one lasting its duration (Sureshot).
 
 /** The projectile a launcher (e.g. a bow) fires. Thrown weapons are their own projectile. */
 export function getLoadedProjectile(launcher: WeaponItem): WeaponItem | undefined {
@@ -67,7 +68,12 @@ export async function splitOffProjectile(item: WeaponItem): Promise<WeaponItem> 
   if (!created) {
     return item;
   }
-  await item.update({ system: { quantity: item.system.quantity - 1 } });
+  try {
+    await item.update({ system: { quantity: item.system.quantity - 1 } });
+  } catch (error) {
+    await actor.deleteEmbeddedDocuments("Item", [created.id ?? ""]);
+    throw error;
+  }
   await reloadLaunchers(actor, item.id ?? "", created.id ?? "");
   return created as WeaponItem;
 }
@@ -148,7 +154,7 @@ export function initSpelledProjectiles(): void {
     const projectile = attack.projectile;
     if (projectile) {
       const spent = runMissileFiredEntries(weapon, projectile, attack)
-        .then(() => spendProjectileSpells(projectile))
+        .then(() => (projectile !== weapon ? spendProjectileSpells(projectile) : undefined))
         .catch((error: unknown) =>
           logger.error(ERR.projectileSpellsNotSpent, { projectile: projectile.uuid }, error),
         );

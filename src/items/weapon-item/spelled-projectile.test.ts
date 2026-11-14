@@ -101,6 +101,17 @@ describe("splitOffProjectile", () => {
     expect(stack.system.quantity).toBe(20);
   });
 
+  it("removes the split missile again when the stack can't be decremented", async () => {
+    const stack = makeItem({ id: "stack", system: { quantity: 20 } });
+    const actor = makeActor([stack]);
+    stack.update.mockRejectedValue(new Error("conflict"));
+
+    await expect(splitOffProjectile(stack)).rejects.toThrow("conflict");
+
+    expect(actor.deleteEmbeddedDocuments).toHaveBeenCalledWith("Item", ["split"]);
+    expect(stack.system.quantity).toBe(20);
+  });
+
   it("loads the split missile in the launchers that had the stack loaded", async () => {
     const stack = makeItem({ id: "stack", system: { quantity: 20 } });
     const bow = makeItem({ id: "bow", system: { isProjectile: false, projectileId: "stack" } });
@@ -221,7 +232,7 @@ describe("initSpelledProjectiles", () => {
     return { arrow, stack, actor };
   }
 
-  it("spends the spells on a missile fired from a launcher and on a thrown weapon", async () => {
+  it("spends the spells on a missile fired from a launcher, not on a thrown weapon", async () => {
     const speedart: any = { id: "speedart", active: true, system: { spell: {} } };
     const { arrow, actor } = splitArrow([speedart]);
     const bow = makeItem({ id: "bow" });
@@ -238,10 +249,8 @@ describe("initSpelledProjectiles", () => {
     await firedMissilesSettled();
 
     expect(arrow.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["speedart"]);
-    expect(javelin.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", [
-      "javelin-speedart",
-    ]);
-    // A thrown weapon is not split off a stack, so there is nothing to return it to
+    // its damage is rolled from its own effects when the defender resolves the attack
+    expect(javelin.deleteEmbeddedDocuments).not.toHaveBeenCalled();
     expect(javelinActor.deleteEmbeddedDocuments).not.toHaveBeenCalled();
   });
 

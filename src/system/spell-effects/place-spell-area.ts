@@ -269,8 +269,8 @@ export function cornerOutOfReach(
 
 /**
  * Click the corners of an area, like a ward's four wands, snapped to the grid, each within range
- * and sight of the caster. The area may not exceed `maxArea` square meters. Right click takes back the last corner, or cancels with none;
- * Escape cancels.
+ * and sight of the caster. The area may not exceed `maxArea` square meters. Right click takes back
+ * the last corner, or cancels with none; Escape cancels.
  */
 function pickPolygon(
   corners: number,
