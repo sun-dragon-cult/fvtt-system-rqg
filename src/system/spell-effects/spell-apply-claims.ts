@@ -28,13 +28,13 @@ export function isClaimedByOtherApply(
 
 /**
  * Claim the entry for `applyId`, or join its claim; undefined when another Apply holds it. Call
- * `finishClaim` when the work is done.
+ * the returned `finish` when the work is done; the claim goes once nothing runs and it isn't needed.
  */
 export function takeClaim(
   castMessageId: string,
   entryId: string,
   applyId: string,
-): Claim | undefined {
+): { finish(worked: boolean): void } | undefined {
   const key = claimKey(castMessageId, entryId);
   const existing = claims.get(key);
   if (existing && existing.applyId !== applyId) {
@@ -43,22 +43,15 @@ export function takeClaim(
   const claim = existing ?? { applyId, running: 0, worked: false, released: false };
   claims.set(key, claim);
   claim.running++;
-  return claim;
-}
-
-/** End one piece of work under a claim; the claim goes once nothing runs and it isn't needed. */
-export function finishClaim(
-  castMessageId: string,
-  entryId: string,
-  claim: Claim,
-  worked: boolean,
-): void {
-  claim.worked ||= worked;
-  claim.running--;
-  const key = claimKey(castMessageId, entryId);
-  if (!claim.running && (claim.released || !claim.worked) && claims.get(key) === claim) {
-    claims.delete(key);
-  }
+  return {
+    finish: (worked) => {
+      claim.worked ||= worked;
+      claim.running--;
+      if (!claim.running && (claim.released || !claim.worked) && claims.get(key) === claim) {
+        claims.delete(key);
+      }
+    },
+  };
 }
 
 /**

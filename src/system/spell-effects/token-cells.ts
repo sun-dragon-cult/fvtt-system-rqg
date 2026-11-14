@@ -37,9 +37,8 @@ export function nearestFreeCell(
 
 /** Who a spell acts from: the caster's token or actor, or without a caster (token HUD "+") the target. */
 export async function summonerDocument(scope: SpellApplyScope): Promise<unknown> {
-  return actorRefUuid(scope.cast.caster)
-    ? await fromUuid(actorRefUuid(scope.cast.caster))
-    : scope.targetActor;
+  const casterUuid = actorRefUuid(scope.cast.caster);
+  return casterUuid ? await fromUuid(casterUuid) : scope.targetActor;
 }
 
 /** The token to summon next to: the caster's, or without a caster (token HUD "+") the target's. */

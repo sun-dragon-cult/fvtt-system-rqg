@@ -13,7 +13,6 @@ import {
 } from "./apply-spell-effect";
 import { castSpellOf, recordCast, targetOf } from "./spell-cast-runner";
 import {
-  finishClaim,
   isClaimedByOtherApply,
   isOwnedBy,
   releaseApplyClaim,
@@ -119,7 +118,7 @@ export async function runClaimedApply(
     );
     return result;
   } finally {
-    finishClaim(castMessageId, entryId, claim, !!result);
+    claim.finish(!!result);
   }
 }
 
@@ -127,7 +126,7 @@ export async function runClaimedApply(
  * The scope of a request with no cast record (the token HUD "+"), taken from the request itself:
  * only when the sender owns its target and the caster it names.
  */
-export async function requestedApplyScope(
+async function requestedApplyScope(
   data: SpellApplyRequestData,
   user: User,
 ): Promise<SpellApplyScope | undefined> {
