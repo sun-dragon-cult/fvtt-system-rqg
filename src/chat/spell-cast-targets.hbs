@@ -14,6 +14,10 @@
       {{/if}}
     </div>
     <div class="spell-cast-target-detail">
+      {{#if reachLabel}}
+        <span class="spell-cast-target-reach"
+              data-tooltip="{{localize "RQG.ChatMessage.SpellCast.ReachWarningTooltip"}}"><i class="fa-solid fa-triangle-exclamation" inert></i> {{reachLabel}}</span>
+      {{/if}}
       {{#if applied}}
         <span class="spell-cast-applied">{{localize "RQG.ChatMessage.SpellCast.Applied"}}</span>
       {{else if resolved}}

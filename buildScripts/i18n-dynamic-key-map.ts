@@ -56,6 +56,7 @@ import {
   spellStackingBlockedReasons,
   spellStackingRules,
 } from "../src/active-effect/data-model/spell-effect.defs";
+import { spellTargetReachWarnings } from "../src/system/spell-effects/spell-target-reach.defs";
 
 // --- Characteristics (defined inline in schema, no separate enum) ---
 const characteristics = [
@@ -124,6 +125,7 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   // ChatMessage
   "RQG.ChatMessage.ResistanceRequest.State.": [...resistanceRequestState],
   "RQG.ChatMessage.SpellCast.State.": [...spellTargetOutcomeState],
+  "RQG.Dialog.SpellCast.Reach.": [...spellTargetReachWarnings],
   "RQG.ChatMessage.SpellCast.Reason.": [
     ...spellTargetOutcomeResolvedBy.filter((r) => r !== "resistanceRoll"),
     "resistanceOvercame",

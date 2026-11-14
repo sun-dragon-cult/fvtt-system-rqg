@@ -25,6 +25,8 @@ import {
 } from "../data-model/shared/spell-cast-record";
 import { actorRefUuid } from "../data-model/shared/actor-ref";
 import { bindApplyRequest } from "../system/spell-effects/spell-apply-request";
+import { spellTargetReachLabel } from "../system/spell-effects/spell-target-reach";
+import type { SpellTargetReachWarning } from "../system/spell-effects/spell-target-reach.defs";
 
 const rulingIcons: Record<SpellTargetRulingState, string> = {
   affected: "fa-solid fa-check",
@@ -63,6 +65,7 @@ type TargetRow = {
   resolvedBy: SpellTargetOutcomeResolvedBy | null | undefined;
   effectUuids: string[];
   blockedReason: string;
+  reachWarning: SpellTargetReachWarning;
 };
 
 function reasonKey(row: TargetRow): string | undefined {
@@ -80,6 +83,7 @@ function entryRow(entry: SpellCastEntry): TargetRow {
     resolvedBy: entry.resolvedBy,
     effectUuids: entry.effectUuids,
     blockedReason: entry.effectBlockedReason,
+    reachWarning: entry.reachWarning ?? "",
   };
 }
 
@@ -111,6 +115,7 @@ function targetRows(message: ChatMessage): TargetRow[] {
           resolvedBy: outcome.resolvedBy,
           effectUuids: system.appliedEffectUuids ?? [],
           blockedReason: system.effectBlockedReason ?? "",
+          reachWarning: "",
         },
       ];
 }
@@ -176,6 +181,7 @@ export async function renderSpellCastTargets(message: ChatMessage): Promise<stri
       // Only the target's owner applies it, so a hostile target's items are listed to the GM alone.
       canApply: !!spell && !!record && row.state === "affected" && !settled && isOwner,
       name: targetName(row.targetUuid, !!gateLabels),
+      reachLabel: spellTargetReachLabel(row.reachWarning),
       state: row.state,
       stateLabel:
         row.state === "pending" && gateLabels

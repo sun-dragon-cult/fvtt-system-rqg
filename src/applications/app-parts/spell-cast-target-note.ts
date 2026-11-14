@@ -16,6 +16,11 @@ import {
   isTokenTargetKind,
 } from "../../data-model/item-data/spell";
 import { applyTargetTokenSelect, buildTargetTokenSelect } from "./target-token-select";
+import {
+  spellTargetReachChecker,
+  spellTargetReachLabel,
+} from "../../system/spell-effects/spell-target-reach";
+import type { SpellTargetReachWarning } from "../../system/spell-effects/spell-target-reach.defs";
 
 export type SpellCastTargetNote = {
   /** Comma-joined target names, or the "nothing targeted" label. */
@@ -35,8 +40,8 @@ export type SpellCastTargetNote = {
  * What the cast dialog says about the current targets. A spell resolved by resistance rolls or
  * gated on spirit combat, or one limited to `maxTargets` (one for most, see spellMaxTargets),
  * constrains them; any other may be cast at any number of tokens, or none. A spell cast at a token
- * gets a picker for one target. A spell that goes on its caster whatever is targeted names the
- * caster.
+ * gets a picker for one target, which marks the tokens `reachWarningOf` finds beyond its reach. A
+ * spell that goes on its caster whatever is targeted names the caster.
  */
 export function buildSpellCastTargetNote(
   resistedBy: SpellResistedByEnum,
@@ -44,6 +49,7 @@ export function buildSpellCastTargetNote(
   casterToken: foundry.canvas.placeables.Token | undefined,
   maxTargets: number = Infinity,
   casterName: string = "",
+  reachWarningOf?: (token: foundry.canvas.placeables.Token) => SpellTargetReachWarning,
 ): SpellCastTargetNote {
   if (castsOnCasterOnly(targetKind, resistedBy)) {
     return {
@@ -85,7 +91,12 @@ export function buildSpellCastTargetNote(
   const showPicker =
     constrained ||
     (isTokenTargetKind(targetKind) && resistedBy !== SpellResistedByEnum.ResistanceRollArea);
-  const targetSelect = showPicker ? buildTargetTokenSelect(casterToken) : undefined;
+  const targetSelect = showPicker
+    ? buildTargetTokenSelect(
+        casterToken,
+        reachWarningOf && ((token) => spellTargetReachLabel(reachWarningOf(token))),
+      )
+    : undefined;
 
   return {
     targetName: targetNames || localize("RQG.Dialog.Common.NoTarget"),
@@ -172,6 +183,7 @@ export class SpellCastTargets {
       this.casterToken(),
       spellMaxTargets(this.spell, level),
       this.casterActor.name ?? "",
+      spellTargetReachChecker(this.spell, this.token, this.casterActor),
     );
   }
 
