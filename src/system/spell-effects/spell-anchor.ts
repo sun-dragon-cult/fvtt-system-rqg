@@ -81,20 +81,27 @@ export async function createAnchored(params: {
   return { effect, held };
 }
 
+/** The document an effect holds, while it exists and names that effect (not a pasted copy). */
+function heldDocument(effectUuid: string, hold: SpellHold): HeldDocument | undefined {
+  const document = existing(hold.uuid);
+  return document && heldByOf(document) === effectUuid ? document : undefined;
+}
+
 /**
  * Delete what an ended effect kept alive. True when it deleted something, whose cleanup then ends
  * the effect: a held document's deletion deletes its effect.
  */
 export async function releaseHeld(effect: ActiveEffect): Promise<boolean> {
-  const documents = holdsOf(effect).flatMap((hold) => existing(hold.uuid) ?? []);
+  const uuid = effect.uuid ?? "";
+  const documents = holdsOf(effect).flatMap((hold) => heldDocument(uuid, hold) ?? []);
   await deleteAll(documents);
   return documents.length > 0;
 }
 
 /** End the effect that kept a deleted document alive. */
-async function endHolder(document: ClientDocument): Promise<void> {
-  const effect = existing(heldByOf(document));
-  if (effect) {
+async function endHolder(document: ClientDocument & { uuid?: string | null }): Promise<void> {
+  const effect = existing(heldByOf(document)) as unknown as AnchorEffect | undefined;
+  if (effect && holdsOf(effect).some((hold) => hold.uuid === document.uuid)) {
     await effect.delete();
   }
 }
@@ -108,14 +115,40 @@ function heldDocuments(): HeldDocument[] {
   ) as unknown as HeldDocument[];
 }
 
-/** Every actor whose effects can hold documents: world actors and unlinked tokens' actors. */
+type EffectSource = { flags?: { rqg?: { holds?: unknown[]; areaRegion?: string } } };
+
+/** The source of the effects an unlinked token's delta adds, read without building its actor. */
+function deltaEffects(token: TokenDocument): EffectSource[] {
+  return ((token as any).delta?._source?.effects ?? []) as EffectSource[];
+}
+
+const sourceHolds = (effect: EffectSource) => !!effect.flags?.rqg?.holds?.length;
+
+/**
+ * Every actor whose effects can hold documents or come from an area: world actors, and the actors
+ * of unlinked tokens with such an effect.
+ */
 function anchorActors(): Actor[] {
   const tokenActors = (game.scenes?.contents ?? []).flatMap((scene) =>
     scene.tokens.contents.flatMap((token) =>
-      !token.actorLink && token.actor ? [token.actor] : [],
+      !token.actorLink &&
+      deltaEffects(token).some((e) => sourceHolds(e) || !!e.flags?.rqg?.areaRegion) &&
+      token.actor
+        ? [token.actor]
+        : [],
     ),
   );
   return [...(game.actors?.contents ?? []), ...tokenActors] as Actor[];
+}
+
+/** Whether an effect on a deleted actor, unlinked token or scene held documents. */
+function heldSomething(document: ClientDocument): boolean {
+  if (document instanceof Actor) {
+    return document.effects.contents.some((effect) => holdsOf(effect).length > 0);
+  }
+  const tokens =
+    document instanceof Scene ? document.tokens.contents : [document as unknown as TokenDocument];
+  return tokens.some((token) => !token.actorLink && deltaEffects(token).some(sourceHolds));
 }
 
 /** Delete the held documents whose effect lived on what was deleted, e.g. a caster's token. */
@@ -135,12 +168,18 @@ export async function reconcileSpellAnchors(): Promise<void> {
   for (const actor of anchorActors()) {
     const ended = actor.effects.contents.filter((effect) => {
       const holds = holdsOf(effect);
-      return holds.length > 0 && holds.every((hold) => !existing(hold.uuid));
+      return holds.length > 0 && holds.every((hold) => !heldDocument(effect.uuid ?? "", hold));
     });
     const leftArea = actor.effects.contents.filter((effect) => !isInArea(actor, effect));
     const ids = [...new Set([...ended, ...leftArea].map((effect) => effect.id ?? ""))];
-    if (ids.length) {
-      await actor.deleteEmbeddedDocuments("ActiveEffect", ids);
+    try {
+      // A deleted Region's exit events may take some of these off meanwhile
+      const left = ids.filter((id) => actor.effects.has(id));
+      if (left.length) {
+        await actor.deleteEmbeddedDocuments("ActiveEffect", left);
+      }
+    } catch (error) {
+      logger.warn("Could not reconcile an actor's spell effects", undefined, actor.uuid, error);
     }
   }
 }
@@ -155,11 +194,16 @@ function isInArea(actor: Actor, effect: ActiveEffect): boolean {
   if (!region) {
     return false;
   }
-  const tokens = actor.isToken ? [actor.token] : actor.getActiveTokens(false, true);
-  return [...region.tokens].some((token) => tokens.includes(token as any));
+  return [...region.tokens].some((token) =>
+    actor.isToken ? token === actor.token : token.actorLink && token.actorId === actor.id,
+  );
 }
 
 const isActiveGm = () => !!game.users?.activeGM?.isSelf;
+
+function logFailure(error: unknown): void {
+  logger.warn("Could not clean up what a spell effect held", undefined, error);
+}
 
 /**
  * Keep spell-held documents and their effects together, on the active GM's client: deleting a held
@@ -169,22 +213,22 @@ const isActiveGm = () => !!game.users?.activeGM?.isSelf;
 export function initSpellAnchors(): void {
   const heldDeleted = (document: ClientDocument) => {
     if (isActiveGm() && heldByOf(document)) {
-      void endHolder(document);
+      endHolder(document).catch(logFailure);
     }
   };
-  const holderDeleted = (document: { uuid?: string | null }) => {
-    if (isActiveGm() && document.uuid) {
-      void releaseHeldWithin(document.uuid);
+  const holderDeleted = (document: ClientDocument & { uuid?: string | null }) => {
+    if (isActiveGm() && document.uuid && heldSomething(document)) {
+      releaseHeldWithin(document.uuid).catch(logFailure);
     }
   };
   Hooks.on("deleteRegion", (region) => heldDeleted(region as ClientDocument));
   Hooks.on("deleteToken", (token) => {
     heldDeleted(token as ClientDocument);
-    holderDeleted(token);
+    holderDeleted(token as ClientDocument);
   });
-  Hooks.on("deleteActor", (actor) => holderDeleted(actor));
+  Hooks.on("deleteActor", (actor) => holderDeleted(actor as ClientDocument));
   Hooks.on("deleteScene", (scene) => {
-    holderDeleted(scene);
+    holderDeleted(scene as ClientDocument);
     // A deleted scene sends no events for what was on it
     for (const document of [...scene.regions.contents, ...scene.tokens.contents]) {
       heldDeleted(document as ClientDocument);
@@ -192,9 +236,7 @@ export function initSpellAnchors(): void {
   });
   Hooks.once("ready", () => {
     if (isActiveGm()) {
-      void reconcileSpellAnchors().catch((error: unknown) =>
-        logger.warn("Could not reconcile spell anchors", undefined, error),
-      );
+      reconcileSpellAnchors().catch(logFailure);
     }
   });
 }

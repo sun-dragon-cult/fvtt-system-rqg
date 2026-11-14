@@ -28,7 +28,10 @@ function actor(uuid: string, effects: any[] = [], extra: object = {}) {
     uuid,
     {},
     {
-      effects: { contents: effects },
+      effects: {
+        contents: effects,
+        has: (id: string) => parent.effects.contents.some((e: any) => e.id === id),
+      },
       isToken: false,
       getActiveTokens: () => [],
       createEmbeddedDocuments: vi.fn(async (_type: string, [data]: any[]) => [
@@ -54,6 +57,7 @@ describe("spell anchors", () => {
     documents = new Map();
     vi.stubGlobal("fromUuidSync", (uuid: string) => documents.get(uuid) ?? null);
     vi.stubGlobal("game", { users: { activeGM: { isSelf: true } }, scenes: { contents: [] } });
+    vi.stubGlobal("Scene", class Scene {});
   });
 
   afterEach(() => {
@@ -124,13 +128,20 @@ describe("spell anchors", () => {
   });
 
   it("deletes what an ended effect held, and says whether there was anything", async () => {
-    const region = doc("Scene.s.Region.r");
+    const region = doc("Scene.s.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
     const effect = doc("Actor.c.ActiveEffect.e", {
       holds: [hold("Scene.s.Region.r"), hold("Scene.s.Token.gone")],
     });
     expect(await releaseHeld(effect)).toBe(true);
     expect(region.delete).toHaveBeenCalledOnce();
     expect(await releaseHeld(effect)).toBe(false);
+  });
+
+  it("leaves a pasted copy alone: it names another effect than the one ending", async () => {
+    const copy = doc("Scene.s.Region.r", { heldBy: "Actor.c.ActiveEffect.original" });
+    const effect = doc("Actor.c.ActiveEffect.copied", { holds: [hold("Scene.s.Region.r")] });
+    expect(await releaseHeld(effect)).toBe(false);
+    expect(copy.delete).not.toHaveBeenCalled();
   });
 
   it("tells an effect holding a Region from one holding a token", () => {
@@ -165,7 +176,7 @@ describe("spell anchors", () => {
     });
 
     it("takes an area's effect off a token whose area is gone or that left it", async () => {
-      const token = { id: "t" };
+      const token = { id: "t", actorLink: false };
       const region = doc("Scene.s.Region.r", {}, { tokens: new Set() });
       const left = doc("Scene.s.Token.t.Actor.a.ActiveEffect.left", { areaRegion: region.uuid });
       const gone = doc("Scene.s.Token.t.Actor.a.ActiveEffect.gone", {
@@ -173,7 +184,17 @@ describe("spell anchors", () => {
       });
       const tokenActor = actor("Scene.s.Token.t.Actor.a", [left, gone], { isToken: true, token });
       (game as any).scenes.contents = [
-        scene([region], [{ actorLink: false, actor: tokenActor, ...doc("Scene.s.Token.t") }]),
+        scene(
+          [region],
+          [
+            {
+              actorLink: false,
+              actor: tokenActor,
+              delta: { _source: { effects: [{ flags: { rqg: { areaRegion: region.uuid } } }] } },
+              ...doc("Scene.s.Token.t"),
+            },
+          ],
+        ),
       ];
       await reconcileSpellAnchors();
       expect(tokenActor.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", [
@@ -204,6 +225,13 @@ describe("spell anchors", () => {
 
     const settle = () => new Promise((resolve) => setTimeout(resolve));
 
+    it("leaves the effect alone when a pasted copy of what it holds is deleted", async () => {
+      const anchor = doc("Actor.c.ActiveEffect.e", { holds: [hold("Scene.s.Region.r")] });
+      handlers["deleteRegion"]!(doc("Scene.s.Region.copy", { heldBy: anchor.uuid }));
+      await settle();
+      expect(anchor.delete).not.toHaveBeenCalled();
+    });
+
     it("ends the effect of a deleted held document", async () => {
       const anchor = doc("Actor.c.ActiveEffect.e", { holds: [hold("Scene.s.Region.r")] });
       handlers["deleteRegion"]!(doc("Scene.s.Region.r", { heldBy: anchor.uuid }));
@@ -216,7 +244,12 @@ describe("spell anchors", () => {
       const other = doc("Scene.s.Region.o", { heldBy: "Scene.s.Token.t2.Actor.a.ActiveEffect.e" });
       (game as any).scenes.contents = [scene([region, other])];
       documents.delete("Scene.s.Token.t");
-      handlers["deleteToken"]!({ uuid: "Scene.s.Token.t", getFlag: () => undefined });
+      handlers["deleteToken"]!({
+        uuid: "Scene.s.Token.t",
+        actorLink: false,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold(region.uuid)] } } }] } },
+        getFlag: () => undefined,
+      });
       await settle();
       expect(region.delete).toHaveBeenCalledOnce();
       expect(other.delete).not.toHaveBeenCalled();

@@ -38,8 +38,9 @@ function isOverdueOnReenable(effect: ActiveEffect, changed: { disabled?: unknown
 
 /**
  * End a spell effect once when it expires or is deleted (e.g. by Dispel Magic): run its spell's
- * `onEnd` and delete what it held, e.g. a spell area's Region or a summoned token. An expired spell effect is then deleted, which doesn't
- * end it again. Runs on the active GM's client, which marks expiry.
+ * `onEnd` and delete what it held, e.g. a spell area's Region or a summoned token. An expired spell
+ * effect is then deleted, which doesn't end it again. Runs on the active GM's client, which marks
+ * expiry.
  */
 export function initSpellEnd(): void {
   Hooks.on("updateActiveEffect", async (effect: ActiveEffect, changed: any) => {
