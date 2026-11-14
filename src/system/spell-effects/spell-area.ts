@@ -16,7 +16,7 @@ import { summonerDocument, summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
 import { queryActiveGm } from "./query-active-gm";
-import { createAnchored } from "./spell-anchor";
+import { anchoredCreation, createAnchored } from "./spell-anchor";
 import {
   applyRequestData,
   runApplyRequest,
@@ -229,25 +229,29 @@ async function createAreaAsGm(
     (user) => !user.isGM && casterActor.testUserPermission(user, "OWNER"),
   );
   const createRegion = async (heldBy?: string) =>
-    (await scene.createEmbeddedDocuments("Region", [
-      {
-        name: spell.name ?? "",
-        color: data.visible ? "#bbbbbb" : spellAreaColor,
-        shapes: [data.shape],
-        highlightMode: "coverage",
-        visibility: data.visible
-          ? CONST.REGION_VISIBILITY.ALWAYS
-          : CONST.REGION_VISIBILITY.OBSERVER,
-        ownership: {
-          default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
-          ...Object.fromEntries(
-            observers.map((user) => [user.id, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER]),
-          ),
-        },
-        behaviors: [{ name: spell.name ?? "", type: "spellArea", system: { spell: provenance } }],
-        flags: heldBy ? { [systemId]: { heldBy } } : {},
-      } as any,
-    ])) as RegionDocument[];
+    (await scene.createEmbeddedDocuments(
+      "Region",
+      [
+        {
+          name: spell.name ?? "",
+          color: data.visible ? "#bbbbbb" : spellAreaColor,
+          shapes: [data.shape],
+          highlightMode: "coverage",
+          visibility: data.visible
+            ? CONST.REGION_VISIBILITY.ALWAYS
+            : CONST.REGION_VISIBILITY.OBSERVER,
+          ownership: {
+            default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+            ...Object.fromEntries(
+              observers.map((user) => [user.id, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER]),
+            ),
+          },
+          behaviors: [{ name: spell.name ?? "", type: "spellArea", system: { spell: provenance } }],
+          flags: heldBy ? { [systemId]: { heldBy } } : {},
+        } as any,
+      ],
+      (heldBy ? anchoredCreation : {}) as any,
+    )) as RegionDocument[];
   if (!data.duration) {
     const [region] = await createRegion();
     return region ? { outcome: "resolved" } : undefined;
@@ -262,7 +266,7 @@ async function createAreaAsGm(
       start: { time: game.time?.worldTime ?? 0 },
       system: { spell: provenance },
     },
-    create: async (heldBy) => (await createRegion(heldBy)) as any[],
+    create: (heldBy) => createRegion(heldBy),
   });
   return anchored ? { outcome: "applied", effectUuids: [anchored.effect.uuid] } : undefined;
 }

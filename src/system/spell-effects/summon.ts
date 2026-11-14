@@ -10,7 +10,7 @@ import {
 import { casterTokenOnScene } from "./spell-area-targets";
 import { placeSummonedToken } from "./place-summoned-token";
 import { queryActiveGm } from "./query-active-gm";
-import { createAnchored } from "./spell-anchor";
+import { anchoredCreation, createAnchored, type HeldDocument } from "./spell-anchor";
 import {
   applyRequestData,
   runApplyRequest,
@@ -224,14 +224,15 @@ async function summonAsGm(
       );
       return ((await scene.createEmbeddedDocuments("Token", [tokenData.toObject()], {
         keepId: true,
-      })) ?? []) as any[];
+        ...anchoredCreation,
+      } as any)) ?? []) as HeldDocument[];
     },
   });
   if (!anchored) {
     return undefined;
   }
   const { effect, held } = anchored;
-  const token = held[0] as unknown as TokenDocument;
+  const token = held[0] as TokenDocument;
   ui.notifications?.info(
     localize("RQG.ChatMessage.SpellCast.Summon.Summoned", {
       spellName,

@@ -82,6 +82,17 @@ test("spell areas end with their anchor", async ({ page, baseURL }) => {
     expect(first.regionUuid).toMatch(/\.Region\./);
     expect(first.regionHeldBy).toBe(first.effectUuid);
 
+    // A pasted copy of the Region isn't held: deleting it leaves the spell alone
+    const copy = await page.evaluate(async (uuid) => {
+      const region = fromUuidSync(uuid) as any;
+      const [created] = await region.parent.createEmbeddedDocuments("Region", [region.toObject()]);
+      return { uuid: created.uuid as string, heldBy: created.getFlag("rqg", "heldBy") ?? "" };
+    }, first.regionUuid);
+    expect(copy.heldBy).toBe("");
+    await page.evaluate((uuid) => (fromUuidSync(uuid) as any).delete(), copy.uuid);
+    await page.waitForTimeout(500);
+    expect(await exists(page, first.effectUuid)).toBe(true);
+
     // Deleting the caster's token takes the effect with it, and so the area
     await page.evaluate((uuid) => (fromUuidSync(uuid) as any).delete(), first.tokenUuid);
     await expect.poll(() => exists(page, first.regionUuid)).toBe(false);

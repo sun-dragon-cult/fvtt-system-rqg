@@ -10,10 +10,33 @@ import {
 /** A world of documents by uuid, which `fromUuidSync` finds while they exist. */
 let documents: Map<string, any>;
 
+/** The scenes held documents sit on; deleting through one deletes each document in turn. */
+let scenes: Map<string, any>;
+
+function sceneOf(uuid: string) {
+  const [, sceneId] = uuid.split(".");
+  const sceneUuid = `Scene.${sceneId}`;
+  if (!scenes.has(sceneUuid)) {
+    scenes.set(sceneUuid, {
+      uuid: sceneUuid,
+      deleteEmbeddedDocuments: vi.fn(async (type: string, ids: string[]) => {
+        for (const id of ids) {
+          await documents.get(`${sceneUuid}.${type}.${id}`)?.delete();
+        }
+      }),
+    });
+  }
+  return scenes.get(sceneUuid);
+}
+
 function doc(uuid: string, flags: Record<string, unknown> = {}, extra: object = {}) {
+  const parts = uuid.split(".");
+  const onScene = parts[0] === "Scene" && ["Region", "Token"].includes(parts[2] ?? "");
   const document: any = {
     uuid,
-    id: uuid.split(".").at(-1),
+    id: parts.at(-1),
+    documentName: onScene ? parts[2] : parts.at(-2),
+    parent: onScene && parts.length === 4 ? sceneOf(uuid) : null,
     flags,
     getFlag: (_scope: string, key: string) => document.flags[key],
     delete: vi.fn(async () => documents.delete(uuid)),
@@ -55,6 +78,7 @@ const hold = (uuid: string) => ({ kind: "document", uuid });
 describe("spell anchors", () => {
   beforeEach(() => {
     documents = new Map();
+    scenes = new Map();
     vi.stubGlobal("fromUuidSync", (uuid: string) => documents.get(uuid) ?? null);
     vi.stubGlobal("game", { users: { activeGM: { isSelf: true } }, scenes: { contents: [] } });
     vi.stubGlobal("Scene", class Scene {});
@@ -175,6 +199,30 @@ describe("spell anchors", () => {
       expect(caster.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["e"]);
     });
 
+    it("ends an effect once any document it held is gone, as deleting it live would", async () => {
+      const kept = doc("Scene.s.Region.kept", { heldBy: "Actor.c.ActiveEffect.e" });
+      const anchor = doc("Actor.c.ActiveEffect.e", {
+        holds: [hold("Scene.s.Region.kept"), hold("Scene.s.Region.gone")],
+      });
+      const caster = actor("Actor.c", [anchor]);
+      (game as any).actors = { contents: [caster] };
+      (game as any).scenes.contents = [scene([kept])];
+      await reconcileSpellAnchors();
+      expect(caster.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["e"]);
+    });
+
+    it("deletes all of a scene's orphans in one request per type", async () => {
+      const a = doc("Scene.s.Region.a", { heldBy: "Actor.gone.ActiveEffect.e" });
+      const b = doc("Scene.s.Region.b", { heldBy: "Actor.gone.ActiveEffect.f" });
+      (game as any).scenes.contents = [scene([a, b])];
+      await reconcileSpellAnchors();
+      expect(scenes.get("Scene.s").deleteEmbeddedDocuments).toHaveBeenCalledOnce();
+      expect(scenes.get("Scene.s").deleteEmbeddedDocuments).toHaveBeenCalledWith("Region", [
+        "a",
+        "b",
+      ]);
+    });
+
     it("takes an area's effect off a token whose area is gone or that left it", async () => {
       const token = { id: "t", actorLink: false };
       const region = doc("Scene.s.Region.r", {}, { tokens: new Set() });
@@ -212,13 +260,13 @@ describe("spell anchors", () => {
   });
 
   describe("hooks", () => {
-    let handlers: Record<string, (document: any) => void>;
+    let handlers: Record<string, (...args: any[]) => void>;
 
     beforeEach(() => {
       handlers = {};
       vi.stubGlobal("Hooks", {
-        on: (hook: string, fn: (document: any) => void) => (handlers[hook] = fn),
-        once: (hook: string, fn: (document: any) => void) => (handlers[hook] = fn),
+        on: (hook: string, fn: (...args: any[]) => void) => (handlers[hook] = fn),
+        once: (hook: string, fn: (...args: any[]) => void) => (handlers[hook] = fn),
       });
       initSpellAnchors();
     });
@@ -253,6 +301,51 @@ describe("spell anchors", () => {
       await settle();
       expect(region.delete).toHaveBeenCalledOnce();
       expect(other.delete).not.toHaveBeenCalled();
+    });
+
+    it("deletes what an unlinked token's effects held when its world actor is deleted", async () => {
+      const region = doc("Scene.s.Region.r", { heldBy: "Scene.s.Token.t.Actor.a.ActiveEffect.e" });
+      const token = {
+        uuid: "Scene.s.Token.t",
+        actorId: "a",
+        actorLink: false,
+        getFlag: () => undefined,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold(region.uuid)] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([region], [token])];
+      vi.stubGlobal("Actor", class Actor {});
+      const deleted = Object.assign(new (globalThis as any).Actor(), {
+        id: "a",
+        uuid: "Actor.a",
+        effects: { contents: [] },
+      });
+      handlers["deleteActor"]!(deleted);
+      await settle();
+      expect(region.delete).toHaveBeenCalledOnce();
+    });
+
+    it("drops heldBy from a copy of a held document, not from one createAnchored makes", () => {
+      const created = (anchored: boolean) => {
+        const region = doc("Scene.s.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
+        region.updateSource = vi.fn();
+        handlers["preCreateRegion"]!(region, {}, anchored ? { rqgAnchored: true } : {});
+        return region.updateSource;
+      };
+      expect(created(false)).toHaveBeenCalledWith({ flags: { rqg: { heldBy: "" } } });
+      expect(created(true)).not.toHaveBeenCalled();
+    });
+
+    it("drops heldBy from the Regions and tokens of a duplicated or imported scene", () => {
+      const source = {
+        regions: [{ flags: { rqg: { heldBy: "Actor.c.ActiveEffect.e" } } }],
+        tokens: [{ flags: {} }],
+      };
+      const copy = { _source: source, updateSource: vi.fn() };
+      handlers["preCreateScene"]!(copy);
+      expect(copy.updateSource).toHaveBeenCalledWith({
+        regions: [{ flags: { rqg: { heldBy: "" } } }],
+        tokens: [{ flags: {} }],
+      });
     });
 
     it("does nothing on a client that isn't the active GM's", async () => {
