@@ -14,8 +14,8 @@ export type PlacedAreaShape = Record<string, unknown>;
 
 /**
  * Let the caster place a spell's area on the canvas, snapped to the scene's grid. With a range,
- * the whole area must lie within it of the caster (RBM p.4), around a point the caster can see
- * (RBM p.6); a GM moves the Region afterwards for anywhere else. Without one it goes anywhere, as
+ * the whole area must lie within it of the caster, around a point the caster can see (RBM p.6);
+ * a GM moves the Region afterwards for anywhere else. Without one it goes anywhere, as
  * a ritual is held where its area is. Resolves to the Region shape, or undefined when cancelled.
  */
 export async function placeSpellArea(
@@ -29,7 +29,7 @@ export async function placeSpellArea(
     ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
     return undefined;
   }
-  const { origin, reach, ranged, sight, inRange, inSight } = spellReach(
+  const { origin, reach, ranged, sight, outOfReach } = spellReach(
     casterObject,
     rangeMeters,
     areaExtent(shape),
@@ -41,8 +41,8 @@ export async function placeSpellArea(
   const ring = ranged ? drawReach(origin, reach, sight) : undefined;
   try {
     return shape.kind === "polygon"
-      ? await pickPolygon(shape.corners, shape.maxArea, inRange, spellName)
-      : await placeShape(shape, origin, inRange, inSight, spellName, ranged);
+      ? await pickPolygon(shape.corners, shape.maxArea, outOfReach, spellName)
+      : await placeShape(shape, origin, outOfReach, spellName, ranged);
   } finally {
     if (ring && !ring.destroyed) {
       ring.destroy();
@@ -52,7 +52,7 @@ export async function placeSpellArea(
 
 /**
  * What a spell cast from a token reaches: the origin, and whether a point is within range (the
- * whole area of `extentMeters` around it, RBM p.4) and in the caster's sight (RBM p.6). Without a
+ * whole area of `extentMeters` around it) and in the caster's sight (RBM p.6). Without a
  * range, anywhere is in reach.
  */
 export function spellReach(
@@ -66,6 +66,8 @@ export function spellReach(
   sight: PIXI.Polygon | undefined;
   inRange: (point: Point) => boolean;
   inSight: (point: Point) => boolean;
+  /** Why an area can't go around a point, as an i18n key, if it can't. */
+  outOfReach: (point: Point) => AreaOutOfReach | undefined;
 } {
   const grid = canvas!.scene!.grid;
   const origin = casterObject.center;
@@ -82,14 +84,30 @@ export function spellReach(
           source: casterObject.vision ?? undefined,
         } as any)
       : undefined;
+  const inRange = (point: Point) => Math.hypot(point.x - origin.x, point.y - origin.y) <= reach;
+  const inSight = (point: Point) => !sight || sight.contains(point.x, point.y);
   return {
     origin,
     reach,
     ranged,
     sight,
-    inRange: (point) => Math.hypot(point.x - origin.x, point.y - origin.y) <= reach,
-    inSight: (point) => !sight || sight.contains(point.x, point.y),
+    inRange,
+    inSight,
+    outOfReach: (point) => areaPointOutOfReach(point, inRange, inSight),
   };
+}
+
+type AreaOutOfReach = "RQG.SpellArea.OutOfRange" | "RQG.SpellArea.OutOfSight";
+
+export function areaPointOutOfReach(
+  point: Point,
+  inRange: (point: Point) => boolean,
+  inSight: (point: Point) => boolean,
+): AreaOutOfReach | undefined {
+  if (!inRange(point)) {
+    return "RQG.SpellArea.OutOfRange";
+  }
+  return inSight(point) ? undefined : "RQG.SpellArea.OutOfSight";
 }
 
 /** The range ring, with the scene dimmed outside where the area may go: in sight when given. */
@@ -116,8 +134,7 @@ export function drawReach(
 async function placeShape(
   shape: Extract<SpellAreaShape, { kind: "circle" | "square" }>,
   origin: Point,
-  inRange: (point: Point) => boolean,
-  inSight: (point: Point) => boolean,
+  outOfReach: (point: Point) => AreaOutOfReach | undefined,
   spellName: string,
   ranged: boolean,
 ): Promise<PlacedAreaShape | undefined> {
@@ -171,15 +188,11 @@ async function placeShape(
         return false;
       },
       preConfirm: ({ shape: placedShape }: { shape: { center: Point } }) => {
-        if (!inRange(placedShape.center)) {
-          ui.notifications?.warn(localize("RQG.SpellArea.OutOfRange", { spellName }));
-          return false;
+        const why = outOfReach(placedShape.center);
+        if (why) {
+          ui.notifications?.warn(localize(why, { spellName }));
         }
-        if (!inSight(placedShape.center)) {
-          ui.notifications?.warn(localize("RQG.SpellArea.OutOfSight", { spellName }));
-          return false;
-        }
-        return true;
+        return !why;
       },
     } as any,
   );
@@ -256,14 +269,14 @@ export function coveragePreview(spellName: string): {
 }
 
 /**
- * Click the corners of an area, like a ward's four wands, snapped to the grid. The area may not
- * exceed `maxArea` square meters. Right click takes back the last corner, or cancels with none;
- * Escape cancels.
+ * Click the corners of an area, like a ward's four wands, snapped to the grid, each within range
+ * and sight of the caster. The area may not exceed `maxArea` square meters. Right click takes back
+ * the last corner, or cancels with none; Escape cancels.
  */
 function pickPolygon(
   corners: number,
   maxArea: number,
-  inRange: (point: Point) => boolean,
+  outOfReach: (point: Point) => AreaOutOfReach | undefined,
   spellName: string,
 ): Promise<PlacedAreaShape | undefined> {
   const grid = canvas!.scene!.grid;
@@ -301,7 +314,7 @@ function pickPolygon(
     drawnAt = pointer;
     const shown = [...points, pointer];
     const area = polygonAreaInMeters(shown, grid);
-    const fits = area <= maxArea && shown.every(inRange);
+    const fits = area <= maxArea && !outOfReach(pointer);
     const color = fits ? 0x7fb3d5 : 0xcc3333;
     coverage.show(shown);
     outline.clear().lineStyle(2, color, 0.9);
@@ -348,8 +361,9 @@ function pickPolygon(
         return;
       }
       const point = snapped();
-      if (!inRange(point)) {
-        ui.notifications?.warn(localize("RQG.SpellArea.OutOfRange", { spellName }));
+      const why = outOfReach(point);
+      if (why) {
+        ui.notifications?.warn(localize(why, { spellName }));
         return;
       }
       const next = [...points, point];

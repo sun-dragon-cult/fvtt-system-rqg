@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { areaExtent, spellRangeInMeters } from "./spell-area";
-import { polygonAreaInMeters } from "./place-spell-area";
+import { areaPointOutOfReach, polygonAreaInMeters } from "./place-spell-area";
 
 describe("spell areas", () => {
-  it("uses the standard casting range of the spell's magic (RBM p.4)", () => {
+  it("uses the standard casting range of the spell's magic (RBM p.6)", () => {
     expect(spellRangeInMeters({ type: "runeMagic" } as any)).toBe(160);
     expect(spellRangeInMeters({ type: "spiritMagic" } as any)).toBe(50);
   });
@@ -29,5 +29,18 @@ describe("spell areas", () => {
       37.16,
       2,
     );
+  });
+});
+
+describe("areaPointOutOfReach", () => {
+  const yes = () => true;
+  const no = () => false;
+
+  it.each([
+    ["in range and in sight", yes, yes, undefined],
+    ["out of sight (RBM p.6)", yes, no, "RQG.SpellArea.OutOfSight"],
+    ["out of range, before sight", no, no, "RQG.SpellArea.OutOfRange"],
+  ])("tells a point %s", (_label, inRange, inSight, expected) => {
+    expect(areaPointOutOfReach({ x: 0, y: 0 }, inRange, inSight)).toBe(expected);
   });
 });

@@ -838,6 +838,8 @@
         "AlreadyApplied": "This spell effect has already been applied.",
         "NoSpellEffect": "{spellName} has no spell effect to apply.",
         "NeedsActiveGm": "{spellName} needs a GM to be logged in to take effect.",
+        "QueryNotPermitted": "{spellName} must take effect on the GM's client, and you lack the \"{permission}\" permission to ask it. The GM can grant it in Configure Permissions.",
+        "QueryFailed": "{spellName} could not take effect on the GM's client. See the console for details.",
         "Damage": {
           "Strikes": "{spellName} strikes {targetName}",
           "StrikesIgnoringArmor": "{spellName} strikes {targetName}, ignoring armor"

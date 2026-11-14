@@ -38,7 +38,7 @@ export type SpellAreaShape =
 export type SpellAreaOptions = {
   shape: SpellAreaShape;
   /**
-   * "pick": the caster places the area, within range for a Ranged spell (RBM p.4) and anywhere for
+   * "pick": the caster places the area, within range for a Ranged spell (RBM p.6) and anywhere for
    * the rest, as a ritual is held where its area is; "caster": a circle or square around the
    * caster's token. Defaults to "pick".
    */
@@ -104,7 +104,7 @@ export type CreateSpellAreaQueryData = {
   visible: boolean;
 };
 
-/** The default casting range (RBM p.4): 160 m for Rune spells, 50 m for spirit magic. */
+/** The default casting range (RBM p.6): 160 m for Rune spells, 50 m for spirit magic. */
 export function spellRangeInMeters(spell: RqgItem): number {
   return spell.type === ItemTypeEnum.RuneMagic ? 160 : 50;
 }
