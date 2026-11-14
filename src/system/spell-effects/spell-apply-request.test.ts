@@ -4,6 +4,7 @@ import {
   applyRequestOf,
   bindApplyRequest,
   clearApplyClaims,
+  isClaimedByOtherApply,
   releaseApplyClaim,
   runApplyRequest,
   runClaimedApply,
@@ -94,6 +95,36 @@ describe("runClaimedApply", () => {
   it("lets more work of the same Apply run, e.g. a behavior summoning twice", async () => {
     await runClaimedApply(request("click-1"), owner, async () => applied);
     expect(await runClaimedApply(request("click-1"), owner, async () => applied)).toBe(applied);
+  });
+
+  it("doesn't let a request it refuses block a real Apply meanwhile", async () => {
+    const [refused, real] = await Promise.all([
+      runClaimedApply(request("stranger"), stranger, async () => applied),
+      runClaimedApply(request("owner"), owner, async () => applied),
+    ]);
+    expect(refused).toBeUndefined();
+    expect(real).toBe(applied);
+  });
+
+  it("keeps the claim of a running Apply, whatever frees it meanwhile", async () => {
+    const { promise: running, resolve: finish } = Promise.withResolvers<SpellEffectApplied>();
+    const first = runClaimedApply(request("click-1"), owner, () => running);
+    await vi.waitFor(() => expect(isClaimedByOtherApply("record", "entry", "click-2")).toBe(true));
+    releaseApplyClaim("record", "entry");
+    message = recordMessage("settled");
+    await runClaimedApply(request("click-2"), gm, async () => applied);
+    message = recordMessage("affected");
+    expect(await runClaimedApply(request("click-2"), gm, async () => applied)).toBeUndefined();
+    finish(applied);
+    await first;
+  });
+
+  it("tells an Apply's result from another Apply's holding the claim", async () => {
+    expect(isClaimedByOtherApply("record", "entry", "click-1")).toBe(false);
+    await runClaimedApply(request("click-1"), owner, async () => applied);
+    expect(isClaimedByOtherApply("record", "entry", "click-1")).toBe(false);
+    expect(isClaimedByOtherApply("record", "entry", "click-2")).toBe(true);
+    expect(isClaimedByOtherApply("record", "entry", undefined)).toBe(true);
   });
 
   it("frees the entry once its record notes it applied", async () => {

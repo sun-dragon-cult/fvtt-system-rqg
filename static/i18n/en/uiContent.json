@@ -835,6 +835,7 @@
         "Applied": "Applied",
         "Resolved": "Done",
         "AlreadyApplied": "This spell effect has already been applied.",
+        "ApplyInProgress": "This spell effect is already being applied.",
         "NoSpellEffect": "{spellName} has no spell effect to apply.",
         "NeedsActiveGm": "{spellName} needs a GM to be logged in to take effect.",
         "Damage": {

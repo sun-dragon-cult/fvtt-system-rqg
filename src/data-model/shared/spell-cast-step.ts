@@ -22,7 +22,14 @@ export type SpellCastInput =
       casterSuccessLevel?: number | undefined;
     }
   | { kind: "ruling"; entryId: string; state: SpellTargetRulingState }
-  | { kind: "applied"; entryId: string; effectUuids: string[]; blockedReason: string }
+  | {
+      kind: "applied";
+      entryId: string;
+      effectUuids: string[];
+      blockedReason: string;
+      /** The Apply that did it, so the GM can tell it from another Apply of the same entry. */
+      applyId?: string | undefined;
+    }
   | { kind: "assign"; entryId: string; targets: Omit<SpellCastTarget, "isCaster">[] };
 
 /** Why a spell did not take effect on a target, as its `onNotApplied` hook is told. */

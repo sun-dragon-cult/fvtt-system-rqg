@@ -80,33 +80,38 @@ export async function runClaimedApply(
   user: User,
   work: (scope: SpellApplyScope) => Promise<SpellEffectApplied | undefined>,
 ): Promise<SpellEffectApplied | undefined> {
-  const key = `${request.castMessageId}.${request.entryId}`;
-  const message = game.messages?.get(request.castMessageId);
-  const record =
-    message && isSpellCastRecordMessage(message as any)
-      ? (message.system as unknown as SpellCastRecord)
-      : undefined;
-  const entry = record?.targets.find((e) => e.id === request.entryId);
-  if (!record || entry?.stage !== "affected") {
-    claims.delete(key);
+  const key = claimKey(request.castMessageId, request.entryId);
+  const waitingEntry = () => {
+    const message = game.messages?.get(request.castMessageId);
+    const record =
+      message && isSpellCastRecordMessage(message as any)
+        ? (message.system as unknown as SpellCastRecord)
+        : undefined;
+    const entry = record?.targets.find((e) => e.id === request.entryId);
+    return record && entry?.stage === "affected" ? { record, entry } : undefined;
+  };
+  const waiting = waitingEntry();
+  if (!waiting) {
+    releaseApplyClaim(request.castMessageId, request.entryId);
     logger.warn("Refused spell work for an entry not waiting for Apply", undefined, request);
     return undefined;
   }
+  const { record, entry } = waiting;
+  const [target, spell] = await Promise.all([targetOf(entry), castSpellOf(record)]);
+  if (!spell || !target.actor || !(user.isGM || isOwnedBy(target.token ?? target.actor, user))) {
+    logger.warn("Refused spell work for a target the sender doesn't own", undefined, request);
+    return undefined;
+  }
+  // Checked and claimed with nothing awaited in between, so a request arriving meanwhile sees it
   const existing = claims.get(key);
-  if (existing && existing.applyId !== request.applyId) {
+  if (!waitingEntry() || (existing && existing.applyId !== request.applyId)) {
     logger.warn("Refused spell work for an entry already being applied", undefined, request);
     return undefined;
   }
-  // Claimed before anything is awaited, so a request arriving meanwhile sees it
   const claim = existing ?? { applyId: request.applyId, running: 0, worked: false };
   claims.set(key, claim);
   claim.running++;
   try {
-    const [target, spell] = await Promise.all([targetOf(entry), castSpellOf(record)]);
-    if (!spell || !target.actor || !(user.isGM || isOwnedBy(target.token ?? target.actor, user))) {
-      logger.warn("Refused spell work for a target the sender doesn't own", undefined, request);
-      return undefined;
-    }
     const cast = bindApplyRequest(recordCast(record, request.castMessageId, spell, entry), request);
     const result = await work(
       spellApplyScope(spell, target.actor, target.name, cast, target.token ?? undefined),
@@ -162,9 +167,27 @@ export async function runApplyRequest(
   return scope ? work(scope) : undefined;
 }
 
-/** Free an entry's claim once its cast record notes it applied. */
+const claimKey = (castMessageId: string, entryId: string) => `${castMessageId}.${entryId}`;
+
+/**
+ * Free an entry's claim once its cast record notes it applied or a GM ruled on it, unless an
+ * Apply is still running for it.
+ */
 export function releaseApplyClaim(castMessageId: string, entryId: string): void {
-  claims.delete(`${castMessageId}.${entryId}`);
+  const key = claimKey(castMessageId, entryId);
+  if (!claims.get(key)?.running) {
+    claims.delete(key);
+  }
+}
+
+/** Whether an Apply other than `applyId` holds the entry's claim. */
+export function isClaimedByOtherApply(
+  castMessageId: string,
+  entryId: string,
+  applyId: string | undefined,
+): boolean {
+  const claim = claims.get(claimKey(castMessageId, entryId));
+  return !!claim && claim.applyId !== applyId;
 }
 
 /** Forget every claim; for tests. */

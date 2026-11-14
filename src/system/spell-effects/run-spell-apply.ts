@@ -32,6 +32,8 @@ export async function runSpellApply(
   return queryActiveGm("rqg.applySpellBehavior", applyRequestData(scope), spellName);
 }
 
+const applyQueryTimeoutMs = 60_000;
+
 type RqgQuery =
   "rqg.applySpellBehavior" | "rqg.createSpellArea" | "rqg.summon" | "rqg.continueSpellCast";
 
@@ -49,8 +51,12 @@ export async function queryActiveGm<Q extends RqgQuery>(
     return undefined;
   }
   const needsGm = localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName });
+  // A GM who leaves mid-Apply would otherwise keep that Apply waiting until a reload
+  const timeout = name === "rqg.continueSpellCast" ? undefined : applyQueryTimeoutMs;
   try {
-    return (await gm.query(name, data as any)) as Awaited<ReturnType<CONFIG.Queries[Q]>>;
+    return (await gm.query(name, data as any, { timeout })) as Awaited<
+      ReturnType<CONFIG.Queries[Q]>
+    >;
   } catch (error) {
     logger.warn(needsGm, undefined, error);
     return undefined;

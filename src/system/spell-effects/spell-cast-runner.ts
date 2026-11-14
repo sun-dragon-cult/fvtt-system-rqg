@@ -24,7 +24,7 @@ import { interceptIncomingSpell } from "./incoming-spell";
 import { reflectsSpell } from "./reflect-spell";
 import { spellBehaviorOf } from "./spell-behavior";
 import { queryActiveGm } from "./run-spell-apply";
-import { isOwnedBy, releaseApplyClaim } from "./spell-apply-request";
+import { isClaimedByOtherApply, isOwnedBy, releaseApplyClaim } from "./spell-apply-request";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 
@@ -78,10 +78,16 @@ const queues = new Map<string, Promise<unknown>>();
 function runQueued(data: ContinueSpellCastData): Promise<void> {
   const previous = queues.get(data.messageId) ?? Promise.resolve();
   const next = previous
-    .then(() => continueOnGm(data))
-    .then(() => {
-      for (const input of data.inputs) {
-        if (input.kind === "applied") {
+    .then(async () => {
+      // Another Apply of the entry is doing GM work for it, so this one's result isn't the entry's
+      const inputs = data.inputs.filter(
+        (input) =>
+          input.kind !== "applied" ||
+          !isClaimedByOtherApply(data.messageId, input.entryId, input.applyId),
+      );
+      await continueOnGm({ ...data, inputs });
+      for (const input of inputs) {
+        if (input.kind === "applied" || input.kind === "ruling") {
           releaseApplyClaim(data.messageId, input.entryId);
         }
       }
@@ -435,7 +441,7 @@ export function handleContinueSpellCastQuery(
   }
   const allowed = allowedSpellCastData(data, recordOf(message), {
     isGM: user.isGM,
-    ownsTarget: (entry) => isOwnedBy(fromUuidSync(actorRefUuid(entry)), user),
+    ownsTarget: (entry) => isOwnedBy(fromUuidSync(actorRefUuid(entry), { strict: false }), user),
   });
   if (allowed.inputs.length < (data.inputs?.length ?? 0)) {
     logger.warn("Dropped spell cast inputs the sender may not give", { notify: false }, data);

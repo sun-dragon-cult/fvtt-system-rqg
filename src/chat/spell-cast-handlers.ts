@@ -237,7 +237,11 @@ const applying = new Set<string>();
 export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): Promise<void> {
   const clicked = clickedEntry(clickedButton);
   const key = clicked ? `${clicked.record.id}.${clicked.entry.id}` : "";
-  if (!clicked || applying.has(key)) {
+  if (!clicked) {
+    return;
+  }
+  if (applying.has(key)) {
+    ui.notifications?.info(localize("RQG.ChatMessage.SpellCast.ApplyInProgress"));
     return;
   }
   applying.add(key);
@@ -271,10 +275,11 @@ async function applyEntry(record: ChatMessage, entry: SpellCastEntry): Promise<v
     return;
   }
   // The GM's client claims the entry for this Apply before doing its part of it
+  const applyId = foundry.utils.randomID();
   const cast = bindApplyRequest(recordCast(record.system as any, record.id ?? "", spell, entry), {
     castMessageId: record.id ?? "",
     entryId: entry.id,
-    applyId: foundry.utils.randomID(),
+    applyId: applyId,
   });
   const applied = await applySpellEffect(spell, targetActor, name, cast);
   if (!applied) {
@@ -284,6 +289,7 @@ async function applyEntry(record: ChatMessage, entry: SpellCastEntry): Promise<v
     {
       kind: "applied",
       entryId: entry.id,
+      applyId: applyId,
       effectUuids: applied.outcome === "applied" ? applied.effectUuids : [],
       blockedReason:
         applied.outcome === "blocked"
