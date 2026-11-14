@@ -380,7 +380,67 @@ export async function assignSpellCastTargets(
   ]);
 }
 
+/**
+ * The part of a request to continue a cast that its sender may ask for: rulings and assignments
+ * from a GM, resistance answers and Apply results from the owner of the entry's target, and the
+ * answer's card patch only for the card of an entry they answer.
+ */
+export function allowedSpellCastData(
+  data: ContinueSpellCastData,
+  record: Pick<SpellCastRecord, "targets">,
+  sender: { isGM: boolean; ownsTarget(entry: SpellCastEntry): boolean },
+): ContinueSpellCastData {
+  const entryOf = (entryId: string) => record.targets.find((e) => e.id === entryId);
+  const inputs = (Array.isArray(data.inputs) ? data.inputs : []).filter((input) => {
+    switch (input?.kind) {
+      case "ruling":
+      case "assign":
+        return sender.isGM;
+      case "resistance":
+      case "applied": {
+        const entry = entryOf(input.entryId);
+        return !!entry && (sender.isGM || sender.ownsTarget(entry));
+      }
+      default:
+        return false;
+    }
+  });
+  const answered = inputs.flatMap((input) =>
+    input.kind === "resistance" ? [entryOf(input.entryId)?.requestMessageId] : [],
+  );
+  const patch = data.requestPatch;
+  return {
+    messageId: data.messageId,
+    inputs: inputs,
+    requestPatch: patch && answered.includes(patch.messageId) ? patch : undefined,
+  };
+}
+
+/** Continue a cast for a client, with what its sender may ask for. */
+export function handleContinueSpellCastQuery(
+  data: ContinueSpellCastData,
+  { user }: { user: User },
+): Promise<void> {
+  const message = game.messages?.get(data?.messageId ?? "") as RecordMessage | undefined;
+  if (!message || !isSpellCastRecordMessage(message as any)) {
+    return Promise.resolve();
+  }
+  const allowed = allowedSpellCastData(data, recordOf(message), {
+    isGM: user.isGM,
+    ownsTarget: (entry) =>
+      !!(
+        fromUuidSync(actorRefUuid(entry)) as {
+          testUserPermission?(user: User, level: string): boolean;
+        } | null
+      )?.testUserPermission?.(user, "OWNER"),
+  });
+  if (allowed.inputs.length < (data.inputs?.length ?? 0)) {
+    logger.warn("Dropped spell cast inputs the sender may not give", { notify: false }, data);
+  }
+  return runQueued(allowed);
+}
+
 export function initContinueSpellCastQuery(): void {
-  CONFIG.queries["rqg.continueSpellCast"] = (data: ContinueSpellCastData) => runQueued(data);
+  CONFIG.queries["rqg.continueSpellCast"] = handleContinueSpellCastQuery;
   Hooks.once("ready", () => void resumeSpellCasts());
 }

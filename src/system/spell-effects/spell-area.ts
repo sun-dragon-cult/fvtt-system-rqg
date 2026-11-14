@@ -16,6 +16,11 @@ import { summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
 import { queryActiveGm } from "./run-spell-apply";
+import {
+  applyRequestData,
+  runApplyRequest,
+  type SpellApplyRequestData,
+} from "./spell-apply-request";
 import { spellAreaBehavior } from "./spell-across";
 import { resolveActorFromUuid } from "../../applications/resistance-roll-dialog/resistance-roll-shared";
 
@@ -95,10 +100,7 @@ export type SpellAcrossScope = {
 };
 
 /** What a player's client sends the GM to make a spell area, since players may not create Regions. */
-export type CreateSpellAreaQueryData = {
-  spellUuid: string;
-  casterTokenUuid: string;
-  cast: SpellEffectCast;
+export type CreateSpellAreaQueryData = SpellApplyRequestData & {
   shape: PlacedAreaShape;
   duration: SpellEffectDuration | null;
   visible: boolean;
@@ -183,31 +185,37 @@ export async function createArea(
     return undefined;
   }
   const data: CreateSpellAreaQueryData = {
-    spellUuid: scope.spell.uuid ?? "",
-    casterTokenUuid: caster.uuid ?? "",
-    cast: scope.cast,
+    ...applyRequestData(scope),
     shape: shape,
     duration: options.duration === undefined ? (scope.duration ?? null) : options.duration,
     visible: !!options.visible,
   };
   return game.user?.isGM
-    ? createAreaAsGm(data)
+    ? handleCreateSpellAreaQuery(data, { user: game.user })
     : queryActiveGm("rqg.createSpellArea", data, spellName);
 }
 
+/** Make a spell area for the createArea request of a user, on the GM's client. */
+export async function handleCreateSpellAreaQuery(
+  data: CreateSpellAreaQueryData,
+  { user }: { user: User },
+): Promise<SpellEffectApplied | undefined> {
+  return runApplyRequest(data, user, (scope) => createAreaAsGm(scope, data));
+}
+
 async function createAreaAsGm(
+  scope: SpellApplyScope,
   data: CreateSpellAreaQueryData,
 ): Promise<SpellEffectApplied | undefined> {
-  const [spell, caster] = (await Promise.all([
-    fromUuid(data.spellUuid),
-    fromUuid(data.casterTokenUuid),
-  ])) as [RqgItem | null, TokenDocument | null];
+  const spell = scope.spell;
+  // The caster's token, found the same way as on the client that placed the area
+  const caster = await summonerToken(scope);
   const scene = caster?.parent;
   const casterActor = caster?.actor as RqgActor | null | undefined;
-  if (!spell || !scene || !casterActor) {
+  if (!scene || !casterActor) {
     return undefined;
   }
-  const provenance = spellProvenance(spell, data.cast);
+  const provenance = spellProvenance(spell, scope.cast);
   const observers = (game.users?.contents ?? []).filter(
     (user) => !user.isGM && casterActor.testUserPermission(user, "OWNER"),
   );
@@ -346,5 +354,5 @@ export function initSpellAreaCleanup(): void {
 }
 
 export function initCreateSpellAreaQuery(): void {
-  CONFIG.queries["rqg.createSpellArea"] = createAreaAsGm;
+  CONFIG.queries["rqg.createSpellArea"] = handleCreateSpellAreaQuery;
 }

@@ -2,16 +2,19 @@ import { hasActiveGm, localize } from "../util";
 import { systemId } from "../config";
 import { Rqid } from "../api/rqid-api";
 import {
-  spellApplyScope,
   spellProvenance,
   type SpellEffectApplied,
-  type SpellEffectCast,
   type SpellEffectDuration,
   type SpellApplyScope,
 } from "./apply-spell-effect";
 import { casterTokenOnScene } from "./spell-area-targets";
 import { placeSummonedToken } from "./place-summoned-token";
 import { queryActiveGm } from "./run-spell-apply";
+import {
+  applyRequestData,
+  runApplyRequest,
+  type SpellApplyRequestData,
+} from "./spell-apply-request";
 import {
   nearestFreeCell,
   summonedTokenCells,
@@ -20,7 +23,6 @@ import {
   type GridRect,
 } from "./token-cells";
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import type { RqgItem } from "@items/rqg-item.ts";
 
 type Point = { x: number; y: number };
 
@@ -64,11 +66,7 @@ export type SummonOptions = {
 };
 
 /** What a player's client sends the GM to make a summoned token, since players may not create them. */
-export type SummonQueryData = {
-  spellUuid: string;
-  targetActorUuid: string;
-  targetName: string;
-  cast: SpellEffectCast;
+export type SummonQueryData = SpellApplyRequestData & {
   actorRqid: string;
   options: SummonOptions;
   /** The top left corner of the token's place, or null to put it next to the summoner. */
@@ -133,31 +131,28 @@ export async function summon(
     }
   }
   const data: SummonQueryData = {
-    spellUuid: scope.spell.uuid ?? "",
-    targetActorUuid: scope.targetActor.uuid ?? "",
-    targetName: scope.targetName,
-    cast: scope.cast,
+    ...applyRequestData(scope),
     actorRqid: actorRqid,
     options: options,
     position: position,
   };
-  return game.user?.isGM ? summonAsGm(data) : queryActiveGm("rqg.summon", data, spellName);
+  return game.user?.isGM
+    ? handleSummonQuery(data, { user: game.user })
+    : queryActiveGm("rqg.summon", data, spellName);
 }
 
-async function summonAsGm(data: SummonQueryData): Promise<SpellEffectApplied | undefined> {
-  const [spell, targetActor] = await Promise.all([
-    fromUuid(data.spellUuid),
-    fromUuid(data.targetActorUuid),
-  ]);
-  if (!spell || !targetActor) {
-    return undefined;
-  }
-  const scope = spellApplyScope(
-    spell as RqgItem,
-    targetActor as RqgActor,
-    data.targetName,
-    data.cast,
-  );
+/** Make a summoned token for the summon request of a user, on the GM's client. */
+export async function handleSummonQuery(
+  data: SummonQueryData,
+  { user }: { user: User },
+): Promise<SpellEffectApplied | undefined> {
+  return runApplyRequest(data, user, (scope) => summonAsGm(scope, data));
+}
+
+async function summonAsGm(
+  scope: SpellApplyScope,
+  data: SummonQueryData,
+): Promise<SpellEffectApplied | undefined> {
   const { actorRqid, options } = data;
   const spellName = scope.spell.name ?? "";
   const summoner = await summonerToken(scope);
@@ -237,7 +232,7 @@ async function summonAsGm(data: SummonQueryData): Promise<SpellEffectApplied | u
 }
 
 export function initSummonQuery(): void {
-  CONFIG.queries["rqg.summon"] = summonAsGm;
+  CONFIG.queries["rqg.summon"] = handleSummonQuery;
 }
 
 /** Remove the token of a summoning made by `summon` once its effect has ended. */

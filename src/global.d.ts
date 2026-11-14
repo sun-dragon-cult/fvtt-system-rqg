@@ -221,16 +221,27 @@ declare global {
     ) => void;
   }
 
+  /** What v14 passes a query handler besides its data; fvtt-types leaves out the sender. */
+  type RqgQueryContext = { user: User; timeout?: number | undefined };
+
   namespace CONFIG {
     interface Queries {
       "rqg.applySpellBehavior": (
         data: ApplySpellBehaviorQueryData,
+        context: RqgQueryContext,
       ) => Promise<SpellEffectApplied | undefined>;
       "rqg.createSpellArea": (
         data: CreateSpellAreaQueryData,
+        context: RqgQueryContext,
       ) => Promise<SpellEffectApplied | undefined>;
-      "rqg.summon": (data: SummonQueryData) => Promise<SpellEffectApplied | undefined>;
-      "rqg.continueSpellCast": (data: ContinueSpellCastData) => Promise<void>;
+      "rqg.summon": (
+        data: SummonQueryData,
+        context: RqgQueryContext,
+      ) => Promise<SpellEffectApplied | undefined>;
+      "rqg.continueSpellCast": (
+        data: ContinueSpellCastData,
+        context: RqgQueryContext,
+      ) => Promise<void>;
     }
 
     // Declare the RQG custom "Norse" font so it can be assigned to
