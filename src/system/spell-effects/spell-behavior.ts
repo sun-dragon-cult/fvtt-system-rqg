@@ -3,6 +3,7 @@ import { localize } from "../util";
 import { Rqid } from "../api/rqid-api";
 import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
 import { callRqgHook } from "../fvtt-type-compat";
+import { holdsRegion } from "./spell-anchor";
 import { RqgLogger } from "../logging/rqg-logger";
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
@@ -455,12 +456,7 @@ export function spellRqidOfEffect(effect: ActiveEffect): string | undefined {
  * area alive, so it has none: the spell acts on the tokens in the area.
  */
 export function spellBehaviorForEffect(effect: ActiveEffect): SpellBehavior | undefined {
-  return isAreaAnchor(effect) ? undefined : spellBehavior(spellRqidOfEffect(effect));
-}
-
-/** A spell area's effect on its caster, which only keeps the area alive (`createArea`). */
-export function isAreaAnchor(effect: ActiveEffect): boolean {
-  return !!effect.getFlag?.(systemId, "spellArea");
+  return holdsRegion(effect) ? undefined : spellBehavior(spellRqidOfEffect(effect));
 }
 
 /**

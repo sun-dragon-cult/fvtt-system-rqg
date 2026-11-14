@@ -1,9 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { initSpellEnd } from "./spell-end";
-import { removeSpellArea } from "./spell-area";
+import { releaseHeld } from "./spell-anchor";
 
-vi.mock("./summon", () => ({ removeSummonedToken: vi.fn(async () => {}) }));
-vi.mock("./spell-area", () => ({ removeSpellArea: vi.fn(async () => false) }));
+vi.mock("./spell-anchor", () => ({
+  releaseHeld: vi.fn(async () => false),
+  holdsOf: (effect: { getFlag(scope: string, key: string): unknown }) =>
+    (effect.getFlag("rqg", "holds") as unknown[] | undefined) ?? [],
+  holdsRegion: () => false,
+}));
 
 class FakeItem {
   constructor(private flags: Record<string, unknown>) {}
@@ -54,15 +58,19 @@ describe("initSpellEnd", () => {
     expect(bladesharp.delete).toHaveBeenCalledOnce();
   });
 
-  it("leaves an area's caster effect to go with its Region", async () => {
-    vi.mocked(removeSpellArea).mockResolvedValueOnce(true);
-    const anchor = effect("i.rune-magic.shake-earth", { spellArea: "Scene.s.Region.r" });
+  it("leaves an effect that held a document to go with it", async () => {
+    vi.mocked(releaseHeld).mockResolvedValueOnce(true);
+    const anchor = effect("i.rune-magic.shake-earth", {
+      holds: [{ kind: "document", uuid: "Scene.s.Region.r" }],
+    });
     await expire(anchor);
     expect(anchor.delete).not.toHaveBeenCalled();
   });
 
-  it("deletes an area's caster effect whose Region is already gone", async () => {
-    const anchor = effect("i.rune-magic.shake-earth", { spellArea: "Scene.s.Region.gone" });
+  it("deletes an effect whose held document is already gone", async () => {
+    const anchor = effect("i.rune-magic.shake-earth", {
+      holds: [{ kind: "document", uuid: "Scene.s.Region.gone" }],
+    });
     await expire(anchor);
     expect(anchor.delete).toHaveBeenCalledOnce();
   });

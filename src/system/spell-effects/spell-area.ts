@@ -16,13 +16,13 @@ import { summonerDocument, summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
 import { queryActiveGm } from "./query-active-gm";
+import { anchoredCreation, createAnchored } from "./spell-anchor";
 import {
   applyRequestData,
   runApplyRequest,
   type SpellApplyRequestData,
 } from "./spell-apply-request";
 import { spellAreaBehavior } from "./spell-across";
-import { resolveActorFromUuid } from "../../applications/resistance-roll-dialog/resistance-roll-shared";
 
 /**
  * The shape of a spell's area, in meters. A polygon is clicked corner by
@@ -228,41 +228,47 @@ async function createAreaAsGm(
   const observers = (game.users?.contents ?? []).filter(
     (user) => !user.isGM && casterActor.testUserPermission(user, "OWNER"),
   );
-  const [region] = (await scene.createEmbeddedDocuments("Region", [
-    {
-      name: spell.name ?? "",
-      color: data.visible ? "#bbbbbb" : spellAreaColor,
-      shapes: [data.shape],
-      highlightMode: "coverage",
-      visibility: data.visible ? CONST.REGION_VISIBILITY.ALWAYS : CONST.REGION_VISIBILITY.OBSERVER,
-      ownership: {
-        default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
-        ...Object.fromEntries(
-          observers.map((user) => [user.id, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER]),
-        ),
-      },
-      behaviors: [{ name: spell.name ?? "", type: "spellArea", system: { spell: provenance } }],
-      // Without a caster (token HUD "+") the anchor is on the target's actor
-      flags: { [systemId]: { anchorActorUuid: casterActor.uuid } },
-    } as any,
-  ])) as RegionDocument[];
-  if (!region) {
-    return undefined;
-  }
+  const createRegion = async (heldBy?: string) =>
+    (await scene.createEmbeddedDocuments(
+      "Region",
+      [
+        {
+          name: spell.name ?? "",
+          color: data.visible ? "#bbbbbb" : spellAreaColor,
+          shapes: [data.shape],
+          highlightMode: "coverage",
+          visibility: data.visible
+            ? CONST.REGION_VISIBILITY.ALWAYS
+            : CONST.REGION_VISIBILITY.OBSERVER,
+          ownership: {
+            default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+            ...Object.fromEntries(
+              observers.map((user) => [user.id, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER]),
+            ),
+          },
+          behaviors: [{ name: spell.name ?? "", type: "spellArea", system: { spell: provenance } }],
+          flags: heldBy ? { [systemId]: { heldBy } } : {},
+        } as any,
+      ],
+      (heldBy ? anchoredCreation : {}) as any,
+    )) as RegionDocument[];
   if (!data.duration) {
-    return { outcome: "resolved" };
+    const [region] = await createRegion();
+    return region ? { outcome: "resolved" } : undefined;
   }
-  const [effect] = (await casterActor.createEmbeddedDocuments("ActiveEffect", [
-    {
+  // Without a caster (token HUD "+") the effect is on the target's actor
+  const anchored = await createAnchored({
+    effectParentUuid: casterActor.uuid ?? "",
+    effectData: {
       name: spell.name ?? "",
       img: spell.img ?? undefined,
       duration: data.duration,
       start: { time: game.time?.worldTime ?? 0 },
-      flags: { [systemId]: { spellArea: region.uuid } },
       system: { spell: provenance },
-    } as any,
-  ])) as ActiveEffect[];
-  return effect ? { outcome: "applied", effectUuids: [effect.uuid ?? ""] } : undefined;
+    },
+    create: (heldBy) => createRegion(heldBy),
+  });
+  return anchored ? { outcome: "applied", effectUuids: [anchored.effect.uuid] } : undefined;
 }
 
 /**
@@ -282,19 +288,13 @@ export async function applyAreaEffect(scope: SpellAreaScope): Promise<void> {
   );
 }
 
-/** Effects of these spell areas: the caster's (`spellArea`), those put on tokens (`areaRegion`). */
-function areaEffectIds(
-  actor: RqgActor,
-  flags: readonly ("spellArea" | "areaRegion")[],
-  regionUuids: ReadonlySet<string>,
-): string[] {
+/** The effects these spell areas put on tokens inside them (`areaRegion`). */
+function areaEffectIds(actor: RqgActor, regionUuids: ReadonlySet<string>): string[] {
   return actor.effects
-    .filter((effect) =>
-      flags.some((flag) => {
-        const uuid = effect.getFlag(systemId, flag);
-        return typeof uuid === "string" && regionUuids.has(uuid);
-      }),
-    )
+    .filter((effect) => {
+      const uuid = effect.getFlag(systemId, "areaRegion");
+      return typeof uuid === "string" && regionUuids.has(uuid);
+    })
     .map((effect) => effect.id ?? "");
 }
 
@@ -306,46 +306,15 @@ async function deleteEffects(actor: RqgActor, ids: string[]): Promise<void> {
 
 /** Take the effects an area put on a token off it, when it leaves or the area goes. */
 export async function removeAreaEffects(actor: RqgActor, regionUuid: string): Promise<void> {
-  await deleteEffects(actor, areaEffectIds(actor, ["areaRegion"], new Set([regionUuid])));
+  await deleteEffects(actor, areaEffectIds(actor, new Set([regionUuid])));
 }
 
 /**
- * Remove the Region of a spell area once its effect on the caster has ended. True when it deleted
- * one, whose cleanup then deletes the effect.
- */
-export async function removeSpellArea(effect: ActiveEffect): Promise<boolean> {
-  const regionUuid = effect.getFlag(systemId, "spellArea") as string | undefined;
-  const region = regionUuid ? ((await fromUuid(regionUuid)) as RegionDocument | null) : null;
-  if (!region?.parent?.regions.has(region.id ?? "")) {
-    return false;
-  }
-  await region.delete();
-  return true;
-}
-
-/**
- * When a spell area's Region is deleted, by the spell ending or by the GM, end its anchor effect;
- * the tokens inside get an exit event, which takes theirs off. A deleted scene takes its unlinked
- * tokens with it and sends no events, so world actors are cleared of its areas' effects. Runs on the
- * active GM's client.
+ * A deleted scene takes its unlinked tokens with it and sends no exit events, so world actors are
+ * cleared of its areas' effects. Runs on the active GM's client. The caster's effect that keeps an
+ * area alive is `spell-anchor`'s.
  */
 export function initSpellAreaCleanup(): void {
-  Hooks.on("deleteRegion", (region: RegionDocument) => {
-    const area = spellAreaBehavior(region);
-    if (!game.users?.activeGM?.isSelf || !area) {
-      return;
-    }
-    const anchorActorUuid = foundry.utils.getProperty(
-      region,
-      `flags.${systemId}.anchorActorUuid`,
-    ) as string | undefined;
-    const anchorActor = anchorActorUuid ? resolveActorFromUuid(anchorActorUuid) : undefined;
-    if (anchorActor) {
-      // Only the anchor: deleting an effect the exit event already took fails the whole batch
-      const anchorIds = areaEffectIds(anchorActor, ["spellArea"], new Set([region.uuid ?? ""]));
-      void deleteEffects(anchorActor, anchorIds);
-    }
-  });
   Hooks.on("deleteScene", (scene: Scene) => {
     if (!game.users?.activeGM?.isSelf) {
       return;
@@ -357,7 +326,7 @@ export function initSpellAreaCleanup(): void {
       return;
     }
     for (const actor of (game.actors?.contents ?? []) as RqgActor[]) {
-      void deleteEffects(actor, areaEffectIds(actor, ["spellArea", "areaRegion"], uuids));
+      void deleteEffects(actor, areaEffectIds(actor, uuids));
     }
   });
 }
