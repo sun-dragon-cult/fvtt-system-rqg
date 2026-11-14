@@ -30,6 +30,23 @@ Then run `pnpm test:e2e:create-world` and `pnpm test:e2e --trace off`. After cha
 
 A plain `pnpm install` fails there on the `codeload.github.com` tarballs; the environment setup script installs those packages via git with temporary `overrides`, so reuse that approach if dependencies change.
 
+## Issue-to-PR Workflow for Autonomous Sessions
+
+An AI session that takes a GitHub issue to a pull request on its own follows these steps. The owner reviews and merges; a session never approves or merges a PR.
+
+1. **Implement** what the issue asks, and nothing beyond it.
+2. **Validate** with the [Validation Order](#validation-order) checks. When the change shows in the game (sheets, dialogs, chat cards, canvas, spell casting), also run it in Foundry (see the cloud section above) and add or extend an e2e spec under `tests/e2e/` for the new behavior.
+3. **Self-review**: run `/code-review` at high effort on your diff, fix the findings that hold up, and list the ones you decline in the PR description with the reason.
+4. **Content**: when the content in `sun-dragon-cult/fvtt-module-wiki-rqg-private` must change with the code, open a matching PR there, link the two PRs both ways, and say in which order and release they ship.
+5. **Open the PR** with a conventional title and a `Fixes #N` line, then subscribe to its activity and fix CI failures.
+6. **External review**: a separate review session posts findings as PR comments. Fix the ones that hold up and reply to each. Stop after **two review-and-fix rounds** and leave what remains to the owner.
+7. **Simplify** once, after the review rounds: run `/simplify` on the PR's diff, keep only behavior-preserving changes, and rerun the validation (including e2e if game-visible code changed).
+8. **Report** the result in the PR description: what was tested (unit, e2e, manual), what wasn't, and anything left for the owner.
+
+Ask the owner instead of deciding when a change would alter public API (`@public` items, `game.system.api`), interpret a game rule differently from the issue, or touch another repository beyond step 4.
+
+A **review session** asked to review a PR runs `/code-review` at high effort against it with `--comment`, so the findings land as PR comments, and pushes no code.
+
 ## Default Engineering Rules
 
 1. Keep changes minimal and scoped to the request.
