@@ -29,7 +29,7 @@ export function heldByOf(document: HeldDocument): string {
   return typeof heldBy === "string" ? heldBy : "";
 }
 
-/** Whether an effect keeps a spell area's Region alive. */
+/** Whether an effect keeps a spell area's Region alive: a caster's area anchor, not a spell on them. */
 export function holdsRegion(effect: ActiveEffect): boolean {
   return holdsOf(effect).some((hold) => hold.uuid.split(".").at(-2) === "Region");
 }
@@ -132,14 +132,18 @@ function heldDocuments(): HeldDocument[] {
   );
 }
 
-type EffectSource = { flags?: { rqg?: { holds?: unknown[]; areaRegion?: string } } };
+type EffectSource = { flags?: Record<string, Record<string, unknown> | undefined> };
 
 /** The source of the effects an unlinked token's delta adds, read without building its actor. */
 function deltaEffects(token: TokenDocument): EffectSource[] {
   return ((token as any).delta?._source?.effects ?? []) as EffectSource[];
 }
 
-const sourceHolds = (effect: EffectSource) => !!effect.flags?.rqg?.holds?.length;
+const sourceFlag = (source: object, key: string): unknown =>
+  foundry.utils.getProperty(source, `flags.${systemId}.${key}`);
+
+const sourceHolds = (effect: EffectSource) =>
+  !!(sourceFlag(effect, "holds") as unknown[] | undefined)?.length;
 
 const holdsInDelta = (token: TokenDocument) =>
   !token.actorLink && deltaEffects(token).some(sourceHolds);
@@ -152,7 +156,7 @@ function anchorActors(): Actor[] {
   const tokenActors = (game.scenes?.contents ?? []).flatMap((scene) =>
     scene.tokens.contents.flatMap((token) =>
       !token.actorLink &&
-      deltaEffects(token).some((e) => sourceHolds(e) || !!e.flags?.rqg?.areaRegion) &&
+      deltaEffects(token).some((e) => sourceHolds(e) || !!sourceFlag(e, "areaRegion")) &&
       token.actor
         ? [token.actor]
         : [],
@@ -231,12 +235,13 @@ function isInArea(actor: Actor, effect: ActiveEffect): boolean {
   );
 }
 
-type HeldSource = { flags?: { rqg?: { heldBy?: string } } };
+type HeldSource = { flags?: Record<string, Record<string, unknown> | undefined> };
 
 /** A copy of a held document's source that no longer claims to be held. */
 function withoutHeldBy<T extends HeldSource>(source: T): T {
-  return source.flags?.rqg?.heldBy
-    ? { ...source, flags: { ...source.flags, rqg: { ...source.flags.rqg, heldBy: "" } } }
+  const flags = source.flags?.[systemId];
+  return flags?.["heldBy"]
+    ? { ...source, flags: { ...source.flags, [systemId]: { ...flags, heldBy: "" } } }
     : source;
 }
 
@@ -291,7 +296,7 @@ export function initSpellAnchors(): void {
   );
   Hooks.on("preCreateScene", (scene) => {
     const source = (scene as any)._source as { regions: HeldSource[]; tokens: HeldSource[] };
-    if ([...source.regions, ...source.tokens].some((s) => s.flags?.rqg?.heldBy)) {
+    if ([...source.regions, ...source.tokens].some((s) => sourceFlag(s, "heldBy"))) {
       scene.updateSource({
         regions: source.regions.map(withoutHeldBy),
         tokens: source.tokens.map(withoutHeldBy),

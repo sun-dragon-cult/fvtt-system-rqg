@@ -456,12 +456,7 @@ export function spellRqidOfEffect(effect: ActiveEffect): string | undefined {
  * area alive, so it has none: the spell acts on the tokens in the area.
  */
 export function spellBehaviorForEffect(effect: ActiveEffect): SpellBehavior | undefined {
-  return isAreaAnchor(effect) ? undefined : spellBehavior(spellRqidOfEffect(effect));
-}
-
-/** A spell area's effect on its caster, which only keeps the area alive (`createArea`). */
-export function isAreaAnchor(effect: ActiveEffect): boolean {
-  return holdsRegion(effect);
+  return holdsRegion(effect) ? undefined : spellBehavior(spellRqidOfEffect(effect));
 }
 
 /**
