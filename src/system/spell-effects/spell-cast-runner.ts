@@ -23,7 +23,8 @@ import { castAcrossSpellAreas, tokenOfUuid } from "./spell-across";
 import { interceptIncomingSpell } from "./incoming-spell";
 import { reflectsSpell } from "./reflect-spell";
 import { spellBehaviorOf } from "./spell-behavior";
-import { queryActiveGm } from "./run-spell-apply";
+import { queryActiveGm } from "./query-active-gm";
+import { isClaimedByOtherApply, isOwnedBy, releaseApplyClaim } from "./spell-apply-claims";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 
@@ -63,7 +64,7 @@ export async function continueSpellCast(
 ): Promise<void> {
   const data: ContinueSpellCastData = { messageId, inputs, requestPatch };
   if (game.user?.isGM && game.users?.activeGM?.isSelf) {
-    await runQueued(data);
+    await runQueued(data, true);
     return;
   }
   const message = game.messages?.get(messageId) as RecordMessage | undefined;
@@ -73,11 +74,29 @@ export async function continueSpellCast(
 
 const queues = new Map<string, Promise<unknown>>();
 
-/** One step per record at a time, so two inputs arriving together can't overwrite each other. */
-function runQueued(data: ContinueSpellCastData): Promise<void> {
+/**
+ * One step per record at a time, so two inputs arriving together can't overwrite each other. A
+ * GM's Apply result settles its entry even while another Apply holds the claim, so a GM can finish
+ * an entry whose Apply never reported.
+ */
+function runQueued(data: ContinueSpellCastData, fromGm: boolean): Promise<void> {
   const previous = queues.get(data.messageId) ?? Promise.resolve();
   const next = previous
-    .then(() => continueOnGm(data))
+    .then(async () => {
+      // Another Apply of the entry is doing GM work for it, so this one's result isn't the entry's
+      const inputs = data.inputs.filter(
+        (input) =>
+          input.kind !== "applied" ||
+          fromGm ||
+          !isClaimedByOtherApply(data.messageId, input.entryId, input.applyId),
+      );
+      await continueOnGm({ ...data, inputs });
+      for (const input of inputs) {
+        if (input.kind === "applied" || input.kind === "ruling") {
+          releaseApplyClaim(data.messageId, input.entryId);
+        }
+      }
+    })
     .catch((error: unknown) => logger.error(ERR.spellCastNotContinued, { data }, error));
   queues.set(data.messageId, next);
   return next;
@@ -380,7 +399,62 @@ export async function assignSpellCastTargets(
   ]);
 }
 
+/**
+ * The part of a request to continue a cast that its sender may ask for: rulings and assignments
+ * from a GM, resistance answers and Apply results from the owner of the entry's target, and the
+ * answer's card patch only for the card of an entry they answer.
+ */
+export function allowedSpellCastData(
+  data: ContinueSpellCastData,
+  record: Pick<SpellCastRecord, "targets">,
+  sender: { isGM: boolean; ownsTarget(entry: SpellCastEntry): boolean },
+): ContinueSpellCastData {
+  const entryOf = (entryId: string) => record.targets.find((e) => e.id === entryId);
+  const inputs = (Array.isArray(data.inputs) ? data.inputs : []).filter((input) => {
+    switch (input?.kind) {
+      case "ruling":
+      case "assign":
+        return sender.isGM;
+      case "resistance":
+      case "applied": {
+        const entry = entryOf(input.entryId);
+        return !!entry && (sender.isGM || sender.ownsTarget(entry));
+      }
+      default:
+        return false;
+    }
+  });
+  const answered = inputs.flatMap((input) =>
+    input.kind === "resistance" ? [entryOf(input.entryId)?.requestMessageId] : [],
+  );
+  const patch = data.requestPatch;
+  return {
+    messageId: data.messageId,
+    inputs: inputs,
+    requestPatch: patch && answered.includes(patch.messageId) ? patch : undefined,
+  };
+}
+
+/** Continue a cast for a client, with what its sender may ask for. */
+export function handleContinueSpellCastQuery(
+  data: ContinueSpellCastData,
+  { user }: RqgQueryContext,
+): Promise<void> {
+  const message = game.messages?.get(data?.messageId ?? "") as RecordMessage | undefined;
+  if (!message || !isSpellCastRecordMessage(message as any)) {
+    return Promise.resolve();
+  }
+  const allowed = allowedSpellCastData(data, message.system as Pick<SpellCastRecord, "targets">, {
+    isGM: user.isGM,
+    ownsTarget: (entry) => isOwnedBy(fromUuidSync(actorRefUuid(entry), { strict: false }), user),
+  });
+  if (allowed.inputs.length < (data.inputs?.length ?? 0)) {
+    logger.warn("Dropped spell cast inputs the sender may not give", { notify: false }, data);
+  }
+  return runQueued(allowed, user.isGM);
+}
+
 export function initContinueSpellCastQuery(): void {
-  CONFIG.queries["rqg.continueSpellCast"] = (data: ContinueSpellCastData) => runQueued(data);
+  CONFIG.queries["rqg.continueSpellCast"] = handleContinueSpellCastQuery;
   Hooks.once("ready", () => void resumeSpellCasts());
 }

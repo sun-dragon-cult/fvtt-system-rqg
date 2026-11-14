@@ -1,24 +1,15 @@
-import { hasActiveGm, localize } from "../util";
-import type { RqgActor } from "@actors/rqg-actor.ts";
-import type { RqgItem } from "@items/rqg-item.ts";
-import {
-  spellApplyScope,
-  type SpellEffectApplied,
-  type SpellEffectCast,
-  type SpellApplyScope,
-} from "./apply-spell-effect";
+import { hasActiveGm } from "../util";
+import { queryActiveGm } from "./query-active-gm";
+import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 import { spellBehaviorOf, type SpellBehavior } from "./spell-behavior";
-import { RqgLogger } from "../logging/rqg-logger";
-
-const logger = new RqgLogger("run-spell-apply");
+import {
+  applyRequestData,
+  runApplyRequest,
+  type SpellApplyRequestData,
+} from "./spell-apply-request";
 
 /** What a player's client sends the GM to run a spell behavior's `apply` that is `runAsGm`. */
-export type ApplySpellBehaviorQueryData = {
-  spellUuid: string;
-  targetActorUuid: string;
-  targetName: string;
-  cast: SpellEffectCast;
-};
+export type ApplySpellBehaviorQueryData = SpellApplyRequestData;
 
 /**
  * Run a spell behavior's `apply` on the clicker's client, or on the active GM's when it is
@@ -36,57 +27,24 @@ export async function runSpellApply(
   if (!gm) {
     return behavior.apply(scope);
   }
-  const queryData: ApplySpellBehaviorQueryData = {
-    spellUuid: scope.spell.uuid ?? "",
-    targetActorUuid: scope.targetActor.uuid ?? "",
-    targetName: scope.targetName,
-    cast: scope.cast,
-  };
-  return queryActiveGm("rqg.applySpellBehavior", queryData, spellName);
+  return queryActiveGm("rqg.applySpellBehavior", applyRequestData(scope), spellName);
 }
-
-type RqgQuery =
-  "rqg.applySpellBehavior" | "rqg.createSpellArea" | "rqg.summon" | "rqg.continueSpellCast";
 
 /**
- * Run one of the system's queries on the active GM's client, for what players may not do. Warns,
- * naming the spell, when no GM is logged in or the query fails.
+ * Run a `runAsGm` behavior's `apply` for a player. Without a cast record (the token HUD "+") only a
+ * GM may ask, since such a behavior acts on what its target's owner may not change.
  */
-export async function queryActiveGm<Q extends RqgQuery>(
-  name: Q,
-  data: Parameters<CONFIG.Queries[Q]>[0],
-  spellName: string,
-): Promise<Awaited<ReturnType<CONFIG.Queries[Q]>> | undefined> {
-  const gm = game.users?.activeGM;
-  if (!hasActiveGm(spellName) || !gm) {
-    return undefined;
-  }
-  const needsGm = localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName });
-  try {
-    return (await gm.query(name, data as any)) as Awaited<ReturnType<CONFIG.Queries[Q]>>;
-  } catch (error) {
-    logger.warn(needsGm, undefined, error);
-    return undefined;
-  }
-}
-
-async function handleApplySpellBehaviorQuery(
+export async function handleApplySpellBehaviorQuery(
   data: ApplySpellBehaviorQueryData,
+  { user }: RqgQueryContext,
 ): Promise<SpellEffectApplied | undefined> {
-  const [spell, targetActor] = await Promise.all([
-    fromUuid(data.spellUuid),
-    fromUuid(data.targetActorUuid),
-  ]);
-  if (!spell || !targetActor) {
+  if (!data.request && !user.isGM) {
     return undefined;
   }
-  const behavior = spellBehaviorOf(spell as RqgItem);
-  if (!behavior?.runAsGm || !behavior.apply) {
-    return undefined;
-  }
-  return behavior.apply(
-    spellApplyScope(spell as RqgItem, targetActor as RqgActor, data.targetName, data.cast),
-  );
+  return runApplyRequest(data, user, async (scope) => {
+    const behavior = spellBehaviorOf(scope.spell);
+    return behavior?.runAsGm && behavior.apply ? behavior.apply(scope) : undefined;
+  });
 }
 
 export function initApplySpellBehaviorQuery(): void {

@@ -24,6 +24,7 @@ import {
   type SpellCastEntry,
 } from "../data-model/shared/spell-cast-record";
 import { actorRefUuid } from "../data-model/shared/actor-ref";
+import { bindApplyRequest } from "../system/spell-effects/spell-apply-request";
 import { spellTargetReachLabel } from "../system/spell-effects/spell-target-reach";
 import type { SpellTargetReachWarning } from "../system/spell-effects/spell-target-reach.defs";
 
@@ -226,17 +227,36 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
   ]);
 }
 
+/** Entries this client is applying, by `recordId.entryId`, so a second click waits for the first. */
+const applying = new Set<string>();
+
 /**
  * Apply a spell to a target it took effect on, once. Runs on the client of whoever clicked (the
  * target's owner, who picks the weapon or the wounds), then the cast record notes what it did.
  */
 export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): Promise<void> {
   const clicked = clickedEntry(clickedButton);
-  const spell = clicked ? await applicableSpell(clicked.record) : undefined;
-  if (!clicked || !spell) {
+  if (!clicked) {
     return;
   }
-  const { record, entry } = clicked;
+  const key = `${clicked.record.id}.${clicked.entry.id}`;
+  if (applying.has(key)) {
+    ui.notifications?.info(localize("RQG.ChatMessage.SpellCast.ApplyInProgress"));
+    return;
+  }
+  applying.add(key);
+  try {
+    await applyEntry(clicked.record, clicked.entry);
+  } finally {
+    applying.delete(key);
+  }
+}
+
+async function applyEntry(record: ChatMessage, entry: SpellCastEntry): Promise<void> {
+  const spell = await applicableSpell(record);
+  if (!spell) {
+    return;
+  }
   const targetUuid = actorRefUuid(entry);
   if (!isOwnedByUser(targetUuid)) {
     return;
@@ -254,7 +274,13 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
   if (!targetActor) {
     return;
   }
-  const cast = recordCast(record.system as any, record.id ?? "", spell, entry);
+  // The GM's client claims the entry for this Apply before doing its part of it
+  const applyId = foundry.utils.randomID();
+  const cast = bindApplyRequest(recordCast(record.system as any, record.id ?? "", spell, entry), {
+    castMessageId: record.id ?? "",
+    entryId: entry.id,
+    applyId: applyId,
+  });
   const applied = await applySpellEffect(spell, targetActor, name, cast);
   if (!applied) {
     return;
@@ -263,6 +289,7 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
     {
       kind: "applied",
       entryId: entry.id,
+      applyId: applyId,
       effectUuids: applied.outcome === "applied" ? applied.effectUuids : [],
       blockedReason:
         applied.outcome === "blocked"

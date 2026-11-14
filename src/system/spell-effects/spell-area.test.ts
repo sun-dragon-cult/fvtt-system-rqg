@@ -1,6 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { areaExtent, spellRangeInMeters } from "./spell-area";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { summonerDocument } from "./token-cells";
+import { clearApplyClaims } from "./spell-apply-claims";
+import { areaExtent, handleCreateSpellAreaQuery, spellRangeInMeters } from "./spell-area";
 import { polygonAreaInMeters } from "./place-spell-area";
+
+vi.mock("./token-cells", () => ({
+  summonerToken: vi.fn(async () => undefined),
+  summonerDocument: vi.fn(async () => undefined),
+}));
 
 describe("spell areas", () => {
   it("uses the standard casting range of the spell's magic (RBM p.4)", () => {
@@ -29,5 +36,35 @@ describe("spell areas", () => {
       37.16,
       2,
     );
+  });
+});
+
+describe("handleCreateSpellAreaQuery", () => {
+  const user = { isGM: false } as unknown as User;
+  const data = {
+    request: { castMessageId: "record", entryId: "entry", applyId: "click" },
+    spellUuid: "",
+    targetActorUuid: "",
+    targetName: "",
+    cast: {} as any,
+    casterTokenUuid: "",
+    shape: { type: "circle", x: 0, y: 0, radius: 100 } as any,
+    duration: null,
+    visible: false,
+  };
+
+  afterEach(() => {
+    clearApplyClaims();
+    vi.unstubAllGlobals();
+  });
+
+  it("does nothing for an entry that was already applied", async () => {
+    const record = {
+      type: "spellCast",
+      system: { targets: [{ id: "entry", actorUuid: "Actor.v", tokenUuid: "", stage: "applied" }] },
+    };
+    vi.stubGlobal("game", { messages: { get: () => record } });
+    expect(await handleCreateSpellAreaQuery(data, { user })).toBeUndefined();
+    expect(summonerDocument).not.toHaveBeenCalled();
   });
 });
