@@ -386,12 +386,17 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema> {
     }
 
     const areaTokens = tokensInSpellArea(item, rollOptions.levelUsed, options.token, casterActor);
+    // Dynamic import to avoid a circular dependency through the spell effect modules
+    const { spellTargetReachChecker } =
+      await import("../../system/spell-effects/spell-target-reach");
     const resistedSpellTarget = await resolveResistedSpellCastTarget(
       this.resistedBy,
       casterActor,
       item.name ?? undefined,
       areaTokens,
       spellMaxTargets(item, rollOptions.levelUsed),
+      // The tokens in a spell's area are within its reach by definition
+      areaTokens ? undefined : spellTargetReachChecker(item, options.token, casterActor),
     );
     if (!resistedSpellTarget.proceed) {
       return;

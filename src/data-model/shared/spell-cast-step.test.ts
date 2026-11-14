@@ -4,6 +4,7 @@ import {
   buildSpellCastEntries,
   newSpellCastEntry,
   type SpellCastRecord,
+  type SpellCastTarget,
 } from "./spell-cast-record";
 import { SpellResistedByEnum, SpellResistedWithEnum } from "../item-data/spell";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
@@ -329,7 +330,7 @@ describe("buildSpellCastEntries", () => {
     targetKind: string,
     resistedBy: SpellResistedByEnum = SpellResistedByEnum.None,
     castSucceeded = true,
-    targets: { actorUuid: string; tokenUuid: string; isCaster: boolean }[] = [],
+    targets: SpellCastTarget[] = [],
   ) =>
     buildSpellCastEntries({
       castSucceeded,
@@ -367,6 +368,16 @@ describe("buildSpellCastEntries", () => {
       isCaster: false,
     });
     expect(build("self", SpellResistedByEnum.SpiritCombatRound)[0]!.actorUuid).toBe("");
+  });
+
+  it("keeps a target's reach warning for the GM, and none on an untargeted entry", () => {
+    const far = [
+      { actorUuid: "Actor.x", tokenUuid: "", isCaster: false, reachWarning: "outOfSight" as const },
+    ];
+    expect(build("creature", SpellResistedByEnum.None, true, far)[0]!.reachWarning).toBe(
+      "outOfSight",
+    );
+    expect(build("creature", SpellResistedByEnum.ResistanceRoll)[0]!.reachWarning).toBe("");
   });
 
   it("holds every entry of a failed cast for the runner to tell the spell", () => {
