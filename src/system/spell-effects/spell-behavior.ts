@@ -3,6 +3,7 @@ import { localize } from "../util";
 import { Rqid } from "../api/rqid-api";
 import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
 import { callRqgHook } from "../fvtt-type-compat";
+import { holdsRegion } from "./spell-anchor";
 import { RqgLogger } from "../logging/rqg-logger";
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
@@ -460,7 +461,7 @@ export function spellBehaviorForEffect(effect: ActiveEffect): SpellBehavior | un
 
 /** A spell area's effect on its caster, which only keeps the area alive (`createArea`). */
 export function isAreaAnchor(effect: ActiveEffect): boolean {
-  return !!effect.getFlag?.(systemId, "spellArea");
+  return holdsRegion(effect);
 }
 
 /**

@@ -5,6 +5,7 @@ export const magicPointStorageOrderFlag = "magicPointStorageOrder" as const;
 export const splitFromProjectileIdFlag = "splitFromProjectileId" as const;
 
 import type { RqidString } from "../../system/api/rqid-api";
+import type { SpellHold } from "../../system/spell-effects/spell-anchor";
 
 export interface RqgItemFlags {
   [documentRqidFlags]: DocumentRqidFlags;
@@ -34,12 +35,15 @@ export interface MacroFlags {
 
 export interface RqgActiveEffectFlags {
   [documentRqidFlags]?: DocumentRqidFlags;
-  /** A summoning made by spellEffects.summon: its token goes when the effect ends. */
-  summoning?: boolean;
-  /** The caster's effect of a spell area made by spellEffects.createArea: its Region's uuid. */
-  spellArea?: string;
+  /** What a spell effect keeps alive, e.g. a spell area's Region or a summoned token. */
+  holds?: SpellHold[];
   /** An effect a spell area put on a token inside it: the area's Region uuid. */
   areaRegion?: string;
+}
+
+/** On a document a spell effect keeps alive: that effect's uuid. */
+export interface SpellHeldFlags {
+  heldBy?: string;
 }
 
 export interface RollTableFlags {

@@ -10,6 +10,7 @@ import {
 import { casterTokenOnScene } from "./spell-area-targets";
 import { placeSummonedToken } from "./place-summoned-token";
 import { queryActiveGm } from "./run-spell-apply";
+import { createAnchored } from "./spell-anchor";
 import {
   applyRequestData,
   runApplyRequest,
@@ -196,32 +197,41 @@ async function summonAsGm(
     );
     return undefined;
   }
-  const tokenData = await actor.getTokenDocument(
-    {
-      x: position.x,
-      y: position.y,
-      width: size.w,
-      height: size.h,
-      actorLink: false,
-      disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL,
+  const tokenId = foundry.utils.randomID();
+  const anchored = await createAnchored({
+    // The summoned token's own actor holds it, so the token goes when the summoning ends
+    effectParentUuid: `${scene.uuid}.Token.${tokenId}.Actor.${actor.id}`,
+    effectData: {
+      name: spellName,
+      img: options.img ?? scope.spell.img ?? undefined,
+      duration: options.duration ?? scope.duration,
+      start: { time: game.time?.worldTime ?? 0 },
+      system: { spell: spellProvenance(scope.spell, scope.cast) },
     },
-    { parent: scene },
-  );
-  const [token] = (await scene.createEmbeddedDocuments("Token", [tokenData.toObject()])) ?? [];
-  const [effect] =
-    (await token?.actor?.createEmbeddedDocuments("ActiveEffect", [
-      {
-        name: spellName,
-        img: options.img ?? scope.spell.img ?? undefined,
-        duration: options.duration ?? scope.duration,
-        start: { time: game.time?.worldTime ?? 0 },
-        flags: { rqg: { summoning: true } },
-        system: { spell: spellProvenance(scope.spell, scope.cast) },
-      } as any,
-    ])) ?? [];
-  if (!effect) {
+    create: async (heldBy) => {
+      const tokenData = await actor.getTokenDocument(
+        {
+          _id: tokenId,
+          x: position.x,
+          y: position.y,
+          width: size.w,
+          height: size.h,
+          actorLink: false,
+          disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL,
+          flags: { [systemId]: { heldBy } },
+        } as any,
+        { parent: scene },
+      );
+      return ((await scene.createEmbeddedDocuments("Token", [tokenData.toObject()], {
+        keepId: true,
+      })) ?? []) as any[];
+    },
+  });
+  if (!anchored) {
     return undefined;
   }
+  const { effect, held } = anchored;
+  const token = held[0] as unknown as TokenDocument;
   ui.notifications?.info(
     localize("RQG.ChatMessage.SpellCast.Summon.Summoned", {
       spellName,
@@ -233,17 +243,4 @@ async function summonAsGm(
 
 export function initSummonQuery(): void {
   CONFIG.queries["rqg.summon"] = handleSummonQuery;
-}
-
-/** Remove the token of a summoning made by `summon` once its effect has ended. */
-export async function removeSummonedToken(effect: ActiveEffect): Promise<void> {
-  const actor = effect.parent;
-  if (!effect.getFlag(systemId, "summoning") || !(actor instanceof Actor) || !actor.isToken) {
-    return;
-  }
-  const token = actor.token;
-  // Deleting the token itself also takes its effects with it
-  if (token?.id && token.parent?.tokens.has(token.id)) {
-    await token.delete();
-  }
 }
