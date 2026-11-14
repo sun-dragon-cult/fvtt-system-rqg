@@ -24,6 +24,7 @@ import {
   type SpellCastTarget,
 } from "./spell-cast-record";
 import { actorRefUuid } from "./actor-ref";
+import type { SpellTargetReachWarning } from "../../system/spell-effects/spell-target-reach.defs";
 
 /** Outcome of the pre-cast target check, threaded to {@link postSpellCastResult}. */
 export type ResistedSpellTarget = {
@@ -37,7 +38,8 @@ export type ResistedSpellTarget = {
  * pass straight through - targeting is only constrained where a resistance roll or spirit combat
  * depends on it - but their targets are still recorded for the cast outcome. A spell centered on
  * its caster passes the tokens in its area, which take the place of the user's targets, and a spell
- * that reaches only so many targets at its level (Turn Undead) refuses more.
+ * that reaches only so many targets at its level (Turn Undead) refuses more. Each target is marked
+ * with what `reachWarningOf` finds against its reach, for the GM to rule on: never a refusal.
  */
 export async function resolveResistedSpellCastTarget(
   resistedBy: SpellResistedByEnum,
@@ -45,6 +47,7 @@ export async function resolveResistedSpellCastTarget(
   spellName: string | undefined,
   areaTokens?: readonly foundry.canvas.placeables.Token[],
   maxTargets: number = Infinity,
+  reachWarningOf?: (token: foundry.canvas.placeables.Token) => SpellTargetReachWarning,
 ): Promise<ResistedSpellTarget> {
   const targets = [...(areaTokens ?? game.user?.targets ?? [])];
   const castTargets: SpellCastTarget[] = targets.flatMap((token) =>
@@ -54,6 +57,7 @@ export async function resolveResistedSpellCastTarget(
             actorUuid: token.document.actor.uuid,
             tokenUuid: token.document.uuid,
             isCaster: token.document.actor.uuid === casterActor.uuid,
+            ...(reachWarningOf ? { reachWarning: reachWarningOf(token) } : {}),
           },
         ]
       : [],

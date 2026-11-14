@@ -4,11 +4,11 @@ import { metersPerPixel } from "../../system/spell-effects/scene-distance";
 /** The option standing for several targets at once, which can't be picked again once left. */
 export const SEVERAL_TARGETS = "several";
 
-type TargetCandidate = { id: string; name: string; x: number; y: number };
+type TargetCandidate = { id: string; name: string; x: number; y: number; warning?: string };
 
 /**
  * Options for picking one target: none, the acting token itself, then every other candidate,
- * nearest first, labeled with its distance in meters.
+ * nearest first, labeled with its distance in meters and any warning about it.
  */
 export function targetTokenOptions(
   candidates: TargetCandidate[],
@@ -37,10 +37,16 @@ export function targetTokenOptions(
       label:
         meters == null
           ? candidate.name
-          : localize("RQG.Dialog.Common.TargetAtDistance", {
-              name: candidate.name,
-              meters: String(meters),
-            }),
+          : candidate.warning
+            ? localize("RQG.Dialog.Common.TargetAtDistanceWarning", {
+                name: candidate.name,
+                meters: String(meters),
+                warning: candidate.warning,
+              })
+            : localize("RQG.Dialog.Common.TargetAtDistance", {
+                name: candidate.name,
+                meters: String(meters),
+              }),
     })),
   ];
 }
@@ -55,9 +61,12 @@ export function selectedTargetValue(targetIds: string[]): string {
 
 /**
  * The target picker for this user on the viewed scene: the tokens they can see, measured from
- * `from`, with the current targets selected.
+ * `from` and marked by `warningOf`, with the current targets selected.
  */
-export function buildTargetTokenSelect(from: foundry.canvas.placeables.Token | undefined): {
+export function buildTargetTokenSelect(
+  from: foundry.canvas.placeables.Token | undefined,
+  warningOf?: (token: foundry.canvas.placeables.Token) => string,
+): {
   options: SelectOptionData<string>[];
   selected: string;
 } {
@@ -67,6 +76,7 @@ export function buildTargetTokenSelect(from: foundry.canvas.placeables.Token | u
     name: token.document.name ?? "",
     x: token.center.x,
     y: token.center.y,
+    warning: warningOf?.(token) ?? "",
   });
   const candidates = (canvas?.tokens?.placeables ?? []).filter((t) => t.visible).map(toCandidate);
   const options = targetTokenOptions(
@@ -81,7 +91,12 @@ export function buildTargetTokenSelect(from: foundry.canvas.placeables.Token | u
     options.unshift({ value: SEVERAL_TARGETS, label: getTargetedTokenNames() });
   } else if (selected && !options.some((o) => o.value === selected)) {
     const target = game.user?.targets.first();
-    options.push({ value: selected, label: target?.document.name ?? selected });
+    const name = target?.document.name ?? selected;
+    const warning = target ? warningOf?.(target) : undefined;
+    options.push({
+      value: selected,
+      label: warning ? localize("RQG.Dialog.Common.TargetWarning", { name, warning }) : name,
+    });
   }
   return { options, selected };
 }

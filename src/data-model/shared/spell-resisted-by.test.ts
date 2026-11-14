@@ -261,6 +261,39 @@ describe("resolveResistedSpellCastTarget", () => {
     expect(ui.notifications?.warn).not.toHaveBeenCalled();
   });
 
+  it("marks each target beyond the spell's reach, and still casts", async () => {
+    const far = fakeTarget("Actor.far");
+    setTargets(fakeTarget("Actor.near"), far);
+
+    const result = await resolveResistedSpellCastTarget(
+      SpellResistedByEnum.ResistanceRollPerTarget,
+      casterActor,
+      "Disruption",
+      undefined,
+      Infinity,
+      (token) => (token === far ? "outOfRange" : ""),
+    );
+
+    expect(result).toEqual({
+      proceed: true,
+      targets: [
+        {
+          actorUuid: "Actor.near",
+          tokenUuid: "Scene.s.Token.Actor.near",
+          isCaster: false,
+          reachWarning: "",
+        },
+        {
+          actorUuid: "Actor.far",
+          tokenUuid: "Scene.s.Token.Actor.far",
+          isCaster: false,
+          reachWarning: "outOfRange",
+        },
+      ],
+    });
+    expect(ui.notifications?.warn).not.toHaveBeenCalled();
+  });
+
   it("asks to confirm a per-target spell cast with nothing targeted", async () => {
     mockChoice("withoutTarget");
 

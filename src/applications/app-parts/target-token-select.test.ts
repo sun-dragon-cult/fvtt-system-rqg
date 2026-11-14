@@ -15,6 +15,22 @@ describe("targetTokenOptions", () => {
     expect(options[2]!.label).toContain("meters,50");
   });
 
+  it("marks a candidate with its warning next to its distance", () => {
+    const caster = token("c", "Vasana", 0);
+    const options = targetTokenOptions(
+      [caster, { ...token("far", "Broo", 300), warning: "out of range" }, token("near", "Ash", 1)],
+      caster,
+      0.5,
+    );
+    expect(options.find((o) => o.value === "far")!.label).toContain(
+      "RQG.Dialog.Common.TargetAtDistanceWarning",
+    );
+    expect(options.find((o) => o.value === "far")!.label).toContain("warning,out of range");
+    expect(options.find((o) => o.value === "near")!.label).toContain(
+      "RQG.Dialog.Common.TargetAtDistance +",
+    );
+  });
+
   it("lists the others by name, without distances, when there is no caster token", () => {
     const options = targetTokenOptions(
       [token("b", "Broo", 300), token("a", "Ash", 100)],

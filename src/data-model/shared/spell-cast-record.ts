@@ -13,6 +13,10 @@ import {
   type SpellTargetOutcomeState,
 } from "./spell-cast-outcome.defs";
 import { actorRefField, actorRefFields, type ActorRef } from "./actor-ref";
+import {
+  spellTargetReachWarnings,
+  type SpellTargetReachWarning,
+} from "../../system/spell-effects/spell-target-reach.defs";
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -68,6 +72,8 @@ export type SpellCastEntry = ActorRef & {
   reflectedFromId: string;
   /** The resistance request card this target answers on; "" while it has none. */
   requestMessageId: string;
+  /** Why the token targeted may have been beyond the spell's reach when it was cast, for the GM. */
+  reachWarning: SpellTargetReachWarning;
 };
 
 /**
@@ -155,13 +161,20 @@ export function spellCastRecordFields() {
         }),
         reflectedFromId: new StringField({ blank: true, nullable: false, initial: "" }),
         requestMessageId: new StringField({ blank: true, nullable: false, initial: "" }),
+        reachWarning: new StringField({
+          blank: true,
+          nullable: false,
+          initial: "",
+          choices: ["", ...spellTargetReachWarnings],
+        }),
       }),
     ),
   };
 }
 
 /** A token or actor the spell was cast at. */
-export type SpellCastTarget = Pick<SpellCastEntry, "actorUuid" | "tokenUuid" | "isCaster">;
+export type SpellCastTarget = Pick<SpellCastEntry, "actorUuid" | "tokenUuid" | "isCaster"> &
+  Partial<Pick<SpellCastEntry, "reachWarning">>;
 
 export function newSpellCastEntry(id: string, target: SpellCastTarget): SpellCastEntry {
   return {
@@ -177,6 +190,7 @@ export function newSpellCastEntry(id: string, target: SpellCastTarget): SpellCas
     effectBlockedReason: "",
     reflectedFromId: "",
     requestMessageId: "",
+    reachWarning: target.reachWarning ?? "",
   };
 }
 
