@@ -21,7 +21,8 @@ function gmLeaves(gm: User): { left: Promise<void>; stop: () => void } {
 
 /**
  * Run one of the system's queries on the active GM's client, for what players may not do. Warns,
- * naming the spell, when no GM is logged in, the GM logs out before answering, or the query fails.
+ * naming the spell, when no GM is logged in, the user may not query other users, the GM logs out
+ * before answering, or the query fails.
  * A GM who is only slow is waited for: their work goes on either way.
  */
 export async function queryActiveGm<Q extends RqgQuery>(
@@ -33,7 +34,17 @@ export async function queryActiveGm<Q extends RqgQuery>(
   if (!hasActiveGm(spellName) || !gm) {
     return undefined;
   }
+  if (!game.user?.can("QUERY_USER")) {
+    ui.notifications?.warn(
+      localize("RQG.ChatMessage.SpellCast.QueryNotPermitted", {
+        spellName,
+        permission: game.i18n?.localize(CONST.USER_PERMISSIONS.QUERY_USER.label) ?? "",
+      }),
+    );
+    return undefined;
+  }
   const needsGm = localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName });
+  const failed = localize("RQG.ChatMessage.SpellCast.QueryFailed", { spellName });
   const leaving = gmLeaves(gm);
   try {
     const answer = await Promise.race([
@@ -46,7 +57,7 @@ export async function queryActiveGm<Q extends RqgQuery>(
     }
     return answer.value as Awaited<ReturnType<CONFIG.Queries[Q]>>;
   } catch (error) {
-    logger.warn(needsGm, undefined, error);
+    logger.warn(failed, undefined, error);
     return undefined;
   } finally {
     leaving.stop();

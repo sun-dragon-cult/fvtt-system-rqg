@@ -95,8 +95,16 @@ export function decideSpellEffectStacking(
     effect.points < cast.points;
 
   const conflicts = existing.filter((effect) => sameSpell(effect) || incompatible(effect));
-  if (rule === "strongestTakesEffect") {
+  if (rule === "existingStays" || rule === "strongestTakesEffect") {
     const active = conflicts.filter((effect) => !effect.expired);
+    const same = rule === "existingStays" ? active.find(sameSpell) : undefined;
+    if (same) {
+      return {
+        outcome: "blocked",
+        reason: same.level >= cast.level ? "strongerActive" : "sameActive",
+        by: same,
+      };
+    }
     const stronger = active.find((effect) => sameSpell(effect) && effect.level >= cast.level);
     if (stronger) {
       return { outcome: "blocked", reason: "strongerActive", by: stronger };

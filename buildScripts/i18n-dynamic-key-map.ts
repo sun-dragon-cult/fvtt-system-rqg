@@ -37,7 +37,6 @@ import {
   SpellDurationEnum,
   SpellConcentrationEnum,
   SpellResistedByEnum,
-  SpellResistedWithEnum,
   SpellTargetKindEnum,
 } from "../src/data-model/item-data/spell";
 import { AbilitySuccessLevelEnum } from "../src/rolls/ability-roll/ability-roll.defs";
@@ -179,7 +178,6 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   ],
   "RQG.Item.Spell.RangeEnum.": [...Object.values(SpellRangeEnum).filter(Boolean), "undefined"],
   "RQG.Item.Spell.ResistedByEnum.": [...Object.values(SpellResistedByEnum)],
-  "RQG.Item.Spell.ResistedWithEnum.": [...Object.values(SpellResistedWithEnum)],
   "RQG.Item.Spell.TargetKindEnum.": [...Object.values(SpellTargetKindEnum)],
 
   // Active Effect - routed key warnings (#920)

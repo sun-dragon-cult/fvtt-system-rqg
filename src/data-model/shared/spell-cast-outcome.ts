@@ -57,6 +57,7 @@ export function areaResistanceThreshold(
 
 type ResistanceRequestOutcomeSource = {
   state: string;
+  cannotResist?: boolean | undefined;
   targetTokenOrActorUuid: string;
   gmRuling?: SpellTargetRulingState | "" | undefined;
 };
@@ -77,7 +78,12 @@ export function deriveResistanceRequestTargetOutcome(
   }
   switch (request.state) {
     case "Accepted":
-      return { ...base, state: "affected", resolvedBy: "accepted", casterSuccessLevel: undefined };
+      return {
+        ...base,
+        state: "affected",
+        resolvedBy: request.cannotResist ? "cannotResist" : "accepted",
+        casterSuccessLevel: undefined,
+      };
     case "Rolled": {
       // the resistance roll is the caster's, so success means the spell got through
       const overcame =

@@ -9,7 +9,9 @@
     {{/if}}
   {{/if}}
 
-  {{#if (and (eq state 'Requested') (not gmRuling))}}
+  {{#if cannotResist}}
+    <div class="resistance-request-cannot-resist">{{localize "RQG.ChatMessage.ResistanceRequest.CannotResist"}}</div>
+  {{else if (and (eq state 'Requested') (not gmRuling))}}
     {{!-- "Resist" only reads as a choice next to Accept; alone it is just the roll. --}}
     <div class="flexrow gap1rem" data-only-owner-visible-uuid="{{targetTokenOrActorUuid}}">
       {{#if allowVoluntaryAccept}}

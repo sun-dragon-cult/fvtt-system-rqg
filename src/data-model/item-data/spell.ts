@@ -49,16 +49,7 @@ export const SpellResistedByEnum = {
 } as const;
 export type SpellResistedByEnum = (typeof SpellResistedByEnum)[keyof typeof SpellResistedByEnum];
 
-// What the target puts up against the caster's POW on a resistance roll. Undead have no POW, so
-// Turn Undead is resisted by their current magic points (RBM p.101).
-export const SpellResistedWithEnum = {
-  Power: "power",
-  MagicPoints: "magicPoints",
-} as const;
-export type SpellResistedWithEnum =
-  (typeof SpellResistedWithEnum)[keyof typeof SpellResistedWithEnum];
-
-/** Whether a spell is resisted by a roll on the resistance table, where `resistedWith` counts. */
+/** Whether a spell is resisted by a roll on the resistance table. */
 export function isResistanceRoll(resistedBy: SpellResistedByEnum | undefined): boolean {
   return (
     resistedBy === SpellResistedByEnum.ResistanceRoll ||
@@ -185,8 +176,6 @@ export interface Spell {
   isEnchantment: boolean;
   /** How an unwilling target can resist the spell after a successful cast (p.145-147, 254) */
   resistedBy: SpellResistedByEnum;
-  /** What the target resists with on a resistance roll */
-  resistedWith: SpellResistedWithEnum;
   /** What the spell's effect attaches to (#1080) */
   targetKind: SpellTargetKindEnum;
   /** Not stopped by spell barriers such as Countermagic and Shield */

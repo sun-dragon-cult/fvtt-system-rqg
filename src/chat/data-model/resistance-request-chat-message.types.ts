@@ -34,6 +34,8 @@ export interface ResistanceRequestDataSourceData {
   passiveActorName: string | undefined;
   /** Offers an "Accept" button instead of forcing a roll. */
   allowVoluntaryAccept: boolean;
+  /** The target has neither POW nor magic points, so the spell takes effect unresisted. */
+  cannotResist?: boolean | undefined;
   /** What the check is about, e.g. the spell being resisted. */
   description: string | undefined;
   /** The spell cast that triggered this, rendered as a row above the resistance roll. */
