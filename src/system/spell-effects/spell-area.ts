@@ -16,7 +16,7 @@ import { summonerDocument, summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
 import { queryActiveGm } from "./query-active-gm";
-import { anchoredCreation, createAnchored } from "./spell-anchor";
+import { createAnchored } from "./spell-anchor";
 import {
   applyRequestData,
   runApplyRequest,
@@ -250,7 +250,7 @@ async function createAreaAsGm(
           flags: heldBy ? { [systemId]: { heldBy } } : {},
         } as any,
       ],
-      heldBy ? anchoredCreation : {},
+      { keepId: !!heldBy },
     )) as RegionDocument[];
   if (!data.duration) {
     const [region] = await createRegion();
@@ -266,7 +266,7 @@ async function createAreaAsGm(
       start: { time: game.time?.worldTime ?? 0 },
       system: { spell: provenance },
     },
-    create: (heldBy) => createRegion(heldBy),
+    create: createRegion,
   });
   return anchored ? { outcome: "applied", effectUuids: [anchored.effect.uuid] } : undefined;
 }

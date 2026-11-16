@@ -10,7 +10,7 @@ import {
 import { casterTokenOnScene } from "./spell-area-targets";
 import { placeSummonedToken } from "./place-summoned-token";
 import { queryActiveGm } from "./query-active-gm";
-import { anchoredCreation, createAnchored, type HeldDocument } from "./spell-anchor";
+import { createAnchored, type HeldDocument } from "./spell-anchor";
 import {
   applyRequestData,
   runApplyRequest,
@@ -238,7 +238,6 @@ async function summonAsGm(
       );
       return ((await scene.createEmbeddedDocuments("Token", [tokenData.toObject()], {
         keepId: true,
-        ...anchoredCreation,
       })) ?? []) as HeldDocument[];
     },
   });

@@ -13,9 +13,6 @@ export type SpellHold = { kind: "document"; uuid: string };
 /** A document a spell effect keeps alive. */
 export type HeldDocument = RegionDocument | TokenDocument;
 
-/** The creation option that keeps `heldBy` on a created Region or token; any other copy drops it. */
-export const anchoredCreation = { rqgAnchored: true } as const;
-
 type AnchorEffect = ActiveEffect & { uuid: string };
 
 export function holdsOf(effect: ActiveEffect): SpellHold[] {
@@ -23,7 +20,7 @@ export function holdsOf(effect: ActiveEffect): SpellHold[] {
   return Array.isArray(holds) ? holds : [];
 }
 
-export function heldByOf(document: HeldDocument): string {
+function heldByOf(document: HeldDocument): string {
   // The union's getFlag overloads don't combine; both read the same SpellHeldFlags
   const heldBy = (document as RegionDocument).getFlag(systemId, "heldBy");
   return typeof heldBy === "string" ? heldBy : "";
@@ -31,7 +28,7 @@ export function heldByOf(document: HeldDocument): string {
 
 /** Whether an effect keeps a spell area's Region alive: a caster's area anchor, not a spell on them. */
 export function holdsRegion(effect: ActiveEffect): boolean {
-  return holdsOf(effect).some((hold) => hold.uuid.split(".").at(-2) === "Region");
+  return holdsOf(effect).some((hold) => hold.uuid.includes(".Region."));
 }
 
 function existing<T = HeldDocument>(uuid: string): T | undefined {
@@ -72,8 +69,8 @@ async function deleteAll(documents: readonly HeldDocument[]): Promise<void> {
 /**
  * Make documents a spell effect keeps alive, then the effect that holds them, on the document with
  * `effectParentUuid` (which `create` may make, e.g. a summoned token's actor). `create` gets the
- * effect's uuid to put in each document's `heldBy` flag, and creates them with `anchoredCreation`
- * among its options so the flag stays. When the effect can't be written, the
+ * effect's uuid to put in each document's `heldBy` flag, and creates them with `keepId` (and their
+ * own `_id`) so the flag stays: other creations are copies, which drop it. When the effect can't be written, the
  * documents are deleted again, so none is left without an effect to end it.
  */
 export async function createAnchored(params: {
@@ -83,9 +80,7 @@ export async function createAnchored(params: {
   create: (heldBy: string) => Promise<HeldDocument[]>;
 }): Promise<{ effect: AnchorEffect; held: HeldDocument[] } | undefined> {
   const effectId = foundry.utils.randomID();
-  const held = (await params.create(`${params.effectParentUuid}.ActiveEffect.${effectId}`)).filter(
-    (d) => !!d,
-  );
+  const held = await params.create(`${params.effectParentUuid}.ActiveEffect.${effectId}`);
   if (!held.length) {
     return undefined;
   }
@@ -132,13 +127,17 @@ async function endHolder(document: HeldDocument): Promise<void> {
   }
 }
 
+const allScenes = (): Scene[] => game.scenes?.contents ?? [];
+
+/** The Regions and tokens of a scene: what a spell effect can hold. */
+const sceneDocuments = (scene: Scene): HeldDocument[] => [
+  ...scene.regions.contents,
+  ...scene.tokens.contents,
+];
+
 /** Every document on a scene that a spell effect keeps alive. */
 function heldDocuments(): HeldDocument[] {
-  return (game.scenes?.contents ?? []).flatMap((scene) =>
-    [...scene.regions.contents, ...scene.tokens.contents].filter(
-      (document: HeldDocument) => !!heldByOf(document),
-    ),
-  );
+  return allScenes().flatMap((scene) => sceneDocuments(scene).filter((d) => !!heldByOf(d)));
 }
 
 type EffectSource = { flags?: Record<string, Record<string, unknown> | undefined> };
@@ -154,15 +153,12 @@ const sourceFlag = (source: object, key: string): unknown =>
 const sourceHolds = (effect: EffectSource) =>
   !!(sourceFlag(effect, "holds") as unknown[] | undefined)?.length;
 
-const holdsInDelta = (token: TokenDocument) =>
-  !token.actorLink && deltaEffects(token).some(sourceHolds);
-
 /**
  * Every actor whose effects can hold documents or come from an area: world actors, and the actors
  * of unlinked tokens with such an effect.
  */
 function anchorActors(): Actor[] {
-  const tokenActors = (game.scenes?.contents ?? []).flatMap((scene) =>
+  const tokenActors = allScenes().flatMap((scene) =>
     scene.tokens.contents.flatMap((token) =>
       !token.actorLink &&
       deltaEffects(token).some((e) => sourceHolds(e) || !!sourceFlag(e, "areaRegion")) &&
@@ -174,37 +170,9 @@ function anchorActors(): Actor[] {
   return [...(game.actors?.contents ?? []), ...tokenActors] as Actor[];
 }
 
-/**
- * Where the effects that went with a deleted actor, unlinked token or scene lived, as uuid
- * prefixes, when one of them held something. A deleted world actor takes its unlinked tokens'
- * actors with it too.
- */
-function deletedHolders(document: Actor | TokenDocument | Scene): string[] {
-  // A pack's actor shares its id with the world actors imported from it
-  if (document.pack) {
-    return [];
-  }
-  if (document instanceof Actor) {
-    const own = document.effects.contents.some((effect) => holdsOf(effect).length > 0);
-    const tokens = (game.scenes?.contents ?? []).flatMap((scene) =>
-      scene.tokens.contents.filter((t) => t.actorId === document.id && holdsInDelta(t)),
-    );
-    return [...(own ? [document.uuid ?? ""] : []), ...tokens.map((t) => t.uuid ?? "")];
-  }
-  const tokens = document instanceof Scene ? document.tokens.contents : [document];
-  return tokens.some(holdsInDelta) ? [document.uuid ?? ""] : [];
-}
-
-/** Delete the held documents whose effect lived under one of these uuids, e.g. a caster's token. */
-async function releaseHeldWithin(uuids: readonly string[]): Promise<void> {
-  const prefixes = uuids.filter((uuid) => !!uuid).map((uuid) => `${uuid}.`);
-  if (prefixes.length) {
-    await deleteAll(
-      heldDocuments().filter((document) =>
-        prefixes.some((prefix) => heldByOf(document).startsWith(prefix)),
-      ),
-    );
-  }
+/** Delete the held documents whose effect is gone, e.g. with the token or actor it was on. */
+async function deleteOrphans(): Promise<void> {
+  await deleteAll(heldDocuments().filter((document) => !existing(heldByOf(document))));
 }
 
 /**
@@ -214,7 +182,7 @@ async function releaseHeldWithin(uuids: readonly string[]): Promise<void> {
  * area is gone or that isn't in it any more.
  */
 export async function reconcileSpellAnchors(): Promise<void> {
-  await deleteAll(heldDocuments().filter((document) => !existing(heldByOf(document))));
+  await deleteOrphans();
   for (const actor of anchorActors()) {
     const ended = actor.effects.contents.filter((effect) =>
       holdsOf(effect).some((hold) => !heldDocument(effect.uuid ?? "", hold)),
@@ -266,32 +234,28 @@ export function initSpellAnchors(): void {
       endHolder(document).catch(logFailure);
     }
   };
-  const holderDeleted = (document: Actor | TokenDocument | Scene) => {
-    const holders = isActiveGm() ? deletedHolders(document) : [];
-    if (holders.length) {
-      releaseHeldWithin(holders).catch(logFailure);
+  // What an effect on a deleted token, actor or scene held is left without it
+  const holderDeleted = () => {
+    if (isActiveGm()) {
+      deleteOrphans().catch(logFailure);
     }
   };
-  Hooks.on("deleteRegion", (region) => heldDeleted(region as RegionDocument));
+  Hooks.on("deleteRegion", (region) => heldDeleted(region));
   Hooks.on("deleteToken", (token) => {
-    heldDeleted(token as TokenDocument);
-    holderDeleted(token as TokenDocument);
+    heldDeleted(token);
+    holderDeleted();
   });
-  Hooks.on("deleteActor", (actor) => holderDeleted(actor as Actor));
+  Hooks.on("deleteActor", () => holderDeleted());
   Hooks.on("deleteScene", (scene) => {
-    holderDeleted(scene as Scene);
     // A deleted scene sends no events for what was on it
-    for (const document of [...scene.regions.contents, ...scene.tokens.contents]) {
-      heldDeleted(document as HeldDocument);
-    }
+    sceneDocuments(scene).forEach(heldDeleted);
+    holderDeleted();
   });
 
-  // Undo and an Adventure import recreate a document with its own uuid, which its effect still holds
-  const dropCopiedHeldBy = (
-    document: HeldDocument,
-    options: { rqgAnchored?: boolean; keepId?: boolean },
-  ) => {
-    if (!options.rqgAnchored && !options.keepId && heldByOf(document)) {
+  // createAnchored, undo and an Adventure import create a document with its own uuid, which its
+  // effect holds; any other creation is a copy
+  const dropCopiedHeldBy = (document: HeldDocument, options: { keepId?: boolean }) => {
+    if (!options.keepId && heldByOf(document)) {
       document.updateSource({ flags: { [systemId]: { heldBy: "" } } });
     }
   };
@@ -299,9 +263,7 @@ export function initSpellAnchors(): void {
   Hooks.on("preCreateToken", (token, _data, options) => dropCopiedHeldBy(token, options));
   // A new scene's Regions and tokens share its source, so clearing theirs clears the scene's
   Hooks.on("preCreateScene", (scene, _data, options) => {
-    for (const document of [...scene.regions.contents, ...scene.tokens.contents]) {
-      dropCopiedHeldBy(document, options);
-    }
+    sceneDocuments(scene).forEach((document) => dropCopiedHeldBy(document, options));
   });
 
   Hooks.once("ready", () => {

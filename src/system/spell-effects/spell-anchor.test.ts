@@ -303,6 +303,7 @@ describe("spell anchors", () => {
     it("deletes what the effects on a deleted caster token held", async () => {
       const region = doc("Scene.s.Region.r", { heldBy: "Scene.s.Token.t.Actor.a.ActiveEffect.e" });
       const other = doc("Scene.s.Region.o", { heldBy: "Scene.s.Token.t2.Actor.a.ActiveEffect.e" });
+      doc("Scene.s.Token.t2.Actor.a.ActiveEffect.e");
       (game as any).scenes.contents = [scene([region, other])];
       documents.delete("Scene.s.Token.t");
       handlers["deleteToken"]!({
@@ -341,7 +342,7 @@ describe("spell anchors", () => {
       const created = (anchored: boolean) => {
         const region = doc("Scene.s.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
         region.updateSource = vi.fn();
-        handlers["preCreateRegion"]!(region, {}, anchored ? { rqgAnchored: true } : {});
+        handlers["preCreateRegion"]!(region, {}, anchored ? { keepId: true } : {});
         return region.updateSource;
       };
       expect(created(false)).toHaveBeenCalledWith({ flags: { rqg: { heldBy: "" } } });
@@ -373,6 +374,8 @@ describe("spell anchors", () => {
 
     it("leaves world tokens alone when a compendium's actor is deleted", async () => {
       const region = doc("Scene.s.Region.r", { heldBy: "Scene.s.Token.t.Actor.a.ActiveEffect.e" });
+      // The world token's actor, and so its effect, are still there
+      doc("Scene.s.Token.t.Actor.a.ActiveEffect.e");
       const token = {
         uuid: "Scene.s.Token.t",
         actorId: "a",
