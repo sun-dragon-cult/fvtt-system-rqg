@@ -25,6 +25,15 @@ describe("deriveResistanceRequestTargetOutcome", () => {
     });
   });
 
+  it("is affected when the target has neither POW nor magic points to resist with", () => {
+    expect(
+      deriveResistanceRequestTargetOutcome(
+        { ...request("Accepted"), cannotResist: true },
+        undefined,
+      ),
+    ).toMatchObject({ state: "affected", resolvedBy: "cannotResist" });
+  });
+
   it("reads the resistance roll as the caster's: success overcomes the target", () => {
     expect(deriveResistanceRequestTargetOutcome(request("Rolled"), Success)).toMatchObject({
       state: "affected",

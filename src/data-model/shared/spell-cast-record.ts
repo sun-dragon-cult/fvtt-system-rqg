@@ -1,7 +1,6 @@
 import { spellEffectSettledReasons } from "../../active-effect/data-model/spell-effect.defs";
 import {
   SpellResistedByEnum,
-  SpellResistedWithEnum,
   castsOnCasterOnly,
   isCasterKindWhenUntargeted,
   isSpiritCombatGate,
@@ -85,11 +84,13 @@ export type SpellCastRecord = {
   /** The spell's rqid, to find it once its item is gone (e.g. with its unlinked token). */
   spellRqid: string;
   caster: ActorRef;
-  /** The caster's POW when they cast it, which a reflected spell attacks them with. */
+  /**
+   * The caster's POW when they cast it, or their magic points without POW (RBM p.6), which a
+   * reflected spell attacks them with.
+   */
   casterPower: number;
   castSuccessLevel: number | null;
   resistedBy: SpellResistedByEnum;
-  resistedWith: SpellResistedWithEnum;
   /** The cast's roll mode; a hidden one's requests name neither the caster nor the spell. */
   castRollMode: string;
   castOptions: { levelUsed: number; magicPointBoost: number };
@@ -109,12 +110,6 @@ export function spellCastRecordFields() {
       nullable: false,
       initial: SpellResistedByEnum.None,
       choices: Object.values(SpellResistedByEnum),
-    }),
-    resistedWith: new StringField({
-      blank: false,
-      nullable: false,
-      initial: SpellResistedWithEnum.Power,
-      choices: Object.values(SpellResistedWithEnum),
     }),
     castRollMode: new StringField({ blank: true, nullable: false, initial: "public" }),
     castOptions: new SchemaField({

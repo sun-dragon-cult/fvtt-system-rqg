@@ -82,6 +82,36 @@ describe("splitOffProjectile", () => {
     expect(actor.updateEmbeddedDocuments).not.toHaveBeenCalled();
   });
 
+  it.each([
+    ["is not created", async () => []],
+    [
+      "fails",
+      async () => {
+        throw new Error("no permission");
+      },
+    ],
+  ])("keeps the stack whole when the split missile %s", async (_label, create) => {
+    const stack = makeItem({ id: "stack", system: { quantity: 20 } });
+    const actor = makeActor([stack]);
+    actor.createEmbeddedDocuments.mockImplementation(create);
+
+    await splitOffProjectile(stack).catch(() => undefined);
+
+    expect(stack.update).not.toHaveBeenCalled();
+    expect(stack.system.quantity).toBe(20);
+  });
+
+  it("removes the split missile again when the stack can't be decremented", async () => {
+    const stack = makeItem({ id: "stack", system: { quantity: 20 } });
+    const actor = makeActor([stack]);
+    stack.update.mockRejectedValue(new Error("conflict"));
+
+    await expect(splitOffProjectile(stack)).rejects.toThrow("conflict");
+
+    expect(actor.deleteEmbeddedDocuments).toHaveBeenCalledWith("Item", ["split"]);
+    expect(stack.system.quantity).toBe(20);
+  });
+
   it("loads the split missile in the launchers that had the stack loaded", async () => {
     const stack = makeItem({ id: "stack", system: { quantity: 20 } });
     const bow = makeItem({ id: "bow", system: { isProjectile: false, projectileId: "stack" } });
@@ -206,16 +236,31 @@ describe("initSpelledProjectiles", () => {
     const speedart: any = { id: "speedart", active: true, system: { spell: {} } };
     const { arrow, actor } = splitArrow([speedart]);
     const bow = makeItem({ id: "bow" });
-    const javelin = makeItem({ id: "javelin", effects: [speedart] });
+    const javelin = makeItem({
+      id: "javelin",
+      system: { isThrownWeapon: true },
+      effects: [{ id: "javelin-speedart", active: true, system: { spell: {} } }],
+    });
+    const javelinActor = makeActor([javelin]);
 
     onAttack(bow, { projectile: arrow });
     await vi.waitFor(() => expect(actor.deleteEmbeddedDocuments).toHaveBeenCalled());
     onAttack(javelin, { projectile: javelin });
-    onAttack(bow, { projectile: undefined });
-    await Promise.resolve();
+    await firedMissilesSettled();
 
     expect(arrow.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["speedart"]);
     expect(javelin.deleteEmbeddedDocuments).not.toHaveBeenCalled();
+    expect(javelinActor.deleteEmbeddedDocuments).not.toHaveBeenCalled();
+  });
+
+  it("spends nothing on an attack without a projectile", async () => {
+    const bladesharp: any = { id: "bladesharp", active: true, system: { spell: {} } };
+    const sword = makeItem({ id: "sword", system: { isProjectile: false }, effects: [bladesharp] });
+
+    onAttack(sword, { projectile: undefined });
+    await firedMissilesSettled();
+
+    expect(sword.deleteEmbeddedDocuments).not.toHaveBeenCalled();
   });
 
   it("lets the next attack wait until a fired missile's spells are spent", async () => {

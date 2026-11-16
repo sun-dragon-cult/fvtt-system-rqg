@@ -147,7 +147,7 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     }
     return {
       value: names.reduce((sum, name) => sum + resolveCharacteristicValue(actor, name), 0),
-      label: names.map((name) => resolveCharacteristicLabel(name)).join(" + "),
+      label: names.map((name) => resolveCharacteristicLabel(name, actor)).join(" + "),
     };
   }
 

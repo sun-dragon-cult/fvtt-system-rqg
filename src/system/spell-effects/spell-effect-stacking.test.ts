@@ -117,6 +117,49 @@ describe("decideSpellEffectStacking - strongest takes effect", () => {
   });
 });
 
+describe("decideSpellEffectStacking - existing stays (Core p.255 Q&A read literally)", () => {
+  const rule = "existingStays" as const;
+
+  it("applies on a bare target", () => {
+    expect(decideSpellEffectStacking(cast(bladesharp, 2), [], rule)).toEqual({
+      outcome: "apply",
+      displaced: [],
+    });
+  });
+
+  it("has no effect while a weaker casting of the same spell is active", () => {
+    const weaker = existing(bladesharp, 2);
+    expect(decideSpellEffectStacking(cast(bladesharp, 4), [weaker], rule)).toEqual({
+      outcome: "blocked",
+      reason: "sameActive",
+      by: weaker,
+    });
+  });
+
+  it("has no effect while an equal or stronger casting of the same spell is active", () => {
+    const stronger = existing(bladesharp, 6);
+    expect(decideSpellEffectStacking(cast(bladesharp, 4), [stronger], rule)).toEqual({
+      outcome: "blocked",
+      reason: "strongerActive",
+      by: stronger,
+    });
+  });
+
+  it("has no effect against an incompatible spell", () => {
+    expect(
+      decideSpellEffectStacking(cast(bladesharp, 4, [fireblade]), [existing(fireblade, 2)], rule),
+    ).toMatchObject({ outcome: "blocked", reason: "incompatibleActive" });
+  });
+
+  it("replaces an expired casting of the same spell", () => {
+    const expiredSame = existing(bladesharp, 2, { expired: true });
+    expect(decideSpellEffectStacking(cast(bladesharp, 4), [expiredSame], rule)).toEqual({
+      outcome: "apply",
+      displaced: [expiredSame],
+    });
+  });
+});
+
 describe("decideSpellEffectStacking - latest displaces", () => {
   const rule = "latestDisplaces" as const;
 
@@ -203,7 +246,7 @@ describe("decideSpellEffectStacking - cancellation", () => {
 describe("decideSpellEffectStacking - precedence", () => {
   it("removes the spells a cast takes precedence over, whatever the stacking rule", () => {
     const fanatic = existing(fanaticism, 1);
-    for (const rule of ["strongestTakesEffect", "latestDisplaces"] as const) {
+    for (const rule of ["existingStays", "strongestTakesEffect", "latestDisplaces"] as const) {
       expect(
         decideSpellEffectStacking(cast(berserker, 2, [], [], [fanaticism]), [fanatic], rule),
       ).toEqual({ outcome: "apply", displaced: [fanatic] });

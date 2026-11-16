@@ -46,6 +46,11 @@ export interface SpellHeldFlags {
   heldBy?: string;
 }
 
+export interface RqgFolderFlags {
+  /** The Actor folder spellEffects.summon imports summoned actors into. */
+  summonedFolder?: boolean;
+}
+
 export interface RollTableFlags {
   [documentRqidFlags]: DocumentRqidFlags;
 }

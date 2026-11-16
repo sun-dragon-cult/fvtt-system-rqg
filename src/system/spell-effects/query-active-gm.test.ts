@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { queryActiveGm } from "./query-active-gm";
 
-vi.mock("../util", () => ({ hasActiveGm: () => true, localize: (key: string) => key }));
+vi.mock("../util", () => ({
+  hasActiveGm: () => true,
+  localize: (key: string, data?: Record<string, string>) =>
+    `${key} ${Object.values(data ?? {}).join(" ")}`,
+}));
 
 describe("queryActiveGm", () => {
   let hooks: Record<number, (user: unknown, connected: boolean) => void>;
@@ -18,7 +22,13 @@ describe("queryActiveGm", () => {
       },
       off: (_name: string, id: number) => delete hooks[id],
     });
-    vi.stubGlobal("game", { users: { activeGM: gm } });
+    vi.stubGlobal("game", {
+      users: { activeGM: gm },
+      user: { can: vi.fn(() => true) },
+      i18n: { localize: (key: string) => key },
+    });
+    vi.stubGlobal("CONST", { USER_PERMISSIONS: { QUERY_USER: { label: "PERMISSION.QueryUser" } } });
+    vi.stubGlobal("ui", { notifications: { warn: vi.fn() } });
     vi.spyOn(console, "warn").mockImplementation(() => {});
   });
 
@@ -44,10 +54,23 @@ describe("queryActiveGm", () => {
     expect(Object.keys(hooks)).toEqual([]);
   });
 
-  it("warns and gives nothing when the query fails", async () => {
+  it("tells a player without the query permission so, without querying", async () => {
+    query = vi.fn(async () => "done");
+    (game as any).user.can = vi.fn((permission: string) => permission !== "QUERY_USER");
+    expect(await queryActiveGm("rqg.continueSpellCast", data, "Mobility")).toBeUndefined();
+    expect(query).not.toHaveBeenCalled();
+    const message = vi.mocked(ui.notifications!.warn).mock.calls[0]![0] as string;
+    expect(message).toContain("QueryNotPermitted");
+    expect(message).toContain("PERMISSION.QueryUser");
+  });
+
+  it("reports a failed query as a failure, not as a missing GM", async () => {
     query = vi.fn(async () => {
       throw new Error("no");
     });
     expect(await queryActiveGm("rqg.continueSpellCast", data, "Mobility")).toBeUndefined();
+    const message = vi.mocked(ui.notifications!.warn).mock.calls[0]![0] as string;
+    expect(message).toContain("QueryFailed");
+    expect(message).not.toContain("NeedsActiveGm");
   });
 });

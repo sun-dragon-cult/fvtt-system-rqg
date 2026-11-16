@@ -62,10 +62,16 @@ describe("resolveRoutedTarget", () => {
       expect(result).toEqual({ items: [item("loc-a"), item("loc-b"), item("loc-c")] });
     });
 
-    it("errors with no-match when the pattern matches nothing", () => {
+    it("resolves to no items when the pattern matches nothing", () => {
       expect(
         resolveRoutedTarget({ kind: "regex", pattern: "i\\.nope" }, { targetActor: fakeActor() }),
-      ).toEqual({ error: { reason: "no-match", detail: { selector: "@~i\\.nope" } } });
+      ).toEqual({ items: [] });
+    });
+
+    it("errors with no-match when there is no actor context", () => {
+      expect(resolveRoutedTarget({ kind: "regex", pattern: "i\\.nope" }, {})).toEqual({
+        error: { reason: "no-match", detail: { selector: "@~i\\.nope" } },
+      });
     });
   });
 });

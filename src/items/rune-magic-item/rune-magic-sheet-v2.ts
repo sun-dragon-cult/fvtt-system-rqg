@@ -5,8 +5,6 @@ import {
   SpellDurationEnum,
   SpellRangeEnum,
   SpellResistedByEnum,
-  SpellResistedWithEnum,
-  isResistanceRoll,
   resistedByChoices,
   SpellTargetKindEnum,
 } from "@item-model/spell.ts";
@@ -22,8 +20,6 @@ interface RuneMagicSheetContext extends RqgItemSheetContext {
   durationOptions: SelectOptionData<SpellDurationEnum>[];
   resistedByOptions: SelectOptionData<SpellResistedByEnum>[];
   showResistedBy: boolean;
-  resistedWithOptions: SelectOptionData<SpellResistedWithEnum>[];
-  showResistedWith: boolean;
   targetKindOptions: SelectOptionData<SpellTargetKindEnum>[];
   actorCultOptions: SelectOptionData<string>[];
 }
@@ -79,12 +75,7 @@ export class RuneMagicSheetV2 extends RqgItemSheetV2 {
         value: value,
         label: "RQG.Item.Spell.ResistedByEnum." + value,
       })),
-      resistedWithOptions: Object.values(SpellResistedWithEnum).map((value) => ({
-        value: value,
-        label: "RQG.Item.Spell.ResistedWithEnum." + value,
-      })),
       showResistedBy: resistedBy.some((value) => value !== SpellResistedByEnum.None),
-      showResistedWith: isResistanceRoll(this.document.system.resistedBy),
       targetKindOptions: Object.values(SpellTargetKindEnum).map((value) => ({
         value: value,
         label: "RQG.Item.Spell.TargetKindEnum." + value,

@@ -4,7 +4,6 @@ import {
   SpellDurationEnum,
   SpellRangeEnum,
   SpellResistedByEnum,
-  SpellResistedWithEnum,
   SpellTargetKindEnum,
 } from "../item-data/spell";
 import { enumChoices } from "./enum-choices";
@@ -43,12 +42,6 @@ export function spellSchemaFields() {
       nullable: false,
       initial: SpellResistedByEnum.None,
       choices: enumChoices(SpellResistedByEnum, "RQG.Item.Spell.ResistedByEnum."),
-    }),
-    resistedWith: new StringField({
-      blank: false,
-      nullable: false,
-      initial: SpellResistedWithEnum.Power,
-      choices: enumChoices(SpellResistedWithEnum, "RQG.Item.Spell.ResistedWithEnum."),
     }),
     // #1080's survey enums - declared so content is authored once, ahead of #1079's application
     // machinery that will actually consume them.
