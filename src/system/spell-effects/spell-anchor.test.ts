@@ -19,6 +19,9 @@ function sceneOf(uuid: string) {
   if (!scenes.has(sceneUuid)) {
     scenes.set(sceneUuid, {
       uuid: sceneUuid,
+      getEmbeddedCollection: (type: string) => ({
+        has: (id: string) => documents.has(`${sceneUuid}.${type}.${id}`),
+      }),
       deleteEmbeddedDocuments: vi.fn(async (type: string, ids: string[]) => {
         for (const id of ids) {
           await documents.get(`${sceneUuid}.${type}.${id}`)?.delete();
@@ -211,6 +214,16 @@ describe("spell anchors", () => {
       expect(caster.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["e"]);
     });
 
+    it("goes on with other scenes when one scene's deletion fails", async () => {
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+      const a = doc("Scene.s.Region.a", { heldBy: "Actor.gone.ActiveEffect.e" });
+      const b = doc("Scene.t.Region.b", { heldBy: "Actor.gone.ActiveEffect.f" });
+      (game as any).scenes.contents = [scene([a]), scene([b])];
+      scenes.get("Scene.s").deleteEmbeddedDocuments.mockRejectedValueOnce(new Error("gone"));
+      await reconcileSpellAnchors();
+      expect(b.delete).toHaveBeenCalledOnce();
+    });
+
     it("deletes all of a scene's orphans in one request per type", async () => {
       const a = doc("Scene.s.Region.a", { heldBy: "Actor.gone.ActiveEffect.e" });
       const b = doc("Scene.s.Region.b", { heldBy: "Actor.gone.ActiveEffect.f" });
@@ -335,17 +348,49 @@ describe("spell anchors", () => {
       expect(created(true)).not.toHaveBeenCalled();
     });
 
-    it("drops heldBy from the Regions and tokens of a duplicated or imported scene", () => {
-      const source = {
-        regions: [{ flags: { rqg: { heldBy: "Actor.c.ActiveEffect.e" } } }],
-        tokens: [{ flags: {} }],
+    it("drops heldBy from the Regions and tokens of a duplicated scene", () => {
+      const sceneCopy = (options: object) => {
+        const region = doc("Scene.s2.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
+        region.updateSource = vi.fn();
+        handlers["preCreateScene"]!(
+          { regions: { contents: [region] }, tokens: { contents: [] } },
+          {},
+          options,
+        );
+        return region.updateSource;
       };
-      const copy = { _source: source, updateSource: vi.fn() };
-      handlers["preCreateScene"]!(copy);
-      expect(copy.updateSource).toHaveBeenCalledWith({
-        regions: [{ flags: { rqg: { heldBy: "" } } }],
-        tokens: [{ flags: {} }],
+      expect(sceneCopy({})).toHaveBeenCalledWith({ flags: { rqg: { heldBy: "" } } });
+      // An Adventure import keeps every id, so its effects still hold what it brings along
+      expect(sceneCopy({ keepId: true })).not.toHaveBeenCalled();
+    });
+
+    it("keeps heldBy when undo recreates a deleted held document with its own id", () => {
+      const region = doc("Scene.s.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
+      region.updateSource = vi.fn();
+      handlers["preCreateRegion"]!(region, {}, { isUndo: true, keepId: true });
+      expect(region.updateSource).not.toHaveBeenCalled();
+    });
+
+    it("leaves world tokens alone when a compendium's actor is deleted", async () => {
+      const region = doc("Scene.s.Region.r", { heldBy: "Scene.s.Token.t.Actor.a.ActiveEffect.e" });
+      const token = {
+        uuid: "Scene.s.Token.t",
+        actorId: "a",
+        actorLink: false,
+        getFlag: () => undefined,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold(region.uuid)] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([region], [token])];
+      vi.stubGlobal("Actor", class Actor {});
+      const packActor = Object.assign(new (globalThis as any).Actor(), {
+        id: "a",
+        uuid: "Compendium.wiki.bestiary.Actor.a",
+        pack: "wiki.bestiary",
+        effects: { contents: [] },
       });
+      handlers["deleteActor"]!(packActor);
+      await settle();
+      expect(region.delete).not.toHaveBeenCalled();
     });
 
     it("does nothing on a client that isn't the active GM's", async () => {

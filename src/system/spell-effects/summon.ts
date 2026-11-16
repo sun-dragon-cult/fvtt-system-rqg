@@ -239,7 +239,7 @@ async function summonAsGm(
       return ((await scene.createEmbeddedDocuments("Token", [tokenData.toObject()], {
         keepId: true,
         ...anchoredCreation,
-      } as any)) ?? []) as HeldDocument[];
+      })) ?? []) as HeldDocument[];
     },
   });
   if (!anchored) {

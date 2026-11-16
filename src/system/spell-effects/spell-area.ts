@@ -250,7 +250,7 @@ async function createAreaAsGm(
           flags: heldBy ? { [systemId]: { heldBy } } : {},
         } as any,
       ],
-      (heldBy ? anchoredCreation : {}) as any,
+      heldBy ? anchoredCreation : {},
     )) as RegionDocument[];
   if (!data.duration) {
     const [region] = await createRegion();

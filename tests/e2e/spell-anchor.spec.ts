@@ -90,7 +90,13 @@ test("spell areas end with their anchor", async ({ page, baseURL }) => {
     }, first.regionUuid);
     expect(copy.heldBy).toBe("");
     await page.evaluate((uuid) => (fromUuidSync(uuid) as any).delete(), copy.uuid);
-    await page.waitForTimeout(500);
+    await expect.poll(() => exists(page, copy.uuid)).toBe(false);
+    // The deleteRegion hook has asked for any effect deletion by now, and the server answers in
+    // order, so once this later update is back, a deletion it asked for would be done too
+    await page.evaluate(
+      (uuid) => (fromUuidSync(uuid) as any).parent.update({ "flags.rqg.e2eBarrier": Date.now() }),
+      first.regionUuid,
+    );
     expect(await exists(page, first.effectUuid)).toBe(true);
 
     // Deleting the caster's token takes the effect with it, and so the area

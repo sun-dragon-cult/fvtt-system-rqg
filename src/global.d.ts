@@ -223,6 +223,18 @@ declare global {
     ) => void;
   }
 
+  /** `spell-anchor`'s creation option: the Region or token is held by the effect `createAnchored` makes. */
+  namespace RegionDocument.Database {
+    interface CreateOperation {
+      rqgAnchored?: boolean;
+    }
+  }
+  namespace TokenDocument.Database {
+    interface CreateOperation {
+      rqgAnchored?: boolean;
+    }
+  }
+
   /** What v14 passes a query handler besides its data; fvtt-types leaves out the sender. */
   type RqgQueryContext = { user: User; timeout?: number | undefined };
 

@@ -40,23 +40,32 @@ function existing<T = HeldDocument>(uuid: string): T | undefined {
 
 /**
  * Delete documents, skipping those already gone (deleting one that's gone fails the batch), with
- * one request per scene and document type.
+ * one request per scene and document type; one scene's failure doesn't stop the others.
  */
 async function deleteAll(documents: readonly HeldDocument[]): Promise<void> {
-  const batches = new Map<string, { scene: Scene; type: "Region" | "Token"; ids: string[] }>();
+  const batches = new Map<string, { scene: Scene; type: "Region" | "Token"; ids: Set<string> }>();
   for (const document of documents) {
     const scene = document.parent;
-    if (!scene || !existing(document.uuid ?? "")) {
+    if (!scene) {
       continue;
     }
     const type = document.documentName as "Region" | "Token";
     const key = `${scene.uuid}.${type}`;
-    const batch = batches.get(key) ?? { scene, type, ids: [] };
-    batch.ids.push(document.id ?? "");
+    const batch = batches.get(key) ?? { scene, type, ids: new Set<string>() };
+    batch.ids.add(document.id ?? "");
     batches.set(key, batch);
   }
-  for (const { scene, type, ids } of batches.values()) {
-    await scene.deleteEmbeddedDocuments(type, [...new Set(ids)]);
+  // Checked again right before each request, since deleting one batch can delete others' documents
+  const results = await Promise.allSettled(
+    [...batches.values()].map(({ scene, type, ids }) => {
+      const left = [...ids].filter((id) => scene.getEmbeddedCollection(type).has(id));
+      return left.length ? scene.deleteEmbeddedDocuments(type, left) : undefined;
+    }),
+  );
+  for (const result of results) {
+    if (result.status === "rejected") {
+      logger.warn("Could not delete what a spell effect held", undefined, result.reason);
+    }
   }
 }
 
@@ -171,6 +180,10 @@ function anchorActors(): Actor[] {
  * actors with it too.
  */
 function deletedHolders(document: Actor | TokenDocument | Scene): string[] {
+  // A pack's actor shares its id with the world actors imported from it
+  if (document.pack) {
+    return [];
+  }
   if (document instanceof Actor) {
     const own = document.effects.contents.some((effect) => holdsOf(effect).length > 0);
     const tokens = (game.scenes?.contents ?? []).flatMap((scene) =>
@@ -235,16 +248,6 @@ function isInArea(actor: Actor, effect: ActiveEffect): boolean {
   );
 }
 
-type HeldSource = { flags?: Record<string, Record<string, unknown> | undefined> };
-
-/** A copy of a held document's source that no longer claims to be held. */
-function withoutHeldBy<T extends HeldSource>(source: T): T {
-  const flags = source.flags?.[systemId];
-  return flags?.["heldBy"]
-    ? { ...source, flags: { ...source.flags, [systemId]: { ...flags, heldBy: "" } } }
-    : source;
-}
-
 const isActiveGm = () => !!game.users?.activeGM?.isSelf;
 
 function logFailure(error: unknown): void {
@@ -283,24 +286,21 @@ export function initSpellAnchors(): void {
     }
   });
 
-  const dropCopiedHeldBy = (document: HeldDocument, options: { rqgAnchored?: boolean }) => {
-    if (!options.rqgAnchored && heldByOf(document)) {
-      document.updateSource({ flags: { [systemId]: { heldBy: "" } } } as any);
+  // Undo and an Adventure import recreate a document with its own uuid, which its effect still holds
+  const dropCopiedHeldBy = (
+    document: HeldDocument,
+    options: { rqgAnchored?: boolean; keepId?: boolean },
+  ) => {
+    if (!options.rqgAnchored && !options.keepId && heldByOf(document)) {
+      document.updateSource({ flags: { [systemId]: { heldBy: "" } } });
     }
   };
-  Hooks.on("preCreateRegion", (region, _data, options) =>
-    dropCopiedHeldBy(region as RegionDocument, options as { rqgAnchored?: boolean }),
-  );
-  Hooks.on("preCreateToken", (token, _data, options) =>
-    dropCopiedHeldBy(token as TokenDocument, options as { rqgAnchored?: boolean }),
-  );
-  Hooks.on("preCreateScene", (scene) => {
-    const source = (scene as any)._source as { regions: HeldSource[]; tokens: HeldSource[] };
-    if ([...source.regions, ...source.tokens].some((s) => sourceFlag(s, "heldBy"))) {
-      scene.updateSource({
-        regions: source.regions.map(withoutHeldBy),
-        tokens: source.tokens.map(withoutHeldBy),
-      } as any);
+  Hooks.on("preCreateRegion", (region, _data, options) => dropCopiedHeldBy(region, options));
+  Hooks.on("preCreateToken", (token, _data, options) => dropCopiedHeldBy(token, options));
+  // A new scene's Regions and tokens share its source, so clearing theirs clears the scene's
+  Hooks.on("preCreateScene", (scene, _data, options) => {
+    for (const document of [...scene.regions.contents, ...scene.tokens.contents]) {
+      dropCopiedHeldBy(document, options);
     }
   });
 
