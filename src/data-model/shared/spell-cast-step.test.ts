@@ -251,6 +251,7 @@ describe("stepSpellCast", () => {
           entryId: "a",
           effectUuids: ["Actor.a.ActiveEffect.e"],
           blockedReason: "",
+          applyId: "click",
         },
       ],
       env(),

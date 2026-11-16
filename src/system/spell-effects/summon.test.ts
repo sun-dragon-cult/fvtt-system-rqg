@@ -1,6 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { nearestFreeCell, summonedTokenCells, tokenCell } from "./token-cells";
-import { summonedFolder } from "./summon";
+import { nearestFreeCell, summonedTokenCells, summonerToken, tokenCell } from "./token-cells";
+import { handleSummonQuery, summonedFolder } from "./summon";
+import { clearApplyClaims } from "./spell-apply-claims";
+
+vi.mock("./token-cells", async (original) => ({
+  ...(await original<typeof import("./token-cells")>()),
+  summonerToken: vi.fn(async () => undefined),
+}));
 
 describe("nearestFreeCell", () => {
   const caster = { col: 5, row: 5, w: 1, h: 1 };
@@ -139,5 +145,34 @@ describe("summonedFolder", () => {
       type: "Actor",
       flags: { rqg: { summonedFolder: true } },
     });
+  });
+});
+
+describe("handleSummonQuery", () => {
+  const user = { isGM: false } as unknown as User;
+  const data = {
+    request: { castMessageId: "record", entryId: "entry", applyId: "click" },
+    spellUuid: "",
+    targetActorUuid: "",
+    targetName: "",
+    cast: {} as any,
+    actorRqid: "a.earth-elemental",
+    options: {},
+    position: null,
+  };
+
+  afterEach(() => {
+    clearApplyClaims();
+    vi.unstubAllGlobals();
+  });
+
+  it("does nothing for an entry that was already applied", async () => {
+    const record = {
+      type: "spellCast",
+      system: { targets: [{ id: "entry", actorUuid: "Actor.v", tokenUuid: "", stage: "applied" }] },
+    };
+    vi.stubGlobal("game", { messages: { get: () => record } });
+    expect(await handleSummonQuery(data, { user })).toBeUndefined();
+    expect(summonerToken).not.toHaveBeenCalled();
   });
 });

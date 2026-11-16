@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { castSpellOf } from "./spell-cast-runner";
+import { allowedSpellCastData, castSpellOf } from "./spell-cast-runner";
 import { Rqid } from "../api/rqid-api";
+import type { SpellCastInput } from "../../data-model/shared/spell-cast-step";
 
 describe("castSpellOf", () => {
   const items: Record<string, unknown> = { "Actor.c.Item.s": { name: "Demoralize (own)" } };
@@ -41,5 +42,84 @@ describe("castSpellOf", () => {
     expect(await castSpellOf({ spellUuid: "", spellRqid: "" })).toBeUndefined();
     expect(await castSpellOf({ spellUuid: "Actor.gone.Item.s", spellRqid: "" })).toBeUndefined();
     expect(fromRqid).not.toHaveBeenCalled();
+  });
+});
+
+describe("allowedSpellCastData", () => {
+  const record = {
+    targets: [
+      { id: "mine", requestMessageId: "request-mine" },
+      { id: "theirs", requestMessageId: "request-theirs" },
+    ] as any[],
+  };
+  const player = { isGM: false, ownsTarget: (entry: { id: string }) => entry.id === "mine" };
+  const gm = { isGM: true, ownsTarget: () => false };
+  const ruling: SpellCastInput = { kind: "ruling", entryId: "mine", state: "affected" };
+  const assign: SpellCastInput = { kind: "assign", entryId: "mine", targets: [] };
+  const resist = (entryId: string): SpellCastInput => ({
+    kind: "resistance",
+    entryId,
+    result: "held",
+  });
+  const applied = (entryId: string): SpellCastInput => ({
+    kind: "applied",
+    entryId,
+    effectUuids: [],
+    blockedReason: "",
+    applyId: "click",
+  });
+  const patch = (messageId: string) => ({ messageId, system: { state: "Resisted" } });
+
+  it("takes rulings and assignments from a GM only", () => {
+    const data = { messageId: "record", inputs: [ruling, assign] };
+    expect(allowedSpellCastData(data, record, player).inputs).toEqual([]);
+    expect(allowedSpellCastData(data, record, gm).inputs).toEqual([ruling, assign]);
+  });
+
+  it("takes answers and Apply results for the targets the sender owns", () => {
+    const data = {
+      messageId: "record",
+      inputs: [resist("mine"), resist("theirs"), applied("mine"), applied("theirs")],
+    };
+    expect(allowedSpellCastData(data, record, player).inputs).toEqual([
+      resist("mine"),
+      applied("mine"),
+    ]);
+    expect(allowedSpellCastData(data, record, gm).inputs).toEqual(data.inputs);
+  });
+
+  it("drops inputs for entries the record doesn't have, or of an unknown kind", () => {
+    const data = {
+      messageId: "record",
+      inputs: [resist("gone"), { kind: "unknown", entryId: "mine" } as any],
+    };
+    expect(allowedSpellCastData(data, record, gm).inputs).toEqual([]);
+  });
+
+  it("keeps the card patch only for the card of an entry the sender answers", () => {
+    const answer = { messageId: "record", inputs: [resist("mine")] };
+    expect(
+      allowedSpellCastData({ ...answer, requestPatch: patch("request-mine") }, record, player)
+        .requestPatch,
+    ).toEqual(patch("request-mine"));
+    expect(
+      allowedSpellCastData({ ...answer, requestPatch: patch("request-theirs") }, record, player)
+        .requestPatch,
+    ).toBeUndefined();
+    expect(
+      allowedSpellCastData(
+        { messageId: "record", inputs: [], requestPatch: patch("request-mine") },
+        record,
+        gm,
+      ).requestPatch,
+    ).toBeUndefined();
+  });
+
+  it("lets anyone ask the GM to move a cast on without input", () => {
+    expect(allowedSpellCastData({ messageId: "record", inputs: [] }, record, player)).toEqual({
+      messageId: "record",
+      inputs: [],
+      requestPatch: undefined,
+    });
   });
 });
