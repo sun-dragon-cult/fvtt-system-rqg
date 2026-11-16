@@ -1,9 +1,10 @@
-import { hasActiveGm } from "../util";
+import { hasActiveGm, localize } from "../util";
 import { queryActiveGm } from "./query-active-gm";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 import { spellBehaviorOf, type SpellBehavior } from "./spell-behavior";
 import {
   applyRequestData,
+  applyRequestOf,
   runApplyRequest,
   type SpellApplyRequestData,
 } from "./spell-apply-request";
@@ -20,8 +21,17 @@ export async function runSpellApply(
   scope: SpellApplyScope,
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = scope.spell.name ?? "";
-  if (behavior.runAsGm && !game.user?.isGM && !hasActiveGm(spellName)) {
-    return undefined;
+  if (behavior.runAsGm && !game.user?.isGM) {
+    // Without a cast record (the token HUD "+") the GM refuses a player's request
+    if (!applyRequestOf(scope.cast)) {
+      ui.notifications?.warn(
+        localize("RQG.ChatMessage.SpellCast.RunAsGmFromTokenHud", { spellName }),
+      );
+      return undefined;
+    }
+    if (!hasActiveGm(spellName)) {
+      return undefined;
+    }
   }
   const gm = behavior.runAsGm && !game.user?.isGM ? game.users?.activeGM : undefined;
   if (!gm) {
