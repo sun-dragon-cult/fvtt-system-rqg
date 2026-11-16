@@ -1,0 +1,59 @@
+name: Set Milestone On Close
+
+# When an issue is closed without a milestone, assign the next unreleased milestone:
+# the open milestone with the lowest version number. Finished milestones are renamed
+# "<version> [done]" and are ignored even if they are still open.
+# Issues that already have a milestone are left alone.
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  set-milestone:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Assign next unreleased milestone
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.issue.number;
+
+            // Re-read the issue, the event payload can be stale.
+            const { data: issue } = await github.rest.issues.get({ owner, repo, issue_number });
+            if (issue.milestone) {
+              core.info(`#${issue_number} already has milestone "${issue.milestone.title}", skipping.`);
+              return;
+            }
+
+            const milestones = await github.paginate(github.rest.issues.listMilestones, {
+              owner,
+              repo,
+              state: "open",
+              per_page: 100,
+            });
+
+            const versionOf = (title) => {
+              if (title.includes("[done]")) return null;
+              const m = title.match(/^v?(\d+)\.(\d+)\.(\d+)/);
+              return m ? m.slice(1, 4).map(Number) : null;
+            };
+            const compare = (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+
+            const candidates = milestones
+              .map((ms) => ({ ms, version: versionOf(ms.title) }))
+              .filter((c) => c.version)
+              .sort((a, b) => compare(a.version, b.version));
+
+            if (candidates.length === 0) {
+              core.warning(`No open, unreleased semver milestone found, #${issue_number} left without a milestone.`);
+              return;
+            }
+
+            const next = candidates[0].ms;
+            await github.rest.issues.update({ owner, repo, issue_number, milestone: next.number });
+            core.info(`#${issue_number} -> milestone "${next.title}"`);
