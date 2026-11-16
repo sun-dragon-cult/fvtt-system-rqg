@@ -1,0 +1,37 @@
+name: Mark Closed Milestone As Done
+
+# When a milestone is closed (released), append " [done]" to its title, for example
+# "6.2.0" becomes "6.2.0 [done]". Renaming fires an "edited" event, not "closed",
+# so this does not retrigger itself.
+
+on:
+  milestone:
+    types: [closed]
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Append [done] to the milestone title
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { number, title } = context.payload.milestone;
+
+            if (title.trim().endsWith("[done]")) {
+              core.info(`Milestone "${title}" is already marked [done], skipping.`);
+              return;
+            }
+
+            const newTitle = `${title.trim()} [done]`;
+            await github.rest.issues.updateMilestone({
+              owner,
+              repo,
+              milestone_number: number,
+              title: newTitle,
+            });
+            core.info(`Milestone "${title}" -> "${newTitle}"`);
