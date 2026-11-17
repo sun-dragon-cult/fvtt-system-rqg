@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 
 import { loginToConfiguredWorld } from "./utils/foundrySession";
 
-// Absorption (#1347) soaks a spell cast at its target into magic points for its caster, above the
-// maximum, and the excess dissipates when it ends. Its behavior comes from the content module.
+// Absorption soaks a spell cast at its target into magic points for its caster, above the maximum,
+// and the excess dissipates when it ends. Its behavior comes from the content module.
 test("Absorption soaks spells into magic points above the maximum", async ({ page, baseURL }) => {
   test.slow();
   const e2eConfig = await loginToConfiguredWorld(page, baseURL);
@@ -26,6 +26,10 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
     actorData.name = "E2E absorption";
     actorData.effects = [];
     const actor = await (Actor as any).create(actorData);
+    // A maximum above POW, which is what the excess is cut to
+    await actor.update({
+      "system.attributes.magicPoints.baseMax": actor.system.characteristics.power.value + 3,
+    });
     const max = actor.system.attributes.magicPoints.max;
     await actor.update({ "system.attributes.magicPoints.value": max });
     out.max = max;
@@ -37,7 +41,6 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
         await new Promise((r) => setTimeout(r, 100));
       }
     };
-    // On the actor or its items: Bladesharp goes on a weapon
     const effectsNamed = (name: string) =>
       g.system.api.spellEffects.list(actor).filter((e: any) => e.name?.startsWith(name));
 
@@ -67,10 +70,10 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
       out.absorptionOn = effectsNamed("Absorption").length;
 
       // 2 spirit magic points: soaked whole, 2 magic points above the maximum
-      out.firstAdded = await addSpellEffect("Bladesharp", 2, false);
+      out.firstAdded = await addSpellEffect("Protection", 2, false);
       out.afterFirst = {
         magicPoints: actor.system.attributes.magicPoints.value,
-        bladesharp: effectsNamed("Bladesharp").length,
+        protection: effectsNamed("Protection").length,
       };
 
       const sheet = actor.sheet;
@@ -81,10 +84,10 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
       await sheet.close({ animate: false });
 
       // Absorption is full, so the next spell takes effect
-      await addSpellEffect("Bladesharp", 1, false);
+      await addSpellEffect("Protection", 1, false);
       out.afterSecond = {
         magicPoints: actor.system.attributes.magicPoints.value,
-        bladesharp: effectsNamed("Bladesharp").length,
+        protection: effectsNamed("Protection").length,
         absorptionOn: effectsNamed("Absorption").length,
       };
 
@@ -105,8 +108,9 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
   test.skip(!results.hasBehavior, "The content module has no Absorption behavior");
   const max = results.max as number;
   expect(results.absorptionOn).toBe(1);
-  expect(results.afterFirst).toEqual({ magicPoints: max + 2, bladesharp: 0 });
+  expect(results.firstAdded).toBe(true);
+  expect(results.afterFirst).toEqual({ magicPoints: max + 2, protection: 0 });
   expect(results.aboveMaxShown).toBe("+2");
-  expect(results.afterSecond).toEqual({ magicPoints: max + 2, bladesharp: 1, absorptionOn: 1 });
+  expect(results.afterSecond).toEqual({ magicPoints: max + 2, protection: 1, absorptionOn: 1 });
   expect(results.afterEnd).toBe(max);
 });
