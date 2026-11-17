@@ -202,3 +202,50 @@ for (const linked of [true, false]) {
     }
   });
 }
+
+// Copies of held documents aren't held, so the GM's reconcile at `ready` leaves them alone.
+test("copies of held documents survive a GM reload", async ({ page, baseURL }) => {
+  test.slow();
+  await loginToConfiguredWorld(page, baseURL);
+  await removeTestDocuments(page);
+  const copyName = `${names.scene} (copy)`;
+  try {
+    const area = await createAreaFromToken(page);
+    const copies = await page.evaluate(
+      async ({ regionUuid, copyName }) => {
+        const region = fromUuidSync(regionUuid) as any;
+        const [pasted] = await region.parent.createEmbeddedDocuments("Region", [region.toObject()]);
+        const sceneCopy = await region.parent.clone({ name: copyName }, { save: true });
+        const regionInCopy = sceneCopy.regions.contents[0];
+        return {
+          pasted: pasted.uuid as string,
+          regionInCopy: regionInCopy?.uuid as string,
+          heldBy: [pasted, regionInCopy].map((r: any) => r?.getFlag("rqg", "heldBy") ?? ""),
+        };
+      },
+      { regionUuid: area.regionUuid, copyName },
+    );
+    expect(copies.heldBy).toEqual(["", ""]);
+
+    await page.reload();
+    await page.waitForFunction(() => (game as any).ready, undefined, { timeout: 120_000 });
+    // Give the reconcile its time, then check against something it does remove
+    await page.evaluate(
+      (uuid) =>
+        (fromUuidSync(uuid) as any).setFlag(
+          "rqg",
+          "heldBy",
+          "Actor.e2eGone00000.ActiveEffect.e2eGone0000000",
+        ),
+      area.regionUuid,
+    );
+    await page.reload();
+    await page.waitForFunction(() => (game as any).ready, undefined, { timeout: 120_000 });
+    await expect.poll(() => exists(page, area.regionUuid), { timeout: 60_000 }).toBe(false);
+    expect(await exists(page, copies.pasted)).toBe(true);
+    expect(await exists(page, copies.regionInCopy)).toBe(true);
+  } finally {
+    await page.evaluate((copyName) => (game as any).scenes.getName(copyName)?.delete(), copyName);
+    await removeTestDocuments(page);
+  }
+});
