@@ -516,6 +516,13 @@
               "title": "Maximum magic points",
               "description": "Calculated from POW plus effects, never stored. To change it with an effect, write to system.effect.add.magicPoints.max.",
               "x-rqg-stored": false
+            },
+            "baseMax": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
             }
           },
           "additionalProperties": false,

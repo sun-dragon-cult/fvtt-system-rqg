@@ -1,0 +1,121 @@
+import { expect, test } from "@playwright/test";
+
+import { loginToConfiguredWorld } from "./utils/foundrySession";
+
+// A POW-less creature with a stat-block magic point maximum (#1346), on both actor sheets.
+test("magic points base max override", async ({ page, baseURL }) => {
+  test.slow();
+  const e2eConfig = await loginToConfiguredWorld(page, baseURL);
+
+  const results = await page.evaluate(async (sourceActorName) => {
+    const g = game as any;
+    const source =
+      g.actors.getName(sourceActorName) ?? g.actors.find((a: any) => a.type === "character");
+    const actorData = source.toObject();
+    actorData.name = "E2E magic points base max";
+    actorData.system.editMode = true;
+    actorData.system.characteristics.power.value = null;
+    actorData.system.attributes.magicPoints = { value: 0, baseMax: null };
+    const actor = await (Actor as any).create(actorData);
+
+    const sheetClasses = (CONFIG as any).Actor.sheetClasses.character;
+    const sheetClass = (name: string) =>
+      Object.values(sheetClasses).find((s: any) => s.id.endsWith(name)) as any;
+
+    const typeBaseMax = async (value: string) => {
+      const app = new (sheetClass("RqgActorSheetV2").cls)({ document: actor });
+      await app.render(true);
+      const input = app.element.querySelector(
+        'input[name="system.attributes.magicPoints.baseMax"]',
+      );
+      const updated = new Promise((resolve) => Hooks.once("updateActor", resolve));
+      input.value = value;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      await updated;
+      await app.close({ animate: false });
+      return actor.system.attributes.magicPoints.baseMax;
+    };
+
+    const inspect = async (sheetName: string) => {
+      const SheetClass = sheetClass(sheetName).cls;
+      const isV2 = sheetName.endsWith("V2");
+      const app = isV2 ? new SheetClass({ document: actor }) : new SheetClass(actor);
+      // AppV1's `element` looks the window up by id, which can still find a closing one.
+      const root = await new Promise<HTMLElement>((resolve) => {
+        const hookId = Hooks.on(`render${SheetClass.name}`, (rendered: any, html: any) => {
+          if (rendered === app) {
+            Hooks.off(`render${SheetClass.name}`, hookId);
+            resolve(html instanceof HTMLElement ? html : html[0]);
+          }
+        });
+        app.render(true);
+      });
+      const baseMaxInput = root.querySelector<HTMLInputElement>(
+        'input[name="system.attributes.magicPoints.baseMax"]',
+      );
+      const valueInput = root.querySelector('input[name="system.attributes.magicPoints.value"]');
+      const state = {
+        baseMaxShown: !!baseMaxInput,
+        baseMaxValue: baseMaxInput?.value ?? null,
+        valueShown: !!valueInput,
+        maxText: valueInput?.closest(".nowrap")?.textContent?.replace(/\s+/g, " ").trim() ?? null,
+      };
+      await app.close({ animate: false });
+      return state;
+    };
+
+    const out: Record<string, unknown> = {};
+    try {
+      out.v2NoPowEdit = await inspect("RqgActorSheetV2");
+
+      await actor.update({ "system.attributes.magicPoints": { value: 21, baseMax: 21 } });
+      out.maxWithBaseMax = actor.system.attributes.magicPoints.max;
+      out.v2WithBaseMaxEdit = await inspect("RqgActorSheetV2");
+      out.v1WithBaseMaxEdit = await inspect("RqgActorSheet");
+
+      await actor.update({ "system.editMode": false });
+      out.v2Play = await inspect("RqgActorSheetV2");
+      out.v1Play = await inspect("RqgActorSheet");
+
+      await actor.update({
+        "system.characteristics.power.value": 12,
+        "system.attributes.magicPoints.baseMax": null,
+      });
+      out.maxFollowsPow = actor.system.attributes.magicPoints.max;
+
+      await actor.update({ "system.attributes.magicPoints.value": 5 });
+      await actor.gainMagicPoints(20);
+      out.gainCappedAtPow = actor.system.attributes.magicPoints.value;
+
+      await actor.update({ "system.editMode": true });
+      out.typedBaseMax = await typeBaseMax("15");
+      out.clearedBaseMax = await typeBaseMax("");
+    } finally {
+      await actor.delete();
+    }
+    return out;
+  }, e2eConfig.rqgActorName);
+
+  // Edit mode: the GM sees the base max input even with no POW and no magic points.
+  expect(results.v2NoPowEdit).toMatchObject({ baseMaxShown: true, baseMaxValue: "" });
+  expect(results.maxWithBaseMax).toBe(21);
+  expect(results.v2WithBaseMaxEdit).toMatchObject({
+    baseMaxShown: true,
+    baseMaxValue: "21",
+    valueShown: true,
+    maxText: "/ 21",
+  });
+  expect(results.v1WithBaseMaxEdit).toMatchObject({
+    baseMaxShown: true,
+    baseMaxValue: "21",
+    valueShown: true,
+    maxText: "/ 21",
+  });
+  // Play mode: magic points show, the override input does not.
+  expect(results.v2Play).toMatchObject({ baseMaxShown: false, valueShown: true, maxText: "/ 21" });
+  expect(results.v1Play).toMatchObject({ baseMaxShown: false, valueShown: true, maxText: "/ 21" });
+  expect(results.maxFollowsPow).toBe(12);
+  expect(results.gainCappedAtPow).toBe(12);
+  expect(results.typedBaseMax).toBe(15);
+  expect(results.clearedBaseMax).toBeNull();
+});

@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { RqgActor } from "./rqg-actor";
 import { ActorTypeEnum } from "../data-model/actor-data/rqg-actor-data";
+import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
+import { buildCharacterSystem } from "../data-model/actor-data/character-data-model-test-helpers";
 
 function createCharacterActor(overrides: {
   magicPoints?: { value: number; max: number };
@@ -141,6 +143,20 @@ describe("RqgActor.gainMagicPoints", () => {
     const actor = createCharacterActor({ magicPoints: { value: 15, max: 18 } });
     await actor.gainMagicPoints(5, { allowAboveMax: true });
     expect(updatedValue(actor)).toBe(20);
+  });
+
+  it("caps a POW-less actor at its baseMax-derived maximum", async () => {
+    const system = buildCharacterSystem();
+    (system.characteristics.power as { value: number | null }).value = null;
+    Object.assign(system.attributes.magicPoints, { value: 15, baseMax: 21 });
+    const model = Object.assign(new CharacterDataModel({}), system);
+    model.prepareDerivedData();
+    const actor = createCharacterActor({});
+    actor.system = model;
+
+    await actor.gainMagicPoints(10);
+
+    expect(updatedValue(actor)).toBe(21);
   });
 
   it("never lowers points already above max", async () => {

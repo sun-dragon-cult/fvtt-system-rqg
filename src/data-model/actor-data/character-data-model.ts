@@ -1,6 +1,9 @@
 import { RqgActorDataModel } from "./rqg-actor-data-model";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqid-link-field";
-import { derivedResourceSchemaField } from "../shared/resource-schema-field";
+import {
+  derivedResourceSchemaField,
+  magicPointsSchemaField,
+} from "../shared/resource-schema-field";
 import { actorHealthStatuses, LocomotionEnum } from "./attributes";
 import { OccupationEnum } from "./background-enums";
 import { enumChoices } from "../shared/enum-choices";
@@ -120,7 +123,7 @@ function defineCharacterSchema() {
     }),
 
     attributes: new SchemaField({
-      magicPoints: derivedResourceSchemaField(),
+      magicPoints: magicPointsSchemaField(),
       /** 1 = RAW baseline (1 point/24h, p.54); 2 = twice as fast, 0.5 = half as fast.
        *  Lets Humakti gifts / HeroQuest effects speed up or slow down recovery (#512). */
       magicPointRecoveryRateFactor: new NumberField({ nullable: false, initial: 1, min: 0 }),
@@ -400,7 +403,8 @@ export class CharacterDataModel extends RqgActorDataModel<CharacterSchema> {
     // reinitializes per cycle before effects are applied.
     if (system.attributes.magicPoints) {
       const magicPointsFromEffects = system.effect.add.magicPoints.max ?? 0;
-      system.attributes.magicPoints.max = (pow ?? 0) + magicPointsFromEffects;
+      const baseMax = system.attributes.magicPoints.baseMax ?? pow ?? 0;
+      system.attributes.magicPoints.max = baseMax + magicPointsFromEffects;
       system.attributes.magicPointRecoveryPointsPerDay =
         RqgCalculations.magicPointRecoveryPointsPerDay(
           system.attributes.magicPoints.max,
