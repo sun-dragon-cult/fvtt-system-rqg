@@ -71,13 +71,13 @@ describe("handleCreateSpellAreaQuery", () => {
     vi.unstubAllGlobals();
   });
 
-  it("does nothing for an entry that was already applied", async () => {
+  it("answers that an entry already applied was taken, doing nothing", async () => {
     const record = {
       type: "spellCast",
       system: { targets: [{ id: "entry", actorUuid: "Actor.v", tokenUuid: "", stage: "applied" }] },
     };
     vi.stubGlobal("game", { messages: { get: () => record } });
-    expect(await handleCreateSpellAreaQuery(data, { user })).toBeUndefined();
+    expect(await handleCreateSpellAreaQuery(data, { user })).toEqual({ outcome: "taken" });
     expect(summonerDocument).not.toHaveBeenCalled();
   });
 });

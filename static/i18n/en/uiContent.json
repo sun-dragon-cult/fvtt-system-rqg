@@ -844,6 +844,7 @@
         "Resolved": "Done",
         "AlreadyApplied": "This spell effect has already been applied.",
         "ApplyInProgress": "This spell effect is already being applied.",
+        "TakenByOtherApply": "{spellName} has already been applied by someone else, or the GM ruled on it.",
         "NoSpellEffect": "{spellName} has no spell effect to apply.",
         "NeedsActiveGm": "{spellName} needs a GM to be logged in to take effect.",
         "QueryNotPermitted": "{spellName} must take effect on the GM's client, and you lack the \"{permission}\" permission to ask it. The GM can grant it in Configure Permissions.",

@@ -1,6 +1,6 @@
 import { localize } from "../util";
 import { SpellRangeEnum } from "../../data-model/item-data/spell";
-import { drawReach, spellReach } from "./place-spell-area";
+import { drawReach, placeCancellable, spellReach } from "./place-spell-area";
 import { spellRangeInMeters } from "./spell-area";
 import type { SpellApplyScope } from "./apply-spell-effect";
 
@@ -10,13 +10,14 @@ type Point = { x: number; y: number };
  * Let the user place a token of the actor with Foundry's own token placement - grid snapping, the
  * token's real shape and size, gridless scenes - within range and in sight of the caster (RBM p.6).
  * Nothing is created here, since players may not create tokens. Resolves to the top left corner
- * of the place, or undefined when cancelled (right click or Escape).
+ * of the place, or undefined when cancelled (right click, Escape, or `signal`).
  */
 export async function placeSummonedToken(
   scope: SpellApplyScope,
   casterObject: foundry.canvas.placeables.Token,
   actor: Actor,
   size: { w: number; h: number },
+  signal?: AbortSignal,
 ): Promise<Point | undefined> {
   const spellName = scope.spell.name ?? "";
   const rangeMeters =
@@ -47,31 +48,37 @@ export async function placeSummonedToken(
     localize(ranged ? "RQG.SpellLocation.PickInRange" : "RQG.SpellLocation.Pick", { spellName }),
   );
   try {
-    const [placed] = await (canvas!.tokens as any).placeTokens([preview], {
-      create: false,
-      allowRotation: false,
-      // The preview's actor is the caster's, so it would show the caster's effect icons and bars
-      onMove: ({ preview }: { preview: foundry.canvas.placeables.Token }) => {
-        if (preview.effects) {
-          preview.effects.renderable = false;
-        }
-        if (preview.bars) {
-          preview.bars.renderable = false;
-        }
-      },
-      preConfirm: ({ document }: { document: TokenDocument }) => {
-        const center = document.getCenterPoint();
-        if (!inRange(center)) {
-          ui.notifications?.warn(localize("RQG.SpellLocation.OutOfRange", { spellName }));
-          return false;
-        }
-        if (!inSight(center)) {
-          ui.notifications?.warn(localize("RQG.SpellLocation.OutOfSight", { spellName }));
-          return false;
-        }
-        return true;
-      },
-    });
+    const tokens = canvas!.tokens as any;
+    const [placed] = await placeCancellable(
+      tokens,
+      () =>
+        tokens.placeTokens([preview], {
+          create: false,
+          allowRotation: false,
+          // The preview's actor is the caster's, so it would show the caster's effect icons and bars
+          onMove: ({ preview }: { preview: foundry.canvas.placeables.Token }) => {
+            if (preview.effects) {
+              preview.effects.renderable = false;
+            }
+            if (preview.bars) {
+              preview.bars.renderable = false;
+            }
+          },
+          preConfirm: ({ document }: { document: TokenDocument }) => {
+            const center = document.getCenterPoint();
+            if (!inRange(center)) {
+              ui.notifications?.warn(localize("RQG.SpellLocation.OutOfRange", { spellName }));
+              return false;
+            }
+            if (!inSight(center)) {
+              ui.notifications?.warn(localize("RQG.SpellLocation.OutOfSight", { spellName }));
+              return false;
+            }
+            return true;
+          },
+        }) as Promise<TokenDocument[]>,
+      signal,
+    );
     return placed ? { x: placed.x, y: placed.y } : undefined;
   } finally {
     if (ring && !ring.destroyed) {

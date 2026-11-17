@@ -20,6 +20,9 @@ import { createAnchored } from "./spell-anchor";
 import {
   applyRequestData,
   runApplyRequest,
+  appliedUnlessTaken,
+  watchApplyTaken,
+  type SpellApplyAnswer,
   type SpellApplyRequestData,
 } from "./spell-apply-request";
 import { spellAreaBehavior } from "./spell-across";
@@ -174,15 +177,16 @@ export async function createArea(
     return undefined;
   }
   const ranged = (scope.spell.system as any).castingRange === SpellRangeEnum.Ranged;
-  const shape =
-    options.placement === "caster"
-      ? shapeAroundCaster(options.shape, caster)
-      : await placeSpellArea(
-          caster,
-          options.shape,
-          ranged ? spellRangeInMeters(scope.spell) : undefined,
-          spellName,
-        );
+  const taken = options.placement === "caster" ? undefined : watchApplyTaken(scope);
+  const shape = taken
+    ? await placeSpellArea(
+        caster,
+        options.shape,
+        ranged ? spellRangeInMeters(scope.spell) : undefined,
+        spellName,
+        taken.signal,
+      ).finally(taken.stop)
+    : shapeAroundCaster(options.shape, caster);
   if (!shape) {
     return undefined;
   }
@@ -193,16 +197,19 @@ export async function createArea(
     duration: options.duration === undefined ? (scope.duration ?? null) : options.duration,
     visible: !!options.visible,
   };
-  return game.users?.activeGM?.isSelf && game.user
-    ? handleCreateSpellAreaQuery(data, { user: game.user })
-    : queryActiveGm("rqg.createSpellArea", data, spellName);
+  return appliedUnlessTaken(
+    game.users?.activeGM?.isSelf && game.user
+      ? await handleCreateSpellAreaQuery(data, { user: game.user })
+      : await queryActiveGm("rqg.createSpellArea", data, spellName),
+    spellName,
+  );
 }
 
 /** Make a spell area for the createArea request of a user, on the GM's client. */
 export async function handleCreateSpellAreaQuery(
   data: CreateSpellAreaQueryData,
   { user }: RqgQueryContext,
-): Promise<SpellEffectApplied | undefined> {
+): Promise<SpellApplyAnswer | undefined> {
   return runApplyRequest(data, user, (scope) => createAreaAsGm(scope, data));
 }
 

@@ -20,7 +20,7 @@ import type { RqgActor } from "./actors/rqg-actor.ts";
 import type { RqgItem } from "./items/rqg-item.ts";
 import type { ApplySpellBehaviorQueryData } from "./system/spell-effects/run-spell-apply.ts";
 import type { ContinueSpellCastData } from "./system/spell-effects/spell-cast-runner.ts";
-import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
+import type { SpellApplyAnswer } from "./system/spell-effects/spell-apply-request.ts";
 import type { SpellBehaviorRegistry } from "./system/spell-effects/spell-behavior.ts";
 import type { SkillBehaviorRegistry } from "./system/skill-behaviors/skill-behavior.ts";
 import type { AbilityItem } from "@item-model/item-types.ts";
@@ -231,15 +231,15 @@ declare global {
       "rqg.applySpellBehavior": (
         data: ApplySpellBehaviorQueryData,
         context: RqgQueryContext,
-      ) => Promise<SpellEffectApplied | undefined>;
+      ) => Promise<SpellApplyAnswer | undefined>;
       "rqg.createSpellArea": (
         data: CreateSpellAreaQueryData,
         context: RqgQueryContext,
-      ) => Promise<SpellEffectApplied | undefined>;
+      ) => Promise<SpellApplyAnswer | undefined>;
       "rqg.summon": (
         data: SummonQueryData,
         context: RqgQueryContext,
-      ) => Promise<SpellEffectApplied | undefined>;
+      ) => Promise<SpellApplyAnswer | undefined>;
       "rqg.continueSpellCast": (
         data: ContinueSpellCastData,
         context: RqgQueryContext,

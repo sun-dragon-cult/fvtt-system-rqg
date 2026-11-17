@@ -16,13 +16,15 @@ export type PlacedAreaShape = Record<string, unknown>;
  * Let the caster place a spell's area on the canvas, snapped to the scene's grid. With a range,
  * the whole area must lie within it of the caster, around a point the caster can see (RBM p.6);
  * a GM moves the Region afterwards for anywhere else. Without one it goes anywhere, as
- * a ritual is held where its area is. Resolves to the Region shape, or undefined when cancelled.
+ * a ritual is held where its area is. Resolves to the Region shape, or undefined when cancelled,
+ * by the user or by `signal`.
  */
 export async function placeSpellArea(
   caster: TokenDocument,
   shape: SpellAreaShape,
   rangeMeters: number | undefined,
   spellName: string,
+  signal?: AbortSignal,
 ): Promise<PlacedAreaShape | undefined> {
   const casterObject = casterTokenOnScene(caster, caster.actor as RqgActor);
   if (!casterObject || !canvas?.scene) {
@@ -41,8 +43,8 @@ export async function placeSpellArea(
   const ring = ranged ? drawReach(origin, reach, sight) : undefined;
   try {
     return shape.kind === "polygon"
-      ? await pickPolygon(shape.corners, shape.maxArea, outOfReach, spellName)
-      : await placeShape(shape, origin, outOfReach, spellName, ranged);
+      ? await pickPolygon(shape.corners, shape.maxArea, outOfReach, spellName, signal)
+      : await placeShape(shape, origin, outOfReach, spellName, ranged, signal);
   } finally {
     if (ring && !ring.destroyed) {
       ring.destroy();
@@ -130,6 +132,34 @@ export function drawReach(
   return graphics;
 }
 
+/**
+ * Run a core token or Region placement that `signal` cancels. Core has no public way to cancel one,
+ * so this calls the layer's internal `_cancelPlacement`, only while the placement started here
+ * is still the layer's current one (placement sets it up before its first await).
+ */
+export async function placeCancellable<T>(
+  layer: { _placementContext?: unknown; _cancelPlacement: () => void },
+  start: () => Promise<T>,
+  signal: AbortSignal | undefined,
+): Promise<T> {
+  const placing = start();
+  const context = layer._placementContext;
+  const cancel = () => {
+    if (context && layer._placementContext === context) {
+      layer._cancelPlacement();
+    }
+  };
+  if (signal?.aborted) {
+    cancel();
+  }
+  signal?.addEventListener("abort", cancel, { once: true });
+  try {
+    return await placing;
+  } finally {
+    signal?.removeEventListener("abort", cancel);
+  }
+}
+
 /** A circle or square by Foundry's own Region placement: grid-snapped, the square rotatable. */
 async function placeShape(
   shape: Extract<SpellAreaShape, { kind: "circle" | "square" }>,
@@ -137,6 +167,7 @@ async function placeShape(
   outOfReach: (point: Point) => AreaOutOfReach | undefined,
   spellName: string,
   ranged: boolean,
+  signal: AbortSignal | undefined,
 ): Promise<PlacedAreaShape | undefined> {
   const grid = canvas!.scene!.grid;
   const regionShape =
@@ -161,40 +192,46 @@ async function placeShape(
   ui.notifications?.info(
     localize(ranged ? "RQG.SpellArea.PlaceInRange" : "RQG.SpellArea.Place", { spellName }),
   );
-  const placed = await canvas!.regions!.placeRegion(
-    {
-      name: spellName,
-      shapes: [regionShape],
-      color: game.user?.color?.css ?? spellAreaColor,
-      highlightMode: "coverage",
-      displayMeasurements: true,
-    } as any,
-    {
-      create: false,
-      allowRotation: shape.kind === "square",
-      onMove: ({
-        shape: moved,
-        position,
-        snap,
-      }: {
-        shape: any;
-        position: Point;
-        snap: boolean;
-      }) => {
-        if (!snapToSpaceCenter || !snap) {
-          return;
-        }
-        moved.move(canvas!.grid!.getCenterPoint(position), { snap: false });
-        return false;
-      },
-      preConfirm: ({ shape: placedShape }: { shape: { center: Point } }) => {
-        const why = outOfReach(placedShape.center);
-        if (why) {
-          ui.notifications?.warn(localize(why, { spellName }));
-        }
-        return !why;
-      },
-    } as any,
+  const regions = canvas!.regions as any;
+  const placed: RegionDocument | null = await placeCancellable(
+    regions,
+    () =>
+      regions.placeRegion(
+        {
+          name: spellName,
+          shapes: [regionShape],
+          color: game.user?.color?.css ?? spellAreaColor,
+          highlightMode: "coverage",
+          displayMeasurements: true,
+        } as any,
+        {
+          create: false,
+          allowRotation: shape.kind === "square",
+          onMove: ({
+            shape: moved,
+            position,
+            snap,
+          }: {
+            shape: any;
+            position: Point;
+            snap: boolean;
+          }) => {
+            if (!snapToSpaceCenter || !snap) {
+              return;
+            }
+            moved.move(canvas!.grid!.getCenterPoint(position), { snap: false });
+            return false;
+          },
+          preConfirm: ({ shape: placedShape }: { shape: { center: Point } }) => {
+            const why = outOfReach(placedShape.center);
+            if (why) {
+              ui.notifications?.warn(localize(why, { spellName }));
+            }
+            return !why;
+          },
+        } as any,
+      ),
+    signal,
   );
   return (placed?.shapes as any)?.[0]?.toObject();
 }
@@ -278,6 +315,7 @@ function pickPolygon(
   maxArea: number,
   outOfReach: (point: Point) => AreaOutOfReach | undefined,
   spellName: string,
+  signal: AbortSignal | undefined,
 ): Promise<PlacedAreaShape | undefined> {
   const grid = canvas!.scene!.grid;
   ui.notifications?.info(
@@ -330,15 +368,17 @@ function pickPolygon(
     let rightDownAt: Point | undefined;
     const finish = (shape: PlacedAreaShape | undefined) => {
       document.removeEventListener("keydown", onKey, true);
-      Hooks.off("canvasTearDown", onTearDown);
+      Hooks.off("canvasTearDown", cancel);
+      signal?.removeEventListener("abort", cancel);
       coverage.destroy();
       if (!overlay.destroyed) {
         overlay.destroy({ children: true });
       }
       resolve(shape);
     };
-    const onTearDown = () => finish(undefined);
-    Hooks.once("canvasTearDown", onTearDown);
+    const cancel = () => finish(undefined);
+    Hooks.once("canvasTearDown", cancel);
+    signal?.addEventListener("abort", cancel, { once: true });
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.stopPropagation();

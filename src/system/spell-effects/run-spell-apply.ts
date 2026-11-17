@@ -5,7 +5,9 @@ import { spellBehaviorOf, type SpellBehavior } from "./spell-behavior";
 import {
   applyRequestData,
   applyRequestOf,
+  appliedUnlessTaken,
   runApplyRequest,
+  type SpellApplyAnswer,
   type SpellApplyRequestData,
 } from "./spell-apply-request";
 
@@ -37,7 +39,10 @@ export async function runSpellApply(
   if (!gm) {
     return behavior.apply(scope);
   }
-  return queryActiveGm("rqg.applySpellBehavior", applyRequestData(scope), spellName);
+  return appliedUnlessTaken(
+    await queryActiveGm("rqg.applySpellBehavior", applyRequestData(scope), spellName),
+    spellName,
+  );
 }
 
 /**
@@ -47,7 +52,7 @@ export async function runSpellApply(
 export async function handleApplySpellBehaviorQuery(
   data: ApplySpellBehaviorQueryData,
   { user }: RqgQueryContext,
-): Promise<SpellEffectApplied | undefined> {
+): Promise<SpellApplyAnswer | undefined> {
   if (!data.request && !user.isGM) {
     return undefined;
   }

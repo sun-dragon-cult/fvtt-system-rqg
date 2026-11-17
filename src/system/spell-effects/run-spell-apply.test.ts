@@ -14,6 +14,7 @@ vi.mock("../util", () => ({
 vi.mock("./spell-apply-request", () => ({
   applyRequestData: vi.fn(),
   applyRequestOf: vi.fn(),
+  appliedUnlessTaken: vi.fn((answer) => answer),
   runApplyRequest: vi.fn(async (_data, _user, work) => work(scope)),
 }));
 vi.mock("./spell-behavior", () => ({ spellBehaviorOf: vi.fn() }));
