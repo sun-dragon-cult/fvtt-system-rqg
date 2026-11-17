@@ -99,7 +99,7 @@ export class RqgCalculations {
    *  to `currentWorldTime` - so leftover minutes short of a full point carry forward toward the
    *  next one instead of being discarded. Doesn't know about the actor's current Magic Point
    *  value or max - clamping recovered points to max is the caller's job (see #1028 discussion:
-   *  `magicPoints.max` already reflects POW + genuine effects, and should be trusted as-is rather
+   *  `magicPoints.max` already reflects POW (or its `baseMax` override) + genuine effects, and should be trusted as-is rather
    *  than re-derived here). A `null` settled time (never settled) recovers nothing and seeds it
    *  to `currentWorldTime`, avoiding retroactive recovery for actors predating this field. */
   public static magicPointRecoveryCatchUp(

@@ -663,7 +663,7 @@ export class RqgActor extends Actor {
   /**
    * Passive Magic Point recovery catch-up (#1028): diffs the actor's recovery checkpoint against
    * the current `game.time.worldTime` and, if any whole points have accrued since, persists the
-   * recovered points (clamped to `magicPoints.max`, which already reflects POW + any genuine
+   * recovered points (clamped to `magicPoints.max`, which already reflects POW or its `baseMax` override + any genuine
    * effects - see #1028 discussion) and the advanced checkpoint in a single write. A no-op (no
    * write) when nothing has changed, so it's safe to call on every sheet render. Only applies to
    * player-owned actors: a GM-only-owned NPC could otherwise silently recover between the moment a
@@ -1144,14 +1144,14 @@ export class RqgActor extends Actor {
    */
   private settleMagicPointRecoveryCheckpoint(
     changes: Actor.UpdateData,
-    changesMagicPointsValue: boolean,
+    changesMagicPoints: boolean,
   ): void {
     const changesCheckpoint = foundry.utils.hasProperty(
       changes,
       "system.attributes.magicPointRecoverySettledWorldTime",
     );
     const currentWorldTime = game.time?.worldTime;
-    if (!changesMagicPointsValue || changesCheckpoint || currentWorldTime == null) {
+    if (!changesMagicPoints || changesCheckpoint || currentWorldTime == null) {
       return;
     }
     foundry.utils.setProperty(
@@ -1408,7 +1408,15 @@ export class RqgActor extends Actor {
       ? this.getHealthTransitionSnapshot()
       : undefined;
 
-    this.settleMagicPointRecoveryCheckpoint(changes, changesMagicPointsValue);
+    // A new base maximum changes the recovery rate, which mustn't apply to time already elapsed.
+    const changesMagicPointsBaseMax = foundry.utils.hasProperty(
+      changes,
+      "system.attributes.magicPoints.baseMax",
+    );
+    this.settleMagicPointRecoveryCheckpoint(
+      changes,
+      changesMagicPointsValue || changesMagicPointsBaseMax,
+    );
     this.settleHealingCheckpoint(changes, changesHitPointsValue);
 
     const actorDex =

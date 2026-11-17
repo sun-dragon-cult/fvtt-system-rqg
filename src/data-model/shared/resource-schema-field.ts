@@ -21,7 +21,7 @@ export function resourceSchemaField({ nullableMax = false }: { nullableMax?: boo
 /**
  * Returns a SchemaField representing a Resource whose max is always derived
  * in prepareDerivedData() and must never be persisted.
- * Use this for character hitPoints; magicPoints extends it via `magicPointsSchemaField`.
+ * Use this for character hitPoints; `magicPointsSchemaField` has the same value and max.
  */
 export function derivedResourceSchemaField() {
   return new SchemaField({

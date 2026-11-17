@@ -130,18 +130,16 @@
               </span>
             </label>
           {{/if}}
-          {{#edit-mode @root.system.editMode "gm"}}
-            <label class="flex-row flex-align-center mp-base-max"
-                   data-tooltip="{{localize 'RQG.Actor.Attributes.MagicPointsBaseMaxTooltip'}}">
-              <span>{{localize "RQG.Actor.Attributes.MagicPointsBaseMax"}}</span>
-              <input type="number" min="0" max="99" name="system.attributes.magicPoints.baseMax"
-                     value="{{@root.system.attributes.magicPoints.baseMax}}"
-                     placeholder="{{@root.system.characteristics.power.value}}" size="2">
-            </label>
-          {{/edit-mode}}
           <i class="norse flex-row flex-align-center">{{#each powCrystals}}
             <span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
           {{#edit-mode system.editMode "gm"}}
+            <label class="flex-row flex-align-center mp-base-max"
+                   data-tooltip="{{localize 'RQG.Actor.Character.FIELDS.attributes.magicPoints.baseMax.hint'}}">
+              <span>{{localize "RQG.Actor.Attributes.MagicPointsBaseMax"}}</span>
+              <input type="number" min="0" name="system.attributes.magicPoints.baseMax"
+                     value="{{system.attributes.magicPoints.baseMax}}"
+                     placeholder="{{system.characteristics.power.value}}" size="2">
+            </label>
             <label data-tooltip="{{localize "RQG.Actor.Attributes.CreatureExplanation"}}">
               <input type="checkbox" name="system.attributes.isCreature" {{checked ../system.attributes.isCreature}}>
               {{localize "RQG.Actor.Attributes.CreatureQ"}}

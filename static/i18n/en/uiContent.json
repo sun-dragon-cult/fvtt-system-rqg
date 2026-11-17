@@ -99,7 +99,6 @@
         "DexterityAbbr": "DEX",
         "MagicPoints": "Magic Points",
         "MagicPointsBaseMax": "Base Max MP",
-        "MagicPointsBaseMaxTooltip": "Base for maximum magic points, used instead of POW. Leave empty to follow POW. Active effects still add to it. A value set here no longer follows POW changes.",
         "MagicPointRecoveryTooltip": "Recovers {pointsPerDay} magic points per day",
         "MagicPointRecoveryTimePerPoint": "1 point every {duration}",
         "MagicPointSources": "Magic Point Source Order",
@@ -229,7 +228,11 @@
               },
               "max": {
                 "label": "Maximum magic points",
-                "hint": "Calculated from POW plus effects, never stored. To change it with an effect, write to system.effect.add.magicPoints.max."
+                "hint": "Calculated from POW (or the base maximum, when set) plus effects, never stored. To change it with an effect, write to system.effect.add.magicPoints.max."
+              },
+              "baseMax": {
+                "label": "Base maximum magic points",
+                "hint": "Used instead of POW as the base of maximum magic points, for creatures without POW or stat blocks with more magic points than POW. Leave empty to follow POW. Effects still add to it. A value set here no longer follows POW changes."
               }
             },
             "magicPointRecoveryRateFactor": {

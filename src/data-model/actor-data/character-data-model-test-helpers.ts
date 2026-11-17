@@ -13,6 +13,7 @@ export function buildCharacterSystem() {
     attributes: {
       isCreature: false,
       magicPoints: { max: 0, baseMax: null as number | null },
+      magicPointRecoveryRateFactor: 1,
       hitPoints: { max: 0 },
     },
     effect: {
