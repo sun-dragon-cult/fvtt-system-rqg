@@ -176,28 +176,63 @@ async function deleteOrphans(): Promise<void> {
 }
 
 /**
+ * Whether the caster of the spell that made an anchor effect is gone. A summoning's effect is on
+ * the summoned token, not the caster, so it ends this way when the caster's actor is deleted, or
+ * an unlinked caster's token or world actor.
+ */
+function casterGone(effect: ActiveEffect): boolean {
+  const caster = (
+    effect.system as { spell?: { caster?: { actorUuid?: string; tokenUuid?: string } } } | null
+  )?.spell?.caster;
+  if (caster?.actorUuid && !existing(caster.actorUuid)) {
+    return true;
+  }
+  // An unlinked token keeps its built actor for a while after the world actor is deleted
+  const token = caster?.tokenUuid ? existing<TokenDocument>(caster.tokenUuid) : undefined;
+  return !!token && !token.actorLink && !token.baseActor;
+}
+
+/** Delete these effects of an actor, skipping those gone meanwhile; logs a failure. */
+async function deleteEffects(actor: Actor, effects: readonly ActiveEffect[]): Promise<void> {
+  const ids = [...new Set(effects.map((effect) => effect.id ?? ""))].filter((id) =>
+    actor.effects.has(id),
+  );
+  try {
+    if (ids.length) {
+      await actor.deleteEmbeddedDocuments("ActiveEffect", ids);
+    }
+  } catch (error) {
+    logger.warn("Could not end an actor's spell effects", undefined, actor.uuid, error);
+  }
+}
+
+/** End the anchor effects whose caster is gone, which deletes what they held. */
+async function endCasterless(): Promise<void> {
+  for (const actor of anchorActors()) {
+    const ended = actor.effects.contents.filter(
+      (effect) => holdsOf(effect).length > 0 && casterGone(effect),
+    );
+    await deleteEffects(actor, ended);
+  }
+}
+
+/**
  * Bring spell-held state in line after something happened without the active GM's cleanup, e.g.
  * while no GM was logged in: delete held documents whose effect is gone, end effects one of whose
- * held documents is gone (as deleting it would have), and take an area's effect off a token whose
- * area is gone or that isn't in it any more.
+ * held documents is gone (as deleting it would have) or whose caster is gone, and take an area's
+ * effect off a token whose area is gone or that isn't in it any more.
  */
 export async function reconcileSpellAnchors(): Promise<void> {
   await deleteOrphans();
   for (const actor of anchorActors()) {
-    const ended = actor.effects.contents.filter((effect) =>
-      holdsOf(effect).some((hold) => !heldDocument(effect.uuid ?? "", hold)),
+    const ended = actor.effects.contents.filter(
+      (effect) =>
+        holdsOf(effect).some((hold) => !heldDocument(effect.uuid ?? "", hold)) ||
+        (holdsOf(effect).length > 0 && casterGone(effect)),
     );
     const leftArea = actor.effects.contents.filter((effect) => !isInArea(actor, effect));
-    const ids = [...new Set([...ended, ...leftArea].map((effect) => effect.id ?? ""))];
-    try {
-      // A deleted Region's exit events may take some of these off meanwhile
-      const left = ids.filter((id) => actor.effects.has(id));
-      if (left.length) {
-        await actor.deleteEmbeddedDocuments("ActiveEffect", left);
-      }
-    } catch (error) {
-      logger.warn("Could not reconcile an actor's spell effects", undefined, actor.uuid, error);
-    }
+    // A deleted Region's exit events may take some of these off meanwhile
+    await deleteEffects(actor, [...ended, ...leftArea]);
   }
 }
 
@@ -237,7 +272,7 @@ export function initSpellAnchors(): void {
   // What an effect on a deleted token, actor or scene held is left without it
   const holderDeleted = () => {
     if (isActiveGm()) {
-      deleteOrphans().catch(logFailure);
+      Promise.all([deleteOrphans(), endCasterless()]).catch(logFailure);
     }
   };
   Hooks.on("deleteRegion", (region) => heldDeleted(region));

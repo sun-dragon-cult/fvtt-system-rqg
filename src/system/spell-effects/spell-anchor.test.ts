@@ -396,6 +396,77 @@ describe("spell anchors", () => {
       expect(region.delete).not.toHaveBeenCalled();
     });
 
+    it("ends a summoning when its caster's actor is deleted, which removes the summoned token", async () => {
+      const summoning = doc(
+        "Scene.s.Token.t.Actor.e.ActiveEffect.s",
+        { holds: [hold("Scene.s.Token.t")] },
+        { system: { spell: { caster: { actorUuid: "Actor.caster", tokenUuid: "" } } } },
+      );
+      const elemental = actor("Scene.s.Token.t.Actor.e", [summoning], { isToken: true });
+      const token = {
+        ...doc("Scene.s.Token.t", { heldBy: summoning.uuid }),
+        actorLink: false,
+        actor: elemental,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold("Scene.s.Token.t")] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([], [token])];
+      (game as any).actors = { contents: [] };
+      // The caster's actor is gone
+      handlers["deleteActor"]!({ uuid: "Actor.caster" });
+      await settle();
+      expect(elemental.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["s"]);
+    });
+
+    it("ends a summoning when an unlinked caster's world actor is deleted", async () => {
+      // The caster's token keeps its built actor for a while, but has no world actor any more
+      doc("Scene.s.Token.c.Actor.a");
+      doc("Scene.s.Token.c", {}, { actorLink: false, baseActor: null });
+      const summoning = doc(
+        "Scene.s.Token.t.Actor.e.ActiveEffect.s",
+        { holds: [hold("Scene.s.Token.t")] },
+        {
+          system: {
+            spell: {
+              caster: { actorUuid: "Scene.s.Token.c.Actor.a", tokenUuid: "Scene.s.Token.c" },
+            },
+          },
+        },
+      );
+      const elemental = actor("Scene.s.Token.t.Actor.e", [summoning], { isToken: true });
+      const token = {
+        ...doc("Scene.s.Token.t", { heldBy: summoning.uuid }),
+        actorLink: false,
+        actor: elemental,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold("Scene.s.Token.t")] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([], [token])];
+      (game as any).actors = { contents: [] };
+      handlers["deleteActor"]!({ uuid: "Actor.a" });
+      await settle();
+      expect(elemental.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["s"]);
+    });
+
+    it("keeps a summoning while its caster is there", async () => {
+      doc("Actor.caster");
+      const summoning = doc(
+        "Scene.s.Token.t.Actor.e.ActiveEffect.s",
+        { holds: [hold("Scene.s.Token.t")] },
+        { system: { spell: { caster: { actorUuid: "Actor.caster", tokenUuid: "" } } } },
+      );
+      const elemental = actor("Scene.s.Token.t.Actor.e", [summoning], { isToken: true });
+      const token = {
+        ...doc("Scene.s.Token.t", { heldBy: summoning.uuid }),
+        actorLink: false,
+        actor: elemental,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold("Scene.s.Token.t")] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([], [token])];
+      (game as any).actors = { contents: [] };
+      handlers["deleteActor"]!({ uuid: "Actor.other" });
+      await settle();
+      expect(elemental.deleteEmbeddedDocuments).not.toHaveBeenCalled();
+    });
+
     it("does nothing on a client that isn't the active GM's", async () => {
       (game as any).users.activeGM.isSelf = false;
       const anchor = doc("Actor.c.ActiveEffect.e");

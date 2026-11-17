@@ -130,3 +130,75 @@ test("spell areas end with their anchor", async ({ page, baseURL }) => {
     await removeTestDocuments(page);
   }
 });
+
+/**
+ * Summon an elemental from the wiki bestiary next to a caster's token, on a scene the GM isn't
+ * viewing so it goes on the nearest free cell, and return the summoned token.
+ */
+async function summonFromCaster(page: Page, linked: boolean) {
+  return page.evaluate(
+    async ({ names, linked }) => {
+      const g = game as any;
+      const scene =
+        g.scenes.getName(names.scene) ??
+        (await (Scene as any).create({ name: names.scene, width: 2000, height: 2000 }));
+      const actor = await (Actor as any).create({ name: names.actor, type: "character" });
+      const [token] = await scene.createEmbeddedDocuments("Token", [
+        { name: actor.name, actorId: actor.id, actorLink: linked, x: 500, y: 500 },
+      ]);
+      const casterActor = linked ? actor : token.actor;
+      const [spell] = await casterActor.createEmbeddedDocuments("Item", [
+        { name: "E2E Summon", type: "spiritMagic" },
+      ]);
+      const pack = g.packs.find((p: any) => p.metadata.name === "bestiary-elementals");
+      const elementals = await pack.getDocuments();
+      const rqid = elementals[0].getFlag("rqg", "documentRqidFlags").id;
+      const applied = await g.system.api.spellEffects.summon(
+        {
+          spell: spell,
+          targetActor: casterActor,
+          targetName: token.name,
+          cast: {
+            spellRqid: "",
+            caster: { actorUuid: casterActor.uuid, tokenUuid: token.uuid },
+            castMessageId: "",
+            level: 1,
+            magicPointsSpent: 0,
+            runePointsSpent: 1,
+            casterSuccessLevel: undefined,
+          },
+          duration: { value: 15, units: "minutes" },
+        },
+        rqid,
+      );
+      const effect = fromUuidSync(applied?.effectUuids?.[0] ?? "") as any;
+      return {
+        actorId: actor.id as string,
+        summonedUuid: (effect?.getFlag("rqg", "holds")?.[0]?.uuid as string) ?? "",
+      };
+    },
+    { names, linked },
+  );
+}
+
+// #1325 case 1: deleting the caster's actor ends the summoning, so the summoned token goes.
+for (const linked of [true, false]) {
+  test(`a summoning ends with its caster's ${linked ? "linked" : "unlinked"} actor`, async ({
+    page,
+    baseURL,
+  }) => {
+    test.slow();
+    await loginToConfiguredWorld(page, baseURL);
+    await removeTestDocuments(page);
+    try {
+      const summoned = await summonFromCaster(page, linked);
+      expect(summoned.summonedUuid).toMatch(/\.Token\./);
+      expect(await exists(page, summoned.summonedUuid)).toBe(true);
+
+      await page.evaluate((id) => (game as any).actors.get(id).delete(), summoned.actorId);
+      await expect.poll(() => exists(page, summoned.summonedUuid), { timeout: 30_000 }).toBe(false);
+    } finally {
+      await removeTestDocuments(page);
+    }
+  });
+}
