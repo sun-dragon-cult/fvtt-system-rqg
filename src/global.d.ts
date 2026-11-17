@@ -11,6 +11,7 @@ import type {
   RqgJournalEntryPageFlags,
   RollTableFlags,
   SceneFlags,
+  SpellHeldFlags,
   RqgFolderFlags,
 } from "./data-model/shared/rqg-document-flags";
 import type { TokenRulerSettingsType } from "./applications/settings/token-ruler-settings.types";
@@ -310,6 +311,8 @@ declare global {
     Playlist: { [systemId]?: PlaylistFlags };
     RollTable: { [systemId]?: RollTableFlags };
     Scene: { [systemId]?: SceneFlags };
+    Region: { [systemId]?: SpellHeldFlags };
+    Token: { [systemId]?: SpellHeldFlags };
     Folder: { [systemId]?: RqgFolderFlags };
     ChatMessage: { [systemId]?: RqgChatMessageDataSource };
   }

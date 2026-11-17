@@ -154,8 +154,9 @@ test("spell Apply runs once, and the GM checks spell requests", async ({ page, b
       const g = game as any;
       return {
         regions: g.scenes.get(s.sceneId).regions.size,
-        anchors: g.actors.get(s.actorId).effects.filter((e: any) => e.getFlag("rqg", "spellArea"))
-          .length,
+        anchors: g.actors
+          .get(s.actorId)
+          .effects.filter((e: any) => e.getFlag("rqg", "holds")?.length).length,
       };
     }, setup);
     expect(afterClicks).toEqual({ regions: 1, anchors: 1 });

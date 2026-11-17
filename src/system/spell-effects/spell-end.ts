@@ -1,22 +1,19 @@
 import { systemId } from "../config";
 import { spellBehaviorForEffect, spellRqidOfEffect } from "./spell-behavior";
-import { removeSummonedToken } from "./summon";
-import { removeSpellArea } from "./spell-area";
+import { holdsOf, releaseHeld } from "./spell-anchor";
 import { splitFromProjectileIdFlag } from "../../data-model/shared/rqg-document-flags";
 
-/** Only the active GM's client ends effects, and only spell effects, summonings and areas need it. */
+/** Only the active GM's client ends effects, and only spell effects and what they hold need it. */
 function needsEnding(effect: ActiveEffect): boolean {
   return (
-    !!game.users?.activeGM?.isSelf &&
-    (!!spellRqidOfEffect(effect) || !!effect.getFlag(systemId, "summoning"))
+    !!game.users?.activeGM?.isSelf && (!!spellRqidOfEffect(effect) || holdsOf(effect).length > 0)
   );
 }
 
-/** True when it deleted the effect's area, which then takes the effect with it. */
+/** True when it deleted what the effect held, whose deletion then takes the effect with it. */
 async function endSpellEffect(effect: ActiveEffect): Promise<boolean> {
   await spellBehaviorForEffect(effect)?.onEnd?.({ effect });
-  await removeSummonedToken(effect);
-  return removeSpellArea(effect);
+  return releaseHeld(effect);
 }
 
 /** A missile split off its stack, whose spent spells go back to the stack with it. */
@@ -41,15 +38,16 @@ function isOverdueOnReenable(effect: ActiveEffect, changed: { disabled?: unknown
 
 /**
  * End a spell effect once when it expires or is deleted (e.g. by Dispel Magic): run its spell's
- * `onEnd` and remove the token it summoned. An expired spell effect is then deleted, which doesn't
- * end it again. Runs on the active GM's client, which marks expiry.
+ * `onEnd` and delete what it held, e.g. a spell area's Region or a summoned token. An expired spell
+ * effect is then deleted, which doesn't end it again. Runs on the active GM's client, which marks
+ * expiry.
  */
 export function initSpellEnd(): void {
   Hooks.on("updateActiveEffect", async (effect: ActiveEffect, changed: any) => {
     if (changed.duration?.expired === true && needsEnding(effect)) {
-      const areaDeleted = await endSpellEffect(effect);
+      const heldDeleted = await endSpellEffect(effect);
       // spelled-projectile deletes a split-off missile's spells along with the missile
-      if (spellRqidOfEffect(effect) && !areaDeleted && !isOnSplitOffMissile(effect)) {
+      if (spellRqidOfEffect(effect) && !heldDeleted && !isOnSplitOffMissile(effect)) {
         await effect.delete();
       }
     } else if (isOverdueOnReenable(effect, changed) && needsEnding(effect)) {

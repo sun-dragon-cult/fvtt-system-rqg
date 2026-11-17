@@ -1,0 +1,478 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  createAnchored,
+  holdsRegion,
+  initSpellAnchors,
+  reconcileSpellAnchors,
+  releaseHeld,
+} from "./spell-anchor";
+
+/** A world of documents by uuid, which `fromUuidSync` finds while they exist. */
+let documents: Map<string, any>;
+
+/** The scenes held documents sit on; deleting through one deletes each document in turn. */
+let scenes: Map<string, any>;
+
+function sceneOf(uuid: string) {
+  const [, sceneId] = uuid.split(".");
+  const sceneUuid = `Scene.${sceneId}`;
+  if (!scenes.has(sceneUuid)) {
+    scenes.set(sceneUuid, {
+      uuid: sceneUuid,
+      getEmbeddedCollection: (type: string) => ({
+        has: (id: string) => documents.has(`${sceneUuid}.${type}.${id}`),
+      }),
+      deleteEmbeddedDocuments: vi.fn(async (type: string, ids: string[]) => {
+        for (const id of ids) {
+          await documents.get(`${sceneUuid}.${type}.${id}`)?.delete();
+        }
+      }),
+    });
+  }
+  return scenes.get(sceneUuid);
+}
+
+function doc(uuid: string, flags: Record<string, unknown> = {}, extra: object = {}) {
+  const parts = uuid.split(".");
+  const onScene = parts[0] === "Scene" && ["Region", "Token"].includes(parts[2] ?? "");
+  const document: any = {
+    uuid,
+    id: parts.at(-1),
+    documentName: onScene ? parts[2] : parts.at(-2),
+    parent: onScene && parts.length === 4 ? sceneOf(uuid) : null,
+    flags,
+    getFlag: (_scope: string, key: string) => document.flags[key],
+    delete: vi.fn(async () => documents.delete(uuid)),
+    ...extra,
+  };
+  documents.set(uuid, document);
+  return document;
+}
+
+function actor(uuid: string, effects: any[] = [], extra: object = {}) {
+  const parent = doc(
+    uuid,
+    {},
+    {
+      effects: {
+        contents: effects,
+        has: (id: string) => parent.effects.contents.some((e: any) => e.id === id),
+      },
+      isToken: false,
+      getActiveTokens: () => [],
+      createEmbeddedDocuments: vi.fn(async (_type: string, [data]: any[]) => [
+        doc(`${uuid}.ActiveEffect.${data._id}`, data.flags.rqg),
+      ]),
+      deleteEmbeddedDocuments: vi.fn(async (_type: string, ids: string[]) =>
+        ids.forEach((id) => documents.delete(`${uuid}.ActiveEffect.${id}`)),
+      ),
+      ...extra,
+    },
+  );
+  return parent;
+}
+
+function scene(regions: any[] = [], tokens: any[] = []) {
+  return { regions: { contents: regions }, tokens: { contents: tokens } };
+}
+
+const hold = (uuid: string) => ({ kind: "document", uuid });
+
+describe("spell anchors", () => {
+  beforeEach(() => {
+    documents = new Map();
+    scenes = new Map();
+    vi.stubGlobal("fromUuidSync", (uuid: string) => documents.get(uuid) ?? null);
+    vi.stubGlobal("game", { users: { activeGM: { isSelf: true } }, scenes: { contents: [] } });
+    vi.stubGlobal("Scene", class Scene {});
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  describe("createAnchored", () => {
+    it("makes the documents with a back-reference, then the effect that holds them", async () => {
+      const caster = actor("Actor.c");
+      let heldBy = "";
+      const result = await createAnchored({
+        effectParentUuid: "Actor.c",
+        effectData: { name: "Shake Earth" },
+        create: async (by) => {
+          heldBy = by;
+          return [doc("Scene.s.Region.r", { heldBy: by })];
+        },
+      });
+      expect(result?.effect.uuid).toBe(heldBy);
+      expect(heldBy).toMatch(/^Actor\.c\.ActiveEffect\./);
+      const [, [data], options] = caster.createEmbeddedDocuments.mock.calls[0];
+      expect(data).toMatchObject({
+        name: "Shake Earth",
+        flags: { rqg: { holds: [hold("Scene.s.Region.r")] } },
+      });
+      expect(options).toEqual({ keepId: true });
+    });
+
+    it("deletes what it made when the effect can't be written", async () => {
+      actor("Actor.c", [], {
+        createEmbeddedDocuments: vi.fn(async () => {
+          throw new Error("no");
+        }),
+      });
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+      let region: any;
+      const result = await createAnchored({
+        effectParentUuid: "Actor.c",
+        effectData: {},
+        create: async (by) => [(region = doc("Scene.s.Region.r", { heldBy: by }))],
+      });
+      expect(result).toBeUndefined();
+      expect(region.delete).toHaveBeenCalledOnce();
+    });
+
+    it("deletes what it made when the effect's parent is missing", async () => {
+      let region: any;
+      const result = await createAnchored({
+        effectParentUuid: "Actor.gone",
+        effectData: {},
+        create: async (by) => [(region = doc("Scene.s.Region.r", { heldBy: by }))],
+      });
+      expect(result).toBeUndefined();
+      expect(region.delete).toHaveBeenCalledOnce();
+    });
+
+    it("makes no effect when nothing was made", async () => {
+      const caster = actor("Actor.c");
+      expect(
+        await createAnchored({
+          effectParentUuid: "Actor.c",
+          effectData: {},
+          create: async () => [],
+        }),
+      ).toBeUndefined();
+      expect(caster.createEmbeddedDocuments).not.toHaveBeenCalled();
+    });
+  });
+
+  it("deletes what an ended effect held, and says whether there was anything", async () => {
+    const region = doc("Scene.s.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
+    const effect = doc("Actor.c.ActiveEffect.e", {
+      holds: [hold("Scene.s.Region.r"), hold("Scene.s.Token.gone")],
+    });
+    expect(await releaseHeld(effect)).toBe(true);
+    expect(region.delete).toHaveBeenCalledOnce();
+    expect(await releaseHeld(effect)).toBe(false);
+  });
+
+  it("leaves a pasted copy alone: it names another effect than the one ending", async () => {
+    const copy = doc("Scene.s.Region.r", { heldBy: "Actor.c.ActiveEffect.original" });
+    const effect = doc("Actor.c.ActiveEffect.copied", { holds: [hold("Scene.s.Region.r")] });
+    expect(await releaseHeld(effect)).toBe(false);
+    expect(copy.delete).not.toHaveBeenCalled();
+  });
+
+  it("tells an effect holding a Region from one holding a token", () => {
+    const area = doc("Actor.c.ActiveEffect.a", { holds: [hold("Scene.s.Region.r")] });
+    const summoning = doc("Actor.c.ActiveEffect.b", { holds: [hold("Scene.s.Token.t")] });
+    expect(holdsRegion(area as any)).toBe(true);
+    expect(holdsRegion(summoning as any)).toBe(false);
+  });
+
+  describe("reconcileSpellAnchors", () => {
+    it("deletes held documents whose effect is gone, e.g. lost with its caster's token", async () => {
+      const orphan = doc("Scene.s.Region.orphan", {
+        heldBy: "Scene.s.Token.gone.Actor.a.ActiveEffect.e",
+      });
+      const kept = doc("Scene.s.Region.kept", { heldBy: "Actor.c.ActiveEffect.e" });
+      const unheld = doc("Scene.s.Region.ward");
+      actor("Actor.c", [doc("Actor.c.ActiveEffect.e", { holds: [hold("Scene.s.Region.kept")] })]);
+      (game as any).scenes.contents = [scene([orphan, kept, unheld])];
+      await reconcileSpellAnchors();
+      expect(orphan.delete).toHaveBeenCalledOnce();
+      expect(kept.delete).not.toHaveBeenCalled();
+      expect(unheld.delete).not.toHaveBeenCalled();
+    });
+
+    it("ends effects whose held documents are gone", async () => {
+      const anchor = doc("Actor.c.ActiveEffect.e", { holds: [hold("Scene.s.Region.gone")] });
+      const other = doc("Actor.c.ActiveEffect.o");
+      const caster = actor("Actor.c", [anchor, other]);
+      (game as any).actors = { contents: [caster] };
+      await reconcileSpellAnchors();
+      expect(caster.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["e"]);
+    });
+
+    it("ends an effect once any document it held is gone, as deleting it live would", async () => {
+      const kept = doc("Scene.s.Region.kept", { heldBy: "Actor.c.ActiveEffect.e" });
+      const anchor = doc("Actor.c.ActiveEffect.e", {
+        holds: [hold("Scene.s.Region.kept"), hold("Scene.s.Region.gone")],
+      });
+      const caster = actor("Actor.c", [anchor]);
+      (game as any).actors = { contents: [caster] };
+      (game as any).scenes.contents = [scene([kept])];
+      await reconcileSpellAnchors();
+      expect(caster.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["e"]);
+    });
+
+    it("goes on with other scenes when one scene's deletion fails", async () => {
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+      const a = doc("Scene.s.Region.a", { heldBy: "Actor.gone.ActiveEffect.e" });
+      const b = doc("Scene.t.Region.b", { heldBy: "Actor.gone.ActiveEffect.f" });
+      (game as any).scenes.contents = [scene([a]), scene([b])];
+      scenes.get("Scene.s").deleteEmbeddedDocuments.mockRejectedValueOnce(new Error("gone"));
+      await reconcileSpellAnchors();
+      expect(b.delete).toHaveBeenCalledOnce();
+    });
+
+    it("deletes all of a scene's orphans in one request per type", async () => {
+      const a = doc("Scene.s.Region.a", { heldBy: "Actor.gone.ActiveEffect.e" });
+      const b = doc("Scene.s.Region.b", { heldBy: "Actor.gone.ActiveEffect.f" });
+      (game as any).scenes.contents = [scene([a, b])];
+      await reconcileSpellAnchors();
+      expect(scenes.get("Scene.s").deleteEmbeddedDocuments).toHaveBeenCalledOnce();
+      expect(scenes.get("Scene.s").deleteEmbeddedDocuments).toHaveBeenCalledWith("Region", [
+        "a",
+        "b",
+      ]);
+    });
+
+    it("takes an area's effect off a token whose area is gone or that left it", async () => {
+      const token = { id: "t", actorLink: false };
+      const region = doc("Scene.s.Region.r", {}, { tokens: new Set() });
+      const left = doc("Scene.s.Token.t.Actor.a.ActiveEffect.left", { areaRegion: region.uuid });
+      const gone = doc("Scene.s.Token.t.Actor.a.ActiveEffect.gone", {
+        areaRegion: "Scene.s.Region.gone",
+      });
+      const tokenActor = actor("Scene.s.Token.t.Actor.a", [left, gone], { isToken: true, token });
+      (game as any).scenes.contents = [
+        scene(
+          [region],
+          [
+            {
+              actorLink: false,
+              actor: tokenActor,
+              delta: { _source: { effects: [{ flags: { rqg: { areaRegion: region.uuid } } }] } },
+              ...doc("Scene.s.Token.t"),
+            },
+          ],
+        ),
+      ];
+      await reconcileSpellAnchors();
+      expect(tokenActor.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", [
+        "left",
+        "gone",
+      ]);
+
+      vi.mocked(tokenActor.deleteEmbeddedDocuments).mockClear();
+      region.tokens.add(token);
+      documents.set(gone.uuid, gone);
+      tokenActor.effects.contents = [left];
+      await reconcileSpellAnchors();
+      expect(tokenActor.deleteEmbeddedDocuments).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("hooks", () => {
+    let handlers: Record<string, (...args: any[]) => void>;
+
+    beforeEach(() => {
+      handlers = {};
+      vi.stubGlobal("Hooks", {
+        on: (hook: string, fn: (...args: any[]) => void) => (handlers[hook] = fn),
+        once: (hook: string, fn: (...args: any[]) => void) => (handlers[hook] = fn),
+      });
+      initSpellAnchors();
+    });
+
+    const settle = () => new Promise((resolve) => setTimeout(resolve));
+
+    it("leaves the effect alone when a pasted copy of what it holds is deleted", async () => {
+      const anchor = doc("Actor.c.ActiveEffect.e", { holds: [hold("Scene.s.Region.r")] });
+      handlers["deleteRegion"]!(doc("Scene.s.Region.copy", { heldBy: anchor.uuid }));
+      await settle();
+      expect(anchor.delete).not.toHaveBeenCalled();
+    });
+
+    it("ends the effect of a deleted held document", async () => {
+      const anchor = doc("Actor.c.ActiveEffect.e", { holds: [hold("Scene.s.Region.r")] });
+      handlers["deleteRegion"]!(doc("Scene.s.Region.r", { heldBy: anchor.uuid }));
+      await settle();
+      expect(anchor.delete).toHaveBeenCalledOnce();
+    });
+
+    it("deletes what the effects on a deleted caster token held", async () => {
+      const region = doc("Scene.s.Region.r", { heldBy: "Scene.s.Token.t.Actor.a.ActiveEffect.e" });
+      const other = doc("Scene.s.Region.o", { heldBy: "Scene.s.Token.t2.Actor.a.ActiveEffect.e" });
+      doc("Scene.s.Token.t2.Actor.a.ActiveEffect.e");
+      (game as any).scenes.contents = [scene([region, other])];
+      documents.delete("Scene.s.Token.t");
+      handlers["deleteToken"]!({
+        uuid: "Scene.s.Token.t",
+        actorLink: false,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold(region.uuid)] } } }] } },
+        getFlag: () => undefined,
+      });
+      await settle();
+      expect(region.delete).toHaveBeenCalledOnce();
+      expect(other.delete).not.toHaveBeenCalled();
+    });
+
+    it("deletes what an unlinked token's effects held when its world actor is deleted", async () => {
+      const region = doc("Scene.s.Region.r", { heldBy: "Scene.s.Token.t.Actor.a.ActiveEffect.e" });
+      const token = {
+        uuid: "Scene.s.Token.t",
+        actorId: "a",
+        actorLink: false,
+        getFlag: () => undefined,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold(region.uuid)] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([region], [token])];
+      vi.stubGlobal("Actor", class Actor {});
+      const deleted = Object.assign(new (globalThis as any).Actor(), {
+        id: "a",
+        uuid: "Actor.a",
+        effects: { contents: [] },
+      });
+      handlers["deleteActor"]!(deleted);
+      await settle();
+      expect(region.delete).toHaveBeenCalledOnce();
+    });
+
+    it("drops heldBy from a copy of a held document, not from one createAnchored makes", () => {
+      const created = (anchored: boolean) => {
+        const region = doc("Scene.s.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
+        region.updateSource = vi.fn();
+        handlers["preCreateRegion"]!(region, {}, anchored ? { keepId: true } : {});
+        return region.updateSource;
+      };
+      expect(created(false)).toHaveBeenCalledWith({ flags: { rqg: { heldBy: "" } } });
+      expect(created(true)).not.toHaveBeenCalled();
+    });
+
+    it("drops heldBy from the Regions and tokens of a duplicated scene", () => {
+      const sceneCopy = (options: object) => {
+        const region = doc("Scene.s2.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
+        region.updateSource = vi.fn();
+        handlers["preCreateScene"]!(
+          { regions: { contents: [region] }, tokens: { contents: [] } },
+          {},
+          options,
+        );
+        return region.updateSource;
+      };
+      expect(sceneCopy({})).toHaveBeenCalledWith({ flags: { rqg: { heldBy: "" } } });
+      // An Adventure import keeps every id, so its effects still hold what it brings along
+      expect(sceneCopy({ keepId: true })).not.toHaveBeenCalled();
+    });
+
+    it("keeps heldBy when undo recreates a deleted held document with its own id", () => {
+      const region = doc("Scene.s.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
+      region.updateSource = vi.fn();
+      handlers["preCreateRegion"]!(region, {}, { isUndo: true, keepId: true });
+      expect(region.updateSource).not.toHaveBeenCalled();
+    });
+
+    it("leaves world tokens alone when a compendium's actor is deleted", async () => {
+      const region = doc("Scene.s.Region.r", { heldBy: "Scene.s.Token.t.Actor.a.ActiveEffect.e" });
+      // The world token's actor, and so its effect, are still there
+      doc("Scene.s.Token.t.Actor.a.ActiveEffect.e");
+      const token = {
+        uuid: "Scene.s.Token.t",
+        actorId: "a",
+        actorLink: false,
+        getFlag: () => undefined,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold(region.uuid)] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([region], [token])];
+      vi.stubGlobal("Actor", class Actor {});
+      const packActor = Object.assign(new (globalThis as any).Actor(), {
+        id: "a",
+        uuid: "Compendium.wiki.bestiary.Actor.a",
+        pack: "wiki.bestiary",
+        effects: { contents: [] },
+      });
+      handlers["deleteActor"]!(packActor);
+      await settle();
+      expect(region.delete).not.toHaveBeenCalled();
+    });
+
+    it("ends a summoning when its caster's actor is deleted, which removes the summoned token", async () => {
+      const summoning = doc(
+        "Scene.s.Token.t.Actor.e.ActiveEffect.s",
+        { holds: [hold("Scene.s.Token.t")] },
+        { system: { spell: { caster: { actorUuid: "Actor.caster", tokenUuid: "" } } } },
+      );
+      const elemental = actor("Scene.s.Token.t.Actor.e", [summoning], { isToken: true });
+      const token = {
+        ...doc("Scene.s.Token.t", { heldBy: summoning.uuid }),
+        actorLink: false,
+        actor: elemental,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold("Scene.s.Token.t")] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([], [token])];
+      (game as any).actors = { contents: [] };
+      // The caster's actor is gone
+      handlers["deleteActor"]!({ uuid: "Actor.caster" });
+      await settle();
+      expect(elemental.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["s"]);
+    });
+
+    it("ends a summoning when an unlinked caster's world actor is deleted", async () => {
+      // The caster's token keeps its built actor for a while, but has no world actor any more
+      doc("Scene.s.Token.c.Actor.a");
+      doc("Scene.s.Token.c", {}, { actorLink: false, baseActor: null });
+      const summoning = doc(
+        "Scene.s.Token.t.Actor.e.ActiveEffect.s",
+        { holds: [hold("Scene.s.Token.t")] },
+        {
+          system: {
+            spell: {
+              caster: { actorUuid: "Scene.s.Token.c.Actor.a", tokenUuid: "Scene.s.Token.c" },
+            },
+          },
+        },
+      );
+      const elemental = actor("Scene.s.Token.t.Actor.e", [summoning], { isToken: true });
+      const token = {
+        ...doc("Scene.s.Token.t", { heldBy: summoning.uuid }),
+        actorLink: false,
+        actor: elemental,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold("Scene.s.Token.t")] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([], [token])];
+      (game as any).actors = { contents: [] };
+      handlers["deleteActor"]!({ uuid: "Actor.a" });
+      await settle();
+      expect(elemental.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["s"]);
+    });
+
+    it("keeps a summoning while its caster is there", async () => {
+      doc("Actor.caster");
+      const summoning = doc(
+        "Scene.s.Token.t.Actor.e.ActiveEffect.s",
+        { holds: [hold("Scene.s.Token.t")] },
+        { system: { spell: { caster: { actorUuid: "Actor.caster", tokenUuid: "" } } } },
+      );
+      const elemental = actor("Scene.s.Token.t.Actor.e", [summoning], { isToken: true });
+      const token = {
+        ...doc("Scene.s.Token.t", { heldBy: summoning.uuid }),
+        actorLink: false,
+        actor: elemental,
+        delta: { _source: { effects: [{ flags: { rqg: { holds: [hold("Scene.s.Token.t")] } } }] } },
+      };
+      (game as any).scenes.contents = [scene([], [token])];
+      (game as any).actors = { contents: [] };
+      handlers["deleteActor"]!({ uuid: "Actor.other" });
+      await settle();
+      expect(elemental.deleteEmbeddedDocuments).not.toHaveBeenCalled();
+    });
+
+    it("does nothing on a client that isn't the active GM's", async () => {
+      (game as any).users.activeGM.isSelf = false;
+      const anchor = doc("Actor.c.ActiveEffect.e");
+      handlers["deleteRegion"]!(doc("Scene.s.Region.r", { heldBy: anchor.uuid }));
+      await settle();
+      expect(anchor.delete).not.toHaveBeenCalled();
+    });
+  });
+});

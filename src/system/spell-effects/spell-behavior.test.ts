@@ -85,10 +85,10 @@ describe("spellBehavior", () => {
     register((registry) => {
       registry.register("i.rune-magic.shake-earth", { onPrepareAbilityRoll: entry }, en);
     });
-    const effect = (spellArea: string | undefined) =>
+    const effect = (held: string | undefined) =>
       ({
         system: { spell: { spellRqid: "i.rune-magic.shake-earth" } },
-        getFlag: () => spellArea,
+        getFlag: () => (held ? [{ kind: "document", uuid: held }] : undefined),
       }) as any;
     expect(spellBehaviorForEffect(effect(undefined))?.onPrepareAbilityRoll).toBeDefined();
     expect(spellBehaviorForEffect(effect("Scene.s.Region.r"))).toBeUndefined();

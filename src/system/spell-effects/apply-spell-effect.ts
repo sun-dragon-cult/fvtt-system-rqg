@@ -23,7 +23,8 @@ import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-projectile";
 import { runSpellApply } from "./run-spell-apply";
 import { castPoints } from "./spell-rules";
-import { isAreaAnchor, spellBehaviorOf } from "./spell-behavior";
+import { spellBehaviorOf } from "./spell-behavior";
+import { holdsRegion } from "./spell-anchor";
 
 /**
  * A cast of a spell: who cast it, at what level, and the points it spent (see `castPoints`).
@@ -119,7 +120,7 @@ function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[]
   return parent.effects.contents.flatMap((effect: any) => {
     const spell = effect.system?.spell;
     // A spell area's effect on its caster isn't the spell acting on them
-    return spell && !isAreaAnchor(effect)
+    return spell && !holdsRegion(effect)
       ? [
           {
             id: effect.id ?? "",
