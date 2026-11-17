@@ -99,6 +99,7 @@
         "DexterityAbbr": "DEX",
         "MagicPoints": "Magic Points",
         "MagicPointsBaseMax": "Base Max MP",
+        "MagicPointsAboveMaxTooltip": "{points} magic points above the maximum, such as those Absorption holds in the caster's aura. They are spent first, and dissipate when the last Absorption ends.",
         "MagicPointRecoveryTooltip": "Recovers {pointsPerDay} magic points per day",
         "MagicPointRecoveryTimePerPoint": "1 point every {duration}",
         "MagicPointSources": "Magic Point Source Order",
