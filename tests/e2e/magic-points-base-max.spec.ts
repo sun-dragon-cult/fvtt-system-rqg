@@ -13,6 +13,8 @@ test("magic points base max override", async ({ page, baseURL }) => {
       g.actors.getName(sourceActorName) ?? g.actors.find((a: any) => a.type === "character");
     const actorData = source.toObject();
     actorData.name = "E2E magic points base max";
+    // No player owner, so rendering the sheet doesn't run passive recovery's own write
+    actorData.ownership = { default: 0 };
     actorData.system.editMode = true;
     actorData.system.characteristics.power.value = null;
     actorData.system.attributes.magicPoints = { value: 0, baseMax: null };
@@ -28,7 +30,17 @@ test("magic points base max override", async ({ page, baseURL }) => {
       const input = app.element.querySelector(
         'input[name="system.attributes.magicPoints.baseMax"]',
       );
-      const updated = new Promise((resolve) => Hooks.once("updateActor", resolve));
+      const updated = new Promise<void>((resolve) => {
+        const hookId = Hooks.on("updateActor", (document: any, changes: any) => {
+          if (
+            document === actor &&
+            foundry.utils.hasProperty(changes, "system.attributes.magicPoints.baseMax")
+          ) {
+            Hooks.off("updateActor", hookId);
+            resolve();
+          }
+        });
+      });
       input.value = value;
       input.dispatchEvent(new Event("change", { bubbles: true }));
       await updated;

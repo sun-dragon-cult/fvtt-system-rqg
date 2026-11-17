@@ -1131,6 +1131,43 @@ export class RqgActor extends Actor {
   }
 
   /**
+   * A new base maximum changes the recovery rate, which mustn't apply to time already elapsed: the
+   * points accrued since the checkpoint are credited at the current rate into `changes` first, and
+   * `settleMagicPointRecoveryCheckpoint` then moves the checkpoint to now. An update that sets the
+   * value or the checkpoint itself is left alone, as are actors passive recovery skips.
+   */
+  private creditMagicPointRecoveryBeforeRateChange(changes: Actor.UpdateData): void {
+    const attributes = this.system.attributes;
+    const currentWorldTime = game.time?.worldTime;
+    if (
+      foundry.utils.hasProperty(changes, "system.attributes.magicPoints.value") ||
+      foundry.utils.hasProperty(changes, "system.attributes.magicPointRecoverySettledWorldTime") ||
+      !this.hasPlayerOwner ||
+      (game.settings?.get(systemId, "magicPointRecoveryEnabled") ?? true) === false ||
+      currentWorldTime == null
+    ) {
+      return;
+    }
+    const { pointsRecovered } = RqgCalculations.magicPointRecoveryCatchUp(
+      attributes.magicPointRecoverySettledWorldTime,
+      currentWorldTime,
+      attributes.magicPoints.max,
+      attributes.magicPointRecoveryRateFactor,
+    );
+    if (pointsRecovered > 0) {
+      const currentValue = attributes.magicPoints.value ?? 0;
+      foundry.utils.setProperty(
+        changes,
+        "system.attributes.magicPoints.value",
+        Math.max(
+          currentValue,
+          Math.min(currentValue + pointsRecovered, attributes.magicPoints.max ?? 0),
+        ),
+      );
+    }
+  }
+
+  /**
    * Any write to magicPoints.value that isn't catchUpMagicPointRecovery's own (#1028 follow-up) -
    * a manual sheet edit, a spend, a future drain effect, anything - needs to settle the recovery
    * checkpoint to *now* too. Otherwise the checkpoint stays wherever it last was (possibly stale,
@@ -1140,7 +1177,8 @@ export class RqgActor extends Actor {
    * later, could instantly refund most or all of the drain by crediting the recovery gap that
    * actually predates the drain. catchUpMagicPointRecovery's own writes always set the checkpoint
    * explicitly (to a precisely carried-forward value, not just "now"), so this only fires for
-   * updates that change the value without also specifying a checkpoint.
+   * updates that change the value without also specifying a checkpoint. A change of the base
+   * maximum settles it too, after `creditMagicPointRecoveryBeforeRateChange` credited what accrued.
    */
   private settleMagicPointRecoveryCheckpoint(
     changes: Actor.UpdateData,
@@ -1393,6 +1431,13 @@ export class RqgActor extends Actor {
   ): Promise<boolean | void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
+    const changesMagicPointsBaseMax = foundry.utils.hasProperty(
+      changes,
+      "system.attributes.magicPoints.baseMax",
+    );
+    if (changesMagicPointsBaseMax) {
+      this.creditMagicPointRecoveryBeforeRateChange(changes);
+    }
     const changesMagicPointsValue = foundry.utils.hasProperty(
       changes,
       "system.attributes.magicPoints.value",
@@ -1408,11 +1453,6 @@ export class RqgActor extends Actor {
       ? this.getHealthTransitionSnapshot()
       : undefined;
 
-    // A new base maximum changes the recovery rate, which mustn't apply to time already elapsed.
-    const changesMagicPointsBaseMax = foundry.utils.hasProperty(
-      changes,
-      "system.attributes.magicPoints.baseMax",
-    );
     this.settleMagicPointRecoveryCheckpoint(
       changes,
       changesMagicPointsValue || changesMagicPointsBaseMax,
