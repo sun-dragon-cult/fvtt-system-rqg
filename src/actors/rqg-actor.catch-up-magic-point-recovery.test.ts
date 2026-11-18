@@ -6,6 +6,7 @@ import { buildCharacterSystem } from "../data-model/actor-data/character-data-mo
 
 function createCharacterActor(overrides: {
   magicPoints?: { value: number; max: number };
+  pow?: number | null;
   magicPointRecoveryRateFactor?: number;
   magicPointRecoverySettledWorldTime?: number | null;
   hasPlayerOwner?: boolean;
@@ -14,6 +15,7 @@ function createCharacterActor(overrides: {
   actor.type = ActorTypeEnum.Character;
   actor.hasPlayerOwner = overrides.hasPlayerOwner ?? true;
   actor.system = {
+    characteristics: { power: { value: overrides.pow === undefined ? 18 : overrides.pow } },
     attributes: {
       magicPoints: overrides.magicPoints ?? { value: 5, max: 18 },
       magicPointRecoveryRateFactor: overrides.magicPointRecoveryRateFactor ?? 1,
@@ -126,6 +128,39 @@ describe("RqgActor.catchUpMagicPointRecovery", () => {
 
     expect(actor.update).not.toHaveBeenCalled();
     (game as any).settings = originalSettings;
+  });
+});
+
+describe("RqgActor.catchUpMagicPointRecovery rate (Core p.54)", () => {
+  afterEach(() => {
+    delete (game as any).time;
+  });
+
+  it("recovers at POW per day, not at the maximum's rate", async () => {
+    // POW 12 with a base max of 21: 12 points a day, so a quarter day gives 3, not 5
+    const actor = createCharacterActor({
+      magicPoints: { value: 5, max: 21 },
+      pow: 12,
+      magicPointRecoverySettledWorldTime: 0,
+    });
+    (game as any).time = { worldTime: 6 * 60 * 60 };
+
+    await actor.catchUpMagicPointRecovery();
+
+    expect(actor.update.mock.calls[0]?.[0].system.attributes.magicPoints.value).toBe(8);
+  });
+
+  it("recovers nothing without POW", async () => {
+    const actor = createCharacterActor({
+      magicPoints: { value: 5, max: 21 },
+      pow: null,
+      magicPointRecoverySettledWorldTime: 0,
+    });
+    (game as any).time = { worldTime: 7 * 24 * 60 * 60 };
+
+    await actor.catchUpMagicPointRecovery();
+
+    expect(actor.update).not.toHaveBeenCalled();
   });
 });
 

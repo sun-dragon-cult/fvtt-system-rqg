@@ -407,11 +407,11 @@ export class CharacterDataModel extends RqgActorDataModel<CharacterSchema> {
       system.attributes.magicPoints.max = baseMax + magicPointsFromEffects;
       system.attributes.magicPointRecoveryPointsPerDay =
         RqgCalculations.magicPointRecoveryPointsPerDay(
-          system.attributes.magicPoints.max,
+          pow,
           system.attributes.magicPointRecoveryRateFactor,
         );
       const timePerPoint = RqgCalculations.magicPointRecoveryTimePerPoint(
-        system.attributes.magicPoints.max,
+        pow,
         system.attributes.magicPointRecoveryRateFactor,
       );
       system.attributes.magicPointRecoveryHoursPerPoint = timePerPoint.hours;

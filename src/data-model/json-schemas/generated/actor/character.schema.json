@@ -524,7 +524,7 @@
               ],
               "minimum": 0,
               "title": "Base maximum magic points",
-              "description": "Used instead of POW as the base of maximum magic points, for creatures without POW or stat blocks with more magic points than POW. Leave empty to follow POW. Effects still add to it. A value set here no longer follows POW changes."
+              "description": "Used instead of POW as the base of maximum magic points, for creatures without POW or stat blocks with more magic points than POW. Leave empty to follow POW. Effects still add to it. A value set here no longer follows POW changes. Recovery still goes at POW per day."
             }
           },
           "additionalProperties": false,

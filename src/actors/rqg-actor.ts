@@ -663,9 +663,9 @@ export class RqgActor extends Actor {
   /**
    * Passive Magic Point recovery catch-up (#1028): diffs the actor's recovery checkpoint against
    * the current `game.time.worldTime` and, if any whole points have accrued since, persists the
-   * recovered points (clamped to `magicPoints.max`, which already reflects POW or its `baseMax`
-   * override + any genuine effects - see #1028 discussion) and the advanced checkpoint in a
-   * single write. A no-op (no
+   * recovered points at a rate set by POW (Core p.54) and the advanced checkpoint in a single
+   * write, clamped to `magicPoints.max`, which already reflects POW or its `baseMax` override +
+   * any genuine effects (see #1028 discussion). A no-op (no
    * write) when nothing has changed, so it's safe to call on every sheet render. Only applies to
    * player-owned actors: a GM-only-owned NPC could otherwise silently recover between the moment a
    * GM preps it and whenever the party actually reaches it in-game, changing state the GM set up
@@ -693,7 +693,7 @@ export class RqgActor extends Actor {
       const { pointsRecovered, newSettledWorldTime } = RqgCalculations.magicPointRecoveryCatchUp(
         settledWorldTime,
         currentWorldTime,
-        attributes.magicPoints.max,
+        this.system.characteristics.power.value,
         attributes.magicPointRecoveryRateFactor,
       );
       if (pointsRecovered === 0 && newSettledWorldTime === settledWorldTime) {
@@ -1132,41 +1132,6 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Keeps the recovery accrued at the old rate when a new base maximum changes the rate: the
-   * checkpoint moves so that the elapsed time is worth as many points at the new rate.
-   */
-  private rescaleMagicPointRecoveryCheckpoint(changes: Actor.UpdateData): void {
-    const attributes = this.system.attributes;
-    const settledWorldTime = attributes.magicPointRecoverySettledWorldTime;
-    const currentWorldTime = game.time?.worldTime;
-    if (
-      settledWorldTime == null ||
-      currentWorldTime == null ||
-      foundry.utils.hasProperty(changes, "system.attributes.magicPointRecoverySettledWorldTime")
-    ) {
-      return;
-    }
-    const oldMax = attributes.magicPoints.max ?? 0;
-    const newBaseMax = foundry.utils.getProperty(
-      changes,
-      "system.attributes.magicPoints.baseMax",
-    ) as number | null | undefined;
-    const newMax =
-      (newBaseMax ?? this.system.characteristics.power.value ?? 0) +
-      (this.system.effect.add.magicPoints.max ?? 0);
-    // Recovery is proportional to the maximum (the rate factor doesn't change here)
-    const newSettledWorldTime =
-      oldMax > 0 && newMax > 0
-        ? currentWorldTime - ((currentWorldTime - settledWorldTime) * oldMax) / newMax
-        : currentWorldTime;
-    foundry.utils.setProperty(
-      changes,
-      "system.attributes.magicPointRecoverySettledWorldTime",
-      newSettledWorldTime,
-    );
-  }
-
-  /**
    * Any write to magicPoints.value that isn't catchUpMagicPointRecovery's own (#1028 follow-up) -
    * a manual sheet edit, a spend, a future drain effect, anything - needs to settle the recovery
    * checkpoint to *now* too. Otherwise the checkpoint stays wherever it last was (possibly stale,
@@ -1429,17 +1394,10 @@ export class RqgActor extends Actor {
   ): Promise<boolean | void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
-    // A sheet submits the whole form, so the value is often there unchanged
-    const changesMagicPointsValue =
-      foundry.utils.hasProperty(changes, "system.attributes.magicPoints.value") &&
-      foundry.utils.getProperty(changes, "system.attributes.magicPoints.value") !==
-        this.system.attributes.magicPoints.value;
-    if (
-      !changesMagicPointsValue &&
-      foundry.utils.hasProperty(changes, "system.attributes.magicPoints.baseMax")
-    ) {
-      this.rescaleMagicPointRecoveryCheckpoint(changes);
-    }
+    const changesMagicPointsValue = foundry.utils.hasProperty(
+      changes,
+      "system.attributes.magicPoints.value",
+    );
     const changesHitPointsValue = foundry.utils.hasProperty(
       changes,
       "system.attributes.hitPoints.value",
