@@ -100,7 +100,7 @@ describe("damage bonus calculations are correct for", () => {
 });
 
 describe("magic point recovery points per day are correct for", () => {
-  it("normal (RAW baseline) rate factor recovers full max in a day", () => {
+  it("normal (RAW baseline) rate factor recovers POW in a day (Core p.54)", () => {
     expect(RqgCalculations.magicPointRecoveryPointsPerDay(18, 1)).toBe(18);
   });
 
@@ -116,7 +116,7 @@ describe("magic point recovery points per day are correct for", () => {
     expect(RqgCalculations.magicPointRecoveryPointsPerDay(18, 0)).toBe(0);
   });
 
-  it("no max magic points", () => {
+  it("no POW", () => {
     expect(RqgCalculations.magicPointRecoveryPointsPerDay(undefined, 1)).toBe(0);
   });
 
@@ -147,7 +147,7 @@ describe("magic point recovery time per point is correct for", () => {
     });
   });
 
-  it("no max magic points", () => {
+  it("no POW", () => {
     expect(RqgCalculations.magicPointRecoveryTimePerPoint(undefined, 1)).toStrictEqual({
       hours: 0,
       minutes: 0,
@@ -163,7 +163,7 @@ describe("magic point recovery time per point is correct for", () => {
 });
 
 describe("magic point recovery catch-up is correct for", () => {
-  // 18 max MP at normal rate = 1 point every 80 minutes (4800 seconds), per the time-per-point tests above.
+  // POW 18 at normal rate = 1 point every 80 minutes (4800 seconds), per the time-per-point tests above.
   const minutesPerPoint = 80;
   const secondsPerPoint = minutesPerPoint * 60;
 
@@ -219,7 +219,7 @@ describe("magic point recovery catch-up is correct for", () => {
     });
   });
 
-  it("no max magic points recovers nothing", () => {
+  it("no POW recovers nothing", () => {
     expect(
       RqgCalculations.magicPointRecoveryCatchUp(0, secondsPerPoint * 3, undefined, 1),
     ).toStrictEqual({

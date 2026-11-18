@@ -215,4 +215,27 @@ describe("CharacterDataModel.prepareDerivedData", () => {
       expect(preparedMagicPointsMax(pow, baseMax, fromEffects)).toBe(expected);
     });
   });
+  describe("magic point recovery rate (Core p.54)", () => {
+    function preparedRate(pow: number | null, baseMax: number | null, fromEffects = 0): number {
+      const model = new CharacterDataModel({});
+      const system = buildSystem();
+      (system.characteristics.power as { value: number | null }).value = pow;
+      system.attributes.magicPoints.baseMax = baseMax;
+      system.effect.add.magicPoints.max = fromEffects;
+      Object.assign(model as object, system);
+      model.prepareDerivedData();
+      return (model as unknown as { attributes: { magicPointRecoveryPointsPerDay: number } })
+        .attributes.magicPointRecoveryPointsPerDay;
+    }
+
+    it("follows POW, whatever the base max or effects on the maximum", () => {
+      expect(preparedRate(15, null)).toBe(15);
+      expect(preparedRate(15, 21)).toBe(15);
+      expect(preparedRate(15, null, 3)).toBe(15);
+    });
+
+    it("is 0 without POW", () => {
+      expect(preparedRate(null, 21)).toBe(0);
+    });
+  });
 });

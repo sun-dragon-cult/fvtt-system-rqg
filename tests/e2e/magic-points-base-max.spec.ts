@@ -82,6 +82,8 @@ test("magic points base max override", async ({ page, baseURL }) => {
 
       await actor.update({ "system.attributes.magicPoints": { value: 21, baseMax: 21 } });
       out.maxWithBaseMax = actor.system.attributes.magicPoints.max;
+      // Recovery follows POW alone (Core p.54), so a creature without POW recovers nothing
+      out.recoveryWithoutPow = actor.system.attributes.magicPointRecoveryPointsPerDay;
       out.v2WithBaseMaxEdit = await inspect("RqgActorSheetV2");
       out.v1WithBaseMaxEdit = await inspect("RqgActorSheet");
 
@@ -99,18 +101,9 @@ test("magic points base max override", async ({ page, baseURL }) => {
       await actor.gainMagicPoints(20);
       out.gainCappedAtPow = actor.system.attributes.magicPoints.value;
 
-      await actor.update({
-        "system.editMode": true,
-        "system.attributes.magicPointRecoverySettledWorldTime": g.time.worldTime - 100_000,
-      });
-      const maxBefore = actor.system.attributes.magicPoints.max;
+      await actor.update({ "system.editMode": true });
       out.typedBaseMax = await typeBaseMax("15");
-      // Recovery is proportional to the maximum, so the elapsed time scales by old max / new max
-      out.elapsedPointsKept =
-        Math.round(
-          (g.time.worldTime - actor.system.attributes.magicPointRecoverySettledWorldTime) *
-            actor.system.attributes.magicPoints.max,
-        ) === Math.round(100_000 * maxBefore);
+      out.recoveryWithBaseMax = actor.system.attributes.magicPointRecoveryPointsPerDay;
       out.clearedBaseMax = await typeBaseMax("");
     } finally {
       await actor.delete();
@@ -121,6 +114,7 @@ test("magic points base max override", async ({ page, baseURL }) => {
   // Edit mode: the GM sees the base max input even with no POW and no magic points.
   expect(results.v2NoPowEdit).toMatchObject({ baseMaxShown: true, baseMaxValue: "" });
   expect(results.maxWithBaseMax).toBe(21);
+  expect(results.recoveryWithoutPow).toBe(0);
   expect(results.v2WithBaseMaxEdit).toMatchObject({
     baseMaxShown: true,
     baseMaxValue: "21",
@@ -139,7 +133,7 @@ test("magic points base max override", async ({ page, baseURL }) => {
   expect(results.maxFollowsPow).toBe(12);
   expect(results.gainCappedAtPow).toBe(12);
   expect(results.typedBaseMax).toBe(15);
-  // The recovery accrued at the old rate is kept at the new one
-  expect(results.elapsedPointsKept).toBe(true);
+  // With POW 12 and a base max of 15, recovery stays at POW per day
+  expect(results.recoveryWithBaseMax).toBe(12);
   expect(results.clearedBaseMax).toBeNull();
 });
