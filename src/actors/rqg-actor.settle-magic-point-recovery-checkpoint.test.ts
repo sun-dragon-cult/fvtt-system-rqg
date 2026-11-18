@@ -66,10 +66,12 @@ describe("RqgActor._preUpdate on a base maximum change", () => {
   function actorWith(
     magicPoints: { value: number; max: number; baseMax: number | null },
     pow: number | null = 12,
+    fromEffects = 0,
   ): any {
     const actor = createCharacterActor();
     actor.system = {
       characteristics: { dexterity: { value: null }, power: { value: pow } },
+      effect: { add: { magicPoints: { max: fromEffects } } },
       attributes: {
         hitPoints: { value: 10 },
         magicPoints,
@@ -122,7 +124,7 @@ describe("RqgActor._preUpdate on a base maximum change", () => {
   it("counts effects on the maximum, and follows POW again when cleared", async () => {
     // Base 20 + 4 from effects = 24; cleared, POW 12 + 4 = 16
     expect(
-      await settledAfter(actorWith({ value: 5, max: 24, baseMax: 20 }), baseMaxChange(null)),
+      await settledAfter(actorWith({ value: 5, max: 24, baseMax: 20 }, 12, 4), baseMaxChange(null)),
     ).toBe(day - (day * 24) / 16);
   });
 
