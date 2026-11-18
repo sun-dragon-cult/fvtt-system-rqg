@@ -122,7 +122,7 @@
               <input type="number" min="0" max="99" name="system.attributes.magicPoints.value"
                      value="{{system.attributes.magicPoints.value}}" size="2">
               / {{system.attributes.magicPoints.max}}
-              {{#if (and system.attributes.magicPoints.max (gt system.attributes.magicPoints.value system.attributes.magicPoints.max))}}
+              {{#if (and (gt system.attributes.magicPoints.max 0) (gt system.attributes.magicPoints.value system.attributes.magicPoints.max))}}
                 <span class="mp-above-max"
                       data-tooltip="{{localize 'RQG.Actor.Attributes.MagicPointsAboveMaxTooltip'
                                                points=(difference system.attributes.magicPoints.value system.attributes.magicPoints.max)}}">

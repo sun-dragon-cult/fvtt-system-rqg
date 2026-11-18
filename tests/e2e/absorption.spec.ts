@@ -30,14 +30,13 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
 
     const createdMessageIds: string[] = [];
     const hookId = Hooks.on("createChatMessage", (m: any) => createdMessageIds.push(m.id));
-    const waitFor = async (what: string, predicate: () => boolean) => {
-      for (let i = 0; i < 100; i++) {
-        if (predicate()) {
-          return;
-        }
+    const waitFor = async (what: string, predicate: () => boolean, observed?: () => unknown) => {
+      for (let i = 0; i < 100 && !predicate(); i++) {
         await new Promise((r) => setTimeout(r, 100));
       }
-      throw new Error(`Timed out waiting for ${what}`);
+      if (!predicate()) {
+        throw new Error(`Timed out waiting for ${what}${observed ? ` (got ${observed()})` : ""}`);
+      }
     };
     const effectsNamed = (name: string) =>
       g.system.api.spellEffects.list(actor).filter((e: any) => e.name?.startsWith(name));
@@ -78,14 +77,24 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
       const app = sheetName.endsWith("V2")
         ? new SheetClass({ document: actor })
         : new SheetClass(actor);
-      const root = await new Promise<HTMLElement>((resolve) => {
-        const hookId = Hooks.on(`render${SheetClass.name}`, (rendered: any, html: any) => {
+      const hook = `render${SheetClass.name}`;
+      const root = await new Promise<HTMLElement>((resolve, reject) => {
+        const timer = setTimeout(() => {
+          Hooks.off(hook, hookId);
+          reject(new Error(`Timed out rendering ${sheetName}`));
+        }, 10_000);
+        const hookId = Hooks.on(hook, (rendered: any, html: any) => {
           if (rendered === app) {
-            Hooks.off(`render${SheetClass.name}`, hookId);
+            clearTimeout(timer);
+            Hooks.off(hook, hookId);
             resolve(html instanceof HTMLElement ? html : html[0]);
           }
         });
-        app.render(true);
+        Promise.resolve(app.render(true)).catch((error: unknown) => {
+          clearTimeout(timer);
+          Hooks.off(hook, hookId);
+          reject(error);
+        });
       });
       const text = root.querySelector(".mp-above-max")?.textContent?.replace(/\s+/g, "");
       await app.close({ animate: false });
@@ -130,6 +139,7 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
       await waitFor(
         "the excess to dissipate",
         () => actor.system.attributes.magicPoints.value === max,
+        () => actor.system.attributes.magicPoints.value,
       );
       out.afterEnd = actor.system.attributes.magicPoints.value;
     } finally {
