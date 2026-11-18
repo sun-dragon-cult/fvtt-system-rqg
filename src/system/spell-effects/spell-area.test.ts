@@ -116,19 +116,35 @@ describe("placeCancellable", () => {
   });
 
   it("leaves a placement started after it alone", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const { layer, start } = fakeLayer();
     const controller = new AbortController();
-    void placeCancellable(layer, start, controller.signal);
+    const placing = placeCancellable(layer, start, controller.signal);
     layer._placementContext = {};
     controller.abort();
     expect(layer._cancelPlacement).not.toHaveBeenCalled();
+    layer._cancelPlacement();
+    await placing;
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 
-  it("leaves an earlier placement alone when its own didn't start", async () => {
+  it("leaves an earlier placement alone when its own didn't start, without a warning", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const { layer } = fakeLayer({});
     await expect(
       placeCancellable(layer, () => Promise.reject(new Error("not ready")), AbortSignal.abort()),
     ).rejects.toThrow("not ready");
     expect(layer._cancelPlacement).not.toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("warns when a placement ran that core didn't set up at once, so it can't be cancelled", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const layer = { _placementContext: undefined, _cancelPlacement: vi.fn() };
+    await placeCancellable(layer, async () => null, undefined);
+    expect(warn).toHaveBeenCalledOnce();
+    warn.mockRestore();
   });
 });

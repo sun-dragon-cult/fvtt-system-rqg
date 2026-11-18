@@ -154,11 +154,17 @@ export async function placeCancellable<T>(
   const before = layer._placementContext;
   const placing = start();
   const context = layer._placementContext;
+  const own = !!context && context !== before;
+  if (!own) {
+    // Only a placement that ran shows that core sets its context up later now; a failed one doesn't
+    placing.then(
+      () => logger.warn("A placement ran that can't be cancelled: core didn't set it up at once"),
+      () => undefined,
+    );
+  }
   const cancel = () => {
-    if (context && context !== before && layer._placementContext === context) {
+    if (own && layer._placementContext === context) {
       layer._cancelPlacement();
-    } else if (!context || context === before) {
-      logger.warn("Could not cancel a placement: core didn't start one before its first await");
     }
   };
   if (signal?.aborted) {

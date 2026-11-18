@@ -13,7 +13,8 @@ const names = {
   summoned: "E2E summoned",
 };
 
-// The page's warnings and errors, attached to a failed test: refusals only log there
+// The page's warnings, errors and uncaught exceptions, attached to a failed test: refusals only
+// log there
 let consoleLines: string[] = [];
 test.beforeEach(({ page }) => {
   consoleLines = [];
@@ -22,6 +23,7 @@ test.beforeEach(({ page }) => {
       consoleLines.push(`${message.type()}: ${message.text()}`);
     }
   });
+  page.on("pageerror", (error) => consoleLines.push(`pageerror: ${error.stack ?? error.message}`));
 });
 // eslint-disable-next-line no-empty-pattern -- Playwright reads the fixtures from the pattern
 test.afterEach(async ({}, testInfo) => {
@@ -32,8 +34,8 @@ test.afterEach(async ({}, testInfo) => {
 });
 
 // A spell whose Apply waits until the test lets it go, then makes a spell area around the caster,
-// one whose Apply lets the user place its area, and one whose Apply lets the user place a summon. The registry is only handed out at `setup`, so
-// it's caught as Foundry defines `Hooks`.
+// one whose Apply lets the user place its area, and one whose Apply lets the user place a summon.
+// The registry is only handed out at `setup`, so it's caught as Foundry defines `Hooks`.
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(
     ({ rqid, placedRqid, summonRqid, summonedRqid }) => {
@@ -309,10 +311,10 @@ test("spell Apply runs once, and the GM checks spell requests", async ({ page, b
 // #1356: a client placing an area or a summon stops once another client applied the entry, and
 // says why.
 const placements = [
-  { kind: "area", layer: "regions", spellName: "E2E Placed Area" },
-  { kind: "summon", layer: "tokens", spellName: "E2E Placed Summon" },
+  { kind: "area", layer: "regions", spellName: "E2E Placed Area", messageKey: "placedId" },
+  { kind: "summon", layer: "tokens", spellName: "E2E Placed Summon", messageKey: "summonId" },
 ] as const;
-for (const { kind, layer, spellName } of placements) {
+for (const { kind, layer, spellName, messageKey } of placements) {
   test(`a ${kind} placement stops once the spell was applied elsewhere`, async ({
     page,
     baseURL,
@@ -329,7 +331,7 @@ for (const { kind, layer, spellName } of placements) {
         g.ui.sidebar.changeTab("chat", "primary");
       });
       const apply = page.locator(
-        `#chat [data-message-id="${kind === "area" ? setup.placedId : setup.summonId}"] button[data-apply-spell-effect]`,
+        `#chat [data-message-id="${setup[messageKey]}"] button[data-apply-spell-effect]`,
       );
       const placing = () =>
         page.evaluate((layer) => !!(canvas as any)[layer]._placementContext, layer);
@@ -346,15 +348,12 @@ for (const { kind, layer, spellName } of placements) {
       }).toPass({ timeout: 30_000 });
 
       // Another client's Apply, as the cast record notes it
-      await page.evaluate(
-        async (id) => {
-          const message = (game as any).messages.get(id);
-          const targets = message.system.toObject().targets;
-          targets[0].stage = "applied";
-          await message.update({ "system.targets": targets });
-        },
-        kind === "area" ? setup.placedId : setup.summonId,
-      );
+      await page.evaluate(async (id) => {
+        const message = (game as any).messages.get(id);
+        const targets = message.system.toObject().targets;
+        targets[0].stage = "applied";
+        await message.update({ "system.targets": targets });
+      }, setup[messageKey]);
 
       await expect.poll(placing).toBe(false);
       await expect(page.locator("#notifications")).toContainText(

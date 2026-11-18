@@ -156,6 +156,19 @@ describe("runClaimedApply", () => {
     expect(work).not.toHaveBeenCalled();
   });
 
+  it.each(["applied", "settled"])(
+    "answers taken for an entry %s while the GM checked the request",
+    async (stage) => {
+      vi.mocked(targetOf).mockImplementationOnce(async () => {
+        message = recordMessage(stage);
+        return { actor: actor as any, name: "Vasana", token: null };
+      });
+      const work = vi.fn(async () => applied);
+      expect(await runClaimedApply(request(), owner, work)).toEqual(taken);
+      expect(work).not.toHaveBeenCalled();
+    },
+  );
+
   it("refuses, without saying taken, an entry that hasn't reached Apply yet", async () => {
     message = recordMessage("resisted");
     const work = vi.fn(async () => applied);
@@ -310,13 +323,6 @@ describe("watchApplyTaken", () => {
     message = recordMessage("settled");
     onUpdate!(message);
     expect(watch.signal.aborted).toBe(true);
-  });
-
-  it("keeps watching through stages before Apply", () => {
-    const watch = watchApplyTaken(boundScope());
-    message = recordMessage("resisted");
-    onUpdate!(message);
-    expect(watch.signal.aborted).toBe(false);
   });
 
   it("stops watching when asked", () => {

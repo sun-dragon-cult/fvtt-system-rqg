@@ -69,9 +69,9 @@ function recordEntryOf(
 }
 
 /**
- * Watch, while this client places something for the scope's Apply, for the cast record to note that
- * its entry left the `affected` stage: another client applied it, or a GM ruled on it. Then the
- * signal aborts and the user is told. Without a cast record (token HUD "+") it never aborts.
+ * Watch, while this client places something for the scope's Apply, for the cast record to note its
+ * entry applied or settled: another client applied it, or a GM ruled on it. Then the signal aborts
+ * and the user is told. Without a cast record (token HUD "+") it never aborts.
  */
 export function watchApplyTaken(scope: SpellApplyScope): { signal: AbortSignal; stop: () => void } {
   const controller = new AbortController();
@@ -170,9 +170,8 @@ export async function runClaimedApply(
     waiting?.entry.stage === "affected" ? takeClaim(castMessageId, entryId, applyId) : undefined;
   if (!waiting || !claim) {
     logger.warn("Refused spell work for an entry already being applied", undefined, request);
-    return waiting && (waiting.entry.stage === "affected" || isEntryDone(waiting.entry))
-      ? taken
-      : undefined;
+    // An entry waiting for Apply only moves on to applied or settled
+    return waiting ? taken : undefined;
   }
   let result: SpellEffectApplied | undefined;
   try {
