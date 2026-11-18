@@ -156,6 +156,13 @@ describe("runClaimedApply", () => {
     expect(work).not.toHaveBeenCalled();
   });
 
+  it("refuses, without saying taken, an entry that hasn't reached Apply yet", async () => {
+    message = recordMessage("resisted");
+    const work = vi.fn(async () => applied);
+    expect(await runClaimedApply(request(), owner, work)).toBeUndefined();
+    expect(work).not.toHaveBeenCalled();
+  });
+
   it("refuses a request without a cast record, or for an entry it doesn't have", async () => {
     const work = vi.fn(async () => applied);
     expect(
@@ -303,6 +310,13 @@ describe("watchApplyTaken", () => {
     message = recordMessage("settled");
     onUpdate!(message);
     expect(watch.signal.aborted).toBe(true);
+  });
+
+  it("keeps watching through stages before Apply", () => {
+    const watch = watchApplyTaken(boundScope());
+    message = recordMessage("resisted");
+    onUpdate!(message);
+    expect(watch.signal.aborted).toBe(false);
   });
 
   it("stops watching when asked", () => {

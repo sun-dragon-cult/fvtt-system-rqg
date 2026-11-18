@@ -1,6 +1,7 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import {
+  isEntryDone,
   isSpellCastRecordMessage,
   type SpellCastRecord,
 } from "../../data-model/shared/spell-cast-record";
@@ -80,7 +81,7 @@ export function watchApplyTaken(scope: SpellApplyScope): { signal: AbortSignal; 
   }
   const check = () => {
     const found = recordEntryOf(request.castMessageId, request.entryId);
-    if (found && found.entry.stage !== "affected") {
+    if (found && isEntryDone(found.entry)) {
       stop();
       notifyTaken(scope.spell.name ?? "");
       controller.abort();
@@ -152,7 +153,7 @@ export async function runClaimedApply(
   if (before?.entry.stage !== "affected") {
     releaseApplyClaim(castMessageId, entryId);
     logger.warn("Refused spell work for an entry not waiting for Apply", undefined, request);
-    return before ? taken : undefined;
+    return before && isEntryDone(before.entry) ? taken : undefined;
   }
   if (isClaimedByOtherApply(castMessageId, entryId, applyId)) {
     logger.warn("Refused spell work for an entry already being applied", undefined, request);
@@ -169,7 +170,9 @@ export async function runClaimedApply(
     waiting?.entry.stage === "affected" ? takeClaim(castMessageId, entryId, applyId) : undefined;
   if (!waiting || !claim) {
     logger.warn("Refused spell work for an entry already being applied", undefined, request);
-    return waiting ? taken : undefined;
+    return waiting && (waiting.entry.stage === "affected" || isEntryDone(waiting.entry))
+      ? taken
+      : undefined;
   }
   let result: SpellEffectApplied | undefined;
   try {
@@ -182,7 +185,7 @@ export async function runClaimedApply(
     );
     // Work that stopped because the entry was taken meanwhile, e.g. a GM ruled while it ran
     const after = result ? undefined : recordEntry();
-    return after && after.entry.stage !== "affected" ? taken : result;
+    return after && isEntryDone(after.entry) ? taken : result;
   } finally {
     claim.finish(!!result);
   }

@@ -3,6 +3,9 @@ import { metersPerPixel, metersToPixels } from "./scene-distance";
 import { areaExtent, type SpellAreaShape } from "./spell-area";
 import { casterTokenOnScene } from "./spell-area-targets";
 import type { RqgActor } from "@actors/rqg-actor.ts";
+import { RqgLogger } from "../logging/rqg-logger";
+
+const logger = new RqgLogger("PlaceSpellArea", { notify: false });
 
 type Point = { x: number; y: number };
 
@@ -154,6 +157,8 @@ export async function placeCancellable<T>(
   const cancel = () => {
     if (context && context !== before && layer._placementContext === context) {
       layer._cancelPlacement();
+    } else if (!context || context === before) {
+      logger.warn("Could not cancel a placement: core didn't start one before its first await");
     }
   };
   if (signal?.aborted) {
@@ -449,8 +454,5 @@ function pickPolygon(
     });
     document.addEventListener("keydown", onKey, true);
     draw(snapped());
-    if (signal?.aborted) {
-      cancel();
-    }
   });
 }
