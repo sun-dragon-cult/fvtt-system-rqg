@@ -21,6 +21,7 @@ import {
 } from "./spell-apply-claims";
 import { localize } from "../util";
 import { RqgLogger } from "../logging/rqg-logger";
+import { queryActiveGm } from "./query-active-gm";
 
 const logger = new RqgLogger("SpellApplyRequest", { notify: false });
 
@@ -69,20 +70,22 @@ function recordEntryOf(
 }
 
 /**
- * Watch, while this client places something for the scope's Apply, for the cast record to note its
- * entry applied or settled: another client applied it, or a GM ruled on it. Then the signal aborts
- * and the user is told. Without a cast record (token HUD "+") it never aborts.
+ * Place something for the scope's Apply with a signal that aborts, telling the user, once the cast
+ * record notes its entry applied or settled: another client applied it, or a GM ruled on it.
+ * Without a cast record (token HUD "+") it never aborts.
  */
-export function watchApplyTaken(scope: SpellApplyScope): { signal: AbortSignal; stop: () => void } {
+export async function placeUnlessTaken<T>(
+  scope: SpellApplyScope,
+  place: (signal: AbortSignal) => Promise<T>,
+): Promise<T> {
   const controller = new AbortController();
   const request = applyRequestOf(scope.cast);
   if (!request) {
-    return { signal: controller.signal, stop: () => {} };
+    return place(controller.signal);
   }
   const check = () => {
     const found = recordEntryOf(request.castMessageId, request.entryId);
-    if (found && isEntryDone(found.entry)) {
-      stop();
+    if (found && isEntryDone(found.entry) && !controller.signal.aborted) {
       notifyTaken(scope.spell.name ?? "");
       controller.abort();
     }
@@ -92,9 +95,29 @@ export function watchApplyTaken(scope: SpellApplyScope): { signal: AbortSignal; 
       check();
     }
   });
-  const stop = () => Hooks.off("updateChatMessage", hookId);
   check();
-  return { signal: controller.signal, stop: stop };
+  try {
+    return await place(controller.signal);
+  } finally {
+    Hooks.off("updateChatMessage", hookId);
+  }
+}
+
+/**
+ * Have the active GM do spell work for this client: on this client when it is theirs, else by
+ * query. Tells the user when another Apply took the entry.
+ */
+export async function requestGmWork<D extends SpellApplyRequestData>(
+  query: "rqg.summon" | "rqg.createSpellArea",
+  handle: (data: D, context: RqgQueryContext) => Promise<SpellApplyAnswer | undefined>,
+  data: D,
+  spellName: string,
+): Promise<SpellEffectApplied | undefined> {
+  const answer =
+    game.users?.activeGM?.isSelf && game.user
+      ? await handle(data, { user: game.user })
+      : await queryActiveGm(query, data as any, spellName);
+  return appliedUnlessTaken(answer, spellName);
 }
 
 /**
@@ -148,12 +171,16 @@ export async function runClaimedApply(
   work: (scope: SpellApplyScope) => Promise<SpellEffectApplied | undefined>,
 ): Promise<SpellApplyAnswer | undefined> {
   const { castMessageId, entryId, applyId } = request;
-  const recordEntry = () => recordEntryOf(castMessageId, entryId);
-  const before = recordEntry();
+  // Applied or ruled on, by another Apply or a GM, it is taken; any other refusal is plain
+  const takenOrRefused = () => {
+    const found = recordEntryOf(castMessageId, entryId);
+    return found && isEntryDone(found.entry) ? taken : undefined;
+  };
+  const before = recordEntryOf(castMessageId, entryId);
   if (before?.entry.stage !== "affected") {
     releaseApplyClaim(castMessageId, entryId);
     logger.warn("Refused spell work for an entry not waiting for Apply", undefined, request);
-    return before && isEntryDone(before.entry) ? taken : undefined;
+    return takenOrRefused();
   }
   if (isClaimedByOtherApply(castMessageId, entryId, applyId)) {
     logger.warn("Refused spell work for an entry already being applied", undefined, request);
@@ -165,13 +192,12 @@ export async function runClaimedApply(
     return undefined;
   }
   // Checked and claimed with nothing awaited in between, so a request arriving meanwhile sees it
-  const waiting = recordEntry();
+  const waiting = recordEntryOf(castMessageId, entryId);
   const claim =
     waiting?.entry.stage === "affected" ? takeClaim(castMessageId, entryId, applyId) : undefined;
   if (!waiting || !claim) {
     logger.warn("Refused spell work for an entry already being applied", undefined, request);
-    // An entry waiting for Apply only moves on to applied or settled
-    return waiting ? taken : undefined;
+    return waiting?.entry.stage === "affected" ? taken : takenOrRefused();
   }
   let result: SpellEffectApplied | undefined;
   try {
@@ -183,8 +209,7 @@ export async function runClaimedApply(
       spellApplyScope(spell, target.actor, target.name, cast, target.token ?? undefined),
     );
     // Work that stopped because the entry was taken meanwhile, e.g. a GM ruled while it ran
-    const after = result ? undefined : recordEntry();
-    return after && isEntryDone(after.entry) ? taken : result;
+    return result ?? takenOrRefused();
   } finally {
     claim.finish(!!result);
   }

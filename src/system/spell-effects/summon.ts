@@ -9,13 +9,12 @@ import {
 } from "./apply-spell-effect";
 import { casterTokenOnScene } from "./spell-area-targets";
 import { placeSummonedToken } from "./place-summoned-token";
-import { queryActiveGm } from "./query-active-gm";
 import { createAnchored, type HeldDocument } from "./spell-anchor";
 import {
-  appliedUnlessTaken,
   applyRequestData,
   runApplyRequest,
-  watchApplyTaken,
+  placeUnlessTaken,
+  requestGmWork,
   type SpellApplyAnswer,
   type SpellApplyRequestData,
 } from "./spell-apply-request";
@@ -133,17 +132,13 @@ export async function summon(
   if (casterOnScene) {
     const actor = await Rqid.fromRqid(actorRqid, undefined, true);
     if (actor instanceof Actor) {
-      const watch = watchApplyTaken(scope);
-      const placed = await placeSummonedToken(
-        scope,
-        casterOnScene,
-        actor,
-        summonedFootprint(options, summoner!.parent!.grid, {
-          w: actor.prototypeToken.width,
-          h: actor.prototypeToken.height,
-        }),
-        watch.signal,
-      ).finally(watch.stop);
+      const size = summonedFootprint(options, summoner!.parent!.grid, {
+        w: actor.prototypeToken.width,
+        h: actor.prototypeToken.height,
+      });
+      const placed = await placeUnlessTaken(scope, (signal) =>
+        placeSummonedToken(scope, casterOnScene, actor, size, signal),
+      );
       if (!placed) {
         return undefined;
       }
@@ -156,12 +151,7 @@ export async function summon(
     options: options,
     position: position,
   };
-  return appliedUnlessTaken(
-    game.users?.activeGM?.isSelf && game.user
-      ? await handleSummonQuery(data, { user: game.user })
-      : await queryActiveGm("rqg.summon", data, spellName),
-    spellName,
-  );
+  return requestGmWork("rqg.summon", handleSummonQuery, data, spellName);
 }
 
 /** Make a summoned token for the summon request of a user, on the GM's client. */

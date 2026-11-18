@@ -15,13 +15,12 @@ import {
 import { summonerDocument, summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
-import { queryActiveGm } from "./query-active-gm";
 import { createAnchored } from "./spell-anchor";
 import {
   applyRequestData,
   runApplyRequest,
-  appliedUnlessTaken,
-  watchApplyTaken,
+  placeUnlessTaken,
+  requestGmWork,
   type SpellApplyAnswer,
   type SpellApplyRequestData,
 } from "./spell-apply-request";
@@ -177,16 +176,18 @@ export async function createArea(
     return undefined;
   }
   const ranged = (scope.spell.system as any).castingRange === SpellRangeEnum.Ranged;
-  const watch = options.placement === "caster" ? undefined : watchApplyTaken(scope);
-  const shape = watch
-    ? await placeSpellArea(
-        caster,
-        options.shape,
-        ranged ? spellRangeInMeters(scope.spell) : undefined,
-        spellName,
-        watch.signal,
-      ).finally(watch.stop)
-    : shapeAroundCaster(options.shape, caster);
+  const shape =
+    options.placement === "caster"
+      ? shapeAroundCaster(options.shape, caster)
+      : await placeUnlessTaken(scope, (signal) =>
+          placeSpellArea(
+            caster,
+            options.shape,
+            ranged ? spellRangeInMeters(scope.spell) : undefined,
+            spellName,
+            signal,
+          ),
+        );
   if (!shape) {
     return undefined;
   }
@@ -197,12 +198,7 @@ export async function createArea(
     duration: options.duration === undefined ? (scope.duration ?? null) : options.duration,
     visible: !!options.visible,
   };
-  return appliedUnlessTaken(
-    game.users?.activeGM?.isSelf && game.user
-      ? await handleCreateSpellAreaQuery(data, { user: game.user })
-      : await queryActiveGm("rqg.createSpellArea", data, spellName),
-    spellName,
-  );
+  return requestGmWork("rqg.createSpellArea", handleCreateSpellAreaQuery, data, spellName);
 }
 
 /** Make a spell area for the createArea request of a user, on the GM's client. */

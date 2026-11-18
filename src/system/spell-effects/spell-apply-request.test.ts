@@ -6,7 +6,7 @@ import {
   bindApplyRequest,
   runApplyRequest,
   runClaimedApply,
-  watchApplyTaken,
+  placeUnlessTaken,
   type SpellApplyRequest,
 } from "./spell-apply-request";
 import { targetOf } from "./spell-cast-runner";
@@ -280,12 +280,23 @@ describe("appliedUnlessTaken", () => {
   });
 });
 
-describe("watchApplyTaken", () => {
+describe("placeUnlessTaken", () => {
   let onUpdate: ((message: unknown) => void) | undefined;
   let message: ReturnType<typeof recordMessage>;
   const off = vi.fn();
   const scope = (cast: object) => ({ spell: { name: "Summon" }, cast }) as any;
   const boundScope = () => scope(bindApplyRequest({} as any, request()));
+
+  /** Start placing, and hand back the signal it got and a way to finish it. */
+  function placing(target = boundScope()) {
+    let signal: AbortSignal | undefined;
+    const { promise: placed, resolve: finish } = Promise.withResolvers<string>();
+    const done = placeUnlessTaken(target, (given) => {
+      signal = given;
+      return placed;
+    });
+    return { signal: () => signal!, finish, done };
+  }
 
   beforeEach(() => {
     onUpdate = undefined;
@@ -307,37 +318,39 @@ describe("watchApplyTaken", () => {
   });
 
   it("aborts and tells the user once the record notes the entry applied", () => {
-    const watch = watchApplyTaken(boundScope());
+    const place = placing();
     onUpdate!(message);
     message = recordMessage("applied");
     onUpdate!({ ...message, id: "other record" });
-    expect(watch.signal.aborted).toBe(false);
+    expect(place.signal().aborted).toBe(false);
     onUpdate!(message);
-    expect(watch.signal.aborted).toBe(true);
-    expect(off).toHaveBeenCalledWith("updateChatMessage", 7);
+    onUpdate!(message);
+    expect(place.signal().aborted).toBe(true);
     expect(ui.notifications!.warn).toHaveBeenCalledOnce();
   });
 
   it("aborts once a GM ruled on the entry", () => {
-    const watch = watchApplyTaken(boundScope());
+    const place = placing();
     message = recordMessage("settled");
     onUpdate!(message);
-    expect(watch.signal.aborted).toBe(true);
+    expect(place.signal().aborted).toBe(true);
   });
 
-  it("stops watching when asked", () => {
-    watchApplyTaken(boundScope()).stop();
+  it("stops watching once the placement ends, and gives its result", async () => {
+    const place = placing();
+    place.finish("placed");
+    expect(await place.done).toBe("placed");
     expect(off).toHaveBeenCalledWith("updateChatMessage", 7);
   });
 
   it("aborts at once for an entry already taken when it starts", () => {
-    vi.stubGlobal("game", { messages: { get: () => recordMessage("applied") } });
-    expect(watchApplyTaken(boundScope()).signal.aborted).toBe(true);
+    message = recordMessage("applied");
+    expect(placing().signal().aborted).toBe(true);
   });
 
   it("never aborts without a cast record (token HUD +)", () => {
-    const watch = watchApplyTaken(scope({}));
+    const place = placing(scope({}));
     expect(onUpdate).toBeUndefined();
-    expect(watch.signal.aborted).toBe(false);
+    expect(place.signal().aborted).toBe(false);
   });
 });

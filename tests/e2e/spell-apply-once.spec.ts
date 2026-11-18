@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 import { loginToConfiguredWorld } from "./utils/foundrySession";
 
@@ -92,6 +92,14 @@ test.beforeEach(async ({ page }) => {
 async function login(page: Page, baseURL: string | undefined): Promise<void> {
   await loginToConfiguredWorld(page, baseURL);
   await page.evaluate(() => (ui as any).menu?.close());
+}
+
+// A click as a new card redraws can land on the button it replaces, so click until it took
+async function clickUntil(button: Locator, started: () => Promise<boolean>): Promise<void> {
+  await expect(async () => {
+    await button.click({ timeout: 5_000 });
+    await expect.poll(started, { timeout: 5_000 }).toBe(true);
+  }).toPass({ timeout: 30_000 });
 }
 
 async function removeTestDocuments(page: Page): Promise<void> {
@@ -222,13 +230,7 @@ test("spell Apply runs once, and the GM checks spell requests", async ({ page, b
     const apply = page.locator(
       `#chat [data-message-id="${setup.clickedId}"] button[data-apply-spell-effect]`,
     );
-    // A click as the new card redraws can land on the button it replaces
-    await expect(async () => {
-      await apply.click({ timeout: 5_000 });
-      await expect
-        .poll(() => page.evaluate(() => !!(globalThis as any).e2eApplyStarted), { timeout: 5_000 })
-        .toBe(true);
-    }).toPass({ timeout: 30_000 });
+    await clickUntil(apply, () => page.evaluate(() => !!(globalThis as any).e2eApplyStarted));
     await page.waitForTimeout(1200);
     await apply.click();
     await page.evaluate(() => (globalThis as any).e2eReleaseApply());
@@ -341,11 +343,7 @@ for (const { kind, layer, spellName, messageKey } of placements) {
           return scene.regions.size + scene.tokens.size;
         }, setup.sceneId);
       const placedBefore = await placed();
-      // A click as the new card redraws can land on the button it replaces
-      await expect(async () => {
-        await apply.click({ timeout: 5_000 });
-        await expect.poll(placing, { timeout: 5_000 }).toBe(true);
-      }).toPass({ timeout: 30_000 });
+      await clickUntil(apply, placing);
 
       // Another client's Apply, as the cast record notes it
       await page.evaluate(async (id) => {
