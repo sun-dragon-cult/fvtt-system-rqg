@@ -63,11 +63,13 @@ describe("RqgActor.settleMagicPointRecoveryCheckpoint", () => {
 describe("RqgActor._preUpdate on a base maximum change", () => {
   const day = 24 * 60 * 60;
 
-  function actorWith(magicPoints: { value: number; max: number }, hasPlayerOwner = true): any {
+  function actorWith(
+    magicPoints: { value: number; max: number; baseMax: number | null },
+    pow: number | null = 12,
+  ): any {
     const actor = createCharacterActor();
-    actor.hasPlayerOwner = hasPlayerOwner;
     actor.system = {
-      characteristics: { dexterity: { value: null } },
+      characteristics: { dexterity: { value: null }, power: { value: pow } },
       attributes: {
         hitPoints: { value: 10 },
         magicPoints,
@@ -78,61 +80,83 @@ describe("RqgActor._preUpdate on a base maximum change", () => {
     return actor;
   }
 
+  const baseMaxChange = (baseMax: number | null): any => ({
+    system: { attributes: { magicPoints: { baseMax } } },
+  });
+  const settledAfter = async (actor: any, changes: any) => {
+    await actor._preUpdate(changes, {}, {});
+    return changes.system.attributes.magicPointRecoverySettledWorldTime;
+  };
+
   const foundryActor = Object.getPrototypeOf(RqgActor.prototype);
   beforeEach(() => {
     foundryActor._preUpdate = vi.fn();
+    (game as any).time = { worldTime: day };
   });
   afterEach(() => {
     delete foundryActor._preUpdate;
     delete (game as any).time;
   });
 
-  it("credits recovery accrued at the old rate, then settles the checkpoint", async () => {
-    // Max 12: 12 points a day, so 1 day recovers up to the maximum from 5
-    const actor = actorWith({ value: 5, max: 12 });
-    (game as any).time = { worldTime: day / 4 };
-    const changes: any = { system: { attributes: { magicPoints: { baseMax: 21 } } } };
+  it("keeps a day accrued at max 12 worth 12 points at max 24, without writing the value", async () => {
+    const changes = baseMaxChange(24);
 
-    await actor._preUpdate(changes, {}, {});
-
-    expect(changes.system.attributes.magicPoints.value).toBe(8);
-    expect(changes.system.attributes.magicPointRecoverySettledWorldTime).toBe(day / 4);
-  });
-
-  it("only settles for an actor passive recovery skips", async () => {
-    const actor = actorWith({ value: 5, max: 12 }, false);
-    (game as any).time = { worldTime: day };
-    const changes: any = { system: { attributes: { magicPoints: { baseMax: 21 } } } };
-
-    await actor._preUpdate(changes, {}, {});
-
+    // Half a day at 24 points a day is the 12 points a day at 12 gave
+    expect(await settledAfter(actorWith({ value: 5, max: 12, baseMax: null }), changes)).toBe(
+      day / 2,
+    );
     expect(changes.system.attributes.magicPoints.value).toBeUndefined();
-    expect(changes.system.attributes.magicPointRecoverySettledWorldTime).toBe(day);
   });
 
-  it("leaves an update that sets the value itself alone", async () => {
-    const actor = actorWith({ value: 5, max: 12 });
-    (game as any).time = { worldTime: day };
+  it("keeps the accrued points when the base maximum is lowered, so recovery caps at the new one", async () => {
+    // 6 hours at 24 a day: 6 points, which take 12 hours at 12 a day
+    (game as any).time = { worldTime: day / 4 };
+    const changes = baseMaxChange(12);
+
+    expect(await settledAfter(actorWith({ value: 5, max: 24, baseMax: 24 }), changes)).toBe(
+      day / 4 - day / 2,
+    );
+    expect(changes.system.attributes.magicPoints.value).toBeUndefined();
+  });
+
+  it("counts effects on the maximum, and follows POW again when cleared", async () => {
+    // Base 20 + 4 from effects = 24; cleared, POW 12 + 4 = 16
+    expect(
+      await settledAfter(actorWith({ value: 5, max: 24, baseMax: 20 }), baseMaxChange(null)),
+    ).toBe(day - (day * 24) / 16);
+  });
+
+  it("starts from now when there was no recovery before or will be none after", async () => {
+    expect(
+      await settledAfter(actorWith({ value: 0, max: 0, baseMax: null }, null), baseMaxChange(21)),
+    ).toBe(day);
+    expect(
+      await settledAfter(actorWith({ value: 5, max: 12, baseMax: null }), baseMaxChange(0)),
+    ).toBe(day);
+  });
+
+  it("settles to now when the update also sets the value", async () => {
     const changes: any = { system: { attributes: { magicPoints: { baseMax: 21, value: 2 } } } };
 
-    await actor._preUpdate(changes, {}, {});
-
+    expect(await settledAfter(actorWith({ value: 5, max: 12, baseMax: null }), changes)).toBe(day);
     expect(changes.system.attributes.magicPoints.value).toBe(2);
-    expect(changes.system.attributes.magicPointRecoverySettledWorldTime).toBe(day);
+  });
+
+  it("rescales when the sheet submits the value unchanged", async () => {
+    const changes: any = { system: { attributes: { magicPoints: { baseMax: 24, value: 5 } } } };
+
+    expect(await settledAfter(actorWith({ value: 5, max: 12, baseMax: null }), changes)).toBe(
+      day / 2,
+    );
   });
 
   it("keeps a checkpoint the update already specifies", async () => {
-    const actor = actorWith({ value: 5, max: 12 });
-    (game as any).time = { worldTime: day };
     const changes: any = {
       system: {
         attributes: { magicPoints: { baseMax: 21 }, magicPointRecoverySettledWorldTime: 100 },
       },
     };
 
-    await actor._preUpdate(changes, {}, {});
-
-    expect(changes.system.attributes.magicPoints.value).toBeUndefined();
-    expect(changes.system.attributes.magicPointRecoverySettledWorldTime).toBe(100);
+    expect(await settledAfter(actorWith({ value: 5, max: 12, baseMax: null }), changes)).toBe(100);
   });
 });

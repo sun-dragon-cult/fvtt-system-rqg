@@ -7,7 +7,7 @@
     }
   }
 
-  /* Scope v1 styles to legacy actor sheets only; v2 has class `.actor-sheet-v2`. */
+/* Scope v1 styles to legacy actor sheets only; v2 has class `.actor-sheet-v2`. */
   .rqg.character:not(.actor-sheet-v2) {
     & .mainbackground {
       grid-area: -1 / 2 / 1 / -1; /* TODO define by area name instead */
@@ -95,7 +95,7 @@
       padding: 0;
       background: none;
 
-      /* V2 apps do not inherit V1 .app tab visibility rules in all contexts. Ensure only the
+/* V2 apps do not inherit V1 .app tab visibility rules in all contexts. Ensure only the
        active tab is shown for main tabs and nested wizard tabs. */
       & .sheet-body > .tab,
       & .species-body > .tab,
@@ -116,7 +116,7 @@
         grid-template: "nav header" min-content "nav main" 1fr / min-content auto;
       }
 
-      /* AppV2 actor wizard uses a wrapper div as the single template root. Mirror the legacy
+/* AppV2 actor wizard uses a wrapper div as the single template root. Mirror the legacy
        form grid so V1 wizard GUI layout still applies. */
       & .wizard-app-root {
         display: grid;
@@ -250,7 +250,7 @@
             }
           }
 
-          /* Make the header more compact if the sheet is narrow */
+/* Make the header more compact if the sheet is narrow */
           @container sheet-container (max-width: 560px) {
             & .profile,
             & .hero-points-container {
@@ -374,7 +374,7 @@
         }
       }
 
-      /* Artificially increase the css specificity. Look into layers in the future */
+/* Artificially increase the css specificity. Look into layers in the future */
       & .context.context.context-highlight.context-highlight {
         mix-blend-mode: normal;
         background: #d9d8c8; /* Should be the themed css variable --background-color matching the context menu */
@@ -697,10 +697,10 @@
 
     & .tab.spiritmagic .spirit-magic {
       & input {
-        /* noinspection CssInvalidPropertyValue */
+/* noinspection CssInvalidPropertyValue */
         width: -webkit-fill-available;
 
-        /* noinspection CssInvalidPropertyValue */
+/* noinspection CssInvalidPropertyValue */
         width: -moz-available;
         border: none;
 

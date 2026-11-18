@@ -103,9 +103,14 @@ test("magic points base max override", async ({ page, baseURL }) => {
         "system.editMode": true,
         "system.attributes.magicPointRecoverySettledWorldTime": g.time.worldTime - 100_000,
       });
+      const maxBefore = actor.system.attributes.magicPoints.max;
       out.typedBaseMax = await typeBaseMax("15");
-      out.checkpointSettled =
-        actor.system.attributes.magicPointRecoverySettledWorldTime === g.time.worldTime;
+      // Recovery is proportional to the maximum, so the elapsed time scales by old max / new max
+      out.elapsedPointsKept =
+        Math.round(
+          (g.time.worldTime - actor.system.attributes.magicPointRecoverySettledWorldTime) *
+            actor.system.attributes.magicPoints.max,
+        ) === Math.round(100_000 * maxBefore);
       out.clearedBaseMax = await typeBaseMax("");
     } finally {
       await actor.delete();
@@ -134,7 +139,7 @@ test("magic points base max override", async ({ page, baseURL }) => {
   expect(results.maxFollowsPow).toBe(12);
   expect(results.gainCappedAtPow).toBe(12);
   expect(results.typedBaseMax).toBe(15);
-  // A new base max changes the recovery rate, so recovery restarts from now.
-  expect(results.checkpointSettled).toBe(true);
+  // The recovery accrued at the old rate is kept at the new one
+  expect(results.elapsedPointsKept).toBe(true);
   expect(results.clearedBaseMax).toBeNull();
 });
