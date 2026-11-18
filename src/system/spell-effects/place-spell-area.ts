@@ -26,6 +26,9 @@ export async function placeSpellArea(
   spellName: string,
   signal?: AbortSignal,
 ): Promise<PlacedAreaShape | undefined> {
+  if (signal?.aborted) {
+    return undefined;
+  }
   const casterObject = casterTokenOnScene(caster, caster.actor as RqgActor);
   if (!casterObject || !canvas?.scene) {
     ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
@@ -132,20 +135,24 @@ export function drawReach(
   return graphics;
 }
 
+/** A core placeables layer's placement state; core keeps both internal. */
+export type PlacementLayer = { _placementContext?: unknown; _cancelPlacement: () => void };
+
 /**
  * Run a core token or Region placement that `signal` cancels. Core has no public way to cancel one,
  * so this calls the layer's internal `_cancelPlacement`, only while the placement started here
- * is still the layer's current one (placement sets it up before its first await).
+ * is still the layer's current one (core sets it up before its first await).
  */
 export async function placeCancellable<T>(
-  layer: { _placementContext?: unknown; _cancelPlacement: () => void },
+  layer: PlacementLayer,
   start: () => Promise<T>,
   signal: AbortSignal | undefined,
 ): Promise<T> {
+  const before = layer._placementContext;
   const placing = start();
   const context = layer._placementContext;
   const cancel = () => {
-    if (context && layer._placementContext === context) {
+    if (context && context !== before && layer._placementContext === context) {
       layer._cancelPlacement();
     }
   };
@@ -192,11 +199,10 @@ async function placeShape(
   ui.notifications?.info(
     localize(ranged ? "RQG.SpellArea.PlaceInRange" : "RQG.SpellArea.Place", { spellName }),
   );
-  const regions = canvas!.regions as any;
-  const placed: RegionDocument | null = await placeCancellable(
-    regions,
+  const placed = await placeCancellable(
+    canvas!.regions as unknown as PlacementLayer,
     () =>
-      regions.placeRegion(
+      canvas!.regions!.placeRegion(
         {
           name: spellName,
           shapes: [regionShape],
@@ -443,5 +449,8 @@ function pickPolygon(
     });
     document.addEventListener("keydown", onKey, true);
     draw(snapped());
+    if (signal?.aborted) {
+      cancel();
+    }
   });
 }

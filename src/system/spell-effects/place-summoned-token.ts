@@ -38,6 +38,9 @@ export async function placeSummonedToken(
     },
     { parent: canvas!.scene! },
   );
+  if (signal?.aborted) {
+    return undefined;
+  }
   // Foundry lets only the owner of a token's actor place it, so the preview stands in the caster's
   // actor, and no token is created from it
   const preview = tokenData.toObject();

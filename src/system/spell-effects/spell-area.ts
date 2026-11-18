@@ -177,15 +177,15 @@ export async function createArea(
     return undefined;
   }
   const ranged = (scope.spell.system as any).castingRange === SpellRangeEnum.Ranged;
-  const taken = options.placement === "caster" ? undefined : watchApplyTaken(scope);
-  const shape = taken
+  const watch = options.placement === "caster" ? undefined : watchApplyTaken(scope);
+  const shape = watch
     ? await placeSpellArea(
         caster,
         options.shape,
         ranged ? spellRangeInMeters(scope.spell) : undefined,
         spellName,
-        taken.signal,
-      ).finally(taken.stop)
+        watch.signal,
+      ).finally(watch.stop)
     : shapeAroundCaster(options.shape, caster);
   if (!shape) {
     return undefined;

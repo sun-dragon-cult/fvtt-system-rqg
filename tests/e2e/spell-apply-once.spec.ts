@@ -23,6 +23,7 @@ test.beforeEach(async ({ page }) => {
               rqid,
               {
                 apply: async (scope: any) => {
+                  (globalThis as any).e2eApplyStarted = true;
                   await (globalThis as any).e2eApplyGate;
                   return (game as any).system.api.spellEffects.createArea(scope, {
                     shape: { kind: "circle", radius: 3 },
@@ -173,7 +174,13 @@ test("spell Apply runs once, and the GM checks spell requests", async ({ page, b
     const apply = page.locator(
       `#chat [data-message-id="${setup.clickedId}"] button[data-apply-spell-effect]`,
     );
-    await apply.click({ timeout: 10_000 });
+    // A click as the new card redraws can land on the button it replaces
+    await expect(async () => {
+      await apply.click({ timeout: 5_000 });
+      await expect
+        .poll(() => page.evaluate(() => !!(globalThis as any).e2eApplyStarted), { timeout: 5_000 })
+        .toBe(true);
+    }).toPass({ timeout: 30_000 });
     await page.waitForTimeout(1200);
     await apply.click();
     await page.evaluate(() => (globalThis as any).e2eReleaseApply());
@@ -266,11 +273,15 @@ test("an area placement stops once the spell was applied elsewhere", async ({ pa
       g.ui.sidebar.expand();
       g.ui.sidebar.changeTab("chat", "primary");
     });
-    await page
-      .locator(`#chat [data-message-id="${setup.placedId}"] button[data-apply-spell-effect]`)
-      .click({ timeout: 10_000 });
+    const apply = page.locator(
+      `#chat [data-message-id="${setup.placedId}"] button[data-apply-spell-effect]`,
+    );
     const placing = () => page.evaluate(() => !!(canvas as any).regions._placementContext);
-    await expect.poll(placing).toBe(true);
+    // A click as the new card redraws can land on the button it replaces
+    await expect(async () => {
+      await apply.click({ timeout: 5_000 });
+      await expect.poll(placing, { timeout: 5_000 }).toBe(true);
+    }).toPass({ timeout: 30_000 });
 
     // Another client's Apply, as the cast record notes it
     await page.evaluate(async (id) => {

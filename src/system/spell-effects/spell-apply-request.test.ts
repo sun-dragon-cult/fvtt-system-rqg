@@ -165,6 +165,14 @@ describe("runClaimedApply", () => {
     expect(work).not.toHaveBeenCalled();
   });
 
+  it("answers taken when its work stopped because a GM ruled meanwhile", async () => {
+    const work = vi.fn(async () => {
+      message = recordMessage("settled");
+      return undefined;
+    });
+    expect(await runClaimedApply(request(), owner, work)).toEqual(taken);
+  });
+
   it("refuses a sender who doesn't own the target, but not a GM", async () => {
     const work = vi.fn(async () => applied);
     expect(await runClaimedApply(request(), stranger, work)).toBeUndefined();
@@ -254,12 +262,15 @@ describe("appliedUnlessTaken", () => {
 
 describe("watchApplyTaken", () => {
   let onUpdate: ((message: unknown) => void) | undefined;
+  let message: ReturnType<typeof recordMessage>;
   const off = vi.fn();
   const scope = (cast: object) => ({ spell: { name: "Summon" }, cast }) as any;
   const boundScope = () => scope(bindApplyRequest({} as any, request()));
 
   beforeEach(() => {
     onUpdate = undefined;
+    message = recordMessage("affected");
+    vi.stubGlobal("game", { messages: { get: () => message } });
     vi.stubGlobal("Hooks", {
       on: vi.fn((_hook: string, fn: (message: unknown) => void) => {
         onUpdate = fn;
@@ -277,10 +288,11 @@ describe("watchApplyTaken", () => {
 
   it("aborts and tells the user once the record notes the entry applied", () => {
     const watch = watchApplyTaken(boundScope());
-    onUpdate!(recordMessage("affected"));
-    onUpdate!({ ...recordMessage("applied"), id: "other record" });
+    onUpdate!(message);
+    message = recordMessage("applied");
+    onUpdate!({ ...message, id: "other record" });
     expect(watch.signal.aborted).toBe(false);
-    onUpdate!(recordMessage("applied"));
+    onUpdate!(message);
     expect(watch.signal.aborted).toBe(true);
     expect(off).toHaveBeenCalledWith("updateChatMessage", 7);
     expect(ui.notifications!.warn).toHaveBeenCalledOnce();
@@ -288,13 +300,19 @@ describe("watchApplyTaken", () => {
 
   it("aborts once a GM ruled on the entry", () => {
     const watch = watchApplyTaken(boundScope());
-    onUpdate!(recordMessage("settled"));
+    message = recordMessage("settled");
+    onUpdate!(message);
     expect(watch.signal.aborted).toBe(true);
   });
 
   it("stops watching when asked", () => {
     watchApplyTaken(boundScope()).stop();
     expect(off).toHaveBeenCalledWith("updateChatMessage", 7);
+  });
+
+  it("aborts at once for an entry already taken when it starts", () => {
+    vi.stubGlobal("game", { messages: { get: () => recordMessage("applied") } });
+    expect(watchApplyTaken(boundScope()).signal.aborted).toBe(true);
   });
 
   it("never aborts without a cast record (token HUD +)", () => {

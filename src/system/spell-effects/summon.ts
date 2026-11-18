@@ -133,7 +133,7 @@ export async function summon(
   if (casterOnScene) {
     const actor = await Rqid.fromRqid(actorRqid, undefined, true);
     if (actor instanceof Actor) {
-      const taken = watchApplyTaken(scope);
+      const watch = watchApplyTaken(scope);
       const placed = await placeSummonedToken(
         scope,
         casterOnScene,
@@ -142,8 +142,8 @@ export async function summon(
           w: actor.prototypeToken.width,
           h: actor.prototypeToken.height,
         }),
-        taken.signal,
-      ).finally(taken.stop);
+        watch.signal,
+      ).finally(watch.stop);
       if (!placed) {
         return undefined;
       }

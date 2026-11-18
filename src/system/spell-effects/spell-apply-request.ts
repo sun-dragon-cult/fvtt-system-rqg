@@ -53,6 +53,20 @@ export function appliedUnlessTaken(
   return answer;
 }
 
+/** The cast record a request names, and its entry, from this client's chat log. */
+function recordEntryOf(
+  castMessageId: string,
+  entryId: string,
+): { record: SpellCastRecord; entry: SpellCastRecord["targets"][number] } | undefined {
+  const message = game.messages?.get(castMessageId);
+  const record =
+    message && isSpellCastRecordMessage(message as any)
+      ? (message.system as unknown as SpellCastRecord)
+      : undefined;
+  const entry = record?.targets.find((e) => e.id === entryId);
+  return record && entry ? { record, entry } : undefined;
+}
+
 /**
  * Watch, while this client places something for the scope's Apply, for the cast record to note that
  * its entry left the `affected` stage: another client applied it, or a GM ruled on it. Then the
@@ -64,20 +78,21 @@ export function watchApplyTaken(scope: SpellApplyScope): { signal: AbortSignal; 
   if (!request) {
     return { signal: controller.signal, stop: () => {} };
   }
-  const hookId = Hooks.on("updateChatMessage", (message: ChatMessage) => {
-    if (message.id !== request.castMessageId || !isSpellCastRecordMessage(message as any)) {
-      return;
-    }
-    const entry = (message.system as unknown as SpellCastRecord).targets.find(
-      (e) => e.id === request.entryId,
-    );
-    if (entry && entry.stage !== "affected") {
+  const check = () => {
+    const found = recordEntryOf(request.castMessageId, request.entryId);
+    if (found && found.entry.stage !== "affected") {
       stop();
       notifyTaken(scope.spell.name ?? "");
       controller.abort();
     }
+  };
+  const hookId = Hooks.on("updateChatMessage", (message: ChatMessage) => {
+    if (message.id === request.castMessageId) {
+      check();
+    }
   });
   const stop = () => Hooks.off("updateChatMessage", hookId);
+  check();
   return { signal: controller.signal, stop: stop };
 }
 
@@ -132,15 +147,7 @@ export async function runClaimedApply(
   work: (scope: SpellApplyScope) => Promise<SpellEffectApplied | undefined>,
 ): Promise<SpellApplyAnswer | undefined> {
   const { castMessageId, entryId, applyId } = request;
-  const recordEntry = () => {
-    const message = game.messages?.get(castMessageId);
-    const record =
-      message && isSpellCastRecordMessage(message as any)
-        ? (message.system as unknown as SpellCastRecord)
-        : undefined;
-    const entry = record?.targets.find((e) => e.id === entryId);
-    return record && entry ? { record, entry } : undefined;
-  };
+  const recordEntry = () => recordEntryOf(castMessageId, entryId);
   const before = recordEntry();
   if (before?.entry.stage !== "affected") {
     releaseApplyClaim(castMessageId, entryId);
@@ -173,7 +180,9 @@ export async function runClaimedApply(
     result = await work(
       spellApplyScope(spell, target.actor, target.name, cast, target.token ?? undefined),
     );
-    return result;
+    // Work that stopped because the entry was taken meanwhile, e.g. a GM ruled while it ran
+    const after = result ? undefined : recordEntry();
+    return after && after.entry.stage !== "affected" ? taken : result;
   } finally {
     claim.finish(!!result);
   }
