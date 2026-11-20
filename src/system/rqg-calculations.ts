@@ -71,24 +71,24 @@ export class RqgCalculations {
     return con ? Math.ceil(con / 6) : 0;
   }
 
-  /** RAW baseline (p.54) is a full recovery (= max/POW magic points) over 24 hours - stated as
-   *  both "1/4 of MP every six hours" and "1/24 per hour", i.e. proportional to max, not a flat
-   *  rate. recoveryRateFactor scales that linearly (2 = twice as fast, 0.5 = half as fast) to
-   *  cover gifts/HeroQuest effects. */
+  /** Core p.54: magic points come back at 1/4 of current POW every six hours, i.e. POW per day.
+   *  The rate follows POW alone, not the maximum: a `baseMax` override or effects on the maximum
+   *  don't change it, and an actor without POW recovers nothing. recoveryRateFactor scales it
+   *  linearly (2 = twice as fast, 0.5 = half as fast) for gifts/HeroQuest effects. */
   public static magicPointRecoveryPointsPerDay(
-    maxMagicPoints: number | null | undefined,
+    pow: number | null | undefined,
     recoveryRateFactor: number | null | undefined,
   ): number {
-    return (maxMagicPoints ?? 0) * (recoveryRateFactor ?? 0);
+    return (pow ?? 0) * (recoveryRateFactor ?? 0);
   }
 
   /** Time to recover a single magic point, split into whole hours + remainder minutes for
    *  display (e.g. "1 point every 2h 40m"). */
   public static magicPointRecoveryTimePerPoint(
-    maxMagicPoints: number | null | undefined,
+    pow: number | null | undefined,
     recoveryRateFactor: number | null | undefined,
   ): { hours: number; minutes: number } {
-    const pointsPerDay = this.magicPointRecoveryPointsPerDay(maxMagicPoints, recoveryRateFactor);
+    const pointsPerDay = this.magicPointRecoveryPointsPerDay(pow, recoveryRateFactor);
     const totalMinutes = pointsPerDay > 0 ? Math.round((24 * 60) / pointsPerDay) : 0;
     return { hours: Math.floor(totalMinutes / 60), minutes: totalMinutes % 60 };
   }
@@ -99,19 +99,20 @@ export class RqgCalculations {
    *  to `currentWorldTime` - so leftover minutes short of a full point carry forward toward the
    *  next one instead of being discarded. Doesn't know about the actor's current Magic Point
    *  value or max - clamping recovered points to max is the caller's job (see #1028 discussion:
-   *  `magicPoints.max` already reflects POW + genuine effects, and should be trusted as-is rather
-   *  than re-derived here). A `null` settled time (never settled) recovers nothing and seeds it
-   *  to `currentWorldTime`, avoiding retroactive recovery for actors predating this field. */
+   *  `magicPoints.max` already reflects POW (or its `baseMax` override) + genuine effects, and
+   *  should be trusted as-is rather than re-derived here). A `null` settled time (never settled)
+   *  recovers nothing and seeds it to `currentWorldTime`, avoiding retroactive recovery for actors
+   *  predating this field. */
   public static magicPointRecoveryCatchUp(
     settledWorldTime: number | null | undefined,
     currentWorldTime: number,
-    maxMagicPoints: number | null | undefined,
+    pow: number | null | undefined,
     recoveryRateFactor: number | null | undefined,
   ): { pointsRecovered: number; newSettledWorldTime: number } {
     if (settledWorldTime == null) {
       return { pointsRecovered: 0, newSettledWorldTime: currentWorldTime };
     }
-    const pointsPerDay = this.magicPointRecoveryPointsPerDay(maxMagicPoints, recoveryRateFactor);
+    const pointsPerDay = this.magicPointRecoveryPointsPerDay(pow, recoveryRateFactor);
     if (pointsPerDay <= 0) {
       return { pointsRecovered: 0, newSettledWorldTime: settledWorldTime };
     }

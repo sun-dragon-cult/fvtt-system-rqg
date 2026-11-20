@@ -21,11 +21,24 @@ export function resourceSchemaField({ nullableMax = false }: { nullableMax?: boo
 /**
  * Returns a SchemaField representing a Resource whose max is always derived
  * in prepareDerivedData() and must never be persisted.
- * Use this for character hitPoints and magicPoints.
+ * Use this for character hitPoints; `magicPointsSchemaField` has the same value and max.
  */
 export function derivedResourceSchemaField() {
   return new SchemaField({
     value: new NumberField({ integer: true, nullable: true, initial: 0 }),
     max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+  });
+}
+
+/**
+ * A character's magic points: the derived resource plus `baseMax`, a GM-set base for the maximum
+ * that replaces POW when not null (creatures without POW, stat-block NPCs). Effects still add on
+ * top of it.
+ */
+export function magicPointsSchemaField() {
+  return new SchemaField({
+    value: new NumberField({ integer: true, nullable: true, initial: 0 }),
+    max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+    baseMax: new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
   });
 }

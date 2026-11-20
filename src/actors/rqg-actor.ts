@@ -663,8 +663,9 @@ export class RqgActor extends Actor {
   /**
    * Passive Magic Point recovery catch-up (#1028): diffs the actor's recovery checkpoint against
    * the current `game.time.worldTime` and, if any whole points have accrued since, persists the
-   * recovered points (clamped to `magicPoints.max`, which already reflects POW + any genuine
-   * effects - see #1028 discussion) and the advanced checkpoint in a single write. A no-op (no
+   * recovered points at a rate set by POW (Core p.54) and the advanced checkpoint in a single
+   * write, clamped to `magicPoints.max`, which already reflects POW or its `baseMax` override +
+   * any genuine effects (see #1028 discussion). A no-op (no
    * write) when nothing has changed, so it's safe to call on every sheet render. Only applies to
    * player-owned actors: a GM-only-owned NPC could otherwise silently recover between the moment a
    * GM preps it and whenever the party actually reaches it in-game, changing state the GM set up
@@ -692,7 +693,7 @@ export class RqgActor extends Actor {
       const { pointsRecovered, newSettledWorldTime } = RqgCalculations.magicPointRecoveryCatchUp(
         settledWorldTime,
         currentWorldTime,
-        attributes.magicPoints.max,
+        this.system.characteristics.power.value,
         attributes.magicPointRecoveryRateFactor,
       );
       if (pointsRecovered === 0 && newSettledWorldTime === settledWorldTime) {

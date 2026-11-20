@@ -109,19 +109,30 @@
       {{/if}}
 
       <div>
-        {{#if system.attributes.magicPoints.max}}
+        {{#if (or system.attributes.magicPoints.max system.attributes.magicPoints.value (and system.editMode isGM))}}
           <label class="flex-row flex-align-center">
             <span>{{localize "RQG.Actor.Attributes.MagicPoints"}}</span>
             <span class="mp-recovery-rate-icon"
-               data-tooltip-html="<div class='text-left'>{{localize 'RQG.Actor.Attributes.MagicPointRecoveryTooltip'
+               data-tooltip-html="<div class='text-left'>{{#if system.attributes.magicPointRecoveryPointsPerDay}}{{localize 'RQG.Actor.Attributes.MagicPointRecoveryTooltip'
                                                              pointsPerDay=system.attributes.magicPointRecoveryPointsPerDay}}<br>
                {{localize 'RQG.Actor.Attributes.MagicPointRecoveryTimePerPoint'
                  duration=(magicPointRecoveryDuration system.attributes.magicPointRecoveryHoursPerPoint
-                                                       system.attributes.magicPointRecoveryMinutesPerPoint)}}</div>"></span>
-            <span class="nowrap">
+                                                       system.attributes.magicPointRecoveryMinutesPerPoint)}}{{else}}{{localize 'RQG.Actor.Attributes.MagicPointRecoveryNone'}}{{/if}}</div>"></span>
+            <span class="nowrap mp-values">
               <input type="number" min="0" max="99" name="system.attributes.magicPoints.value"
                      value="{{system.attributes.magicPoints.value}}" size="2">
-              / {{system.attributes.magicPoints.max}}
+              /
+              {{#edit-mode system.editMode "gm"}}
+                <input type="number" min="0" class="mp-base-max" name="system.attributes.magicPoints.baseMax"
+                       value="{{system.attributes.magicPoints.baseMax}}" placeholder="{{basePow}}" size="2"
+                       data-tooltip="{{localize 'RQG.Actor.Character.FIELDS.attributes.magicPoints.baseMax.hint'}}">
+                {{#if (ne system.attributes.magicPoints.baseMax null)}}
+                  <a class="mp-base-max-reset" data-action="resetMagicPointsBaseMax"
+                     data-tooltip="{{localize 'RQG.Actor.Attributes.MagicPointsBaseMaxReset'}}"><i class="fas fa-undo"></i></a>
+                {{/if}}
+              {{else}}
+                {{system.attributes.magicPoints.max}}
+              {{/edit-mode}}
             </span>
             {{#if showMagicPointSourcesButton}}
               <a class="mp-storage-toggle" data-action="openMagicPointSources" data-actor-id="{{id}}">

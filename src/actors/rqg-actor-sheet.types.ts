@@ -124,6 +124,8 @@ export interface CharacterSheetData {
   characteristicRanks: any;
   /** True when actor has GodTalker+ rank but POW < 18 */
   powWarning: boolean;
+  /** POW without active effects, the default shown for the magic point base max (#1346) */
+  basePow: number | null;
   bodyType: string;
   hitLocationDiceRangeError: string;
 

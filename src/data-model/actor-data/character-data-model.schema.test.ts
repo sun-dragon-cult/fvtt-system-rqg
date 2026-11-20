@@ -27,6 +27,16 @@ describe("CharacterDataModel accumulator schema", () => {
     expect(hitPointsMax.options?.["initial"]).toBe(0);
   });
 
+  it("stores attributes.magicPoints.baseMax as a nullable override defaulting to null", () => {
+    const schema = CharacterDataModel.defineSchema();
+    const magicPoints = getNestedSchema(getNestedSchema(schema.attributes)["magicPoints"]);
+    const baseMax = magicPoints["baseMax"] as { options?: Record<string, unknown> };
+
+    expect(baseMax.options?.["persisted"]).not.toBe(false);
+    expect(baseMax.options?.["nullable"]).toBe(true);
+    expect(baseMax.options?.["initial"]).toBeNull();
+  });
+
   it("declares resource effect accumulators as non-persisted numeric fields", () => {
     const schema = CharacterDataModel.defineSchema();
     const effect = getNestedSchema(schema.effect);

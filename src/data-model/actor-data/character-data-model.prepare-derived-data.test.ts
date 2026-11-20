@@ -2,75 +2,7 @@ import { describe, expect, it } from "vitest";
 import { CharacterDataModel } from "./character-data-model";
 import { getCharacteristicDerivedValues } from "./derived-character-values";
 import { RqgCalculations } from "../../system/rqg-calculations";
-
-function buildSystem() {
-  return {
-    characteristics: {
-      strength: { value: 13 },
-      constitution: { value: 11 },
-      size: { value: 13 },
-      dexterity: { value: 15 },
-      intelligence: { value: 12 },
-      power: { value: 15 },
-      charisma: { value: 11 },
-    },
-    attributes: {
-      isCreature: false,
-      magicPoints: { max: 0 },
-      hitPoints: { max: 0 },
-    },
-    effect: {
-      multiply: { healingRate: 1 },
-      add: {
-        dexStrikeRank: 0,
-        magicPoints: { max: 0 },
-        hitPoints: { max: 0 },
-        skillCategoryModifiers: {
-          agility: 0,
-          communication: 0,
-          knowledge: 0,
-          magic: 0,
-          manipulation: 0,
-          perception: 0,
-          stealth: 0,
-          meleeWeapons: 0,
-          missileWeapons: 0,
-          shields: 0,
-          naturalWeapons: 0,
-          otherSkills: 0,
-        },
-      },
-    },
-    baseSkillCategoryModifiers: {
-      agility: 0,
-      communication: 0,
-      knowledge: 0,
-      magic: 0,
-      manipulation: 0,
-      perception: 0,
-      stealth: 0,
-      meleeWeapons: 0,
-      missileWeapons: 0,
-      shields: 0,
-      naturalWeapons: 0,
-      otherSkills: 0,
-    },
-    skillCategoryModifiers: {
-      agility: 0,
-      communication: 0,
-      knowledge: 0,
-      magic: 0,
-      manipulation: 0,
-      perception: 0,
-      stealth: 0,
-      meleeWeapons: 0,
-      missileWeapons: 0,
-      shields: 0,
-      naturalWeapons: 0,
-      otherSkills: 0,
-    },
-  };
-}
+import { buildCharacterSystem as buildSystem } from "./character-data-model-test-helpers";
 
 describe("CharacterDataModel.prepareDerivedData", () => {
   it("composes base skill modifiers with effect deltas", () => {
@@ -252,5 +184,58 @@ describe("CharacterDataModel.prepareDerivedData", () => {
     expect(attributes.dexStrikeRank).toBe(base + 1);
     expect(attributes.move.walk.value).toBe(3);
     expect(attributes.move.fly.value).toBeNull();
+  });
+
+  describe("magic points maximum", () => {
+    function preparedMagicPointsMax(
+      pow: number | null,
+      baseMax: number | null,
+      fromEffects = 0,
+    ): number {
+      const model = new CharacterDataModel({});
+      const system = buildSystem();
+      (system.characteristics.power as { value: number | null }).value = pow;
+      system.attributes.magicPoints.baseMax = baseMax;
+      system.effect.add.magicPoints.max = fromEffects;
+      Object.assign(model as object, system);
+      model.prepareDerivedData();
+      return (model as unknown as { attributes: { magicPoints: { max: number } } }).attributes
+        .magicPoints.max;
+    }
+
+    it.each([
+      { case: "POW only", pow: 15, baseMax: null, fromEffects: 0, expected: 15 },
+      { case: "POW plus effects", pow: 15, baseMax: null, fromEffects: 3, expected: 18 },
+      { case: "empty POW with baseMax", pow: null, baseMax: 21, fromEffects: 0, expected: 21 },
+      { case: "baseMax overrides POW", pow: 15, baseMax: 21, fromEffects: 0, expected: 21 },
+      { case: "baseMax plus effects", pow: 15, baseMax: 21, fromEffects: 2, expected: 23 },
+      { case: "baseMax of 0 overrides POW", pow: 15, baseMax: 0, fromEffects: 0, expected: 0 },
+      { case: "empty POW, no baseMax", pow: null, baseMax: null, fromEffects: 0, expected: 0 },
+    ])("$case", ({ pow, baseMax, fromEffects, expected }) => {
+      expect(preparedMagicPointsMax(pow, baseMax, fromEffects)).toBe(expected);
+    });
+  });
+  describe("magic point recovery rate (Core p.54)", () => {
+    function preparedRate(pow: number | null, baseMax: number | null, fromEffects = 0): number {
+      const model = new CharacterDataModel({});
+      const system = buildSystem();
+      (system.characteristics.power as { value: number | null }).value = pow;
+      system.attributes.magicPoints.baseMax = baseMax;
+      system.effect.add.magicPoints.max = fromEffects;
+      Object.assign(model as object, system);
+      model.prepareDerivedData();
+      return (model as unknown as { attributes: { magicPointRecoveryPointsPerDay: number } })
+        .attributes.magicPointRecoveryPointsPerDay;
+    }
+
+    it("follows POW, whatever the base max or effects on the maximum", () => {
+      expect(preparedRate(15, null)).toBe(15);
+      expect(preparedRate(15, 21)).toBe(15);
+      expect(preparedRate(15, null, 3)).toBe(15);
+    });
+
+    it("is 0 without POW", () => {
+      expect(preparedRate(null, 21)).toBe(0);
+    });
   });
 });

@@ -258,6 +258,25 @@
       justify-content: flex-end;
     }
 
+/* GM-only magic point base max (#1346), in place of the max on the Magic Points row in edit
+   mode. Empty follows POW, so the placeholder shows POW in italic to read as a default. */
+    & input.mp-base-max::placeholder {
+      color: inherit;
+      opacity: 1;
+      font-style: italic;
+    }
+
+/* Hide the POW default while typing, so the caret isn't drawn among placeholder digits that
+   look like real text. */
+    & input.mp-base-max:focus::placeholder {
+      color: transparent;
+    }
+
+    & .mp-base-max-reset {
+      margin-left: 0.125rem;
+      font-size: 0.75rem;
+    }
+
     & .flex-column {
       display: flex;
       flex-direction: column;

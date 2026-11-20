@@ -880,6 +880,14 @@
             width: 4ch;
             text-align: center;
           }
+
+/* Magic Points value and base max (#1346): 4ch minus the input's own padding left too
+             little room, so the italic POW placeholder and typed values were clipped. Both
+             inputs get the same width, room for three digits. */
+          & .mp-values input[type="number"] {
+            width: 5ch;
+            padding-inline: 0.125rem;
+          }
         }
 
         & .mov-enc {
