@@ -101,6 +101,7 @@
         "MagicPointsBaseMaxReset": "Follow POW again",
         "MagicPointRecoveryTooltip": "Recovers {pointsPerDay} magic points per day",
         "MagicPointRecoveryTimePerPoint": "1 point every {duration}",
+        "MagicPointRecoveryNone": "Doesn't recover magic points on its own",
         "MagicPointSources": "Magic Point Source Order",
         "MagicPointSourcesFeedFromSelfHint": "Move {amount} Magic Points from Self into this storage item",
         "MagicPointSourcesAlliedSpiritHint": "Allied Spirit",

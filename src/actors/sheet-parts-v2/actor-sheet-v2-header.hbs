@@ -113,11 +113,11 @@
           <label class="flex-row flex-align-center">
             <span>{{localize "RQG.Actor.Attributes.MagicPoints"}}</span>
             <span class="mp-recovery-rate-icon"
-               data-tooltip-html="<div class='text-left'>{{localize 'RQG.Actor.Attributes.MagicPointRecoveryTooltip'
+               data-tooltip-html="<div class='text-left'>{{#if system.attributes.magicPointRecoveryPointsPerDay}}{{localize 'RQG.Actor.Attributes.MagicPointRecoveryTooltip'
                                                              pointsPerDay=system.attributes.magicPointRecoveryPointsPerDay}}<br>
                {{localize 'RQG.Actor.Attributes.MagicPointRecoveryTimePerPoint'
                  duration=(magicPointRecoveryDuration system.attributes.magicPointRecoveryHoursPerPoint
-                                                       system.attributes.magicPointRecoveryMinutesPerPoint)}}</div>"></span>
+                                                       system.attributes.magicPointRecoveryMinutesPerPoint)}}{{else}}{{localize 'RQG.Actor.Attributes.MagicPointRecoveryNone'}}{{/if}}</div>"></span>
             <span class="nowrap mp-values">
               <input type="number" min="0" max="99" name="system.attributes.magicPoints.value"
                      value="{{system.attributes.magicPoints.value}}" size="2">
