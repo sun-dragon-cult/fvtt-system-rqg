@@ -136,9 +136,11 @@
             <label class="flex-row flex-align-center mp-base-max"
                    data-tooltip="{{localize 'RQG.Actor.Character.FIELDS.attributes.magicPoints.baseMax.hint'}}">
               <span>{{localize "RQG.Actor.Attributes.MagicPointsBaseMax"}}</span>
-              <input type="number" min="0" name="system.attributes.magicPoints.baseMax"
-                     value="{{system.attributes.magicPoints.baseMax}}"
-                     placeholder="{{system.characteristics.power.value}}" size="2">
+              <span class="nowrap">
+                <input type="number" min="0" name="system.attributes.magicPoints.baseMax"
+                       value="{{system.attributes.magicPoints.baseMax}}"
+                       placeholder="{{system.characteristics.power.value}}" size="2">
+              </span>
             </label>
             <label data-tooltip="{{localize "RQG.Actor.Attributes.CreatureExplanation"}}">
               <input type="checkbox" name="system.attributes.isCreature" {{checked ../system.attributes.isCreature}}>
