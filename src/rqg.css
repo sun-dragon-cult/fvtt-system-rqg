@@ -259,9 +259,17 @@
     }
 
 /* GM-only "Base Max MP" row (#1346): keep the input next to its label. The default
-   space-between pushes it to the far edge when the MP storage toggle widens the column. */
+   space-between pushes it to the far edge when the MP storage toggle widens the column.
+   The input sits in a span.nowrap like the Magic Points input, so it gets the same size
+   (a direct .flex-row child would get height: 100%). The placeholder shows the POW default
+   and is drawn like a normal value so it doesn't look faded next to the other inputs. */
     & .flex-row.mp-base-max {
       justify-content: flex-start;
+
+      & input::placeholder {
+        color: inherit;
+        opacity: 1;
+      }
     }
 
     & .flex-column {
