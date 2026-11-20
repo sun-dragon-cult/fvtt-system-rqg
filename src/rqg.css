@@ -258,6 +258,12 @@
       justify-content: flex-end;
     }
 
+/* GM-only "Base Max MP" row (#1346): keep the input next to its label. The default
+   space-between pushes it to the far edge when the MP storage toggle widens the column. */
+    & .flex-row.mp-base-max {
+      justify-content: flex-start;
+    }
+
     & .flex-column {
       display: flex;
       flex-direction: column;
