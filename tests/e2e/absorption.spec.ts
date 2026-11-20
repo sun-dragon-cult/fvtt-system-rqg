@@ -126,12 +126,19 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
         v1: await aboveMaxShown("RqgActorSheet"),
       };
 
-      // Absorption is full, so the next spell takes effect
+      // Absorption isn't used up: it soaks the next spell it equals too
       await addSpellEffect("Protection", 1, false);
       out.afterSecond = {
         magicPoints: actor.system.attributes.magicPoints.value,
         protection: effectsNamed("Protection").length,
         absorptionOn: effectsNamed("Absorption").length,
+      };
+
+      // 3 points is more than Absorption 1 soaks, so it takes effect
+      await addSpellEffect("Protection", 3, false);
+      out.afterStronger = {
+        magicPoints: actor.system.attributes.magicPoints.value,
+        protection: effectsNamed("Protection").length,
       };
 
       // Ending it cuts the magic points to the maximum, on the active GM's client
@@ -158,6 +165,7 @@ test("Absorption soaks spells into magic points above the maximum", async ({ pag
   expect(results.firstAdded).toBe(true);
   expect(results.afterFirst).toEqual({ magicPoints: max + 2, protection: 0 });
   expect(results.aboveMaxShown).toEqual({ v2: "+2", v1: "+2" });
-  expect(results.afterSecond).toEqual({ magicPoints: max + 2, protection: 1, absorptionOn: 1 });
+  expect(results.afterSecond).toEqual({ magicPoints: max + 3, protection: 0, absorptionOn: 1 });
+  expect(results.afterStronger).toEqual({ magicPoints: max + 3, protection: 1 });
   expect(results.afterEnd).toBe(max);
 });
