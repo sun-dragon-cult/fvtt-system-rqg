@@ -288,6 +288,7 @@ export class RqgActorSheet<
 
       characteristicRanks: await DataPrep.rankCharacteristics(this.actor),
       powWarning: DataPrep.getPowWarning(this.actor),
+      basePow: this.actor._source.system.characteristics.power.value ?? null,
       bodyType: this.actor.getBodyType(),
       hitLocationDiceRangeError: DataPrep.getHitLocationDiceRangeError(this.actor),
 
@@ -389,6 +390,14 @@ export class RqgActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-return-sink]").forEach((el) => {
       el.addEventListener("click", async () => {
         (document.activeElement as HTMLElement)?.blur();
+      });
+    });
+
+    // Clear the GM's magic point base max override, so the maximum follows POW again (#1346)
+    htmlElement?.querySelectorAll<HTMLElement>("[data-mp-base-max-reset]").forEach((el) => {
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        ev.preventDefault();
+        await this.actor.update({ "system.attributes.magicPoints.baseMax": null });
       });
     });
 

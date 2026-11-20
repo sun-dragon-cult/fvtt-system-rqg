@@ -154,6 +154,8 @@ export interface RqgActorSheetV2Context {
   characteristicRanks: Record<string, string>;
   /** True when actor has GodTalker+ rank but POW < 18. */
   powWarning: boolean;
+  /** POW without active effects, the default shown for the magic point base max (#1346). */
+  basePow: number | null;
   /** Whether the sheet is in edit mode. */
   editMode: boolean;
 

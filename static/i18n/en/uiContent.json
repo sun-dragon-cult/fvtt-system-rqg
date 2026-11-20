@@ -98,7 +98,7 @@
         "SizeAbbr": "SIZ",
         "DexterityAbbr": "DEX",
         "MagicPoints": "Magic Points",
-        "MagicPointsBaseMax": "Base Max MP",
+        "MagicPointsBaseMaxReset": "Follow POW again",
         "MagicPointRecoveryTooltip": "Recovers {pointsPerDay} magic points per day",
         "MagicPointRecoveryTimePerPoint": "1 point every {duration}",
         "MagicPointSources": "Magic Point Source Order",

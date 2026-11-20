@@ -216,6 +216,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       addPassion: RqgActorSheetV2._addPassionAction,
       addGear: RqgActorSheetV2._addGearAction,
       openMagicPointSources: RqgActorSheetV2._openMagicPointSourcesAction,
+      resetMagicPointsBaseMax: RqgActorSheetV2._resetMagicPointsBaseMaxAction,
     },
   } satisfies foundry.applications.api.ApplicationV2.DefaultOptions;
 
@@ -504,6 +505,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         (game.settings?.get(systemId, "showCharacteristicRatings") as boolean) || false,
       characteristicRanks: await DataPrep.rankCharacteristics(this.actor),
       powWarning: DataPrep.getPowWarning(this.actor),
+      basePow: this.actor._source.system.characteristics.power.value ?? null,
       editMode: system.editMode,
 
       // Combat tab data
@@ -1298,6 +1300,15 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const createdItems = await this.actor.createEmbeddedDocuments("Item", [newGear]);
     // @ts-expect-error render signature varies between V1/V2 sheet implementations
     (createdItems[0] as RqgItem)?.sheet?.render({ force: true });
+  }
+
+  /** Clears the GM's magic point base max override, so the maximum follows POW again (#1346). */
+  private static async _resetMagicPointsBaseMaxAction(
+    this: RqgActorSheetV2,
+    event: PointerEvent,
+  ): Promise<void> {
+    event.preventDefault(); // It sits inside a label, so don't also focus the magic points input
+    await this.actor.update({ "system.attributes.magicPoints.baseMax": null });
   }
 
   private static _openMagicPointSourcesAction(
