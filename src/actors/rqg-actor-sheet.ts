@@ -397,7 +397,7 @@ export class RqgActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-mp-base-max-reset]").forEach((el) => {
       el.addEventListener("click", async (ev: MouseEvent) => {
         ev.preventDefault();
-        await this.actor.update({ "system.attributes.magicPoints.baseMax": null });
+        await this.actor.update({ system: { attributes: { magicPoints: { baseMax: null } } } });
       });
     });
 

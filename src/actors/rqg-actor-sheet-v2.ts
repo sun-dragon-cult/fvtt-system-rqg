@@ -1308,7 +1308,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     event: PointerEvent,
   ): Promise<void> {
     event.preventDefault(); // It sits inside a label, so don't also focus the magic points input
-    await this.actor.update({ "system.attributes.magicPoints.baseMax": null });
+    await this.actor.update({ system: { attributes: { magicPoints: { baseMax: null } } } });
   }
 
   private static _openMagicPointSourcesAction(
