@@ -266,6 +266,12 @@
       font-style: italic;
     }
 
+/* Hide the POW default while typing, so the caret isn't drawn among placeholder digits that
+   look like real text. */
+    & input.mp-base-max:focus::placeholder {
+      color: transparent;
+    }
+
     & .mp-base-max-reset {
       margin-left: 0.125rem;
       font-size: 0.75rem;
