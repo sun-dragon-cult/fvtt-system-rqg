@@ -99,6 +99,7 @@
         "DexterityAbbr": "DEX",
         "MagicPoints": "Magic Points",
         "MagicPointsBaseMaxReset": "Follow POW again",
+        "MagicPointsAboveMaxTooltip": "Magic points above the maximum: {points}. Absorption, for example, holds them in its caster's aura.",
         "MagicPointRecoveryTooltip": "Recovers {pointsPerDay} magic points per day",
         "MagicPointRecoveryTimePerPoint": "1 point every {duration}",
         "MagicPointRecoveryNone": "Doesn't recover magic points on its own",

@@ -138,6 +138,12 @@
                 {{else}}
                   {{system.attributes.magicPoints.max}}
                 {{/edit-mode}}
+                {{#if (and (gt system.attributes.magicPoints.max 0) (gt system.attributes.magicPoints.value system.attributes.magicPoints.max))}}
+                  <span class="mp-above-max"
+                        data-tooltip="{{localize 'RQG.Actor.Attributes.MagicPointsAboveMaxTooltip'
+                                                 points=(difference system.attributes.magicPoints.value system.attributes.magicPoints.max)}}">
+                    +{{difference system.attributes.magicPoints.value system.attributes.magicPoints.max}}</span>
+                {{/if}}
               </span>
             </label>
           {{/if}}
