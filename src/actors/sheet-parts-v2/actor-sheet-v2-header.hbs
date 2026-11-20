@@ -109,7 +109,7 @@
       {{/if}}
 
       <div>
-        {{#if (or system.attributes.magicPoints.max system.attributes.magicPoints.value)}}
+        {{#if (or system.attributes.magicPoints.max system.attributes.magicPoints.value (and system.editMode isGM))}}
           <label class="flex-row flex-align-center">
             <span>{{localize "RQG.Actor.Attributes.MagicPoints"}}</span>
             <span class="mp-recovery-rate-icon"
@@ -121,7 +121,18 @@
             <span class="nowrap">
               <input type="number" min="0" max="99" name="system.attributes.magicPoints.value"
                      value="{{system.attributes.magicPoints.value}}" size="2">
-              / {{system.attributes.magicPoints.max}}
+              /
+              {{#edit-mode system.editMode "gm"}}
+                <input type="number" min="0" class="mp-base-max" name="system.attributes.magicPoints.baseMax"
+                       value="{{system.attributes.magicPoints.baseMax}}" placeholder="{{basePow}}" size="2"
+                       data-tooltip="{{localize 'RQG.Actor.Character.FIELDS.attributes.magicPoints.baseMax.hint'}}">
+                {{#if (ne system.attributes.magicPoints.baseMax null)}}
+                  <a class="mp-base-max-reset" data-action="resetMagicPointsBaseMax"
+                     data-tooltip="{{localize 'RQG.Actor.Attributes.MagicPointsBaseMaxReset'}}"><i class="fas fa-undo"></i></a>
+                {{/if}}
+              {{else}}
+                {{system.attributes.magicPoints.max}}
+              {{/edit-mode}}
               {{#if (and (gt system.attributes.magicPoints.max 0) (gt system.attributes.magicPoints.value system.attributes.magicPoints.max))}}
                 <span class="mp-above-max"
                       data-tooltip="{{localize 'RQG.Actor.Attributes.MagicPointsAboveMaxTooltip'
@@ -139,15 +150,6 @@
           </label>
         {{/if}}
         {{#edit-mode system.editMode "gm"}}
-          <label class="flex-row flex-align-center mp-base-max"
-                 data-tooltip="{{localize 'RQG.Actor.Character.FIELDS.attributes.magicPoints.baseMax.hint'}}">
-            <span>{{localize "RQG.Actor.Attributes.MagicPointsBaseMax"}}</span>
-            <span class="nowrap">
-              <input type="number" min="0" name="system.attributes.magicPoints.baseMax"
-                     value="{{system.attributes.magicPoints.baseMax}}"
-                     placeholder="{{system.characteristics.power.value}}" size="2">
-            </span>
-          </label>
           <label data-tooltip="{{localize 'RQG.Actor.Attributes.CreatureExplanation'}}">
             <input type="checkbox" name="system.attributes.isCreature" {{checked system.attributes.isCreature}}>
             {{localize "RQG.Actor.Attributes.CreatureQ"}}

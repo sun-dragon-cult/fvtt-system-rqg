@@ -69,6 +69,11 @@ test("magic points base max override", async ({ page, baseURL }) => {
       const state = {
         baseMaxShown: !!baseMaxInput,
         baseMaxValue: baseMaxInput?.value ?? null,
+        baseMaxPlaceholder: baseMaxInput?.placeholder ?? null,
+        // In edit mode the base max input takes the place of the max on the Magic Points row
+        baseMaxInMagicPointsRow:
+          !!baseMaxInput && baseMaxInput.closest(".nowrap") === valueInput?.closest(".nowrap"),
+        resetShown: !!root.querySelector(".mp-base-max-reset"),
         valueShown: !!valueInput,
         maxText: valueInput?.closest(".nowrap")?.textContent?.replace(/\s+/g, " ").trim() ?? null,
       };
@@ -102,6 +107,7 @@ test("magic points base max override", async ({ page, baseURL }) => {
       out.gainCappedAtPow = actor.system.attributes.magicPoints.value;
 
       await actor.update({ "system.editMode": true });
+      out.v2FollowingPowEdit = await inspect("RqgActorSheetV2");
       out.typedBaseMax = await typeBaseMax("15");
       out.recoveryWithBaseMax = actor.system.attributes.magicPointRecoveryPointsPerDay;
       out.clearedBaseMax = await typeBaseMax("");
@@ -112,26 +118,41 @@ test("magic points base max override", async ({ page, baseURL }) => {
   }, e2eConfig.rqgActorName);
 
   // Edit mode: the GM sees the base max input even with no POW and no magic points.
-  expect(results.v2NoPowEdit).toMatchObject({ baseMaxShown: true, baseMaxValue: "" });
+  expect(results.v2NoPowEdit).toMatchObject({
+    baseMaxShown: true,
+    baseMaxValue: "",
+    baseMaxInMagicPointsRow: true,
+    resetShown: false,
+  });
   expect(results.maxWithBaseMax).toBe(21);
   expect(results.recoveryWithoutPow).toBe(0);
   expect(results.v2WithBaseMaxEdit).toMatchObject({
     baseMaxShown: true,
     baseMaxValue: "21",
+    baseMaxInMagicPointsRow: true,
+    resetShown: true,
     valueShown: true,
-    maxText: "/ 21",
+    maxText: "/",
   });
   expect(results.v1WithBaseMaxEdit).toMatchObject({
     baseMaxShown: true,
     baseMaxValue: "21",
+    baseMaxInMagicPointsRow: true,
+    resetShown: true,
     valueShown: true,
-    maxText: "/ 21",
+    maxText: "/",
   });
   // Play mode: magic points show, the override input does not.
   expect(results.v2Play).toMatchObject({ baseMaxShown: false, valueShown: true, maxText: "/ 21" });
   expect(results.v1Play).toMatchObject({ baseMaxShown: false, valueShown: true, maxText: "/ 21" });
   expect(results.maxFollowsPow).toBe(12);
   expect(results.gainCappedAtPow).toBe(12);
+  // Empty base max follows POW, shown as the placeholder
+  expect(results.v2FollowingPowEdit).toMatchObject({
+    baseMaxValue: "",
+    baseMaxPlaceholder: "12",
+    resetShown: false,
+  });
   expect(results.typedBaseMax).toBe(15);
   // With POW 12 and a base max of 15, recovery stays at POW per day
   expect(results.recoveryWithBaseMax).toBe(12);
