@@ -1,5 +1,10 @@
-import { describe, expect, it } from "vitest";
-import { SEVERAL_TARGETS, selectedTargetValue, targetTokenOptions } from "./target-token-select";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import {
+  buildTargetTokenSelect,
+  SEVERAL_TARGETS,
+  selectedTargetValue,
+  targetTokenOptions,
+} from "./target-token-select";
 
 const token = (id: string, name: string, x: number) => ({ id, name, x, y: 0 });
 
@@ -46,5 +51,36 @@ describe("selectedTargetValue", () => {
     expect(selectedTargetValue(["a"])).toBe("a");
     expect(selectedTargetValue([])).toBe("");
     expect(selectedTargetValue(["a", "b"])).toBe(SEVERAL_TARGETS);
+  });
+});
+
+describe("buildTargetTokenSelect", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("lists the tokens the user sees or is given ownership of, not the others", () => {
+    const placeable = (id: string, visible: boolean, level?: number, hidden = false) => ({
+      id,
+      visible,
+      center: { x: 0, y: 0 },
+      document: { name: id, hidden },
+      actor: { ownership: level === undefined ? {} : { player: level } },
+    });
+    vi.stubGlobal("game", { user: { id: "player", targets: new Set() } });
+    vi.stubGlobal("CONST", { DOCUMENT_OWNERSHIP_LEVELS: { OBSERVER: 2 } });
+    vi.stubGlobal("canvas", {
+      tokens: {
+        placeables: [
+          placeable("seen", true),
+          placeable("summoned", false, 2),
+          placeable("hidden-summoned", false, 3, true),
+          placeable("limited", false, 1),
+          placeable("unseen", false),
+        ],
+      },
+    });
+    const { options } = buildTargetTokenSelect(undefined);
+    expect(options.map((o) => o.value)).toEqual(["", "seen", "summoned"]);
   });
 });

@@ -1,4 +1,5 @@
 import { systemId } from "../config";
+import { ownershipBaseFlag, ownershipGivenFlag } from "../../data-model/shared/rqg-document-flags";
 import { RqgLogger } from "../logging/rqg-logger";
 
 const logger = new RqgLogger("SpellAnchor", { notify: false });
@@ -24,6 +25,131 @@ function heldByOf(document: HeldDocument): string {
   // The union's getFlag overloads don't combine; both read the same SpellHeldFlags
   const heldBy = (document as RegionDocument).getFlag(systemId, "heldBy");
   return typeof heldBy === "string" ? heldBy : "";
+}
+
+/** A user's ownership level of an actor, or null for none of its own. */
+export type UserLevel = { user: string; level: number | null };
+
+/** What a spell effect gives while it lasts, e.g. Command (cult spirit): its actor's ownership. */
+export type OwnershipGiven = { user: string; level: number }[];
+
+function ownershipGivenBy(effect: ActiveEffect): OwnershipGiven {
+  const given = effect.getFlag?.(systemId, ownershipGivenFlag) as OwnershipGiven | undefined;
+  return Array.isArray(given) ? given : [];
+}
+
+/** Each user's own level of the actor from before the first spell effect gave them one. */
+function ownershipBaseOf(actor: Actor): UserLevel[] {
+  const base = actor.getFlag?.(systemId, ownershipBaseFlag) as UserLevel[] | undefined;
+  return Array.isArray(base) ? base : [];
+}
+
+/**
+ * The actor's own ownership levels: an unlinked token's delta, or with none the base actor's it
+ * inherits (a delta's ownership is laid over the base actor's, `default` included), else the
+ * actor's.
+ */
+function ownOwnership(actor: Actor): Record<string, number> {
+  const source = actor.isToken
+    ? ((actor.token as any)?.delta?._source?.ownership ??
+      (actor.token as any)?.baseActor?._source?.ownership)
+    : (actor as any)._source?.ownership;
+  return (source ?? {}) as Record<string, number>;
+}
+
+/** Whether a spell effect gives ownership of its actor while it lasts, e.g. Command (cult spirit). */
+export function givesOwnership(effect: ActiveEffect): boolean {
+  return ownershipGivenBy(effect).length > 0;
+}
+
+/** Whether an effect counts for the ownership it gives: not ending, run out or disabled. */
+const givesNow = (effect: ActiveEffect, ending: string | undefined) =>
+  effect.uuid !== ending && !hasRunOut(effect) && !effect.disabled;
+
+const ownershipSyncs = new Map<string, Promise<void>>();
+
+/**
+ * Give each user the highest of their own level and what the actor's live spell effects give, and
+ * their own level back once none does. `ending` no longer counts; `adding` are users whose own
+ * level to note first. Serialized per actor; the ownership is replaced whole, as an update can't
+ * delete one user's entry.
+ */
+function syncOwnership(
+  actor: Actor,
+  { ending, adding = [] }: { ending?: string; adding?: string[] } = {},
+): Promise<void> {
+  const key = actor.uuid ?? "";
+  const next = (ownershipSyncs.get(key) ?? Promise.resolve())
+    .catch(() => undefined)
+    .then(async () => {
+      if (isEndingTokenActor(actor)) {
+        return;
+      }
+      const own = ownOwnership(actor);
+      const known = ownershipBaseOf(actor);
+      const base = [
+        ...known,
+        ...[...new Set(adding)]
+          .filter((user) => !known.some((entry) => entry.user === user))
+          .map((user) => ({ user, level: own[user] ?? null })),
+      ];
+      if (!base.length) {
+        return;
+      }
+      const given = actor.effects.contents
+        .filter((effect) => givesNow(effect, ending))
+        .flatMap(ownershipGivenBy);
+      const ownership = { ...own };
+      const kept = base.filter((entry) => {
+        const levels = given.filter((g) => g.user === entry.user).map((g) => g.level);
+        if (levels.length) {
+          ownership[entry.user] = Math.max(entry.level ?? -Infinity, ...levels);
+        } else if (entry.level === null) {
+          delete ownership[entry.user];
+        } else {
+          ownership[entry.user] = entry.level;
+        }
+        return levels.length > 0;
+      });
+      if (foundry.utils.equals(ownership, own) && foundry.utils.equals(kept, known)) {
+        return;
+      }
+      // An unlinked token back at its base actor's ownership inherits it again, as before
+      const baseOwnership = actor.isToken
+        ? (actor.token as any)?.baseActor?._source?.ownership
+        : undefined;
+      const inherits =
+        !kept.length && !!baseOwnership && foundry.utils.equals(ownership, baseOwnership);
+      const baseFlag = { [`flags.${systemId}.${ownershipBaseFlag}`]: kept.length ? kept : _del };
+      // A synthetic actor's update can't set its delta's ownership back to none
+      await (inherits
+        ? (actor.token as any).delta.update({ ownership: null, ...baseFlag })
+        : actor.update({
+            ownership: _replace(ownership as Record<string, CONST.DOCUMENT_OWNERSHIP_LEVELS>),
+            ...baseFlag,
+          }));
+    });
+  ownershipSyncs.set(key, next);
+  void next
+    .catch(() => undefined)
+    .finally(() => {
+      if (ownershipSyncs.get(key) === next) {
+        ownershipSyncs.delete(key);
+      }
+    });
+  return next;
+}
+
+/**
+ * Give the ownership a spell effect was created with (`ownershipGiven`) of its actor while it
+ * lasts, then each user's own level back unless another effect still gives it. Active GM only.
+ */
+export async function holdOwnership(effect: ActiveEffect): Promise<void> {
+  const actor = effect.parent;
+  const given = ownershipGivenBy(effect);
+  if (actor instanceof Actor && given.length) {
+    await syncOwnership(actor, { adding: given.map((entry) => entry.user) });
+  }
 }
 
 /** Whether an effect keeps a spell area's Region alive: a caster's area anchor, not a spell on them. */
@@ -108,6 +234,37 @@ function heldDocument(effectUuid: string, hold: SpellHold): HeldDocument | undef
   return document && heldByOf(document) === effectUuid ? document : undefined;
 }
 
+/** Whether a spell effect's duration is up, even if Foundry hasn't marked it expired yet. */
+export function hasRunOut(effect: ActiveEffect): boolean {
+  const { expired, remaining } = effect.duration;
+  return expired === true || (typeof remaining === "number" && remaining <= 0);
+}
+
+/**
+ * Whether an actor's token is gone, or held by a spell effect (a Summon) that has run out and is
+ * deleting it, which makes ending anything on the token's actor pointless and its writes fail.
+ */
+function isEndingTokenActor(actor: Actor | null, self?: string): boolean {
+  const token = actor?.token;
+  if (!token) {
+    return false;
+  }
+  if (!token.parent?.tokens.has(token.id ?? "")) {
+    return true;
+  }
+  const heldBy = heldByOf(token);
+  if (heldBy === self) {
+    return false;
+  }
+  const holder = existing<ActiveEffect>(heldBy);
+  return !!holder && hasRunOut(holder);
+}
+
+/** Whether the effect is on the actor of a token that is gone or being deleted by its Summon. */
+export function isOnEndingToken(effect: ActiveEffect): boolean {
+  return isEndingTokenActor(effect.parent as Actor | null, effect.uuid ?? undefined);
+}
+
 /**
  * Delete what an ended effect kept alive. True when it deleted something, whose cleanup then ends
  * the effect: a held document's deletion deletes its effect.
@@ -115,6 +272,15 @@ function heldDocument(effectUuid: string, hold: SpellHold): HeldDocument | undef
 export async function releaseHeld(effect: ActiveEffect): Promise<boolean> {
   const uuid = effect.uuid ?? "";
   const documents = holdsOf(effect).flatMap((hold) => heldDocument(uuid, hold) ?? []);
+  if (effect.parent instanceof Actor && givesOwnership(effect)) {
+    try {
+      await syncOwnership(effect.parent, { ending: uuid });
+    } catch (error) {
+      if (!isOnEndingToken(effect)) {
+        logger.warn("Could not give back ownership a spell effect held", undefined, uuid, error);
+      }
+    }
+  }
   await deleteAll(documents);
   return documents.length > 0;
 }
@@ -154,14 +320,15 @@ const sourceHolds = (effect: EffectSource) =>
   !!(sourceFlag(effect, "holds") as unknown[] | undefined)?.length;
 
 /**
- * Every actor whose effects can hold documents or come from an area: world actors, and the actors
- * of unlinked tokens with such an effect.
+ * Every actor whose effects can hold documents or come from an area, or whose ownership effects
+ * hold: world actors, and the actors of unlinked tokens with such an effect or ownership.
  */
 function anchorActors(): Actor[] {
   const tokenActors = allScenes().flatMap((scene) =>
     scene.tokens.contents.flatMap((token) =>
       !token.actorLink &&
-      deltaEffects(token).some((e) => sourceHolds(e) || !!sourceFlag(e, "areaRegion")) &&
+      (deltaEffects(token).some((e) => sourceHolds(e) || !!sourceFlag(e, "areaRegion")) ||
+        !!sourceFlag((token as any).delta?._source ?? {}, ownershipBaseFlag)) &&
       token.actor
         ? [token.actor]
         : [],
@@ -220,7 +387,8 @@ async function endCasterless(): Promise<void> {
  * Bring spell-held state in line after something happened without the active GM's cleanup, e.g.
  * while no GM was logged in: delete held documents whose effect is gone, end effects one of whose
  * held documents is gone (as deleting it would have) or whose caster is gone, and take an area's
- * effect off a token whose area is gone or that isn't in it any more.
+ * effect off a token whose area is gone or that isn't in it any more, and give back the ownership
+ * that effects gone meanwhile gave.
  */
 export async function reconcileSpellAnchors(): Promise<void> {
   await deleteOrphans();
@@ -233,6 +401,14 @@ export async function reconcileSpellAnchors(): Promise<void> {
     const leftArea = actor.effects.contents.filter((effect) => !isInArea(actor, effect));
     // A deleted Region's exit events may take some of these off meanwhile
     await deleteEffects(actor, [...ended, ...leftArea]);
+    await syncOwnership(actor).catch((error: unknown) =>
+      logger.warn(
+        "Could not give back ownership a spell effect held",
+        undefined,
+        actor.uuid,
+        error,
+      ),
+    );
   }
 }
 
@@ -299,6 +475,16 @@ export function initSpellAnchors(): void {
   // A new scene's Regions and tokens share its source, so clearing theirs clears the scene's
   Hooks.on("preCreateScene", (scene, _data, options) => {
     sceneDocuments(scene).forEach((document) => dropCopiedHeldBy(document, options));
+  });
+
+  // Disabling an effect that gives ownership pauses it, and enabling it gives it again
+  Hooks.on("updateActiveEffect", (effect: ActiveEffect, changed: { disabled?: unknown }) => {
+    if (isActiveGm() && "disabled" in changed && givesOwnership(effect)) {
+      const actor = effect.parent;
+      if (actor instanceof Actor) {
+        syncOwnership(actor).catch(logFailure);
+      }
+    }
   });
 
   Hooks.once("ready", () => {

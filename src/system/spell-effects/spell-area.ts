@@ -16,6 +16,7 @@ import { summonerDocument, summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
 import { createAnchored } from "./spell-anchor";
+import { playersOwning } from "./spell-apply-claims";
 import {
   applyRequestData,
   runApplyRequest,
@@ -228,9 +229,7 @@ async function createAreaAsGm(
     return undefined;
   }
   const provenance = spellProvenance(spell, scope.cast);
-  const observers = (game.users?.contents ?? []).filter(
-    (user) => !user.isGM && casterActor.testUserPermission(user, "OWNER"),
-  );
+  const observers = playersOwning(casterActor);
   const createRegion = async (heldBy?: string) =>
     (await scene.createEmbeddedDocuments(
       "Region",

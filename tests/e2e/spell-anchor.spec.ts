@@ -249,3 +249,172 @@ test("copies of held documents survive a GM reload", async ({ page, baseURL }) =
     await removeTestDocuments(page);
   }
 });
+
+const controlNames = {
+  scene: "E2E spell control",
+  caster: "E2E commander",
+  spirit: "E2E cult spirit",
+  user: "E2E command player",
+};
+const spiritRqid = "a.character.e2e-cult-spirit";
+// The world's default ownership level, which a player without one of their own has
+const CONST_NONE = 0;
+
+async function removeControlDocuments(page: Page): Promise<void> {
+  await page.evaluate(async (names) => {
+    const g = game as any;
+    await g.scenes.getName(names.scene)?.delete();
+    // The summoned spirit is imported, so it can be there more than once
+    const actors = g.actors.filter((a: any) => [names.caster, names.spirit].includes(a.name));
+    await (Actor as any).deleteDocuments(actors.map((a: any) => a.id));
+    await g.users.getName(names.user)?.delete();
+  }, controlNames);
+}
+
+// #1231: the summoner's players observe a summoned token, and Command (cult spirit) makes them its
+// owners while it lasts.
+test("summoned tokens are observed, and Command gives control while it lasts", async ({
+  page,
+  baseURL,
+}) => {
+  test.slow();
+  await loginToConfiguredWorld(page, baseURL);
+  await removeControlDocuments(page);
+
+  try {
+    const result = await page.evaluate(
+      async ({ names, spiritRqid }) => {
+        const g = game as any;
+        const api = g.system.api;
+        const OBSERVER = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
+        const OWNER = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+        const player = await (User as any).create({ name: names.user, role: 1 });
+        // Not viewed, so the summon goes next to the caster without placement
+        const scene = await (Scene as any).create({ name: names.scene, width: 2000, height: 2000 });
+        const caster = await (Actor as any).create({
+          name: names.caster,
+          type: "character",
+          ownership: { [player.id]: OWNER },
+        });
+        await (Actor as any).create({
+          name: names.spirit,
+          type: "character",
+          flags: { rqg: { documentRqidFlags: { id: spiritRqid, lang: "en", priority: 0 } } },
+        });
+        const [casterToken] = await scene.createEmbeddedDocuments("Token", [
+          { name: caster.name, actorId: caster.id, actorLink: true, x: 500, y: 500 },
+        ]);
+        const command = await api.rqid.fromRqid("i.rune-magic.command-cult-spirit");
+        // A rune spell would need a cult; only its effect template matters here
+        const [spell] = await caster.createEmbeddedDocuments("Item", [
+          {
+            name: command.name,
+            type: "spiritMagic",
+            system: { effectRqidLink: { rqid: "ae..command-cult-spirit", name: command.name } },
+          },
+        ]);
+        const cast = {
+          spellRqid: "i.rune-magic.command-cult-spirit",
+          caster: { actorUuid: caster.uuid, tokenUuid: casterToken.uuid },
+          castMessageId: "",
+          level: 1,
+          magicPointsSpent: 0,
+          runePointsSpent: 1,
+          casterSuccessLevel: undefined,
+        };
+        const scope = (targetActor: any) => ({
+          spell,
+          targetActor,
+          targetName: targetActor.name,
+          cast,
+          duration: undefined,
+        });
+
+        const summoned = await api.spellEffects.summon(scope(caster), spiritRqid);
+        const token = scene.tokens.find((t: any) => t.actorId !== caster.id);
+        const level = () => token.actor.getUserLevel(player);
+        const afterSummon = level();
+
+        const applied = await api.spellEffects.giveControl(scope(token.actor));
+        const commandEffect = fromUuidSync(applied?.effectUuids?.[0] ?? "") as any;
+        const whileCommanded = level();
+        await commandEffect?.delete();
+        // The GM's deleteActiveEffect hook gives it back
+        for (let i = 0; i < 50 && level() !== OBSERVER; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+
+        // A linked spirit's own actor changes, and gets its ownership back
+        const linked = await (Actor as any).create({ name: names.spirit, type: "character" });
+        await scene.createEmbeddedDocuments("Token", [
+          { name: linked.name, actorId: linked.id, actorLink: true, x: 900, y: 900 },
+        ]);
+        const linkedCommand = await api.spellEffects.giveControl(scope(linked));
+        const linkedWhileCommanded = linked.getUserLevel(player);
+        await (fromUuidSync(linkedCommand?.effectUuids?.[0] ?? "") as any)?.delete();
+        for (let i = 0; i < 50 && linked.getUserLevel(player) === OWNER; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+
+        // An unlinked spirit token without ownership of its own inherits its actor's, default too,
+        // while commanded, and goes back to inheriting it after
+        const other = "e2eOtherUser0000";
+        const inheriting = await (Actor as any).create({
+          name: names.spirit,
+          type: "character",
+          ownership: { default: OBSERVER, [other]: OWNER },
+        });
+        const [free] = await scene.createEmbeddedDocuments("Token", [
+          { name: inheriting.name, actorId: inheriting.id, actorLink: false, x: 1300, y: 900 },
+        ]);
+        const freeCommand = await api.spellEffects.giveControl(scope(free.actor));
+        const freeWhileCommanded = { ...free.actor.ownership };
+        await (fromUuidSync(freeCommand?.effectUuids?.[0] ?? "") as any)?.delete();
+        for (let i = 0; i < 50 && free.delta._source.ownership !== null; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+        return {
+          freeWhileCommanded: {
+            player: freeWhileCommanded[player.id],
+            other: freeWhileCommanded[other],
+            default: freeWhileCommanded.default,
+          },
+          freeDeltaAfter: free.delta._source.ownership,
+          freePlayerAfter: free.actor.getUserLevel(player),
+          freeBaseLeft: free.actor.getFlag("rqg", "ownershipBase") ?? null,
+          linkedBaseLeft: linked.getFlag("rqg", "ownershipBase") ?? null,
+          linkedWhileCommanded,
+          linkedAfterCommand: linked.getUserLevel(player),
+          linkedOwnership: linked._source.ownership[player.id] ?? null,
+          summoned: summoned?.outcome ?? null,
+          applied: applied?.outcome ?? null,
+          afterSummon,
+          whileCommanded,
+          afterCommand: level(),
+          holdsLeft: token.actor.getFlag("rqg", "ownershipBase") ?? null,
+          OBSERVER,
+          OWNER,
+        };
+      },
+      { names: controlNames, spiritRqid },
+    );
+    expect(result).toMatchObject({
+      summoned: "applied",
+      applied: "applied",
+      afterSummon: result.OBSERVER,
+      whileCommanded: result.OWNER,
+      afterCommand: result.OBSERVER,
+      holdsLeft: null,
+      linkedWhileCommanded: result.OWNER,
+      linkedAfterCommand: CONST_NONE,
+      linkedOwnership: null,
+      linkedBaseLeft: null,
+      freeWhileCommanded: { player: result.OWNER, other: result.OWNER, default: result.OBSERVER },
+      freeDeltaAfter: null,
+      freePlayerAfter: result.OBSERVER,
+      freeBaseLeft: null,
+    });
+  } finally {
+    await removeControlDocuments(page);
+  }
+});

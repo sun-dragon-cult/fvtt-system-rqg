@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createAnchored,
+  holdOwnership,
   holdsRegion,
   initSpellAnchors,
+  isOnEndingToken,
   reconcileSpellAnchors,
   releaseHeld,
 } from "./spell-anchor";
@@ -473,6 +475,187 @@ describe("spell anchors", () => {
       handlers["deleteRegion"]!(doc("Scene.s.Region.r", { heldBy: anchor.uuid }));
       await settle();
       expect(anchor.delete).not.toHaveBeenCalled();
+    });
+  });
+  describe("ownership holds", () => {
+    /** An actor whose update applies ownership and flag changes as Foundry would. */
+    function spirit(ownership: Record<string, number>) {
+      const spirit = Object.assign(new (globalThis as any).Actor(), {
+        uuid: "Actor.spirit",
+        isToken: false,
+        _source: { ownership: { ...ownership } },
+        flags: {} as Record<string, unknown>,
+        effects: { contents: [] as any[], has: () => true },
+        getFlag: (_scope: string, key: string) => spirit.flags[key],
+        update: vi.fn(async (update: Record<string, unknown>) => {
+          for (const [key, value] of Object.entries(update)) {
+            if (key === "ownership") {
+              spirit._source.ownership = (value as { replaced: Record<string, number> }).replaced;
+              continue;
+            }
+            const name = key.split(".").at(-1)!;
+            if (value === _del) {
+              delete spirit.flags[name];
+            } else {
+              spirit.flags[name] = value;
+            }
+          }
+        }),
+      });
+      documents.set(spirit.uuid, spirit);
+      return spirit;
+    }
+
+    const sorted = (value: unknown): unknown =>
+      Array.isArray(value)
+        ? value.map(sorted)
+        : value && typeof value === "object"
+          ? Object.fromEntries(
+              Object.entries(value)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([k, v]) => [k, sorted(v)]),
+            )
+          : value;
+
+    beforeEach(() => {
+      vi.stubGlobal("_replace", (value: unknown) => ({ replaced: value }));
+      (globalThis as any).foundry.utils.equals = (a: unknown, b: unknown) =>
+        JSON.stringify(sorted(a)) === JSON.stringify(sorted(b));
+    });
+
+    /** A Command effect giving these levels, on the actor. */
+    function command(parent: any, id: string, levels: Record<string, number>) {
+      const effect = doc(
+        `Actor.spirit.ActiveEffect.${id}`,
+        {
+          ownershipGiven: Object.entries(levels).map(([user, level]) => ({ user, level })),
+        },
+        { parent, duration: { expired: false } },
+      );
+      parent.effects.contents.push(effect);
+      return effect;
+    }
+    const end = (parent: any, effect: any) => {
+      parent.effects.contents = parent.effects.contents.filter((e: any) => e !== effect);
+      return releaseHeld(effect);
+    };
+
+    it("gives the users their level while the effect lasts, then their own back", async () => {
+      const target = spirit({ player: 2, default: 0 });
+      const effect = command(target, "c", { player: 3, newcomer: 3 });
+      await holdOwnership(effect);
+      expect(target._source.ownership).toEqual({ player: 3, newcomer: 3, default: 0 });
+      expect(await end(target, effect)).toBe(false);
+      expect(target._source.ownership).toEqual({ player: 2, default: 0 });
+      expect(target.flags["ownershipBase"]).toBeUndefined();
+    });
+
+    it("writes nothing for a token that was deleted meanwhile", async () => {
+      const target = spirit({ player: 2 });
+      const effect = command(target, "c", { player: 3 });
+      Object.assign(target, { token: { id: "gone", parent: { tokens: { has: () => false } } } });
+      await holdOwnership(effect);
+      expect(target.update).not.toHaveBeenCalled();
+    });
+
+    it("writes nothing for a token its Summon has run out on and is deleting", async () => {
+      const target = spirit({ player: 2 });
+      const effect = command(target, "c", { player: 3 });
+      doc("Actor.summon.ActiveEffect.s", {}, { duration: { expired: false, remaining: 0 } });
+      const token = doc("Scene.s.Token.t", { heldBy: "Actor.summon.ActiveEffect.s" });
+      Object.assign(target, { token: { ...token, parent: { tokens: { has: () => true } } } });
+      await holdOwnership(effect);
+      expect(target.update).not.toHaveBeenCalled();
+    });
+
+    it("still ends the Summon effect that holds the token it sits on", () => {
+      const target = spirit({ player: 2 });
+      const summon = doc(
+        "Actor.spirit.ActiveEffect.summon",
+        {},
+        { parent: target, duration: { expired: true, remaining: 0 } },
+      );
+      const token = doc("Scene.s.Token.t", { heldBy: summon.uuid });
+      Object.assign(target, { token: { ...token, parent: { tokens: { has: () => true } } } });
+      expect(isOnEndingToken(summon)).toBe(false);
+    });
+
+    it("doesn't count an effect whose time is up before Foundry marks it expired", async () => {
+      const target = spirit({ player: 2 });
+      const effect = command(target, "c", { player: 3 });
+      effect.duration = { expired: false, remaining: 0 };
+      await holdOwnership(effect);
+      expect(target._source.ownership).toEqual({ player: 2 });
+    });
+
+    it("rejects a failed write to the caller only, with no unhandled rejection", async () => {
+      const target = spirit({ player: 2 });
+      const effect = command(target, "c", { player: 3 });
+      target.update.mockRejectedValueOnce(new Error("gone"));
+      await expect(holdOwnership(effect)).rejects.toThrow("gone");
+      await new Promise((resolve) => setTimeout(resolve));
+    });
+
+    it("keeps a user's level while another effect still gives it, whichever ends first", async () => {
+      const target = spirit({ player: 2 });
+      const first = command(target, "first", { player: 3 });
+      await holdOwnership(first);
+      const second = command(target, "second", { player: 3, other: 3 });
+      await holdOwnership(second);
+      await end(target, first);
+      expect(target._source.ownership).toEqual({ player: 3, other: 3 });
+      await end(target, second);
+      expect(target._source.ownership).toEqual({ player: 2 });
+    });
+
+    it("comes out the same when two effects end at once", async () => {
+      const target = spirit({});
+      const first = command(target, "first", { player: 3 });
+      const second = command(target, "second", { player: 3 });
+      await holdOwnership(first);
+      await holdOwnership(second);
+      target.effects.contents = [];
+      await Promise.all([releaseHeld(first), releaseHeld(second)]);
+      expect(target._source.ownership).toEqual({});
+      expect(target.flags["ownershipBase"]).toBeUndefined();
+    });
+
+    it("counts an expiring effect as ended, before it is deleted", async () => {
+      const target = spirit({});
+      const effect = command(target, "c", { player: 3 });
+      await holdOwnership(effect);
+      effect.duration.expired = true;
+      await releaseHeld(effect);
+      expect(target._source.ownership).toEqual({});
+    });
+
+    it("gives back what effects gone meanwhile gave, on reconcile", async () => {
+      const target = spirit({});
+      const effect = command(target, "c", { player: 3 });
+      await holdOwnership(effect);
+      target.effects.contents = [];
+      (game as any).actors = { contents: [target] };
+      await reconcileSpellAnchors();
+      expect(target._source.ownership).toEqual({});
+    });
+
+    it("doesn't count a disabled effect, and writes nothing when nothing changed", async () => {
+      const target = spirit({});
+      const effect = command(target, "c", { player: 3 });
+      await holdOwnership(effect);
+      effect.disabled = true;
+      (game as any).actors = { contents: [target] };
+      await reconcileSpellAnchors();
+      expect(target._source.ownership).toEqual({});
+      const writes = target.update.mock.calls.length;
+      await reconcileSpellAnchors();
+      expect(target.update.mock.calls.length).toBe(writes);
+    });
+
+    it("leaves ownership alone for an effect that gives none", async () => {
+      const target = spirit({ player: 2 });
+      await end(target, command(target, "plain", {}));
+      expect(target.update).not.toHaveBeenCalled();
     });
   });
 });

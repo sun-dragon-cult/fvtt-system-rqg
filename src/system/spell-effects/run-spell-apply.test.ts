@@ -70,7 +70,7 @@ describe("runSpellApply", () => {
   });
 
   const asUser = (isGM: boolean) => {
-    vi.stubGlobal("game", { user: { isGM }, users: { activeGM: { id: "gm" } } });
+    vi.stubGlobal("game", { user: { isGM }, users: { activeGM: { id: "gm", isSelf: isGM } } });
     vi.stubGlobal("ui", { notifications: { warn: vi.fn() } });
   };
 
@@ -97,5 +97,14 @@ describe("runSpellApply", () => {
     vi.mocked(applyRequestOf).mockReturnValue(undefined);
     expect(await runSpellApply(runAsGm, scope)).toBe(applied);
     expect(runAsGm.apply).toHaveBeenCalledWith(scope);
+  });
+
+  it("asks the active GM when another GM applies it", async () => {
+    asUser(true);
+    (game as any).users.activeGM.isSelf = false;
+    vi.mocked(applyRequestOf).mockReturnValue(request);
+    await runSpellApply(runAsGm, scope);
+    expect(queryActiveGm).toHaveBeenCalled();
+    expect(runAsGm.apply).not.toHaveBeenCalled();
   });
 });
