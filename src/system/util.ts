@@ -321,7 +321,7 @@ export function assertDocumentSubType<T extends Document.WithSubTypes | Item | A
   if (!document || !documentSubTypesArray.includes((document as any).type)) {
     const msg = errorMsg
       ? localize(errorMsg)
-      : `Got unexpected document type in assert, [${documentSubTypesArray.join(", ")}] ≠ ${(document as any).type}`;
+      : `Got unexpected document type in assert, [${documentSubTypesArray.join(", ")}] ≠ ${(document as any)?.type}`;
     ui.notifications?.error(msg);
     throw new RqgError(msg, document);
   }
