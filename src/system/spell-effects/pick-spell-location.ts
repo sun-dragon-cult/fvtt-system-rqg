@@ -7,6 +7,11 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 
 type Point = { x: number; y: number };
 
+/** A picked place; `rotation` in degrees, 0 facing down as for an ambient light, when rotatable. */
+export type PickedLocation = Point & { rotation?: number };
+
+const rotationStep = 15;
+
 /**
  * The options of `spellEffects.pickLocation`.
  *
@@ -17,20 +22,23 @@ export type PickLocationOptions = {
   rangeMeters?: number | undefined;
   /** The point must be in the caster's sight (RBM p.6). */
   requireSight?: boolean | undefined;
+  /** The mouse wheel turns the place, e.g. to aim a cone of light; the result then has `rotation`. */
+  rotatable?: boolean | undefined;
 };
 
 /**
  * Let the user click a point on the canvas for a spell, snapped to the center of a grid space, for
  * a spell that takes a place: a destination, or where something appears. Resolves to the canvas
  * point, or undefined when cancelled (right click or Escape) or when the caster has no token on
- * the viewed scene to measure from.
+ * the viewed scene to measure from. With `rotatable` the mouse wheel turns what is placed, and the
+ * point has its `rotation`.
  *
  * @public since 6.2.0
  */
 export async function pickSpellLocation(
   scope: SpellApplyScope,
   options: PickLocationOptions = {},
-): Promise<Point | undefined> {
+): Promise<PickedLocation | undefined> {
   const spellName = scope.spell.name ?? "";
   const caster = await summonerToken(scope);
   const casterObject = caster ? casterTokenOnScene(caster, caster.actor as RqgActor) : undefined;
@@ -67,6 +75,7 @@ export async function pickSpellLocation(
         return true;
       },
       (point) => inRange(point) && (!options.requireSight || inSight(point)),
+      !!options.rotatable,
     );
   } finally {
     if (ring && !ring.destroyed) {
@@ -84,7 +93,8 @@ function snappedPointer(): Point {
 function clickPoint(
   accept: (point: Point) => boolean,
   isValid: (point: Point) => boolean,
-): Promise<Point | undefined> {
+  rotatable = false,
+): Promise<PickedLocation | undefined> {
   const overlay = new PIXI.Graphics();
   overlay.eventMode = "static";
   overlay.cursor = "crosshair";
@@ -93,7 +103,10 @@ function clickPoint(
   const marker = new PIXI.Graphics();
   overlay.addChild(marker);
   const size = canvas!.grid!.size;
+  let rotation = 0;
+  let last: Point = snappedPointer();
   const draw = (point: Point) => {
+    last = point;
     const color = isValid(point) ? 0x7fb3d5 : 0xcc3333;
     marker
       .clear()
@@ -101,11 +114,27 @@ function clickPoint(
       .beginFill(color, 0.25)
       .drawCircle(point.x, point.y, size / 2)
       .endFill();
+    if (rotatable) {
+      // Rotation 0 faces down, so the facing is the angle from the x axis plus 90 degrees
+      const facing = ((rotation + 90) * Math.PI) / 180;
+      marker
+        .moveTo(point.x, point.y)
+        .lineTo(point.x + Math.cos(facing) * size * 1.5, point.y + Math.sin(facing) * size * 1.5);
+    }
+  };
+  // The wheel would zoom the canvas; here it turns what is placed
+  const view = canvas!.app!.view as HTMLCanvasElement;
+  const onWheel = (event: WheelEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    rotation = (rotation + (event.deltaY > 0 ? rotationStep : -rotationStep) + 360) % 360;
+    draw(last);
   };
   return new Promise((resolve) => {
     let rightDownAt: Point | undefined;
-    const finish = (point: Point | undefined) => {
+    const finish = (point: PickedLocation | undefined) => {
       document.removeEventListener("keydown", onKey, true);
+      view.removeEventListener("wheel", onWheel, true);
       Hooks.off("canvasTearDown", onTearDown);
       if (!overlay.destroyed) {
         overlay.destroy({ children: true });
@@ -128,7 +157,7 @@ function clickPoint(
       } else if (event.button === 0) {
         const point = snappedPointer();
         if (accept(point)) {
-          finish(point);
+          finish(rotatable ? { ...point, rotation } : point);
         }
       }
     });
@@ -143,6 +172,9 @@ function clickPoint(
       }
     });
     document.addEventListener("keydown", onKey, true);
+    if (rotatable) {
+      view.addEventListener("wheel", onWheel, { capture: true, passive: false });
+    }
     draw(snappedPointer());
   });
 }

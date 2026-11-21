@@ -12,10 +12,10 @@ import {
   type SpellEffectCast,
   type SpellEffectDuration,
 } from "./apply-spell-effect";
-import { summonerDocument, summonerToken } from "./token-cells";
+import { summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
-import { createAnchored } from "./spell-anchor";
+import { casterOnScene, createHeldForSpell } from "./held-scene-document";
 import { playersOwning } from "./spell-apply-claims";
 import {
   applyRequestData,
@@ -215,19 +215,11 @@ async function createAreaAsGm(
   data: CreateSpellAreaQueryData,
 ): Promise<SpellEffectApplied | undefined> {
   const spell = scope.spell;
-  const [caster, expected] = (await Promise.all([
-    fromUuid(data.casterTokenUuid),
-    summonerDocument(scope),
-  ])) as [TokenDocument | null, { uuid?: string } | null];
-  const scene = caster?.parent;
-  const casterActor = caster?.actor as RqgActor | null | undefined;
-  // The token placed from must be the caster's (summonerToken's); which of a linked caster's
-  // tokens depends on the scene the placing client views, so any of them will do
-  const isCasterToken =
-    !!expected?.uuid && (caster?.uuid === expected.uuid || casterActor?.uuid === expected.uuid);
-  if (!scene || !casterActor || !isCasterToken) {
+  const placed = await casterOnScene(scope, data.casterTokenUuid);
+  if (!placed) {
     return undefined;
   }
+  const { scene, casterActor } = placed;
   const provenance = spellProvenance(spell, scope.cast);
   const observers = playersOwning(casterActor);
   const createRegion = async (heldBy?: string) =>
@@ -259,18 +251,13 @@ async function createAreaAsGm(
     return region ? { outcome: "resolved" } : undefined;
   }
   // Without a caster (token HUD "+") the effect is on the target's actor
-  const anchored = await createAnchored({
+  return createHeldForSpell({
+    scope,
     effectParentUuid: casterActor.uuid ?? "",
-    effectData: {
-      name: spell.name ?? "",
-      img: spell.img ?? undefined,
-      duration: data.duration,
-      start: { time: game.time?.worldTime ?? 0 },
-      system: { spell: provenance },
-    },
+    duration: data.duration,
+    img: undefined,
     create: createRegion,
   });
-  return anchored ? { outcome: "applied", effectUuids: [anchored.effect.uuid] } : undefined;
 }
 
 /**

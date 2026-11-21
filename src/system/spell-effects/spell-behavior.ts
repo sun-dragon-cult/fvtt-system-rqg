@@ -96,6 +96,21 @@ export const spellRollEntryNames = [
 ] as const satisfies readonly SpellRollEntryName[];
 
 /**
+ * The light a spell puts on the scene with `spellEffects.placeLight`. The active GM reads it from
+ * the spell's registered behavior, so a request can't ask for another.
+ *
+ * @public since 6.2.0
+ */
+export type SpellLight = {
+  /** How far the light reaches, in meters. */
+  radiusMeters: number;
+  /** The cone's angle in degrees, 360 (the default) for a full circle. Under 360 the caster aims it. */
+  angle?: number;
+  /** A CSS color for the light, white by default. */
+  color?: string;
+};
+
+/**
  * What a spell does beyond attaching an effect template, registered by modules for a spell rqid.
  *
  * @public since 6.2.0
@@ -155,6 +170,8 @@ export type SpellBehavior = SpellRollEntries & {
   areaRadius?(level: number): number;
   /** How many tokens the spell cast at this level can be cast at; any number when left out. */
   maxTargets?(level: number): number;
+  /** The light `spellEffects.placeLight` puts on the scene for this spell. */
+  light?: SpellLight;
 };
 
 const actingHookNames = [
@@ -372,6 +389,20 @@ function guardedAreaRadius(
   );
 }
 
+/** A light with a usable radius, angle and color; undefined for one that has none. */
+export function guardedLight(light: SpellLight | undefined): SpellLight | undefined {
+  const radiusMeters = Number(light?.radiusMeters);
+  if (!light || !Number.isFinite(radiusMeters) || radiusMeters <= 0) {
+    return undefined;
+  }
+  const angle = Number(light.angle ?? 360);
+  return {
+    radiusMeters,
+    angle: Number.isFinite(angle) && angle > 0 && angle <= 360 ? angle : 360,
+    ...(typeof light.color === "string" && light.color ? { color: light.color } : {}),
+  };
+}
+
 function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavior {
   const rollEntries = Object.fromEntries(
     spellRollEntryNames.map((name) => [name, guardedRollEntry(name, behavior[name])]),
@@ -410,6 +441,7 @@ function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavio
     runAsGm: behavior.runAsGm,
     areaRadius: guardedAreaRadius(behavior.areaRadius, spellRqid),
     maxTargets: guardedLevelNumber(behavior.maxTargets, spellRqid, Infinity),
+    light: guardedLight(behavior.light),
   };
 }
 

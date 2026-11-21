@@ -108,7 +108,7 @@ export async function placeUnlessTaken<T>(
  * query. Tells the user when another Apply took the entry.
  */
 export async function requestGmWork<D extends SpellApplyRequestData>(
-  query: "rqg.summon" | "rqg.createSpellArea",
+  query: "rqg.summon" | "rqg.createSpellArea" | "rqg.createSpellLight",
   handle: (data: D, context: RqgQueryContext) => Promise<SpellApplyAnswer | undefined>,
   data: D,
   spellName: string,
