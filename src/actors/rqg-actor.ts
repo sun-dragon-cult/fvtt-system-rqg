@@ -1310,16 +1310,20 @@ export class RqgActor extends Actor {
   private async updateDexBasedSkills(): Promise<void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const dodgeItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
-    assertDocumentSubType<SkillItem>(dodgeItem, ItemTypeEnum.Skill);
     const dodgeBase = dodgeBaseChance(this.system.characteristics.dexterity.value ?? 0);
-    if (dodgeItem && dodgeItem.system.baseChance !== dodgeBase) {
+    if (
+      isDocumentSubType<SkillItem>(dodgeItem, ItemTypeEnum.Skill) &&
+      dodgeItem.system.baseChance !== dodgeBase
+    ) {
       await dodgeItem.update({ system: { baseChance: dodgeBase } });
     }
 
     const jumpItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
-    assertDocumentSubType<SkillItem>(jumpItem, ItemTypeEnum.Skill);
     const jumpBase = jumpBaseChance(this.system.characteristics.dexterity.value ?? 0);
-    if (jumpItem && jumpItem.system.baseChance !== jumpBase) {
+    if (
+      isDocumentSubType<SkillItem>(jumpItem, ItemTypeEnum.Skill) &&
+      jumpItem.system.baseChance !== jumpBase
+    ) {
       await jumpItem.update({ system: { baseChance: jumpBase } });
     }
   }
