@@ -170,7 +170,11 @@ export type SpellBehavior = SpellRollEntries & {
   areaRadius?(level: number): number;
   /** How many tokens the spell cast at this level can be cast at; any number when left out. */
   maxTargets?(level: number): number;
-  /** The light `spellEffects.placeLight` puts on the scene for this spell. */
+  /**
+   * The light `spellEffects.placeLight` puts on the scene for this spell. Without an `apply`, Apply
+   * places it when the spell was cast with no target (`cast.untargeted`) and otherwise attaches the
+   * spell's effect template as usual.
+   */
   light?: SpellLight;
 };
 

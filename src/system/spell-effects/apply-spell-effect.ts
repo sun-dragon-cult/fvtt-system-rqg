@@ -26,6 +26,7 @@ import { runSpellApply } from "./run-spell-apply";
 import { castPoints } from "./spell-rules";
 import { spellBehaviorOf } from "./spell-behavior";
 import { holdsRegion } from "./spell-anchor";
+import { placeLight } from "./spell-light";
 
 /**
  * A cast of a spell: who cast it, at what level, and the points it spent (see `castPoints`).
@@ -209,6 +210,11 @@ export async function applySpellEffect(
   const apply = options.areaRegion ? undefined : behavior?.apply;
   if (apply) {
     return runSpellApply({ ...behavior, apply }, scope);
+  }
+  // A spell with a light and no `apply` puts it on the scene when cast with no target; at a
+  // target, even the caster, its effect template goes on as usual
+  if (behavior?.light && cast.untargeted && !options.areaRegion) {
+    return placeLight(scope);
   }
   return attachSpellTemplate(scope, options);
 }
