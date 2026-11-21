@@ -22,6 +22,20 @@ Effects with a duration (like protection spells) automatically expire during com
 
 See the [Documentation](https://sun-dragon-cult.github.io/) for more details.
 
+### Automatic recovery
+
+NPCs recover magic points and naturally heal wounds as game time advances, just like
+player characters, subject to the world's automatic recovery settings. The active GM
+client applies NPC recovery even when their sheets are closed, including unlinked
+tokens on other scenes. Game time must be advanced by the GM or a calendar module;
+real time alone does not cause recovery.
+
+To preserve a prepared encounter's wounds and magic points, enable **Pause recovery**
+in the actor sheet's GM edit mode. **Recovery paused** remains visible to
+the GM outside edit mode. Manual healing and magic point changes still work.
+Unchecking the option restarts recovery from the current game time without crediting
+time spent paused. Pause copied NPCs before preparing their encounter state.
+
 ## Development
 
 Written in typescript with the help of the fantastic [League of Foundry Developers Foundry VTT Types](https://github.com/League-of-Foundry-Developers/foundry-vtt-types).

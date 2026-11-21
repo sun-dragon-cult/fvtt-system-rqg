@@ -103,6 +103,10 @@
         "MagicPointRecoveryTooltip": "Recovers {pointsPerDay} magic points per day",
         "MagicPointRecoveryTimePerPoint": "1 point every {duration}",
         "MagicPointRecoveryNone": "Doesn't recover magic points on its own",
+        "AutomaticRecoveryPaused": "Pause recovery",
+        "AutomaticRecoveryPausedHint": "Prevents natural healing and magic point recovery as game time advances. Manual changes still work. Resuming starts recovery from the current game time, without crediting the paused period.",
+        "RecoveryPaused": "Recovery paused",
+        "AutomaticRecoveryFailed": "Automatic recovery failed for {name}. Check the console for details.",
         "MagicPointSources": "Magic Point Source Order",
         "MagicPointSourcesFeedFromSelfHint": "Move {amount} Magic Points from Self into this storage item",
         "MagicPointSourcesAlliedSpiritHint": "Allied Spirit",
@@ -2800,11 +2804,11 @@
       },
       "NaturalHealingEnabled": {
         "settingName": "Automatic Natural Healing",
-        "settingHint": "If enabled, wounded hit locations on player-owned characters automatically recover their healing rate as game time passes. Disable this if you'd rather apply natural healing by hand, for example to enforce that a character was actually resting."
+        "settingHint": "If enabled, wounded hit locations on characters and NPCs automatically recover their healing rate as game time passes, unless automatic recovery is paused on their sheet. Disable this if you'd rather apply natural healing by hand, for example to enforce that a character was actually resting."
       },
       "MagicPointRecoveryEnabled": {
         "settingName": "Automatic Magic Point Recovery",
-        "settingHint": "If enabled, player-owned characters automatically recover Magic Points as game time passes. Disable this if you'd rather apply Magic Point recovery by hand."
+        "settingHint": "If enabled, characters and NPCs automatically recover Magic Points as game time passes, unless automatic recovery is paused on their sheet. Disable this if you'd rather apply Magic Point recovery by hand."
       },
       "WorldMigrationVersion": {
         "settingName": "World Migration Version",

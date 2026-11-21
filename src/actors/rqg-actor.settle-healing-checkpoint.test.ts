@@ -13,6 +13,44 @@ describe("RqgActor.settleHealingCheckpoint", () => {
     delete (game as any).time;
   });
 
+  describe("RqgActor.settleAutomaticRecoveryPause", () => {
+    afterEach(() => {
+      delete (game as any).time;
+    });
+
+    it.each([true, false])("resets both checkpoints when pause changes to %s", (paused) => {
+      const actor = createCharacterActor();
+      actor.system = { attributes: { automaticRecoveryPaused: !paused } };
+      (game as any).time = { worldTime: 12_345 };
+      const changes: any = {
+        system: {
+          attributes: {
+            automaticRecoveryPaused: paused,
+            magicPointRecoverySettledWorldTime: 0,
+            healingSettledWorldTime: 0,
+          },
+        },
+      };
+
+      actor.settleAutomaticRecoveryPause(changes);
+
+      expect(changes.system.attributes.magicPointRecoverySettledWorldTime).toBe(12_345);
+      expect(changes.system.attributes.healingSettledWorldTime).toBe(12_345);
+    });
+
+    it("preserves checkpoints when a form resubmits an unchanged pause state", () => {
+      const actor = createCharacterActor();
+      actor.system = { attributes: { automaticRecoveryPaused: false } };
+      (game as any).time = { worldTime: 12_345 };
+      const changes: any = { system: { attributes: { automaticRecoveryPaused: false } } };
+
+      actor.settleAutomaticRecoveryPause(changes);
+
+      expect(changes.system.attributes.magicPointRecoverySettledWorldTime).toBeUndefined();
+      expect(changes.system.attributes.healingSettledWorldTime).toBeUndefined();
+    });
+  });
+
   it("stamps the checkpoint to now when hitPoints.value changes without one", () => {
     const actor = createCharacterActor();
     (game as any).time = { worldTime: 12_345 };

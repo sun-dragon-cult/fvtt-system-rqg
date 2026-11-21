@@ -10,6 +10,7 @@ function createCharacterActor(overrides: {
   magicPointRecoveryRateFactor?: number;
   magicPointRecoverySettledWorldTime?: number | null;
   hasPlayerOwner?: boolean;
+  automaticRecoveryPaused?: boolean;
 }): any {
   const actor = new RqgActor({ name: "Test Actor", type: ActorTypeEnum.Character }) as any;
   actor.type = ActorTypeEnum.Character;
@@ -17,6 +18,7 @@ function createCharacterActor(overrides: {
   actor.system = {
     characteristics: { power: { value: overrides.pow === undefined ? 18 : overrides.pow } },
     attributes: {
+      automaticRecoveryPaused: overrides.automaticRecoveryPaused ?? false,
       magicPoints: overrides.magicPoints ?? { value: 5, max: 18 },
       magicPointRecoveryRateFactor: overrides.magicPointRecoveryRateFactor ?? 1,
       magicPointRecoverySettledWorldTime: overrides.magicPointRecoverySettledWorldTime ?? null,
@@ -106,12 +108,32 @@ describe("RqgActor.catchUpMagicPointRecovery", () => {
     expect(actor.update).not.toHaveBeenCalled();
   });
 
-  it("is a no-op for an actor with no player owner", async () => {
+  it("recovers for an NPC with no player owner", async () => {
     const actor = createCharacterActor({
       magicPointRecoverySettledWorldTime: 0,
       hasPlayerOwner: false,
     });
     (game as any).time = { worldTime: 80 * 60 * 3 };
+
+    await actor.catchUpMagicPointRecovery();
+
+    expect(actor.update).toHaveBeenCalledWith({
+      system: {
+        attributes: {
+          magicPoints: { value: 8 },
+          magicPointRecoverySettledWorldTime: 80 * 60 * 3,
+        },
+      },
+    });
+  });
+
+  it("does not recover or advance the checkpoint while paused", async () => {
+    const actor = createCharacterActor({
+      automaticRecoveryPaused: true,
+      hasPlayerOwner: false,
+      magicPointRecoverySettledWorldTime: 0,
+    });
+    (game as any).time = { worldTime: 7 * 24 * 60 * 60 };
 
     await actor.catchUpMagicPointRecovery();
 

@@ -667,14 +667,15 @@ export class RqgActor extends Actor {
    * write, clamped to `magicPoints.max`, which already reflects POW or its `baseMax` override +
    * any genuine effects (see #1028 discussion). A no-op (no
    * write) when nothing has changed, so it's safe to call on every sheet render. Only applies to
-   * player-owned actors: a GM-only-owned NPC could otherwise silently recover between the moment a
-   * GM preps it and whenever the party actually reaches it in-game, changing state the GM set up
-   * on purpose without them noticing. A GM can turn this off entirely with the
+   * actors whose automatic recovery isn't paused. A GM can turn this off entirely with the
    * `magicPointRecoveryEnabled` world setting (#1035) for tables that want to gate recovery on
    * resting by hand instead.
    */
   public async catchUpMagicPointRecovery(): Promise<void> {
-    if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) || !this.hasPlayerOwner) {
+    if (
+      !isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) ||
+      this.system.attributes.automaticRecoveryPaused
+    ) {
       return;
     }
     if ((game.settings?.get(systemId, "magicPointRecoveryEnabled") ?? true) === false) {
@@ -686,7 +687,7 @@ export class RqgActor extends Actor {
     }
     await this.serializeMagicPointsWrite(async () => {
       const attributes = this.system.attributes;
-      if (!attributes.magicPoints) {
+      if (attributes.automaticRecoveryPaused || !attributes.magicPoints) {
         return;
       }
       const settledWorldTime = attributes.magicPointRecoverySettledWorldTime;
@@ -725,14 +726,15 @@ export class RqgActor extends Actor {
    * every sheet render. Doesn't attempt to detect whether the character was actually resting
    * (Core p.149 requires it for natural healing to apply) - left to the GM's judgement, same as
    * every other narrow RAW edge case this codebase doesn't build UI/logic around. Only applies to
-   * player-owned actors: a GM-only-owned NPC staged for a future scene could otherwise heal itself
-   * in the background while the party takes their time getting there, changing state the GM set up
-   * on purpose without them noticing. A GM can turn this off entirely with the
+   * actors whose automatic recovery isn't paused. A GM can turn this off entirely with the
    * `naturalHealingEnabled` world setting (#1035) for tables that want to gate healing on resting
    * by hand instead.
    */
   public async catchUpNaturalHealing(): Promise<void> {
-    if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) || !this.hasPlayerOwner) {
+    if (
+      !isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) ||
+      this.system.attributes.automaticRecoveryPaused
+    ) {
       return;
     }
     if ((game.settings?.get(systemId, "naturalHealingEnabled") ?? true) === false) {
@@ -744,7 +746,7 @@ export class RqgActor extends Actor {
     }
     await this.serializeHitPointsWrite(async () => {
       const attributes = this.system.attributes;
-      if (!attributes.hitPoints) {
+      if (attributes.automaticRecoveryPaused || !attributes.hitPoints) {
         return;
       }
       const settledWorldTime = attributes.healingSettledWorldTime;
@@ -1185,6 +1187,29 @@ export class RqgActor extends Actor {
     );
   }
 
+  private settleAutomaticRecoveryPause(changes: Actor.UpdateData): void {
+    const paused = foundry.utils.getProperty(changes, "system.attributes.automaticRecoveryPaused");
+    const currentWorldTime = game.time?.worldTime;
+    if (
+      typeof paused !== "boolean" ||
+      paused === this.system.attributes.automaticRecoveryPaused ||
+      currentWorldTime == null
+    ) {
+      return;
+    }
+    // Neither entering nor leaving a pause may credit time spent paused.
+    foundry.utils.setProperty(
+      changes,
+      "system.attributes.magicPointRecoverySettledWorldTime",
+      currentWorldTime,
+    );
+    foundry.utils.setProperty(
+      changes,
+      "system.attributes.healingSettledWorldTime",
+      currentWorldTime,
+    );
+  }
+
   private async handleHealthTransition(
     previous: HealthTransitionSnapshot | undefined,
     userId: string,
@@ -1415,6 +1440,7 @@ export class RqgActor extends Actor {
 
     this.settleMagicPointRecoveryCheckpoint(changes, changesMagicPointsValue);
     this.settleHealingCheckpoint(changes, changesHitPointsValue);
+    this.settleAutomaticRecoveryPause(changes);
 
     const actorDex =
       (changes as DeepPartial<CharacterActor>)?.system?.characteristics?.dexterity?.value ??

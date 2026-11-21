@@ -499,6 +499,10 @@
     "attributes": {
       "type": "object",
       "properties": {
+        "automaticRecoveryPaused": {
+          "type": "boolean",
+          "default": false
+        },
         "magicPoints": {
           "type": "object",
           "properties": {
@@ -828,6 +832,7 @@
       },
       "additionalProperties": false,
       "required": [
+        "automaticRecoveryPaused",
         "magicPoints",
         "magicPointRecoveryRateFactor",
         "hitPoints",

@@ -43,6 +43,10 @@
       min-height: 1.8rem;
     }
 
+    &:not(.theme-light) input[type="checkbox"]:not(:disabled, [readonly]) {
+      --checkbox-background-color: var(--rqg-input-background-color);
+    }
+
     /* Override Foundry's opaque dark-mode application background so wounded/edit-mode
    transparency shows through */
     &.dead,
@@ -831,6 +835,10 @@
             text-align: center;
             margin-top: -0.25rem;
 
+            &:not(:disabled, [readonly]) {
+              background-color: var(--rqg-input-background-color, transparent);
+            }
+
             &:focus {
               border: 1px solid grey;
               background-color: var(--color-text-light-highlight);
@@ -1072,6 +1080,10 @@
     input {
       width: initial;
       border: none;
+
+      &:is([type="text"], [type="number"]):not(:disabled, [readonly]) {
+        background-color: var(--rqg-input-background-color, var(--input-background-color));
+      }
 
       &:hover {
         outline: 1px solid var(--color-border-light-2);
@@ -2741,6 +2753,10 @@
 
       & .characteristics input {
         background-color: rgb(255 255 255 / 15%);
+
+        &:not(:disabled, [readonly]) {
+          background-color: var(--rqg-input-background-color, rgb(255 255 255 / 15%));
+        }
       }
     }
   }
