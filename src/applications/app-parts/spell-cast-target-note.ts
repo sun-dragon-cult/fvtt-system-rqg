@@ -13,7 +13,8 @@ import {
   isSpiritCombatGate,
   SpellResistedByEnum,
   castsOnCasterOnly,
-  isTokenTargetKind,
+  isOneTargetKind,
+  noTargetMeansCaster,
 } from "../../data-model/item-data/spell";
 import { applyTargetTokenSelect, buildTargetTokenSelect } from "./target-token-select";
 import {
@@ -40,7 +41,7 @@ export type SpellCastTargetNote = {
  * What the cast dialog says about the current targets. A spell resolved by resistance rolls or
  * gated on spirit combat, or one limited to `maxTargets` (one for most, see spellMaxTargets),
  * constrains them; any other may be cast at any number of tokens, or none. A spell cast at a token
- * gets a picker for one target, which marks the tokens `reachWarningOf` finds beyond its reach. A
+ * or at an object, which a token may carry, gets a picker for one target, which marks the tokens `reachWarningOf` finds beyond its reach. A
  * spell that goes on its caster whatever is targeted names the caster.
  */
 export function buildSpellCastTargetNote(
@@ -90,16 +91,24 @@ export function buildSpellCastTargetNote(
 
   const showPicker =
     constrained ||
-    (isTokenTargetKind(targetKind) && resistedBy !== SpellResistedByEnum.ResistanceRollArea);
+    (isOneTargetKind(targetKind) && resistedBy !== SpellResistedByEnum.ResistanceRollArea);
+  // With a caster token to pick, nothing targeted means the caster, so it is what the picker shows
+  const defaultsToCaster =
+    showPicker && !!casterToken && noTargetMeansCaster(targetKind, resistedBy);
   const targetSelect = showPicker
     ? buildTargetTokenSelect(
         casterToken,
         reachWarningOf && ((token) => spellTargetReachLabel(reachWarningOf(token))),
+        defaultsToCaster,
       )
     : undefined;
 
   return {
-    targetName: targetNames || localize("RQG.Dialog.Common.NoTarget"),
+    targetName:
+      targetNames ||
+      (defaultsToCaster
+        ? localize("RQG.Dialog.Common.TargetSelf", { name: casterName })
+        : localize("RQG.Dialog.Common.NoTarget")),
     targetNote: targetNote,
     targetNoteClass: targetNoteClass,
     tooManyTargets: tooManyTargets,

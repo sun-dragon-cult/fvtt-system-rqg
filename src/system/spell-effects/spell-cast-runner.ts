@@ -137,6 +137,7 @@ export function recordCast(
     caster: record.caster,
     castMessageId: messageId,
     casterSuccessLevel: entry?.casterSuccessLevel ?? record.castSuccessLevel ?? undefined,
+    untargeted: entry?.untargeted ?? false,
   });
 }
 

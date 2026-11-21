@@ -124,6 +124,27 @@ export function isCasterKindWhenUntargeted(targetKind: string): boolean {
   return casterKindsWhenUntargeted.includes(targetKind);
 }
 
+const casterWhenUnresistedKinds: readonly string[] = [
+  SpellTargetKindEnum.Creature,
+  SpellTargetKindEnum.Spirit,
+  SpellTargetKindEnum.HitLocation,
+  SpellTargetKindEnum.SpellOrEffect,
+];
+
+/**
+ * Whether casting with nothing targeted means casting on the caster: a spell that can only go on
+ * its caster or the caster's weapon, or an unresisted spell at a creature or the like, whose
+ * target is the caster unless another is picked. For an object or a place, no target is a thing
+ * of its own, and a resisted spell's GM assigns actors.
+ */
+export function noTargetMeansCaster(targetKind: string, resistedBy: SpellResistedByEnum): boolean {
+  return (
+    isCasterKindWhenUntargeted(targetKind) ||
+    castsOnCasterOnly(targetKind, resistedBy) ||
+    (resistedBy === SpellResistedByEnum.None && casterWhenUnresistedKinds.includes(targetKind))
+  );
+}
+
 /** An unresisted spell that goes on its caster whatever is targeted, e.g. a summon. */
 export function castsOnCasterOnly(targetKind: string, resistedBy: SpellResistedByEnum): boolean {
   return casterOnlyKinds.includes(targetKind) && resistedBy === SpellResistedByEnum.None;

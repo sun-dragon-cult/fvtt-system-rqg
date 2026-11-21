@@ -26,6 +26,7 @@ import { runSpellApply } from "./run-spell-apply";
 import { castPoints } from "./spell-rules";
 import { spellBehaviorOf } from "./spell-behavior";
 import { holdsRegion } from "./spell-anchor";
+import { placeLight } from "./spell-light";
 
 /**
  * A cast of a spell: who cast it, at what level, and the points it spent (see `castPoints`).
@@ -42,6 +43,11 @@ export type SpellEffectCast = {
   magicPointsSpent: number;
   runePointsSpent: number;
   casterSuccessLevel: number | undefined;
+  /**
+   * Nothing was targeted, and the spell went on its caster instead. A spell that can't tell this
+   * from a cast at oneself, e.g. one placed on the scene, reads it here.
+   */
+  untargeted?: boolean | undefined;
 };
 
 /**
@@ -79,7 +85,7 @@ export type SpellEffectDuration = { value: number; units: string };
 export function spellEffectCast(
   spell: RqgItem,
   rollOptions: Record<string, unknown>,
-  cast: Pick<SpellEffectCast, "caster" | "castMessageId" | "casterSuccessLevel">,
+  cast: Pick<SpellEffectCast, "caster" | "castMessageId" | "casterSuccessLevel" | "untargeted">,
 ): SpellEffectCast {
   const level = Number(rollOptions["levelUsed"] ?? 0);
   const boost = Number(rollOptions["magicPointBoost"] ?? 0);
@@ -105,10 +111,11 @@ export function spellApplyScope(
 
 /** What a spell effect records about the cast that made it, as `system.spell`. */
 export function spellProvenance(spell: RqgItem, cast: SpellEffectCast) {
+  const { untargeted: _untargeted, ...recorded } = cast;
   return {
     spellName: spell.name ?? "",
     spellUuid: spell.uuid,
-    ...cast,
+    ...recorded,
     casterSuccessLevel: cast.casterSuccessLevel ?? null,
   };
 }
@@ -203,6 +210,11 @@ export async function applySpellEffect(
   const apply = options.areaRegion ? undefined : behavior?.apply;
   if (apply) {
     return runSpellApply({ ...behavior, apply }, scope);
+  }
+  // A spell with a light and no `apply` puts it on the scene when cast with no target; at a
+  // target, even the caster, its effect template goes on as usual
+  if (behavior?.light && cast.untargeted && !options.areaRegion) {
+    return placeLight(scope);
   }
   return attachSpellTemplate(scope, options);
 }

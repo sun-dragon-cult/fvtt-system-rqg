@@ -73,6 +73,7 @@ describe("game.system.api", () => {
           "metersToPixels": "function",
           "moveTokenNear": "function",
           "pickLocation": "function",
+          "placeLight": "function",
           "postMagicMissiles": "function",
           "removeSpellEffects": "function",
           "summon": "function",

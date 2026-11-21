@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { areaExtent, handleCreateSpellAreaQuery, spellRangeInMeters } from "./spell-area";
-import { areaPointOutOfReach, placeCancellable, polygonAreaInMeters } from "./place-spell-area";
+import {
+  areaPointOutOfReach,
+  placeCancellable,
+  polygonAreaInMeters,
+  spellReach,
+} from "./place-spell-area";
 import { summonerDocument } from "./token-cells";
 import { clearApplyClaims } from "./spell-apply-claims";
 
@@ -49,6 +54,52 @@ describe("areaPointOutOfReach", () => {
     ["out of range, before sight", no, no, "RQG.SpellArea.OutOfRange"],
   ])("tells a point %s", (_label, inRange, inSight, expected) => {
     expect(areaPointOutOfReach({ x: 0, y: 0 }, inRange, inSight)).toBe(expected);
+  });
+});
+
+describe("spellReach", () => {
+  const caster = { center: { x: 500, y: 500 }, vision: null } as any;
+  const sightOf = (radius: number) => ({
+    radius,
+    contains: (x: number) => x < 600,
+  });
+
+  afterEach(() => vi.unstubAllGlobals());
+
+  function reach(rangeMeters: number | undefined, sightWithoutRange?: boolean) {
+    const create = vi.fn((_origin: unknown, config: { radius: number }) => sightOf(config.radius));
+    vi.stubGlobal("canvas", {
+      scene: { grid: { size: 100, distance: 1.5, units: "m" } },
+      dimensions: { maxR: 5000 },
+    });
+    vi.stubGlobal("CONFIG", { Canvas: { polygonBackends: { sight: { create } } } });
+    return { result: spellReach(caster, rangeMeters, 0, sightWithoutRange), create };
+  }
+
+  it("sees as far as the range for a ranged spell", () => {
+    const { result, create } = reach(15);
+    expect(create).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ radius: 1000 }),
+    );
+    expect(result.inSight({ x: 700, y: 500 })).toBe(false);
+  });
+
+  it("has no sight without a range unless it is asked for", () => {
+    const { result, create } = reach(undefined);
+    expect(create).not.toHaveBeenCalled();
+    expect(result.inSight({ x: 700, y: 500 })).toBe(true);
+  });
+
+  it("sees as far as the scene goes without a range when sight is asked for", () => {
+    const { result, create } = reach(undefined, true);
+    expect(create).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ radius: 5000 }),
+    );
+    expect(result.inRange({ x: 9000, y: 9000 })).toBe(true);
+    expect(result.inSight({ x: 700, y: 500 })).toBe(false);
+    expect(result.inSight({ x: 550, y: 500 })).toBe(true);
   });
 });
 

@@ -44,6 +44,7 @@ import { initApplySpellBehaviorQuery } from "./system/spell-effects/run-spell-ap
 import { initContinueSpellCastQuery } from "./system/spell-effects/spell-cast-runner";
 import { initSpellEnd } from "./system/spell-effects/spell-end";
 import { initCreateSpellAreaQuery, initSpellAreaCleanup } from "./system/spell-effects/spell-area";
+import { initCreateSpellLightQuery } from "./system/spell-effects/spell-light";
 import { initSummonQuery } from "./system/spell-effects/summon";
 import { initSpellAnchors } from "./system/spell-effects/spell-anchor";
 import { SpellAreaRegionBehavior } from "./scene/spell-area-region-behavior";
@@ -129,6 +130,7 @@ Hooks.once("init", () => {
   initSpellAreaCleanup();
   initSpellAnchors();
   initCreateSpellAreaQuery();
+  initCreateSpellLightQuery();
   initSummonQuery();
   RqgItem.init();
   RqgHotbar.init();

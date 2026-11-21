@@ -47,6 +47,7 @@ import type { SpellStackingRule } from "./active-effect/data-model/spell-effect.
 import type { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior.ts";
 import type { SpellAreaRegionBehavior } from "./scene/spell-area-region-behavior.ts";
 import type { CreateSpellAreaQueryData } from "./system/spell-effects/spell-area.ts";
+import type { CreateSpellLightQueryData } from "./system/spell-effects/spell-light.ts";
 import type { SummonQueryData } from "./system/spell-effects/summon.ts";
 import type { ArmorDataModel } from "./data-model/item-data/armor-data-model";
 import type { CultDataModel } from "./data-model/item-data/cult-data-model";
@@ -236,6 +237,10 @@ declare global {
         data: CreateSpellAreaQueryData,
         context: RqgQueryContext,
       ) => Promise<SpellApplyAnswer | undefined>;
+      "rqg.createSpellLight": (
+        data: CreateSpellLightQueryData,
+        context: RqgQueryContext,
+      ) => Promise<SpellApplyAnswer | undefined>;
       "rqg.summon": (
         data: SummonQueryData,
         context: RqgQueryContext,
@@ -313,6 +318,7 @@ declare global {
     Scene: { [systemId]?: SceneFlags };
     Region: { [systemId]?: SpellHeldFlags };
     Token: { [systemId]?: SpellHeldFlags };
+    AmbientLight: { [systemId]?: SpellHeldFlags };
     Folder: { [systemId]?: RqgFolderFlags };
     ChatMessage: { [systemId]?: RqgChatMessageDataSource };
   }

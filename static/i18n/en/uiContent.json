@@ -2711,6 +2711,9 @@
       "OutOfSight": "{spellName}: the caster must be able to see the center of the area.",
       "TooLarge": "{spellName}: that area is {area} m², more than the {maxArea} m² the spell covers."
     },
+    "SpellLight": {
+      "Name": "{spellName} ({casterName})"
+    },
     "SpellLocation": {
       "Pick": "{spellName}: click the place. Right-click or Escape cancels.",
       "PickInRange": "{spellName}: click the place, within range. Right-click or Escape cancels.",

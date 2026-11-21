@@ -36,7 +36,8 @@ function sceneOf(uuid: string) {
 
 function doc(uuid: string, flags: Record<string, unknown> = {}, extra: object = {}) {
   const parts = uuid.split(".");
-  const onScene = parts[0] === "Scene" && ["Region", "Token"].includes(parts[2] ?? "");
+  const onScene =
+    parts[0] === "Scene" && ["Region", "Token", "AmbientLight"].includes(parts[2] ?? "");
   const document: any = {
     uuid,
     id: parts.at(-1),
@@ -74,8 +75,12 @@ function actor(uuid: string, effects: any[] = [], extra: object = {}) {
   return parent;
 }
 
-function scene(regions: any[] = [], tokens: any[] = []) {
-  return { regions: { contents: regions }, tokens: { contents: tokens } };
+function scene(regions: any[] = [], tokens: any[] = [], lights: any[] = []) {
+  return {
+    regions: { contents: regions },
+    tokens: { contents: tokens },
+    lights: { contents: lights },
+  };
 }
 
 const hold = (uuid: string) => ({ kind: "document", uuid });
@@ -238,6 +243,20 @@ describe("spell anchors", () => {
       ]);
     });
 
+    it("deletes a light whose effect is gone", async () => {
+      const light = doc("Scene.s.AmbientLight.l", { heldBy: "Actor.gone.ActiveEffect.e" });
+      const kept = doc("Scene.s.AmbientLight.k", { heldBy: "Actor.c.ActiveEffect.e" });
+      actor("Actor.c", [
+        doc("Actor.c.ActiveEffect.e", { holds: [hold("Scene.s.AmbientLight.k")] }),
+      ]);
+      (game as any).scenes.contents = [scene([], [], [light, kept])];
+      await reconcileSpellAnchors();
+      expect(scenes.get("Scene.s").deleteEmbeddedDocuments).toHaveBeenCalledWith("AmbientLight", [
+        "l",
+      ]);
+      expect(kept.delete).not.toHaveBeenCalled();
+    });
+
     it("takes an area's effect off a token whose area is gone or that left it", async () => {
       const token = { id: "t", actorLink: false };
       const region = doc("Scene.s.Region.r", {}, { tokens: new Set() });
@@ -302,6 +321,13 @@ describe("spell anchors", () => {
       expect(anchor.delete).toHaveBeenCalledOnce();
     });
 
+    it("ends the effect of a deleted held light", async () => {
+      const anchor = doc("Actor.c.ActiveEffect.e", { holds: [hold("Scene.s.AmbientLight.l")] });
+      handlers["deleteAmbientLight"]!(doc("Scene.s.AmbientLight.l", { heldBy: anchor.uuid }));
+      await settle();
+      expect(anchor.delete).toHaveBeenCalledOnce();
+    });
+
     it("deletes what the effects on a deleted caster token held", async () => {
       const region = doc("Scene.s.Region.r", { heldBy: "Scene.s.Token.t.Actor.a.ActiveEffect.e" });
       const other = doc("Scene.s.Region.o", { heldBy: "Scene.s.Token.t2.Actor.a.ActiveEffect.e" });
@@ -351,12 +377,12 @@ describe("spell anchors", () => {
       expect(created(true)).not.toHaveBeenCalled();
     });
 
-    it("drops heldBy from the Regions and tokens of a duplicated scene", () => {
+    it("drops heldBy from the Regions, tokens and lights of a duplicated scene", () => {
       const sceneCopy = (options: object) => {
         const region = doc("Scene.s2.Region.r", { heldBy: "Actor.c.ActiveEffect.e" });
         region.updateSource = vi.fn();
         handlers["preCreateScene"]!(
-          { regions: { contents: [region] }, tokens: { contents: [] } },
+          { regions: { contents: [region] }, tokens: { contents: [] }, lights: { contents: [] } },
           {},
           options,
         );
@@ -365,6 +391,13 @@ describe("spell anchors", () => {
       expect(sceneCopy({})).toHaveBeenCalledWith({ flags: { rqg: { heldBy: "" } } });
       // An Adventure import keeps every id, so its effects still hold what it brings along
       expect(sceneCopy({ keepId: true })).not.toHaveBeenCalled();
+    });
+
+    it("drops heldBy from a copy of a held light", () => {
+      const light = doc("Scene.s.AmbientLight.l", { heldBy: "Actor.c.ActiveEffect.e" });
+      light.updateSource = vi.fn();
+      handlers["preCreateAmbientLight"]!(light, {}, {});
+      expect(light.updateSource).toHaveBeenCalledWith({ flags: { rqg: { heldBy: "" } } });
     });
 
     it("keeps heldBy when undo recreates a deleted held document with its own id", () => {

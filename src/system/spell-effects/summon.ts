@@ -2,14 +2,14 @@ import { hasActiveGm, localize } from "../util";
 import { systemId } from "../config";
 import { Rqid } from "../api/rqid-api";
 import {
-  spellProvenance,
   type SpellEffectApplied,
   type SpellEffectDuration,
   type SpellApplyScope,
 } from "./apply-spell-effect";
 import { casterTokenOnScene } from "./spell-area-targets";
 import { placeSummonedToken } from "./place-summoned-token";
-import { createAnchored, type HeldDocument } from "./spell-anchor";
+import { createHeldForSpell } from "./held-scene-document";
+import type { HeldDocument } from "./spell-anchor";
 import { playersOwning } from "./spell-apply-claims";
 import {
   applyRequestData,
@@ -217,16 +217,13 @@ async function summonAsGm(
     ]),
   );
   const tokenId = foundry.utils.randomID();
-  const anchored = await createAnchored({
+  let token: TokenDocument | undefined;
+  const result = await createHeldForSpell({
+    scope,
     // The summoned token's own actor holds it, so the token goes when the summoning ends
     effectParentUuid: `${scene.uuid}.Token.${tokenId}.Actor.${actor.id}`,
-    effectData: {
-      name: spellName,
-      img: options.img ?? scope.spell.img ?? undefined,
-      duration: options.duration ?? scope.duration,
-      start: { time: game.time?.worldTime ?? 0 },
-      system: { spell: spellProvenance(scope.spell, scope.cast) },
-    },
+    duration: options.duration ?? scope.duration,
+    img: options.img,
     create: async (heldBy) => {
       const tokenData = await actor.getTokenDocument(
         {
@@ -242,23 +239,23 @@ async function summonAsGm(
         } as any,
         { parent: scene },
       );
-      return ((await scene.createEmbeddedDocuments("Token", [tokenData.toObject()], {
+      const created = ((await scene.createEmbeddedDocuments("Token", [tokenData.toObject()], {
         keepId: true,
       })) ?? []) as HeldDocument[];
+      token = created[0] as TokenDocument | undefined;
+      return created;
     },
   });
-  if (!anchored) {
+  if (!result) {
     return undefined;
   }
-  const { effect, held } = anchored;
-  const token = held[0] as TokenDocument;
   ui.notifications?.info(
     localize("RQG.ChatMessage.SpellCast.Summon.Summoned", {
       spellName,
       summonedName: token?.name ?? "",
     }),
   );
-  return { outcome: "applied", effectUuids: [effect.uuid] };
+  return result;
 }
 
 export function initSummonQuery(): void {
