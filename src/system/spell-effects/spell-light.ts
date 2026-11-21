@@ -101,6 +101,7 @@ export async function placeLight(scope: SpellApplyScope): Promise<SpellEffectApp
       rangeMeters: ranged ? spellRangeInMeters(scope.spell) : undefined,
       requireSight: true,
       rotatable: (light.angle ?? 360) < 360,
+      previewLight: light,
     }),
   );
   if (!placed) {

@@ -2,7 +2,9 @@ import { localize } from "../util";
 import { drawReach, spellReach } from "./place-spell-area";
 import { casterTokenOnScene } from "./spell-area-targets";
 import { nearestFreeCell, summonerToken, tokenCell } from "./token-cells";
+import { metersToPixels } from "./scene-distance";
 import type { SpellApplyScope } from "./apply-spell-effect";
+import type { SpellLight } from "./spell-behavior";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 
 type Point = { x: number; y: number };
@@ -24,7 +26,25 @@ export type PickLocationOptions = {
   requireSight?: boolean | undefined;
   /** The mouse wheel turns the place, e.g. to aim a cone of light; the result then has `rotation`. */
   rotatable?: boolean | undefined;
+  /** A light to show how far it reaches around the point, in its own color, and as its cone turns. */
+  previewLight?: SpellLight | undefined;
 };
+
+/** What `clickPoint` draws around the point: the reach in pixels, the cone's angle and its color. */
+type ReachPreview = { radius: number; angle: number; color: number };
+
+function reachPreviewOf(light: SpellLight | undefined): ReachPreview | undefined {
+  const grid = canvas?.scene?.grid;
+  if (!light || !grid) {
+    return undefined;
+  }
+  const color = foundry.utils.Color.from(light.color ?? "#ffffff").valueOf();
+  return {
+    radius: metersToPixels(light.radiusMeters, grid),
+    angle: light.angle ?? 360,
+    color: Number.isFinite(color) ? color : 0xffffff,
+  };
+}
 
 /**
  * Let the user click a point on the canvas for a spell, snapped to the center of a grid space, for
@@ -76,6 +96,7 @@ export async function pickSpellLocation(
       },
       (point) => inRange(point) && (!options.requireSight || inSight(point)),
       !!options.rotatable,
+      reachPreviewOf(options.previewLight),
     );
   } finally {
     if (ring && !ring.destroyed) {
@@ -94,6 +115,7 @@ function clickPoint(
   accept: (point: Point) => boolean,
   isValid: (point: Point) => boolean,
   rotatable = false,
+  reach?: ReachPreview,
 ): Promise<PickedLocation | undefined> {
   const overlay = new PIXI.Graphics();
   overlay.eventMode = "static";
@@ -107,16 +129,30 @@ function clickPoint(
   let last: Point = snappedPointer();
   const draw = (point: Point) => {
     last = point;
-    const color = isValid(point) ? 0x7fb3d5 : 0xcc3333;
+    const valid = isValid(point);
+    const color = valid ? 0x7fb3d5 : 0xcc3333;
+    // Rotation 0 faces down, so the facing is the angle from the x axis plus 90 degrees
+    const facing = ((rotation + 90) * Math.PI) / 180;
+    marker.clear();
+    if (reach) {
+      const half = (Math.min(reach.angle, 360) * Math.PI) / 360;
+      marker.lineStyle(2, valid ? reach.color : color, 0.7).beginFill(reach.color, 0.2);
+      if (reach.angle >= 360) {
+        marker.drawCircle(point.x, point.y, reach.radius);
+      } else {
+        marker
+          .moveTo(point.x, point.y)
+          .arc(point.x, point.y, reach.radius, facing - half, facing + half)
+          .closePath();
+      }
+      marker.endFill();
+    }
     marker
-      .clear()
       .lineStyle(3, color, 0.9)
       .beginFill(color, 0.25)
       .drawCircle(point.x, point.y, size / 2)
       .endFill();
-    if (rotatable) {
-      // Rotation 0 faces down, so the facing is the angle from the x axis plus 90 degrees
-      const facing = ((rotation + 90) * Math.PI) / 180;
+    if (rotatable && !reach) {
       marker
         .moveTo(point.x, point.y)
         .lineTo(point.x + Math.cos(facing) * size * 1.5, point.y + Math.sin(facing) * size * 1.5);
