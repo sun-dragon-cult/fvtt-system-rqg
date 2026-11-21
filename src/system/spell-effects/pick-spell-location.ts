@@ -12,7 +12,7 @@ type Point = { x: number; y: number };
 /** A picked place; `rotation` in degrees, 0 facing down as for an ambient light, when rotatable. */
 export type PickedLocation = Point & { rotation?: number };
 
-const rotationStep = 12;
+const rotationStep = 10;
 
 /**
  * The options of `spellEffects.pickLocation`.
