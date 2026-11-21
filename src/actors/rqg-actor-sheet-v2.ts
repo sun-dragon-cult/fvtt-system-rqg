@@ -47,7 +47,8 @@ import { templatePaths } from "../system/load-handlebars-templates";
 import * as DataPrep from "./rqg-actor-sheet-data-prep";
 import { RqidLink } from "../data-model/shared/rqid-link";
 import { decorateRqidFrameButton, getRqidFrameButton } from "../documents/rqid-sheet-button";
-import { RqgContextMenu } from "../foundry-ui/rqg-context-menu";
+import { RqgContextMenu, type RqgContextMenuEntry } from "../foundry-ui/rqg-context-menu";
+import { editableOnlyAction } from "./editable-only-action";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background-enums";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import { combatMenuOptions } from "./context-menus/combat-context-menu";
@@ -204,19 +205,19 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     },
     actions: {
       editItem: RqgActorSheetV2._openItemSheetAction,
-      deleteItem: RqgActorSheetV2._deleteItemAction,
-      sortItems: RqgActorSheetV2._sortItemsAction,
-      addWound: RqgActorSheetV2._addWoundAction,
-      healWound: RqgActorSheetV2._healWoundAction,
+      deleteItem: editableOnlyAction(RqgActorSheetV2._deleteItemAction),
+      sortItems: editableOnlyAction(RqgActorSheetV2._sortItemsAction),
+      addWound: editableOnlyAction(RqgActorSheetV2._addWoundAction),
+      healWound: editableOnlyAction(RqgActorSheetV2._healWoundAction),
       flipHitLocationSortSetting: RqgActorSheetV2._flipHitLocationSortSettingAction,
-      deleteActiveEffect: RqgActorSheetV2._deleteActiveEffectAction,
+      deleteActiveEffect: editableOnlyAction(RqgActorSheetV2._deleteActiveEffectAction),
       editActiveEffect: RqgActorSheetV2._editActiveEffectAction,
-      setSR: RqgActorSheetV2._setSRAction,
-      toggleSR: RqgActorSheetV2._toggleSRAction,
-      addPassion: RqgActorSheetV2._addPassionAction,
-      addGear: RqgActorSheetV2._addGearAction,
+      setSR: editableOnlyAction(RqgActorSheetV2._setSRAction),
+      toggleSR: editableOnlyAction(RqgActorSheetV2._toggleSRAction),
+      addPassion: editableOnlyAction(RqgActorSheetV2._addPassionAction),
+      addGear: editableOnlyAction(RqgActorSheetV2._addGearAction),
       openMagicPointSources: RqgActorSheetV2._openMagicPointSourcesAction,
-      resetMagicPointsBaseMax: RqgActorSheetV2._resetMagicPointsBaseMaxAction,
+      resetMagicPointsBaseMax: editableOnlyAction(RqgActorSheetV2._resetMagicPointsBaseMaxAction),
     },
   } satisfies foundry.applications.api.ApplicationV2.DefaultOptions;
 
@@ -607,6 +608,96 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     super._onClose(options);
   }
 
+  override async _onFirstRender(
+    context: foundry.applications.api.HandlebarsApplicationMixin.RenderContext,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
+    await super._onFirstRender(context, options);
+
+    // Bound once to this.element; entries only show while the sheet is editable (a menu with no
+    // visible entries doesn't open), so this follows ownership changes while the sheet is open.
+    const editableOnly = (entries: RqgContextMenuEntry[]): RqgContextMenuEntry[] =>
+      entries.map((entry) => ({
+        ...entry,
+        visible: (target: HTMLElement) =>
+          this.isEditable &&
+          (typeof entry.visible === "function" ? entry.visible(target) : (entry.visible ?? true)),
+      }));
+    const ctxMenuOptions = {
+      fixed: true,
+      onOpen: (target: HTMLElement) => target.classList.add("context-highlight"),
+      onClose: (target: HTMLElement) => target.classList.remove("context-highlight"),
+    };
+    new RqgContextMenu(
+      this.element,
+      ".characteristic.contextmenu",
+      editableOnly(characteristicMenuOptions(this.actor, this.document.token)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".combat.contextmenu",
+      editableOnly(combatMenuOptions(this.actor)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".hit-location.contextmenu",
+      editableOnly(hitLocationMenuOptions(this.actor)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".rune.contextmenu",
+      editableOnly(runeMenuOptions(this.actor, this.document.token)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".cult.contextmenu",
+      editableOnly(cultMenuOptions(this.actor)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".skill.contextmenu",
+      editableOnly(skillMenuOptions(this.actor, this.document.token)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".passion.contextmenu",
+      editableOnly(passionMenuOptions(this.actor, this.document.token)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".spirit-magic.contextmenu",
+      editableOnly(spiritMagicMenuOptions(this.actor)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".matrix-spell-contextmenu",
+      editableOnly(matrixSpellMenuOptions(this.actor, this.document.token)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".rune-magic.contextmenu",
+      editableOnly(runeMagicMenuOptions(this.actor)),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".gear.contextmenu",
+      editableOnly(gearMenuOptions(this.actor)),
+      ctxMenuOptions,
+    );
+
+    RqidLink.bindHandlers(this.element);
+  }
+
   override async _onRender(
     context: foundry.applications.api.HandlebarsApplicationMixin.RenderContext,
     options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
@@ -683,84 +774,88 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       badge?.remove();
     }
 
-    // Context menus bind to this.element — create once to avoid accumulating listeners.
-    if (options.isFirstRender) {
-      const ctxMenuOptions = {
-        fixed: true,
-        onOpen: (target: HTMLElement) => target.classList.add("context-highlight"),
-        onClose: (target: HTMLElement) => target.classList.remove("context-highlight"),
+    // Set rich HTML tooltips on item icons (description + GM notes)
+    const isGM = game.user?.isGM ?? false;
+    this.element.querySelectorAll<HTMLElement>("[data-item-tooltip]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      if (!item) {
+        return;
+      }
+      const itemSystem = item.system as {
+        enrichedDescription?: string;
+        enrichedGmNotes?: string;
       };
-      new RqgContextMenu(
-        this.element,
-        ".characteristic.contextmenu",
-        characteristicMenuOptions(this.actor, this.document.token),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".combat.contextmenu",
-        combatMenuOptions(this.actor),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".hit-location.contextmenu",
-        hitLocationMenuOptions(this.actor),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".rune.contextmenu",
-        runeMenuOptions(this.actor, this.document.token),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".cult.contextmenu",
-        cultMenuOptions(this.actor),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".skill.contextmenu",
-        skillMenuOptions(this.actor, this.document.token),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".passion.contextmenu",
-        passionMenuOptions(this.actor, this.document.token),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".spirit-magic.contextmenu",
-        spiritMagicMenuOptions(this.actor),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".matrix-spell-contextmenu",
-        matrixSpellMenuOptions(this.actor, this.document.token),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".rune-magic.contextmenu",
-        runeMagicMenuOptions(this.actor),
-        ctxMenuOptions,
-      );
-      new RqgContextMenu(
-        this.element,
-        ".gear.contextmenu",
-        gearMenuOptions(this.actor),
-        ctxMenuOptions,
-      );
-    }
+      const parts: string[] = [];
+      if (itemSystem.enrichedDescription) {
+        parts.push(itemSystem.enrichedDescription);
+      }
+      if (isGM && itemSystem.enrichedGmNotes) {
+        parts.push(
+          `<hr><div style="text-align:center"><strong>${localize("RQG.Item.SheetTab.GMNotes")}</strong></div>${itemSystem.enrichedGmNotes}`,
+        );
+      }
+      if (parts.length) {
+        el.dataset["tooltip"] = `<div class="item-description-tooltip">${parts.join("")}</div>`;
+      }
 
-    // RQID link open/delete handlers (bind once; delegated handlers survive re-renders)
-    if (options.isFirstRender) {
-      RqidLink.bindHandlers(this.element);
+      // Open item sheet on the description-like tab when the icon is clicked.
+      el.addEventListener("click", () => {
+        const tooltipTabMap: Partial<Record<ItemTypeEnum, string>> = {
+          [ItemTypeEnum.Passion]: "backstory",
+          [ItemTypeEnum.Gear]: "description",
+          [ItemTypeEnum.Armor]: "description",
+          [ItemTypeEnum.Weapon]: "description",
+        };
+        const sheet = item.sheet as any;
+        const tab = tooltipTabMap[item.type as ItemTypeEnum];
+        if (tab) {
+          sheet.tabGroups = { ...(sheet.tabGroups ?? {}), sheet: tab };
+        }
+        sheet?.render({ force: true });
+      });
+    });
+
+    // Skills filter
+    this.element.querySelectorAll<HTMLInputElement>(".skill-filter").forEach((input) => {
+      const applyFilter = (query: string) => {
+        const masonry = input.closest(".skills-tab-v2")?.querySelector(".masonry");
+        masonry?.querySelectorAll<HTMLElement>(".masonry-item").forEach((category) => {
+          let anyVisible = false;
+          category.querySelectorAll<HTMLElement>(".skill-row").forEach((row) => {
+            const nameEl = row.querySelector<HTMLElement>("[data-item-roll]");
+            const text = nameEl?.textContent?.toLowerCase() ?? "";
+            const visible = !query || text.includes(query);
+            row.style.display = visible ? "" : "contents"; // keep display:contents for visible rows
+            // Use a data flag instead — hide all cells when filtered out
+            row.querySelectorAll<HTMLElement>(":scope > *").forEach((cell) => {
+              cell.style.display = visible ? "" : "none";
+            });
+            if (visible) {
+              anyVisible = true;
+            }
+          });
+          (category as HTMLElement).style.display = anyVisible ? "" : "none";
+        });
+      };
+
+      // Restore filter from previous render
+      if (this.#skillFilterQuery) {
+        input.value = this.#skillFilterQuery;
+        applyFilter(this.#skillFilterQuery);
+      }
+
+      input.addEventListener("input", () => {
+        const query = input.value.trim().toLowerCase();
+        this.#skillFilterQuery = query;
+        applyFilter(query);
+      });
+    });
+
+    // Read-only sheets (e.g. an Observer's) get no play-mode handlers; the class greys roll targets.
+    this.element.classList.toggle("read-only", !this.isEditable);
+    if (!this.isEditable) {
+      return;
     }
 
     // --- Combat tab event handlers ---
@@ -881,48 +976,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       });
     });
 
-    // Set rich HTML tooltips on item icons (description + GM notes)
-    const isGM = game.user?.isGM ?? false;
-    this.element.querySelectorAll<HTMLElement>("[data-item-tooltip]").forEach((el) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      const item = this.actor.items.get(itemId) as RqgItem | undefined;
-      if (!item) {
-        return;
-      }
-      const itemSystem = item.system as {
-        enrichedDescription?: string;
-        enrichedGmNotes?: string;
-      };
-      const parts: string[] = [];
-      if (itemSystem.enrichedDescription) {
-        parts.push(itemSystem.enrichedDescription);
-      }
-      if (isGM && itemSystem.enrichedGmNotes) {
-        parts.push(
-          `<hr><div style="text-align:center"><strong>${localize("RQG.Item.SheetTab.GMNotes")}</strong></div>${itemSystem.enrichedGmNotes}`,
-        );
-      }
-      if (parts.length) {
-        el.dataset["tooltip"] = `<div class="item-description-tooltip">${parts.join("")}</div>`;
-      }
-
-      // Open item sheet on the description-like tab when the icon is clicked.
-      el.addEventListener("click", () => {
-        const tooltipTabMap: Partial<Record<ItemTypeEnum, string>> = {
-          [ItemTypeEnum.Passion]: "backstory",
-          [ItemTypeEnum.Gear]: "description",
-          [ItemTypeEnum.Armor]: "description",
-          [ItemTypeEnum.Weapon]: "description",
-        };
-        const sheet = item.sheet as any;
-        const tab = tooltipTabMap[item.type as ItemTypeEnum];
-        if (tab) {
-          sheet.tabGroups = { ...(sheet.tabGroups ?? {}), sheet: tab };
-        }
-        sheet?.render({ force: true });
-      });
-    });
-
     // Roll Item (Skill, Rune, Passion)
     this.element.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -957,42 +1010,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
             token: this.document.token,
             modifiers: weaponEffectModifiers,
           }),
-      });
-    });
-
-    // Skills filter
-    this.element.querySelectorAll<HTMLInputElement>(".skill-filter").forEach((input) => {
-      const applyFilter = (query: string) => {
-        const masonry = input.closest(".skills-tab-v2")?.querySelector(".masonry");
-        masonry?.querySelectorAll<HTMLElement>(".masonry-item").forEach((category) => {
-          let anyVisible = false;
-          category.querySelectorAll<HTMLElement>(".skill-row").forEach((row) => {
-            const nameEl = row.querySelector<HTMLElement>("[data-item-roll]");
-            const text = nameEl?.textContent?.toLowerCase() ?? "";
-            const visible = !query || text.includes(query);
-            row.style.display = visible ? "" : "contents"; // keep display:contents for visible rows
-            // Use a data flag instead — hide all cells when filtered out
-            row.querySelectorAll<HTMLElement>(":scope > *").forEach((cell) => {
-              cell.style.display = visible ? "" : "none";
-            });
-            if (visible) {
-              anyVisible = true;
-            }
-          });
-          (category as HTMLElement).style.display = anyVisible ? "" : "none";
-        });
-      };
-
-      // Restore filter from previous render
-      if (this.#skillFilterQuery) {
-        input.value = this.#skillFilterQuery;
-        applyFilter(this.#skillFilterQuery);
-      }
-
-      input.addEventListener("input", () => {
-        const query = input.value.trim().toLowerCase();
-        this.#skillFilterQuery = query;
-        applyFilter(query);
       });
     });
 
