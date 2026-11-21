@@ -18,6 +18,7 @@ function createCharacterActor(overrides: {
   healingSettledWorldTime?: number | null;
   items?: any[];
   hasPlayerOwner?: boolean;
+  automaticRecoveryPaused?: boolean;
 }): any {
   const items: any = overrides.items ?? [];
   items.get = (id: string) => items.find((i: any) => i.id === id);
@@ -26,6 +27,7 @@ function createCharacterActor(overrides: {
   actor.hasPlayerOwner = overrides.hasPlayerOwner ?? true;
   actor.system = {
     attributes: {
+      automaticRecoveryPaused: overrides.automaticRecoveryPaused ?? false,
       hitPoints: overrides.hitPoints ?? { value: 5, max: 18 },
       healingRate: overrides.healingRate ?? 2,
       healingSettledWorldTime: overrides.healingSettledWorldTime ?? null,
@@ -74,7 +76,7 @@ describe("RqgActor.catchUpNaturalHealing", () => {
     });
   });
 
-  it("heals every wounded hit location by healingRate per elapsed week and advances the checkpoint", async () => {
+  it.each([true, false])("heals wounded locations (hasPlayerOwner: %s)", async (hasPlayerOwner) => {
     const secondsPerWeek = 7 * 24 * 60 * 60;
     const leftLeg = createHitLocationItem("leg1", [4]);
     const actor = createCharacterActor({
@@ -82,6 +84,7 @@ describe("RqgActor.catchUpNaturalHealing", () => {
       healingRate: 2,
       healingSettledWorldTime: 0,
       items: [leftLeg],
+      hasPlayerOwner,
     });
     (game as any).time = { worldTime: secondsPerWeek };
 
@@ -171,16 +174,19 @@ describe("RqgActor.catchUpNaturalHealing", () => {
     expect(actor.update).not.toHaveBeenCalled();
   });
 
-  it("is a no-op for an actor with no player owner", async () => {
-    const secondsPerWeek = 7 * 24 * 60 * 60;
+  it("does not heal or advance the checkpoint while paused", async () => {
+    const leg = createHitLocationItem("leg1", [4]);
     const actor = createCharacterActor({
-      healingSettledWorldTime: 0,
+      automaticRecoveryPaused: true,
       hasPlayerOwner: false,
+      healingSettledWorldTime: 0,
+      items: [leg],
     });
-    (game as any).time = { worldTime: secondsPerWeek };
+    (game as any).time = { worldTime: 7 * 24 * 60 * 60 };
 
     await actor.catchUpNaturalHealing();
 
+    expect(leg.update).not.toHaveBeenCalled();
     expect(actor.update).not.toHaveBeenCalled();
   });
 

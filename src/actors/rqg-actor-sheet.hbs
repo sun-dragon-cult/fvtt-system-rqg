@@ -161,6 +161,20 @@
               </span>
             {{/if}}
           {{/edit-mode}}
+          {{#if isGM}}
+            {{#if system.editMode}}
+              <label data-tooltip="{{localize 'RQG.Actor.Attributes.AutomaticRecoveryPausedHint'}}">
+                <input type="checkbox" name="system.attributes.automaticRecoveryPaused"
+                       {{checked system.attributes.automaticRecoveryPaused}}>
+                {{localize "RQG.Actor.Attributes.AutomaticRecoveryPaused"}}
+              </label>
+            {{else if system.attributes.automaticRecoveryPaused}}
+              <span class="recovery-paused" data-tooltip="{{localize 'RQG.Actor.Attributes.AutomaticRecoveryPausedHint'}}">
+                <i class="fas fa-pause" aria-hidden="true"></i>
+                {{localize "RQG.Actor.Attributes.RecoveryPaused"}}
+              </span>
+            {{/if}}
+          {{/if}}
         </div>
 
         <fieldset class="mov-enc"

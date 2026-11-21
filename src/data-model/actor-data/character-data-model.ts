@@ -123,6 +123,7 @@ function defineCharacterSchema() {
     }),
 
     attributes: new SchemaField({
+      automaticRecoveryPaused: new BooleanField({ nullable: false, initial: false }),
       magicPoints: magicPointsSchemaField(),
       /** 1 = RAW baseline (1 point/24h, p.54); 2 = twice as fast, 0.5 = half as fast.
        *  Lets Humakti gifts / HeroQuest effects speed up or slow down recovery (#512). */
