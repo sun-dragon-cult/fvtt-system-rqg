@@ -313,6 +313,7 @@ declare global {
     Scene: { [systemId]?: SceneFlags };
     Region: { [systemId]?: SpellHeldFlags };
     Token: { [systemId]?: SpellHeldFlags };
+    AmbientLight: { [systemId]?: SpellHeldFlags };
     Folder: { [systemId]?: RqgFolderFlags };
     ChatMessage: { [systemId]?: RqgChatMessageDataSource };
   }
