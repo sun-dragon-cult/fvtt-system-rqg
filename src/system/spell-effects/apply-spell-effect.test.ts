@@ -65,4 +65,15 @@ describe("spellEffectCast", () => {
       casterSuccessLevel: null,
     });
   });
+
+  it("carries untargeted on the cast but not into the effect's provenance", () => {
+    const bladesharp = spell("spiritMagic", "i.spirit-magic.bladesharp");
+    const cast = spellEffectCast(
+      bladesharp,
+      { levelUsed: 1 },
+      { caster, castMessageId: "m", casterSuccessLevel: undefined, untargeted: true },
+    );
+    expect(cast.untargeted).toBe(true);
+    expect(spellProvenance(bladesharp, cast)).not.toHaveProperty("untargeted");
+  });
 });

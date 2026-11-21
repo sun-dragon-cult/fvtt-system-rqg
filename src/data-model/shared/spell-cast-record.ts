@@ -60,6 +60,8 @@ export function canEntryMoveOn(entry: Pick<SpellCastEntry, "stage" | "actorUuid"
 export type SpellCastEntry = ActorRef & {
   id: string;
   isCaster: boolean;
+  /** Nothing was targeted, so the entry fell back to the caster (or to no actor at all). */
+  untargeted: boolean;
   stage: SpellCastStage;
   state: SpellTargetOutcomeState;
   resolvedBy: SpellTargetOutcomeResolvedBy | null;
@@ -128,6 +130,7 @@ export function spellCastRecordFields() {
         id: new StringField({ blank: false, nullable: false, required: true }),
         ...actorRefFields(),
         isCaster: new BooleanField({ nullable: false, initial: false }),
+        untargeted: new BooleanField({ nullable: false, initial: false }),
         stage: new StringField({
           blank: false,
           nullable: false,
@@ -169,7 +172,7 @@ export function spellCastRecordFields() {
 
 /** A token or actor the spell was cast at. */
 export type SpellCastTarget = Pick<SpellCastEntry, "actorUuid" | "tokenUuid" | "isCaster"> &
-  Partial<Pick<SpellCastEntry, "reachWarning">>;
+  Partial<Pick<SpellCastEntry, "reachWarning" | "untargeted">>;
 
 export function newSpellCastEntry(id: string, target: SpellCastTarget): SpellCastEntry {
   return {
@@ -177,6 +180,7 @@ export function newSpellCastEntry(id: string, target: SpellCastTarget): SpellCas
     actorUuid: target.actorUuid,
     tokenUuid: target.tokenUuid,
     isCaster: target.isCaster,
+    untargeted: target.untargeted ?? false,
     stage: "targeted",
     state: "pending",
     resolvedBy: null,
@@ -204,11 +208,12 @@ export function buildSpellCastEntries(params: {
   newId: () => string;
 }): SpellCastEntry[] {
   const { castSucceeded, resistedBy, targetKind, caster, newId } = params;
+  const nothingTargeted = !params.targets.length;
   const untargeted: SpellCastTarget =
     (resistedBy === SpellResistedByEnum.None || isCasterKindWhenUntargeted(targetKind)) &&
     !isSpiritCombatGate(resistedBy)
-      ? { ...caster, isCaster: true }
-      : { actorUuid: "", tokenUuid: "", isCaster: false };
+      ? { ...caster, isCaster: true, untargeted: nothingTargeted }
+      : { actorUuid: "", tokenUuid: "", isCaster: false, untargeted: nothingTargeted };
   const targets =
     params.targets.length && !castsOnCasterOnly(targetKind, resistedBy)
       ? params.targets

@@ -42,6 +42,11 @@ export type SpellEffectCast = {
   magicPointsSpent: number;
   runePointsSpent: number;
   casterSuccessLevel: number | undefined;
+  /**
+   * Nothing was targeted, and the spell went on its caster instead. A spell that can't tell this
+   * from a cast at oneself, e.g. one placed on the scene, reads it here.
+   */
+  untargeted?: boolean | undefined;
 };
 
 /**
@@ -79,7 +84,7 @@ export type SpellEffectDuration = { value: number; units: string };
 export function spellEffectCast(
   spell: RqgItem,
   rollOptions: Record<string, unknown>,
-  cast: Pick<SpellEffectCast, "caster" | "castMessageId" | "casterSuccessLevel">,
+  cast: Pick<SpellEffectCast, "caster" | "castMessageId" | "casterSuccessLevel" | "untargeted">,
 ): SpellEffectCast {
   const level = Number(rollOptions["levelUsed"] ?? 0);
   const boost = Number(rollOptions["magicPointBoost"] ?? 0);
@@ -105,10 +110,11 @@ export function spellApplyScope(
 
 /** What a spell effect records about the cast that made it, as `system.spell`. */
 export function spellProvenance(spell: RqgItem, cast: SpellEffectCast) {
+  const { untargeted: _untargeted, ...recorded } = cast;
   return {
     spellName: spell.name ?? "",
     spellUuid: spell.uuid,
-    ...cast,
+    ...recorded,
     casterSuccessLevel: cast.casterSuccessLevel ?? null,
   };
 }
