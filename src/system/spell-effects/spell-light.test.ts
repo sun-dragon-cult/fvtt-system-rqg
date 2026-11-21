@@ -6,9 +6,15 @@ describe("ambientLightData", () => {
   const point = { x: 300, y: 200 };
 
   it("lights the spell's radius in the scene's own units", () => {
-    const data = ambientLightData({ radiusMeters: 10 }, point, 0, { units: "m" });
+    const data = ambientLightData(
+      { radiusMeters: 10 },
+      point,
+      0,
+      { units: "m" },
+      "Light (Harmast)",
+    );
     expect(data["config"]).toMatchObject({ dim: 10, bright: 0 });
-    const feet = ambientLightData({ radiusMeters: 3.048 }, point, 0, { units: "ft" });
+    const feet = ambientLightData({ radiusMeters: 3.048 }, point, 0, { units: "ft" }, "Light");
     expect((feet["config"] as any).dim).toBeCloseTo(10);
   });
 
@@ -18,9 +24,11 @@ describe("ambientLightData", () => {
       point,
       90,
       { units: "m" },
+      "Lantern (Harmast)",
       "Actor.a.ActiveEffect.e",
     );
     expect(data).toMatchObject({
+      name: "Lantern (Harmast)",
       x: 300,
       y: 200,
       rotation: 90,

@@ -47,9 +47,11 @@ export function ambientLightData(
   point: { x: number; y: number },
   rotation: number,
   grid: { units?: string },
+  name: string,
   heldBy?: string,
 ): Record<string, unknown> {
   return {
+    name: name,
     x: point.x,
     y: point.y,
     rotation: rotation,
@@ -151,10 +153,15 @@ async function createLightAsGm(
     return undefined;
   }
   const rotation = normalizedRotation(data.rotation);
+  // Named so the GM can tell lights apart in the scene's list of them
+  const name = localize("RQG.SpellLight.Name", {
+    spellName: spellName,
+    casterName: casterToken.name ?? "",
+  });
   const createLight = async (heldBy?: string) =>
     (await scene.createEmbeddedDocuments(
       "AmbientLight",
-      [ambientLightData(light, point, rotation, grid, heldBy) as any],
+      [ambientLightData(light, point, rotation, grid, name, heldBy) as any],
       { keepId: !!heldBy },
     )) as HeldDocument[];
   const duration: SpellEffectDuration | undefined = scope.duration;
