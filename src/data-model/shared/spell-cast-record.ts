@@ -3,6 +3,7 @@ import {
   SpellResistedByEnum,
   castsOnCasterOnly,
   isCasterKindWhenUntargeted,
+  noTargetMeansCaster,
   isSpiritCombatGate,
 } from "../item-data/spell";
 import {
@@ -208,7 +209,8 @@ export function buildSpellCastEntries(params: {
   newId: () => string;
 }): SpellCastEntry[] {
   const { castSucceeded, resistedBy, targetKind, caster, newId } = params;
-  const nothingTargeted = !params.targets.length;
+  // Nothing targeted is only "untargeted" where it isn't just the way to say the caster
+  const nothingTargeted = !params.targets.length && !noTargetMeansCaster(targetKind, resistedBy);
   const untargeted: SpellCastTarget =
     (resistedBy === SpellResistedByEnum.None || isCasterKindWhenUntargeted(targetKind)) &&
     !isSpiritCombatGate(resistedBy)

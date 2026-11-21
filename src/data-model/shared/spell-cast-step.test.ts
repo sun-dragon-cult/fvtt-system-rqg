@@ -414,6 +414,19 @@ describe("buildSpellCastEntries", () => {
     });
   });
 
+  it("doesn't call a cast untargeted where no target means the caster", () => {
+    for (const kind of ["self", "creates", "weapon", "creature", "spirit", "hitLocation"]) {
+      expect(build(kind)[0], kind).toMatchObject({ actorUuid: "Actor.c", untargeted: false });
+    }
+    // Resisted, the GM assigns actors, so it still is
+    expect(build("spirit", SpellResistedByEnum.ResistanceRoll)[0]).toMatchObject({
+      untargeted: true,
+    });
+    for (const kind of ["object", "ritual", "area"]) {
+      expect(build(kind)[0], kind).toMatchObject({ untargeted: true });
+    }
+  });
+
   it("puts an unresisted self or creates spell on its caster even with a target", () => {
     const other = [{ actorUuid: "Actor.x", tokenUuid: "", isCaster: false }];
     expect(build("creates", SpellResistedByEnum.None, true, other)).toMatchObject([

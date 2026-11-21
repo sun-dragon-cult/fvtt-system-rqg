@@ -7,13 +7,14 @@ export const SEVERAL_TARGETS = "several";
 type TargetCandidate = { id: string; name: string; x: number; y: number; warning?: string };
 
 /**
- * Options for picking one target: none, the acting token itself, then every other candidate,
- * nearest first, labeled with its distance in meters and any warning about it.
+ * Options for picking one target: none (unless `allowNone` is false and there is an acting token),
+ * the acting token itself, then every other candidate, nearest first, labeled with its distance in meters and any warning about it.
  */
 export function targetTokenOptions(
   candidates: TargetCandidate[],
   self: TargetCandidate | undefined,
   metersPerPixel: number,
+  allowNone = true,
 ): SelectOptionData<string>[] {
   const others = candidates
     .filter((c) => c.id !== self?.id)
@@ -28,7 +29,7 @@ export function targetTokenOptions(
         (a.meters ?? 0) - (b.meters ?? 0) || a.candidate.name.localeCompare(b.candidate.name),
     );
   return [
-    { value: "", label: localize("RQG.Dialog.Common.NoTarget") },
+    ...(allowNone || !self ? [{ value: "", label: localize("RQG.Dialog.Common.NoTarget") }] : []),
     ...(self
       ? [{ value: self.id, label: localize("RQG.Dialog.Common.TargetSelf", { name: self.name }) }]
       : []),
@@ -66,6 +67,8 @@ export function selectedTargetValue(targetIds: string[]): string {
 export function buildTargetTokenSelect(
   from: foundry.canvas.placeables.Token | undefined,
   warningOf?: (token: foundry.canvas.placeables.Token) => string,
+  /** With nothing targeted the acting token is the target: it is preselected and "no target" is left out. */
+  defaultsToSelf = false,
 ): {
   options: SelectOptionData<string>[];
   selected: string;
@@ -90,10 +93,12 @@ export function buildTargetTokenSelect(
     candidates,
     from && toCandidate(from),
     grid ? metersPerPixel(grid) : 0,
+    !defaultsToSelf,
   );
 
   const targetIds = [...(game.user?.targets ?? [])].map((t) => t.id ?? "");
-  const selected = selectedTargetValue(targetIds);
+  const selected =
+    defaultsToSelf && !targetIds.length && from ? (from.id ?? "") : selectedTargetValue(targetIds);
   if (selected === SEVERAL_TARGETS) {
     options.unshift({ value: SEVERAL_TARGETS, label: getTargetedTokenNames() });
   } else if (selected && !options.some((o) => o.value === selected)) {

@@ -14,6 +14,7 @@ import {
   SpellResistedByEnum,
   castsOnCasterOnly,
   isOneTargetKind,
+  noTargetMeansCaster,
 } from "../../data-model/item-data/spell";
 import { applyTargetTokenSelect, buildTargetTokenSelect } from "./target-token-select";
 import {
@@ -91,15 +92,23 @@ export function buildSpellCastTargetNote(
   const showPicker =
     constrained ||
     (isOneTargetKind(targetKind) && resistedBy !== SpellResistedByEnum.ResistanceRollArea);
+  // With a caster token to pick, nothing targeted means the caster, so it is what the picker shows
+  const defaultsToCaster =
+    showPicker && !!casterToken && noTargetMeansCaster(targetKind, resistedBy);
   const targetSelect = showPicker
     ? buildTargetTokenSelect(
         casterToken,
         reachWarningOf && ((token) => spellTargetReachLabel(reachWarningOf(token))),
+        defaultsToCaster,
       )
     : undefined;
 
   return {
-    targetName: targetNames || localize("RQG.Dialog.Common.NoTarget"),
+    targetName:
+      targetNames ||
+      (defaultsToCaster
+        ? localize("RQG.Dialog.Common.TargetSelf", { name: casterName })
+        : localize("RQG.Dialog.Common.NoTarget")),
     targetNote: targetNote,
     targetNoteClass: targetNoteClass,
     tooManyTargets: tooManyTargets,
