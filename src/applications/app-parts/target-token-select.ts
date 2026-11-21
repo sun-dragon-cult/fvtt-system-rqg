@@ -60,7 +60,7 @@ export function selectedTargetValue(targetIds: string[]): string {
 }
 
 /**
- * The target picker for this user on the viewed scene: the tokens they can see, measured from
+ * The target picker for this user on the viewed scene: the tokens they can see or observe, measured from
  * `from` and marked by `warningOf`, with the current targets selected.
  */
 export function buildTargetTokenSelect(
@@ -78,7 +78,14 @@ export function buildTargetTokenSelect(
     y: token.center.y,
     warning: warningOf?.(token) ?? "",
   });
-  const candidates = (canvas?.tokens?.placeables ?? []).filter((t) => t.visible).map(toCandidate);
+  // Also a token out of sight that the user is given ownership of, e.g. a summoned elemental
+  const userId = game.user?.id ?? "";
+  const observes = (token: foundry.canvas.placeables.Token): boolean =>
+    !token.document.hidden &&
+    (token.actor?.ownership?.[userId] ?? 0) >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
+  const candidates = (canvas?.tokens?.placeables ?? [])
+    .filter((t) => t.visible || observes(t))
+    .map(toCandidate);
   const options = targetTokenOptions(
     candidates,
     from && toCandidate(from),

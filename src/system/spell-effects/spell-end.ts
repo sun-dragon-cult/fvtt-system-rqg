@@ -1,12 +1,16 @@
 import { systemId } from "../config";
 import { spellBehaviorForEffect, spellRqidOfEffect } from "./spell-behavior";
-import { holdsOf, releaseHeld } from "./spell-anchor";
+import { givesOwnership, hasRunOut, holdsOf, isOnEndingToken, releaseHeld } from "./spell-anchor";
 import { splitFromProjectileIdFlag } from "../../data-model/shared/rqg-document-flags";
 
-/** Only the active GM's client ends effects, and only spell effects and what they hold need it. */
+/**
+ * Only the active GM's client ends effects, and only spell effects, what they hold and the
+ * ownership they give need it.
+ */
 function needsEnding(effect: ActiveEffect): boolean {
   return (
-    !!game.users?.activeGM?.isSelf && (!!spellRqidOfEffect(effect) || holdsOf(effect).length > 0)
+    !!game.users?.activeGM?.isSelf &&
+    (!!spellRqidOfEffect(effect) || holdsOf(effect).length > 0 || givesOwnership(effect))
   );
 }
 
@@ -14,6 +18,17 @@ function needsEnding(effect: ActiveEffect): boolean {
 async function endSpellEffect(effect: ActiveEffect): Promise<boolean> {
   await spellBehaviorForEffect(effect)?.onEnd?.({ effect });
   return releaseHeld(effect);
+}
+
+/** The token can go between the check and the delete, which then fails. */
+async function deleteUnlessTokenEnding(effect: ActiveEffect): Promise<void> {
+  try {
+    await effect.delete();
+  } catch (error) {
+    if (!isOnEndingToken(effect)) {
+      throw error;
+    }
+  }
 }
 
 /** A missile split off its stack, whose spent spells go back to the stack with it. */
@@ -31,7 +46,7 @@ function isOverdueOnReenable(effect: ActiveEffect, changed: { disabled?: unknown
   return (
     changed.disabled === false &&
     !effect.duration.expired &&
-    effect.duration.remaining <= 0 &&
+    hasRunOut(effect) &&
     effect.isExpiryEvent("updateWorldTime", {})
   );
 }
@@ -47,8 +62,13 @@ export function initSpellEnd(): void {
     if (changed.duration?.expired === true && needsEnding(effect)) {
       const heldDeleted = await endSpellEffect(effect);
       // spelled-projectile deletes a split-off missile's spells along with the missile
-      if (spellRqidOfEffect(effect) && !heldDeleted && !isOnSplitOffMissile(effect)) {
-        await effect.delete();
+      if (
+        spellRqidOfEffect(effect) &&
+        !heldDeleted &&
+        !isOnSplitOffMissile(effect) &&
+        !isOnEndingToken(effect)
+      ) {
+        await deleteUnlessTokenEnding(effect);
       }
     } else if (isOverdueOnReenable(effect, changed) && needsEnding(effect)) {
       await effect.update({ duration: { expired: true } });

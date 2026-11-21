@@ -3,9 +3,11 @@ export const actorWizardFlags = "actorWizardFlags" as const;
 export const tagsFlag = "tags" as const;
 export const magicPointStorageOrderFlag = "magicPointStorageOrder" as const;
 export const splitFromProjectileIdFlag = "splitFromProjectileId" as const;
+export const ownershipGivenFlag = "ownershipGiven" as const;
+export const ownershipBaseFlag = "ownershipBase" as const;
 
 import type { RqidString } from "../../system/api/rqid-api";
-import type { SpellHold } from "../../system/spell-effects/spell-anchor";
+import type { OwnershipGiven, SpellHold, UserLevel } from "../../system/spell-effects/spell-anchor";
 
 export interface RqgItemFlags {
   [documentRqidFlags]: DocumentRqidFlags;
@@ -39,6 +41,8 @@ export interface RqgActiveEffectFlags {
   holds?: SpellHold[];
   /** An effect a spell area put on a token inside it: the area's Region uuid. */
   areaRegion?: string;
+  /** The ownership of its actor a spell effect gives while it lasts, e.g. Command (cult spirit). */
+  [ownershipGivenFlag]?: OwnershipGiven;
 }
 
 /** On a document a spell effect keeps alive: that effect's uuid. */
@@ -74,6 +78,8 @@ export interface RqgActorFlags {
    *  "self", interleaved by priority and drag-reorderable from the Magic Point Sources popout
    *  (#956). Entries not listed here fall back to their natural order, self last. */
   [magicPointStorageOrderFlag]?: string[];
+  /** Each user's own level from before a spell effect gave them ownership of the actor. */
+  [ownershipBaseFlag]?: UserLevel[];
 }
 
 export interface DocumentRqidFlags {

@@ -1,3 +1,4 @@
+import type { RqgActiveEffectFlags } from "../../data-model/shared/rqg-document-flags";
 import { formatListByUserLanguage, isDocumentSubType, localize } from "../util";
 import { Rqid } from "../api/rqid-api";
 import { RQG_CONFIG, systemId } from "../config";
@@ -197,13 +198,25 @@ export async function applySpellEffect(
     areaRegion?: string;
   } = {},
 ): Promise<SpellEffectApplied | undefined> {
-  const spellName = spell.name ?? "";
   const scope = spellApplyScope(spell, targetActor, targetName, cast);
   const behavior = spellBehaviorOf(spell);
   const apply = options.areaRegion ? undefined : behavior?.apply;
   if (apply) {
     return runSpellApply({ ...behavior, apply }, scope);
   }
+  return attachSpellTemplate(scope, options);
+}
+
+/**
+ * Attach the spell's effect template to the scope's target, as Apply does without a behavior;
+ * `flags` are added to the effect's system flags.
+ */
+export async function attachSpellTemplate(
+  scope: SpellApplyScope,
+  options: { areaRegion?: string; flags?: RqgActiveEffectFlags } = {},
+): Promise<SpellEffectApplied | undefined> {
+  const { spell, targetActor, targetName, cast } = scope;
+  const spellName = spell.name ?? "";
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;
   const rule = (template as any)?.system?.spellTarget as SpellTargetRule | null | undefined;
@@ -291,6 +304,9 @@ export async function applySpellEffect(
     data.flags = foundry.utils.mergeObject(data.flags ?? {}, {
       [systemId]: { areaRegion: options.areaRegion },
     });
+  }
+  if (options.flags) {
+    data.flags = foundry.utils.mergeObject(data.flags ?? {}, { [systemId]: options.flags });
   }
 
   if (stacking.displaced.length) {

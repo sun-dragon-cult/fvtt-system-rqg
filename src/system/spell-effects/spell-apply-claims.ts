@@ -16,6 +16,11 @@ export function isOwnedBy(document: unknown, user: User): boolean {
   )?.testUserPermission?.(user, "OWNER");
 }
 
+/** The users who aren't GMs and own a document, e.g. a caster's players. */
+export function playersOwning(document: unknown): User[] {
+  return (game.users?.contents ?? []).filter((user) => !user.isGM && isOwnedBy(document, user));
+}
+
 /** Whether an Apply other than `applyId` holds the entry's claim. */
 export function isClaimedByOtherApply(
   castMessageId: string,

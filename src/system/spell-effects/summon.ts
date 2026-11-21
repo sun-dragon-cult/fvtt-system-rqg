@@ -10,6 +10,7 @@ import {
 import { casterTokenOnScene } from "./spell-area-targets";
 import { placeSummonedToken } from "./place-summoned-token";
 import { createAnchored, type HeldDocument } from "./spell-anchor";
+import { playersOwning } from "./spell-apply-claims";
 import {
   applyRequestData,
   runApplyRequest,
@@ -107,10 +108,10 @@ function summonedFootprint(
  * Summon the actor with this rqid. The user who applies the spell places the token with Foundry's
  * own token placement, within range and sight of the caster (RBM p.6). Without a caster token on
  * the viewed scene that the user owns, or without a caster (token HUD "+"), it goes on the nearest
- * free cell next to the summoner. The active GM creates the token, importing the actor into a Summoned folder the
- * first time, and gives it an effect carrying the spell's provenance that removes it when the
- * summoning ends (RBM p.91). Resolves to undefined, leaving Apply clickable, when the placement is
- * cancelled.
+ * free cell next to the summoner. The active GM creates the token, importing the actor into a
+ * Summoned folder the first time, and gives it an effect carrying the spell's provenance that
+ * removes it when the summoning ends (RBM p.91). The summoner's players observe the token. Resolves to undefined,
+ * leaving Apply clickable, when the placement is cancelled.
  *
  * @public since 6.2.0
  */
@@ -209,6 +210,12 @@ async function summonAsGm(
     );
     return undefined;
   }
+  const observers = Object.fromEntries(
+    playersOwning(summoner.actor).map((user) => [
+      user.id ?? "",
+      CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
+    ]),
+  );
   const tokenId = foundry.utils.randomID();
   const anchored = await createAnchored({
     // The summoned token's own actor holds it, so the token goes when the summoning ends
@@ -230,6 +237,7 @@ async function summonAsGm(
           height: size.h,
           actorLink: false,
           disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL,
+          ...(Object.keys(observers).length ? { delta: { ownership: observers } } : {}),
           flags: { [systemId]: { heldBy } },
         } as any,
         { parent: scene },

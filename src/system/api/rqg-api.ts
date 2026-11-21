@@ -7,6 +7,7 @@ import { metersToPixels } from "../spell-effects/scene-distance";
 import { barrierPriorities } from "../spell-effects/spell-barriers";
 import { castPoints, effectRemovalCost, listSpellEffects } from "../spell-effects/spell-rules";
 import { summon } from "../spell-effects/summon";
+import { giveControl } from "../spell-effects/spell-control";
 import { dealSpellDamage } from "../spell-effects/spell-damage";
 import { postMagicMissiles as postAttackMagicMissiles } from "../../applications/attack-flow/magic-missiles";
 import type { MissileFiredScope } from "../spell-effects/spell-behavior";
@@ -61,6 +62,7 @@ export function createRqgApi() {
       barrierPriorities,
       effectRemovalCost,
       summon,
+      giveControl,
       dealDamage: dealSpellDamage,
       createArea,
       pickLocation: pickSpellLocation,

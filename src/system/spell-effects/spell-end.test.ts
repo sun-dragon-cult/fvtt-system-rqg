@@ -1,12 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { initSpellEnd } from "./spell-end";
-import { releaseHeld } from "./spell-anchor";
+import { isOnEndingToken, releaseHeld } from "./spell-anchor";
 
 vi.mock("./spell-anchor", () => ({
   releaseHeld: vi.fn(async () => false),
+  givesOwnership: (effect: { getFlag(scope: string, key: string): unknown }) =>
+    !!(effect.getFlag("rqg", "ownershipGiven") as unknown[] | undefined)?.length,
   holdsOf: (effect: { getFlag(scope: string, key: string): unknown }) =>
     (effect.getFlag("rqg", "holds") as unknown[] | undefined) ?? [],
   holdsRegion: () => false,
+  isOnEndingToken: vi.fn(() => false),
+  hasRunOut: (e: { duration: { expired?: boolean; remaining: number } }) =>
+    e.duration.expired === true || e.duration.remaining <= 0,
 }));
 
 class FakeItem {
@@ -73,6 +78,20 @@ describe("initSpellEnd", () => {
     });
     await expire(anchor);
     expect(anchor.delete).toHaveBeenCalledOnce();
+  });
+
+  it("doesn't fail deleting an effect whose summoned token went first", async () => {
+    const command = effect("i.rune-magic.command-cult-spirit");
+    command.delete.mockRejectedValue(new Error("token does not exist"));
+    vi.mocked(isOnEndingToken).mockReturnValue(true);
+    await expect(expire(command)).resolves.toBeUndefined();
+    vi.mocked(isOnEndingToken).mockReturnValue(false);
+  });
+
+  it("still fails when deleting an effect fails for another reason", async () => {
+    const bladesharp = effect("i.spirit-magic.bladesharp");
+    bladesharp.delete.mockRejectedValue(new Error("boom"));
+    await expect(expire(bladesharp)).rejects.toThrow("boom");
   });
 
   it("leaves a split-off missile's spell to go back to the stack with it", async () => {

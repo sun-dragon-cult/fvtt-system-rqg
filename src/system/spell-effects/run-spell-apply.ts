@@ -35,7 +35,8 @@ export async function runSpellApply(
       return undefined;
     }
   }
-  const gm = behavior.runAsGm && !game.user?.isGM ? game.users?.activeGM : undefined;
+  // On the active GM's client, so a second GM's work doesn't race the active GM's cleanup
+  const gm = behavior.runAsGm && !game.users?.activeGM?.isSelf ? game.users?.activeGM : undefined;
   if (!gm) {
     return behavior.apply(scope);
   }
