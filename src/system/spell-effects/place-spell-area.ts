@@ -61,12 +61,14 @@ export async function placeSpellArea(
 /**
  * What a spell cast from a token reaches: the origin, and whether a point is within range (the
  * whole area of `extentMeters` around it) and in the caster's sight (RBM p.6). Without a
- * range, anywhere is in reach.
+ * range, anywhere is in reach, and in sight only when `sightWithoutRange` asks for it, as far as
+ * the scene goes.
  */
 export function spellReach(
   casterObject: foundry.canvas.placeables.Token,
   rangeMeters: number | undefined,
   extentMeters: number,
+  sightWithoutRange = false,
 ): {
   origin: Point;
   reach: number;
@@ -84,11 +86,12 @@ export function spellReach(
       ? Infinity
       : Math.max(0, metersToPixels(rangeMeters, grid) - metersToPixels(extentMeters, grid));
   const ranged = Number.isFinite(reach);
+  const sightRadius = ranged ? reach : sightWithoutRange ? canvas!.dimensions!.maxR : 0;
   const sight =
-    ranged && reach > 0
+    sightRadius > 0
       ? CONFIG.Canvas.polygonBackends.sight.create(origin, {
           type: "sight",
-          radius: reach,
+          radius: sightRadius,
           source: casterObject.vision ?? undefined,
         } as any)
       : undefined;
@@ -118,7 +121,10 @@ export function areaPointOutOfReach(
   return inSight(point) ? undefined : "RQG.SpellArea.OutOfSight";
 }
 
-/** The range ring, with the scene dimmed outside where the area may go: in sight when given. */
+/**
+ * The range ring, with the scene dimmed outside where the area may go: in sight when given. With
+ * no finite `reach` there is no ring, only the dimming outside the sight.
+ */
 export function drawReach(
   origin: Point,
   reach: number,
@@ -133,7 +139,10 @@ export function drawReach(
   } else {
     graphics.drawCircle(origin.x, origin.y, reach);
   }
-  graphics.endHole().endFill().lineStyle(2, 0xffffff, 0.5).drawCircle(origin.x, origin.y, reach);
+  graphics.endHole().endFill();
+  if (Number.isFinite(reach)) {
+    graphics.lineStyle(2, 0xffffff, 0.5).drawCircle(origin.x, origin.y, reach);
+  }
   canvas!.controls!.addChild(graphics);
   return graphics;
 }

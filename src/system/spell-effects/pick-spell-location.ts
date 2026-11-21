@@ -22,7 +22,7 @@ const rotationStep = 10;
 export type PickLocationOptions = {
   /** Within this many meters of the caster; anywhere when left out. */
   rangeMeters?: number | undefined;
-  /** The point must be in the caster's sight (RBM p.6). */
+  /** The point must be in the caster's sight (RBM p.6), within the range when there is one. */
   requireSight?: boolean | undefined;
   /** The mouse wheel turns the place, e.g. to aim a cone of light; the result then has `rotation`. */
   rotatable?: boolean | undefined;
@@ -70,12 +70,15 @@ export async function pickSpellLocation(
     casterObject,
     options.rangeMeters,
     0,
+    !!options.requireSight,
   );
   // Without this the clicks would select and drag the tokens below
   if (!canvas.tokens!.active) {
     canvas.tokens!.activate();
   }
-  const ring = ranged ? drawReach(origin, reach, sight) : undefined;
+  // The scene is dimmed outside the range, or outside the sight when there is no range
+  const ring =
+    ranged || (options.requireSight && sight) ? drawReach(origin, reach, sight) : undefined;
   ui.notifications?.info(
     localize(ranged ? "RQG.SpellLocation.PickInRange" : "RQG.SpellLocation.Pick", {
       spellName: spellName,
