@@ -4,7 +4,11 @@ import { RqgLogger } from "../logging/rqg-logger";
 const logger = new RqgLogger("query-active-gm");
 
 type RqgQuery =
-  "rqg.applySpellBehavior" | "rqg.createSpellArea" | "rqg.summon" | "rqg.continueSpellCast";
+  | "rqg.applySpellBehavior"
+  | "rqg.createSpellArea"
+  | "rqg.createSpellLight"
+  | "rqg.summon"
+  | "rqg.continueSpellCast";
 
 /** Resolves when `gm` logs out, so a query to them stops waiting; `stop` removes the hook. */
 function gmLeaves(gm: User): { left: Promise<void>; stop: () => void } {

@@ -6,13 +6,13 @@ const logger = new RqgLogger("SpellAnchor", { notify: false });
 
 /**
  * Something a spell effect keeps alive while it lasts, recorded on the effect as `holds`: a
- * document it made, e.g. a spell area's Region or a summoned token. The held document names its
+ * document it made, e.g. a spell area's Region, a summoned token or a placed light. The held document names its
  * effect in `heldBy`.
  */
 export type SpellHold = { kind: "document"; uuid: string };
 
 /** A document a spell effect keeps alive. */
-export type HeldDocument = RegionDocument | TokenDocument;
+export type HeldDocument = RegionDocument | TokenDocument | AmbientLightDocument;
 
 type AnchorEffect = ActiveEffect & { uuid: string };
 
@@ -166,13 +166,16 @@ function existing<T = HeldDocument>(uuid: string): T | undefined {
  * one request per scene and document type; one scene's failure doesn't stop the others.
  */
 async function deleteAll(documents: readonly HeldDocument[]): Promise<void> {
-  const batches = new Map<string, { scene: Scene; type: "Region" | "Token"; ids: Set<string> }>();
+  const batches = new Map<
+    string,
+    { scene: Scene; type: "Region" | "Token" | "AmbientLight"; ids: Set<string> }
+  >();
   for (const document of documents) {
     const scene = document.parent;
     if (!scene) {
       continue;
     }
-    const type = document.documentName as "Region" | "Token";
+    const type = document.documentName as "Region" | "Token" | "AmbientLight";
     const key = `${scene.uuid}.${type}`;
     const batch = batches.get(key) ?? { scene, type, ids: new Set<string>() };
     batch.ids.add(document.id ?? "");
@@ -295,10 +298,11 @@ async function endHolder(document: HeldDocument): Promise<void> {
 
 const allScenes = (): Scene[] => game.scenes?.contents ?? [];
 
-/** The Regions and tokens of a scene: what a spell effect can hold. */
+/** The Regions, tokens and lights of a scene: what a spell effect can hold. */
 const sceneDocuments = (scene: Scene): HeldDocument[] => [
   ...scene.regions.contents,
   ...scene.tokens.contents,
+  ...scene.lights.contents,
 ];
 
 /** Every document on a scene that a spell effect keeps alive. */
@@ -452,6 +456,7 @@ export function initSpellAnchors(): void {
     }
   };
   Hooks.on("deleteRegion", (region) => heldDeleted(region));
+  Hooks.on("deleteAmbientLight", (light) => heldDeleted(light));
   Hooks.on("deleteToken", (token) => {
     heldDeleted(token);
     holderDeleted();
@@ -472,6 +477,7 @@ export function initSpellAnchors(): void {
   };
   Hooks.on("preCreateRegion", (region, _data, options) => dropCopiedHeldBy(region, options));
   Hooks.on("preCreateToken", (token, _data, options) => dropCopiedHeldBy(token, options));
+  Hooks.on("preCreateAmbientLight", (light, _data, options) => dropCopiedHeldBy(light, options));
   // A new scene's Regions and tokens share its source, so clearing theirs clears the scene's
   Hooks.on("preCreateScene", (scene, _data, options) => {
     sceneDocuments(scene).forEach((document) => dropCopiedHeldBy(document, options));

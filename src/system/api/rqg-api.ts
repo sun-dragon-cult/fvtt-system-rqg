@@ -1,5 +1,6 @@
 import { pickSpellLocation, moveTokenNear } from "../spell-effects/pick-spell-location";
 import { applyAreaEffect, createArea } from "../spell-effects/spell-area";
+import { placeLight } from "../spell-effects/spell-light";
 import { chooseWounds } from "../../items/hit-location-item/hit-location-heal-wound-dialog";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
@@ -65,6 +66,7 @@ export function createRqgApi() {
       giveControl,
       dealDamage: dealSpellDamage,
       createArea,
+      placeLight,
       pickLocation: pickSpellLocation,
       moveTokenNear,
       applyAreaEffect,

@@ -36,6 +36,17 @@ describe("targetTokenOptions", () => {
     );
   });
 
+  it("leaves out no target when the caster is the default target", () => {
+    const caster = token("c", "Vasana", 0);
+    const options = targetTokenOptions([caster, token("near", "Zombie", 100)], caster, 0.5, false);
+    expect(options.map((o) => o.value)).toEqual(["c", "near"]);
+  });
+
+  it("keeps no target without a caster token, since there is no default to pick", () => {
+    const options = targetTokenOptions([token("a", "Ash", 100)], undefined, 1, false);
+    expect(options.map((o) => o.value)).toEqual(["", "a"]);
+  });
+
   it("lists the others by name, without distances, when there is no caster token", () => {
     const options = targetTokenOptions(
       [token("b", "Broo", 300), token("a", "Ash", 100)],
@@ -57,6 +68,19 @@ describe("selectedTargetValue", () => {
 describe("buildTargetTokenSelect", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+  });
+
+  it("preselects the caster when nothing is targeted and it is the default", () => {
+    vi.stubGlobal("game", { user: { id: "player", targets: new Set() } });
+    vi.stubGlobal("canvas", { tokens: { placeables: [] } });
+    const caster = { id: "c", visible: true, center: { x: 0, y: 0 }, document: { name: "Vasana" } };
+    const from = caster as unknown as Parameters<typeof buildTargetTokenSelect>[0];
+    expect(buildTargetTokenSelect(from, undefined, true).selected).toBe("c");
+    expect(buildTargetTokenSelect(from).selected).toBe("");
+    const target = { id: "t", document: { name: "Zombie" } };
+    const targets = Object.assign(new Set([target]), { first: () => target });
+    vi.stubGlobal("game", { user: { id: "player", targets } });
+    expect(buildTargetTokenSelect(from, undefined, true).selected).toBe("t");
   });
 
   it("lists the tokens the user sees or is given ownership of, not the others", () => {

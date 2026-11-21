@@ -392,6 +392,41 @@ describe("buildSpellCastEntries", () => {
     expect(build("spellOrEffect")[0]).toMatchObject({ actorUuid: "Actor.c", isCaster: true });
   });
 
+  it("marks an entry untargeted only when nothing was targeted", () => {
+    const other = [{ actorUuid: "Actor.x", tokenUuid: "", isCaster: false }];
+    const oneself = [{ ...caster, isCaster: true }];
+    expect(build("object")[0]).toMatchObject({ actorUuid: "Actor.c", untargeted: true });
+    expect(build("object", SpellResistedByEnum.None, true, oneself)[0]).toMatchObject({
+      untargeted: false,
+    });
+    expect(build("creature", SpellResistedByEnum.None, true, other)[0]).toMatchObject({
+      untargeted: false,
+    });
+    // A resisted spell's entry waits for the GM to assign actors, and is still untargeted
+    expect(build("creature", SpellResistedByEnum.ResistanceRoll)[0]).toMatchObject({
+      actorUuid: "",
+      untargeted: true,
+    });
+    // A self spell goes on its caster whatever was targeted, which isn't "nothing targeted"
+    expect(build("self", SpellResistedByEnum.None, true, other)[0]).toMatchObject({
+      isCaster: true,
+      untargeted: false,
+    });
+  });
+
+  it("doesn't call a cast untargeted where no target means the caster", () => {
+    for (const kind of ["self", "creates", "weapon", "creature", "spirit", "hitLocation"]) {
+      expect(build(kind)[0], kind).toMatchObject({ actorUuid: "Actor.c", untargeted: false });
+    }
+    // Resisted, the GM assigns actors, so it still is
+    expect(build("spirit", SpellResistedByEnum.ResistanceRoll)[0]).toMatchObject({
+      untargeted: true,
+    });
+    for (const kind of ["object", "ritual", "area"]) {
+      expect(build(kind)[0], kind).toMatchObject({ untargeted: true });
+    }
+  });
+
   it("puts an unresisted self or creates spell on its caster even with a target", () => {
     const other = [{ actorUuid: "Actor.x", tokenUuid: "", isCaster: false }];
     expect(build("creates", SpellResistedByEnum.None, true, other)).toMatchObject([
