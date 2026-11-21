@@ -2753,4 +2753,21 @@
     max-width: 600px;
     text-align: left;
   }
+
+/* Non-owners (Observer and below) get no roll or cast handlers, like the V1 sheet, so grey out
+     the roll targets instead of showing them as clickable (#1365). */
+  .rqg.character.actor-sheet-v2.read-only {
+    & [data-characteristic-roll],
+    & [data-item-roll],
+    & [data-reputation-roll],
+    & [data-weapon-roll],
+    & [data-damage-roll],
+    & [data-spirit-magic-roll],
+    & [data-rune-magic-roll],
+    & [data-matrix-spell-cast],
+    & [data-item-equipped-toggle] {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+  }
 }
