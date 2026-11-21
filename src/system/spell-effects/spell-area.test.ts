@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { areaExtent, handleCreateSpellAreaQuery, spellRangeInMeters } from "./spell-area";
-import { areaPointOutOfReach, polygonAreaInMeters } from "./place-spell-area";
+import { areaPointOutOfReach, placeCancellable, polygonAreaInMeters } from "./place-spell-area";
 import { summonerDocument } from "./token-cells";
 import { clearApplyClaims } from "./spell-apply-claims";
 
@@ -71,13 +71,80 @@ describe("handleCreateSpellAreaQuery", () => {
     vi.unstubAllGlobals();
   });
 
-  it("does nothing for an entry that was already applied", async () => {
+  it("answers that an entry already applied was taken, doing nothing", async () => {
     const record = {
       type: "spellCast",
       system: { targets: [{ id: "entry", actorUuid: "Actor.v", tokenUuid: "", stage: "applied" }] },
     };
     vi.stubGlobal("game", { messages: { get: () => record } });
-    expect(await handleCreateSpellAreaQuery(data, { user })).toBeUndefined();
+    expect(await handleCreateSpellAreaQuery(data, { user })).toEqual({ outcome: "taken" });
     expect(summonerDocument).not.toHaveBeenCalled();
+  });
+});
+
+describe("placeCancellable", () => {
+  function fakeLayer(current?: object) {
+    const layer = {
+      _placementContext: current as object | undefined,
+      _cancelPlacement: vi.fn(() => {
+        layer._placementContext = undefined;
+        resolvePlacement?.(null);
+      }),
+    };
+    let resolvePlacement: ((value: null) => void) | undefined;
+    const start = () =>
+      new Promise<null>((resolve) => {
+        resolvePlacement = resolve;
+        layer._placementContext = {};
+      });
+    return { layer, start };
+  }
+
+  it("cancels its placement when the signal aborts", async () => {
+    const { layer, start } = fakeLayer();
+    const controller = new AbortController();
+    const placing = placeCancellable(layer, start, controller.signal);
+    controller.abort();
+    expect(await placing).toBeNull();
+    expect(layer._cancelPlacement).toHaveBeenCalledOnce();
+  });
+
+  it("cancels at once with a signal already aborted", async () => {
+    const { layer, start } = fakeLayer();
+    expect(await placeCancellable(layer, start, AbortSignal.abort())).toBeNull();
+    expect(layer._cancelPlacement).toHaveBeenCalledOnce();
+  });
+
+  it("leaves a placement started after it alone", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { layer, start } = fakeLayer();
+    const controller = new AbortController();
+    const placing = placeCancellable(layer, start, controller.signal);
+    layer._placementContext = {};
+    controller.abort();
+    expect(layer._cancelPlacement).not.toHaveBeenCalled();
+    layer._cancelPlacement();
+    await placing;
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("leaves an earlier placement alone when its own didn't start, without a warning", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { layer } = fakeLayer({});
+    await expect(
+      placeCancellable(layer, () => Promise.reject(new Error("not ready")), AbortSignal.abort()),
+    ).rejects.toThrow("not ready");
+    expect(layer._cancelPlacement).not.toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("warns when a placement ran that core didn't set up at once, so it can't be cancelled", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const layer = { _placementContext: undefined, _cancelPlacement: vi.fn() };
+    await placeCancellable(layer, async () => null, undefined);
+    expect(warn).toHaveBeenCalledOnce();
+    warn.mockRestore();
   });
 });

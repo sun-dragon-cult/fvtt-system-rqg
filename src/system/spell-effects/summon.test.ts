@@ -166,13 +166,13 @@ describe("handleSummonQuery", () => {
     vi.unstubAllGlobals();
   });
 
-  it("does nothing for an entry that was already applied", async () => {
+  it("answers that an entry already applied was taken, doing nothing", async () => {
     const record = {
       type: "spellCast",
       system: { targets: [{ id: "entry", actorUuid: "Actor.v", tokenUuid: "", stage: "applied" }] },
     };
     vi.stubGlobal("game", { messages: { get: () => record } });
-    expect(await handleSummonQuery(data, { user })).toBeUndefined();
+    expect(await handleSummonQuery(data, { user })).toEqual({ outcome: "taken" });
     expect(summonerToken).not.toHaveBeenCalled();
   });
 });

@@ -1,10 +1,12 @@
 import type { SpellEffectApplied } from "./apply-spell-effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  appliedUnlessTaken,
   applyRequestOf,
   bindApplyRequest,
   runApplyRequest,
   runClaimedApply,
+  placeUnlessTaken,
   type SpellApplyRequest,
 } from "./spell-apply-request";
 import { targetOf } from "./spell-cast-runner";
@@ -48,6 +50,7 @@ const request = (applyId = "click-1"): SpellApplyRequest => ({
 });
 
 const applied: SpellEffectApplied = { outcome: "applied", effectUuids: ["Actor.v.ActiveEffect.e"] };
+const taken = { outcome: "taken" };
 
 describe("runClaimedApply", () => {
   let message: ReturnType<typeof recordMessage>;
@@ -77,7 +80,7 @@ describe("runClaimedApply", () => {
     const { promise: running, resolve: finish } = Promise.withResolvers<SpellEffectApplied>();
     const first = runClaimedApply(request("click-1"), owner, () => running);
     const second = vi.fn(async () => applied);
-    expect(await runClaimedApply(request("click-2"), gm, second)).toBeUndefined();
+    expect(await runClaimedApply(request("click-2"), gm, second)).toEqual(taken);
     expect(second).not.toHaveBeenCalled();
     finish(applied);
     expect(await first).toBe(applied);
@@ -86,7 +89,7 @@ describe("runClaimedApply", () => {
   it("refuses a second Apply once the first did its work", async () => {
     await runClaimedApply(request("click-1"), owner, async () => applied);
     const second = vi.fn(async () => applied);
-    expect(await runClaimedApply(request("click-2"), owner, second)).toBeUndefined();
+    expect(await runClaimedApply(request("click-2"), owner, second)).toEqual(taken);
     expect(second).not.toHaveBeenCalled();
   });
 
@@ -112,7 +115,7 @@ describe("runClaimedApply", () => {
     message = recordMessage("settled");
     await runClaimedApply(request("click-2"), gm, async () => applied);
     message = recordMessage("affected");
-    expect(await runClaimedApply(request("click-2"), gm, async () => applied)).toBeUndefined();
+    expect(await runClaimedApply(request("click-2"), gm, async () => applied)).toEqual(taken);
     finish(applied);
     await first;
     // A ruling made while it ran frees the entry once it ended, though its work did something
@@ -146,8 +149,28 @@ describe("runClaimedApply", () => {
     expect(await runClaimedApply(request("click-2"), owner, async () => applied)).toBe(applied);
   });
 
-  it("refuses an entry not waiting for Apply", async () => {
+  it("answers that an entry no longer waiting for Apply was taken", async () => {
     message = recordMessage("applied");
+    const work = vi.fn(async () => applied);
+    expect(await runClaimedApply(request(), owner, work)).toEqual(taken);
+    expect(work).not.toHaveBeenCalled();
+  });
+
+  it.each(["applied", "settled"])(
+    "answers taken for an entry %s while the GM checked the request",
+    async (stage) => {
+      vi.mocked(targetOf).mockImplementationOnce(async () => {
+        message = recordMessage(stage);
+        return { actor: actor as any, name: "Vasana", token: null };
+      });
+      const work = vi.fn(async () => applied);
+      expect(await runClaimedApply(request(), owner, work)).toEqual(taken);
+      expect(work).not.toHaveBeenCalled();
+    },
+  );
+
+  it("refuses, without saying taken, an entry that hasn't reached Apply yet", async () => {
+    message = recordMessage("resisted");
     const work = vi.fn(async () => applied);
     expect(await runClaimedApply(request(), owner, work)).toBeUndefined();
     expect(work).not.toHaveBeenCalled();
@@ -160,6 +183,14 @@ describe("runClaimedApply", () => {
     ).toBeUndefined();
     expect(await runClaimedApply({ ...request(), entryId: "other" }, owner, work)).toBeUndefined();
     expect(work).not.toHaveBeenCalled();
+  });
+
+  it("answers taken when its work stopped because a GM ruled meanwhile", async () => {
+    const work = vi.fn(async () => {
+      message = recordMessage("settled");
+      return undefined;
+    });
+    expect(await runClaimedApply(request(), owner, work)).toEqual(taken);
   });
 
   it("refuses a sender who doesn't own the target, but not a GM", async () => {
@@ -227,5 +258,99 @@ describe("bindApplyRequest", () => {
     expect(bindApplyRequest(cast, request())).toBe(cast);
     expect(applyRequestOf(cast)).toEqual(request());
     expect(applyRequestOf({ ...cast })).toBeUndefined();
+  });
+});
+
+describe("appliedUnlessTaken", () => {
+  afterEach(() => {
+    vi.mocked(ui.notifications!.warn).mockClear();
+  });
+
+  it("tells the user when another Apply took the entry", () => {
+    expect(appliedUnlessTaken({ outcome: "taken" }, "Summon")).toBeUndefined();
+    expect(ui.notifications!.warn).toHaveBeenCalledWith(
+      expect.stringContaining("RQG.ChatMessage.SpellCast.TakenByOtherApply"),
+    );
+  });
+
+  it("passes on any other answer as it is", () => {
+    expect(appliedUnlessTaken(applied, "Summon")).toBe(applied);
+    expect(appliedUnlessTaken(undefined, "Summon")).toBeUndefined();
+    expect(ui.notifications!.warn).not.toHaveBeenCalled();
+  });
+});
+
+describe("placeUnlessTaken", () => {
+  let onUpdate: ((message: unknown) => void) | undefined;
+  let message: ReturnType<typeof recordMessage>;
+  const off = vi.fn();
+  const scope = (cast: object) => ({ spell: { name: "Summon" }, cast }) as any;
+  const boundScope = () => scope(bindApplyRequest({} as any, request()));
+
+  /** Start placing, and hand back the signal it got and a way to finish it. */
+  function placing(target = boundScope()) {
+    let signal: AbortSignal | undefined;
+    const { promise: placed, resolve: finish } = Promise.withResolvers<string>();
+    const done = placeUnlessTaken(target, (given) => {
+      signal = given;
+      return placed;
+    });
+    return { signal: () => signal!, finish, done };
+  }
+
+  beforeEach(() => {
+    onUpdate = undefined;
+    message = recordMessage("affected");
+    vi.stubGlobal("game", { messages: { get: () => message } });
+    vi.stubGlobal("Hooks", {
+      on: vi.fn((_hook: string, fn: (message: unknown) => void) => {
+        onUpdate = fn;
+        return 7;
+      }),
+      off: off,
+    });
+  });
+
+  afterEach(() => {
+    off.mockClear();
+    vi.mocked(ui.notifications!.warn).mockClear();
+    vi.unstubAllGlobals();
+  });
+
+  it("aborts and tells the user once the record notes the entry applied", () => {
+    const place = placing();
+    onUpdate!(message);
+    message = recordMessage("applied");
+    onUpdate!({ ...message, id: "other record" });
+    expect(place.signal().aborted).toBe(false);
+    onUpdate!(message);
+    onUpdate!(message);
+    expect(place.signal().aborted).toBe(true);
+    expect(ui.notifications!.warn).toHaveBeenCalledOnce();
+  });
+
+  it("aborts once a GM ruled on the entry", () => {
+    const place = placing();
+    message = recordMessage("settled");
+    onUpdate!(message);
+    expect(place.signal().aborted).toBe(true);
+  });
+
+  it("stops watching once the placement ends, and gives its result", async () => {
+    const place = placing();
+    place.finish("placed");
+    expect(await place.done).toBe("placed");
+    expect(off).toHaveBeenCalledWith("updateChatMessage", 7);
+  });
+
+  it("aborts at once for an entry already taken when it starts", () => {
+    message = recordMessage("applied");
+    expect(placing().signal().aborted).toBe(true);
+  });
+
+  it("never aborts without a cast record (token HUD +)", () => {
+    const place = placing(scope({}));
+    expect(onUpdate).toBeUndefined();
+    expect(place.signal().aborted).toBe(false);
   });
 });

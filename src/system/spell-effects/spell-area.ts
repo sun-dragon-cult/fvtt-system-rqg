@@ -15,11 +15,13 @@ import {
 import { summonerDocument, summonerToken } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
 import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
-import { queryActiveGm } from "./query-active-gm";
 import { createAnchored } from "./spell-anchor";
 import {
   applyRequestData,
   runApplyRequest,
+  placeUnlessTaken,
+  requestGmWork,
+  type SpellApplyAnswer,
   type SpellApplyRequestData,
 } from "./spell-apply-request";
 import { spellAreaBehavior } from "./spell-across";
@@ -177,11 +179,14 @@ export async function createArea(
   const shape =
     options.placement === "caster"
       ? shapeAroundCaster(options.shape, caster)
-      : await placeSpellArea(
-          caster,
-          options.shape,
-          ranged ? spellRangeInMeters(scope.spell) : undefined,
-          spellName,
+      : await placeUnlessTaken(scope, (signal) =>
+          placeSpellArea(
+            caster,
+            options.shape,
+            ranged ? spellRangeInMeters(scope.spell) : undefined,
+            spellName,
+            signal,
+          ),
         );
   if (!shape) {
     return undefined;
@@ -193,16 +198,14 @@ export async function createArea(
     duration: options.duration === undefined ? (scope.duration ?? null) : options.duration,
     visible: !!options.visible,
   };
-  return game.users?.activeGM?.isSelf && game.user
-    ? handleCreateSpellAreaQuery(data, { user: game.user })
-    : queryActiveGm("rqg.createSpellArea", data, spellName);
+  return requestGmWork("rqg.createSpellArea", handleCreateSpellAreaQuery, data, spellName);
 }
 
 /** Make a spell area for the createArea request of a user, on the GM's client. */
 export async function handleCreateSpellAreaQuery(
   data: CreateSpellAreaQueryData,
   { user }: RqgQueryContext,
-): Promise<SpellEffectApplied | undefined> {
+): Promise<SpellApplyAnswer | undefined> {
   return runApplyRequest(data, user, (scope) => createAreaAsGm(scope, data));
 }
 
