@@ -57,10 +57,47 @@ export function getAlliedSpirit(actor: RqgActor): RqgActor | undefined {
     return undefined;
   }
   const ally = fromUuidSync(uuid) as RqgActor | null;
-  if (!(ally instanceof Actor) || !ally.isOwner) {
+  if (!(ally instanceof Actor) || !ally.isOwner || isSharedAcrossTokenCopies(actor, ally)) {
     return undefined;
   }
   return ally;
+}
+
+/** An unlinked token copies its base actor's link, so every copy would share the one world actor
+ *  it points to (#1065). */
+function isSharedAcrossTokenCopies(holder: RqgActor | null | undefined, linked: RqgActor): boolean {
+  return !!holder?.isToken && !linked.isToken;
+}
+
+/** Whether `uuid` is a spirit `holder` could use if it weren't an unlinked token. */
+export function isSpiritBlockedOnUnlinkedToken(
+  holder: RqgActor,
+  uuid: string | null | undefined,
+): boolean {
+  if (!holder.isToken || !uuid) {
+    return false;
+  }
+  const linked = fromUuidSync(uuid) as RqgActor | null;
+  return linked instanceof Actor && linked.isOwner && isSharedAcrossTokenCopies(holder, linked);
+}
+
+/** Spirits bound in the equipped items of an unlinked token that it can't use, per item. */
+export function getBoundSpiritsBlockedOnUnlinkedToken(
+  actor: RqgActor,
+): { item: PhysicalItem; spiritUuids: string[] }[] {
+  if (!actor.isToken) {
+    return [];
+  }
+  return actor.items
+    .filter((i) => isDocumentSubType<PhysicalItem>(i, physicalItemTypes))
+    .filter((i) => i.system.equippedStatus === "equipped")
+    .map((i) => ({
+      item: i as PhysicalItem,
+      spiritUuids: ((i as PhysicalItem).system.boundSpiritActorUuids ?? []).filter((uuid) =>
+        isSpiritBlockedOnUnlinkedToken(actor, uuid),
+      ),
+    }))
+    .filter(({ spiritUuids }) => spiritUuids.length > 0);
 }
 
 /**
@@ -136,12 +173,19 @@ function getStorageItemCandidates(actor: RqgActor): PhysicalItem[] {
  * right now" gating as getAlliedSpirit (uuid resolves to an Actor, current user has Owner
  * permission on it).
  */
-function resolveBoundSpiritActor(uuid: string | undefined | null): RqgActor | undefined {
+function resolveBoundSpiritActor(
+  item: PhysicalItem,
+  uuid: string | undefined | null,
+): RqgActor | undefined {
   if (!uuid) {
     return undefined;
   }
   const spiritActor = fromUuidSync(uuid) as RqgActor | null;
-  if (!(spiritActor instanceof Actor) || !spiritActor.isOwner) {
+  if (
+    !(spiritActor instanceof Actor) ||
+    !spiritActor.isOwner ||
+    isSharedAcrossTokenCopies(item.parent as RqgActor | null, spiritActor)
+  ) {
     return undefined;
   }
   return spiritActor;
@@ -150,7 +194,7 @@ function resolveBoundSpiritActor(uuid: string | undefined | null): RqgActor | un
 /** Every spirit bound in `item` that's usable right now, in array order. */
 export function getBoundSpiritActors(item: PhysicalItem): RqgActor[] {
   return (item.system.boundSpiritActorUuids ?? [])
-    .map((uuid) => resolveBoundSpiritActor(uuid))
+    .map((uuid) => resolveBoundSpiritActor(item, uuid))
     .filter((actor): actor is RqgActor => actor !== undefined);
 }
 
@@ -162,7 +206,7 @@ export function getBoundSpiritActorByUuid(
   if (!(item.system.boundSpiritActorUuids ?? []).includes(spiritUuid)) {
     return undefined;
   }
-  return resolveBoundSpiritActor(spiritUuid);
+  return resolveBoundSpiritActor(item, spiritUuid);
 }
 
 /**

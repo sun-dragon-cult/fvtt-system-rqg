@@ -96,8 +96,10 @@ import {
   getBondedPriest,
   getBondRoleConflict,
   getBoundSpiritItems,
+  getBoundSpiritsBlockedOnUnlinkedToken,
   getStorageItems,
   getTotalStoredMagicPoints,
+  isSpiritBlockedOnUnlinkedToken,
   MAGIC_POINT_SOURCE_DRAG_TYPE,
   type BoundSpiritCandidate,
 } from "../system/magic-point-source";
@@ -469,7 +471,18 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         boundSpiritItems,
       ),
       boundPriest: boundPriest ? { uuid: boundPriest.uuid ?? "" } : undefined,
-      boundSpirits: groupBoundSpiritsByItem(boundSpiritItems),
+      alliedSpiritUnusable: isSpiritBlockedOnUnlinkedToken(
+        this.actor,
+        system.alliedSpiritActorUuid,
+      ),
+      boundSpirits: [
+        ...groupBoundSpiritsByItem(boundSpiritItems),
+        ...getBoundSpiritsBlockedOnUnlinkedToken(this.actor).map(({ item, spiritUuids }) => ({
+          itemName: item.name ?? "",
+          spiritUuids,
+          unusable: true,
+        })),
+      ],
       boundSpiritCount: boundSpiritItems.length,
       boundSpiritCap: boundSpiritCap,
       // Gates any "From {name}:" divider (#1002) - individual sections (e.g. externalSpiritMagic

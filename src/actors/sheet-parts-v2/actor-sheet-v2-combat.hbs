@@ -465,7 +465,8 @@
   {{!-- Allied Spirit bond (#957): actor-wide, editable only in edit mode. --}}
   <div class="spirit-bond-row fullwidth">
     {{#edit-mode system.editMode "all"}}
-      <div class="allied-spirit-link">
+      <div class="allied-spirit-link{{#if alliedSpiritUnusable}} unusable{{/if}}"
+           {{#if alliedSpiritUnusable}}data-tooltip="{{localize 'RQG.Actor.RuneMagic.SpiritNeedsLinkedTokenTooltip'}}"{{/if}}>
         <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AlliedSpiritLabel"}}</span>
         <rqg-link-field
           class="allied-spirit"
@@ -480,7 +481,8 @@
       </div>
     {{else}}
       {{#if system.alliedSpiritActorUuid}}
-        <div class="allied-spirit-link view-only">
+        <div class="allied-spirit-link view-only{{#if alliedSpiritUnusable}} unusable{{/if}}"
+             {{#if alliedSpiritUnusable}}data-tooltip="{{localize 'RQG.Actor.RuneMagic.SpiritNeedsLinkedTokenTooltip'}}"{{/if}}>
           <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AlliedSpiritLabel"}}</span>
           <rqg-link uuid="{{system.alliedSpiritActorUuid}}"></rqg-link>
         </div>
@@ -494,7 +496,8 @@
     {{/if}}
     {{!-- Bound Spirits (#999) - managed on each item's own sheet; read-only summary here. --}}
     {{#each boundSpirits}}
-      <div class="allied-spirit-link view-only">
+      <div class="allied-spirit-link view-only{{#if unusable}} unusable{{/if}}"
+           {{#if unusable}}data-tooltip="{{localize 'RQG.Actor.RuneMagic.SpiritNeedsLinkedTokenTooltip'}}"{{/if}}>
         <span class="allied-spirit-label">{{itemName}}:</span>
         {{#each spiritUuids}}<rqg-link uuid="{{this}}"></rqg-link>{{/each}}
       </div>
