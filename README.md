@@ -187,7 +187,8 @@ Name the schema, and set the schema version to 2020-12.
      and cherry-pick the fix commit:
      ```bash
      git checkout -b release/7.0.x v7.0.0
-     git checkout main -- .github/workflows/release.yml .github/workflows/test.yml
+     git checkout main -- .github/workflows/release.yml .github/workflows/test.yml \
+       buildScripts/register-foundry-release.ts
      git commit -m "ci: use the current release workflows"
      git cherry-pick <fix-commit-sha>
      git push -u origin release/7.0.x
@@ -216,9 +217,10 @@ Name the schema, and set the schema version to 2020-12.
      registers the version with the [Foundry Package Release API](https://foundryvtt.com/article/package-release-api/)
      from the `system.json` attached to the release, and Foundry posts the release note to its own
      Discord. Check that the run is green. It refuses a draft or a pre-release, and a manifest
-     whose version isn't the tag's.
-   - Always publish a pre-release first and promote it. Publishing a full release directly also
-     works, since the registration waits up to 30 minutes for the files, but then nothing was verified.
+     whose id or version isn't this system's and the tag's.
+   - Always publish a pre-release first and promote it. Publishing a full release directly, or
+     promoting one before its build finished, also works, since the `register` job after the build
+     then registers it, but then nothing was verified.
 3. Notify in the RQG Discord.
 4. Close the GitHub milestone (automation marks it `[done]`).
 5. _(Optional)_ Delete temporary `release/X.Y.x` patch branches once superseded—the `vX.Y.Z` Git tag preserves the exact commit history.
@@ -231,14 +233,15 @@ foundryvtt.com, just above **Save Package**. Keep it secret: it can edit the pac
 on that page revokes the old one.
 
 To try the registration without releasing anything, run the **Create System Files For GitHub
-Release** workflow by hand (Actions → Run workflow) with the version of an existing GitHub release
-and **dry run** on. Foundry validates the request and saves nothing. With dry run off it registers
+Release** workflow by hand (Actions → Run workflow) with the tag of an existing GitHub release,
+such as `v7.1.0`, and **dry run** on. Foundry validates the request and saves nothing. With dry run off it registers
 the version for real, which is also how to register one whose promotion run failed. Registering a
 version twice is reported as a warning, not an error. Foundry limits how many releases of
 one package it accepts per minute, and the job tries again once after the pause it asks for.
 
-The registration is `buildScripts/register-foundry-release.ts`. A release runs the copy on the
-default branch, so a patch release from an older tag registers the same way.
+The registration is `buildScripts/register-foundry-release.ts`. A release uses the copy on the
+default branch, so a patch release from an older tag registers the same way. A manual run uses the
+copy on the branch it runs from, so a changed script can be dry-run before it merges.
 
 ## Pre-releases
 

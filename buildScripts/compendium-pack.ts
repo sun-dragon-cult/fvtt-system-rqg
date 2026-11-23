@@ -13,6 +13,7 @@ import { PackError } from "./packError.ts";
 const { ClassicLevel } = classicLevelPkg as {
   ClassicLevel: typeof import("classic-level").ClassicLevel;
 };
+type ClassicLevel<K = string, V = string> = import("classic-level").ClassicLevel<K, V>;
 
 type ImportData = {
   _importExternalDocument: {

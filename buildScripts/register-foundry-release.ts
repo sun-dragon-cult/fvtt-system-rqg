@@ -7,8 +7,9 @@ import { pathToFileURL } from "url";
  *
  *   node buildScripts/register-foundry-release.ts
  *
- * Reads VERSION, DRY_RUN, FOUNDRY_RELEASE_TOKEN, GITHUB_TOKEN, GITHUB_REPOSITORY, MANIFEST_FILE,
- * SYSTEM_NAME and MANIFEST_WAIT_MINUTES from the environment.
+ * Reads TAG, DRY_RUN, TRIGGER, FOUNDRY_RELEASE_TOKEN, GITHUB_TOKEN, GITHUB_REPOSITORY,
+ * MANIFEST_FILE and SYSTEM_NAME from the environment. TRIGGER is the release event's action
+ * ("published" after the build, "released" on promotion) or "manual".
  */
 
 export const API_URL = "https://foundryvtt.com/_api/packages/release_version/";
@@ -27,6 +28,11 @@ type Manifest = {
   compatibility?: { minimum?: unknown; verified?: unknown; maximum?: unknown };
 };
 
+type GitHubRelease = {
+  prerelease?: boolean;
+  assets?: { name?: string; state?: string }[];
+};
+
 type FoundryAnswer = {
   status?: string;
   errors?: Record<string, { code?: string; message?: string }[] | undefined>;
@@ -34,28 +40,30 @@ type FoundryAnswer = {
 
 export class RegisterError extends Error {}
 
-const MANIFEST_POLL_MS = 30_000;
+const ASSET_POLL_MS = 10_000;
+const ASSET_POLL_ATTEMPTS = 6;
 
-/** The compatibility to register, leaving out what the manifest doesn't state. */
+/** The API article's payload always has a maximum, "" when there is none. */
 export function compatibilityOf(manifest: Manifest): Record<string, string> {
-  return Object.fromEntries(
-    (["minimum", "verified", "maximum"] as const)
-      .map((key) => [key, manifest.compatibility?.[key]] as const)
-      .filter(([, value]) => value != null && value !== "")
-      .map(([key, value]) => [key, String(value)]),
+  const stated = Object.entries(manifest.compatibility ?? {}).filter(
+    ([, value]) => value != null && value !== "",
   );
+  return { maximum: "", ...Object.fromEntries(stated.map(([k, v]) => [k, String(v)])) };
 }
 
 /** Foundry refuses a version it already has with a `unique_together` error (see the API article). */
-export function isAlreadyRegistered(answer: FoundryAnswer): boolean {
+function isAlreadyRegistered(answer: FoundryAnswer): boolean {
   return !!answer.errors?.["__all__"]?.some((e) => e.code === "unique_together");
 }
 
 export async function registerRelease(env: RegisterEnv, deps: RegisterDeps): Promise<void> {
-  const version = (env["VERSION"] ?? "").trim().replace(/^v/, "");
+  const version = /^v(\d+\.\d+\.\d+(?:-[\w.]+)?)$/.exec(env["TAG"] ?? "")?.[1];
   const dryRun = env["DRY_RUN"] === "true";
+  const trigger = env["TRIGGER"] || "manual";
+  const systemName = env["SYSTEM_NAME"];
+  const manifestFile = env["MANIFEST_FILE"];
   if (!version) {
-    throw new RegisterError("No version to register.");
+    throw new RegisterError(`"${env["TAG"] ?? ""}" is not a release tag like v7.1.0.`);
   }
   const token = env["FOUNDRY_RELEASE_TOKEN"];
   if (!token) {
@@ -64,35 +72,85 @@ export async function registerRelease(env: RegisterEnv, deps: RegisterDeps): Pro
     );
   }
   const repository = env["GITHUB_REPOSITORY"];
-  const manifestUrl = `https://github.com/${repository}/releases/download/v${version}/${env["MANIFEST_FILE"]}`;
-  const notesUrl = `https://sun-dragon-cult.github.io/release-notes/${env["SYSTEM_NAME"]}-v${version}`;
+  const manifestUrl = `https://github.com/${repository}/releases/download/v${version}/${manifestFile}`;
+  const notesUrl = `https://sun-dragon-cult.github.io/release-notes/${systemName}-v${version}`;
 
   // The tags endpoint doesn't return drafts
-  const github = await deps.fetch(
-    `https://api.github.com/repos/${repository}/releases/tags/v${version}`,
-    {
-      headers: {
-        Authorization: `Bearer ${env["GITHUB_TOKEN"]}`,
-        Accept: "application/vnd.github+json",
+  const readRelease = async (): Promise<GitHubRelease> => {
+    const github = await deps.fetch(
+      `https://api.github.com/repos/${repository}/releases/tags/v${version}`,
+      {
+        headers: {
+          Authorization: `Bearer ${env["GITHUB_TOKEN"]}`,
+          Accept: "application/vnd.github+json",
+        },
       },
-    },
-  );
-  if (!github.ok) {
-    throw new RegisterError(
-      `No published GitHub release for tag v${version} (HTTP ${github.status}). A draft has to be published first.`,
     );
+    if (github.status === 404) {
+      throw new RegisterError(
+        `No published GitHub release for tag v${version}. A draft has to be published first.`,
+      );
+    }
+    if (!github.ok) {
+      throw new RegisterError(
+        `GitHub answered HTTP ${github.status} when reading the release for tag v${version}.`,
+      );
+    }
+    return (await github.json()) as GitHubRelease;
+  };
+  const missingAssets = (release: GitHubRelease) =>
+    [manifestFile, `${systemName}.zip`].filter(
+      (name) => !release.assets?.some((a) => a.name === name && a.state === "uploaded"),
+    );
+
+  let release = await readRelease();
+  let missing = missingAssets(release);
+  // Right after the build's upload, the API can still show the files as not uploaded
+  for (
+    let attempt = 1;
+    trigger === "published" && missing.length && attempt < ASSET_POLL_ATTEMPTS;
+    attempt++
+  ) {
+    deps.log(`The release doesn't show ${missing.join(", ")} yet, trying again`);
+    await deps.sleep(ASSET_POLL_MS);
+    release = await readRelease();
+    missing = missingAssets(release);
   }
-  const release = (await github.json()) as { prerelease?: boolean };
+
   if (!dryRun && release.prerelease) {
+    if (trigger !== "manual") {
+      deps.log(`v${version} is a pre-release, so it is registered when it is promoted.`);
+      return;
+    }
     throw new RegisterError(`v${version} is a pre-release: promote it before registering.`);
   }
 
-  const manifest = await fetchManifest(manifestUrl, env, deps);
+  if (missing.length) {
+    if (trigger === "released") {
+      // Published straight as a full release: the build run registers it once its files are attached
+      deps.log(
+        `v${version} is still being built (no ${missing.join(", ")}), so the build registers it.`,
+      );
+      return;
+    }
+    throw new RegisterError(`The release v${version} has no ${missing.join(", ")} attached.`);
+  }
+
+  const [manifestResponse, notes] = await Promise.all([
+    deps.fetch(manifestUrl),
+    deps.fetch(notesUrl, { method: "HEAD" }).catch(() => undefined),
+  ]);
+  if (!manifestResponse.ok) {
+    throw new RegisterError(`${manifestUrl} is not available: HTTP ${manifestResponse.status}`);
+  }
+  const manifest = (await manifestResponse.json()) as Manifest;
+  if (manifest.id !== systemName) {
+    throw new RegisterError(`${manifestUrl} has id ${manifest.id}, not ${systemName}.`);
+  }
   if (manifest.version !== version) {
     throw new RegisterError(`${manifestUrl} has version ${manifest.version}, not ${version}.`);
   }
 
-  const notes = await deps.fetch(notesUrl, { method: "HEAD" }).catch(() => undefined);
   if (!notes?.ok) {
     deps.log(`::warning::The release notes are not live yet: ${notesUrl}`);
   }
@@ -141,38 +199,11 @@ export async function registerRelease(env: RegisterEnv, deps: RegisterDeps): Pro
   }
   if (isAlreadyRegistered(answer)) {
     deps.log(
-      dryRun
-        ? `::warning::Version ${version} is already registered with Foundry, so the dry run stopped there.`
-        : `::warning::Version ${version} is already registered with Foundry.`,
+      `::warning::Version ${version} is already registered with Foundry${dryRun ? ", so the dry run stopped there" : ""}.`,
     );
     return;
   }
   throw new RegisterError(`Foundry rejected the release (HTTP ${response.status}).`);
-}
-
-/** Polls, since a release published straight as a full release is registered while it's built. */
-async function fetchManifest(url: string, env: RegisterEnv, deps: RegisterDeps): Promise<Manifest> {
-  const attempts = Math.max(
-    1,
-    Math.ceil((Number(env["MANIFEST_WAIT_MINUTES"]) || 0) * (60_000 / MANIFEST_POLL_MS)),
-  );
-  let last = "";
-  for (let attempt = 1; attempt <= attempts; attempt++) {
-    try {
-      const response = await deps.fetch(url);
-      if (response.ok) {
-        return (await response.json()) as Manifest;
-      }
-      last = `HTTP ${response.status}`;
-    } catch (error) {
-      last = String(error);
-    }
-    if (attempt < attempts) {
-      deps.log(`${url} is not available yet (${last}), trying again`);
-      await deps.sleep(MANIFEST_POLL_MS);
-    }
-  }
-  throw new RegisterError(`${url} is not available: ${last}`);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
