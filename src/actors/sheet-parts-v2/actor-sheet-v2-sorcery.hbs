@@ -27,7 +27,7 @@
   <div class="power flex-row">
     <div>
       <h2>{{localize "RQG.Actor.Sorcery.Spells"}}</h2>
-      <div class="grid skill">
+      <div class="grid skill{{#edit-mode @root.system.editMode 'all'}} skill-edit-mode{{/edit-mode}}">
         {{#each embeddedItems.skill}}
           {{#each this}}
             {{#if system.runeRqidLinks.length}}
