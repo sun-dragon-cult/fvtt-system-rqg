@@ -215,10 +215,10 @@ Name the schema, and set the schema version to 2020-12.
    - Promoting the release triggers the `register` job of `release.yml`. It doesn't rebuild: it
      registers the version with the [Foundry Package Release API](https://foundryvtt.com/article/package-release-api/)
      from the `system.json` attached to the release, and Foundry posts the release note to its own
-     Discord. Check that the run is green. It also refuses a draft or a pre-release, and a manifest
+     Discord. Check that the run is green. It refuses a draft or a pre-release, and a manifest
      whose version isn't the tag's.
    - Always publish a pre-release first and promote it. Publishing a full release directly also
-     works, since the registration waits for the files, but then nothing was verified.
+     works, since the registration waits up to 30 minutes for the files, but then nothing was verified.
 3. Notify in the RQG Discord.
 4. Close the GitHub milestone (automation marks it `[done]`).
 5. _(Optional)_ Delete temporary `release/X.Y.x` patch branches once superseded—the `vX.Y.Z` Git tag preserves the exact commit history.
@@ -236,6 +236,9 @@ and **dry run** on. Foundry validates the request and saves nothing. With dry ru
 the version for real, which is also how to register one whose promotion run failed. Registering a
 version twice is reported as a warning, not an error. Foundry limits how many releases of
 one package it accepts per minute, and the job tries again once after the pause it asks for.
+
+The registration is `buildScripts/register-foundry-release.ts`. A release runs the copy on the
+default branch, so a patch release from an older tag registers the same way.
 
 ## Pre-releases
 
