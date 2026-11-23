@@ -182,9 +182,13 @@ Name the schema, and set the schema version to 2020-12.
 
    **For patch/hotfix releases (e.g., `7.0.x` while `main` has `7.1.0` work):**
    - Fix and merge the bug on `main` first so future releases keep the fix.
-   - Cut a patch branch from the previous release tag and cherry-pick the fix commit:
+   - Cut a patch branch from the previous release tag, bring over the workflow files, which GitHub
+     runs from the tagged commit (an older tag has no `release/**` CI and no Foundry registration),
+     and cherry-pick the fix commit:
      ```bash
      git checkout -b release/7.0.x v7.0.0
+     git checkout main -- .github/workflows/release.yml .github/workflows/test.yml
+     git commit -m "ci: use the current release workflows"
      git cherry-pick <fix-commit-sha>
      git push -u origin release/7.0.x
      ```
@@ -195,7 +199,7 @@ Name the schema, and set the schema version to 2020-12.
    - Set **Release title** to `7.1.0 (2029-01-02)`.
    - Add **Release notes**: `See release notes https://sun-dragon-cult.github.io/release-notes/rqg-v7.1.0`
    - Check **Set as a pre-release**.
-   - Click **Publish release** (the `release.yml` GitHub Action runs and attaches `system.json` and `rqg.zip`).
+   - Click **Publish release** (the `build` job of `release.yml` runs and attaches `system.json` and `rqg.zip`).
 
 #### Verify
 
@@ -204,12 +208,34 @@ Name the schema, and set the schema version to 2020-12.
 
 #### Publish
 
-1. Push the release notes documentation live in the `sun-dragon-cult.github.io` docs repo (the Foundry API verifies that the release notes URL is reachable).
-2. Edit the GitHub release, check **Set as the latest release** (unless patching an older major/minor line), and click **Update release**.
-   - Unchecking pre-release triggers `release.yml` to automatically register the version with the Foundry Package Release API and post to the Foundry Discord.
+1. Push the release notes documentation live in the `sun-dragon-cult.github.io` docs repo, so the link
+   Foundry shows for the release works (the registration warns when it doesn't).
+2. Edit the GitHub release, check **Set as the latest release** (unless patching an older major/minor
+   line), uncheck **Set as a pre-release**, and click **Update release**.
+   - Promoting the release triggers the `register` job of `release.yml`. It doesn't rebuild: it
+     registers the version with the [Foundry Package Release API](https://foundryvtt.com/article/package-release-api/)
+     from the `system.json` attached to the release, and Foundry posts the release note to its own
+     Discord. Check that the run is green. It also refuses a draft or a pre-release, and a manifest
+     whose version isn't the tag's.
+   - Always publish a pre-release first and promote it. Publishing a full release directly also
+     works, since the registration waits for the files, but then nothing was verified.
 3. Notify in the RQG Discord.
 4. Close the GitHub milestone (automation marks it `[done]`).
 5. _(Optional)_ Delete temporary `release/X.Y.x` patch branches once superseded—the `vX.Y.Z` Git tag preserves the exact commit history.
+
+#### Foundry registration
+
+The registration needs the package's **Package Release Token** as the repository secret
+`FOUNDRY_RELEASE_TOKEN` (Settings → Secrets and variables → Actions). It is on the package's page on
+foundryvtt.com, just above **Save Package**. Keep it secret: it can edit the package, and **Refresh**
+on that page revokes the old one.
+
+To try the registration without releasing anything, run the **Create System Files For GitHub
+Release** workflow by hand (Actions → Run workflow) with the version of an existing GitHub release
+and **dry run** on. Foundry validates the request and saves nothing. With dry run off it registers
+the version for real, which is also how to register one whose promotion run failed. Registering a
+version twice is reported as a warning, not an error. Foundry limits how many releases of
+one package it accepts per minute, and the job tries again once after the pause it asks for.
 
 ## Pre-releases
 
