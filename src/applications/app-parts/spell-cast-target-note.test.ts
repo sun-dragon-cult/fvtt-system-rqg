@@ -54,7 +54,7 @@ describe("buildSpellCastTargetNote", () => {
       };
     };
 
-    it.each(["creature", "spirit", "hitLocation", "spellOrEffect", "weapon"])(
+    it.each(["creature", "hitLocation", "spellOrEffect", "weapon"])(
       "makes the caster the default target of an unresisted %s spell",
       (targetKind) => {
         const { result, defaultsToSelf } = defaulted(targetKind);
@@ -63,8 +63,8 @@ describe("buildSpellCastTargetNote", () => {
       },
     );
 
-    it("keeps no target for an object, which is not the caster", () => {
-      const { result, defaultsToSelf } = defaulted("object");
+    it.each(["object", "spirit"])("keeps no target for a %s, which is not the caster", (kind) => {
+      const { result, defaultsToSelf } = defaulted(kind);
       expect(defaultsToSelf).toBe(false);
       expect(result.targetName).toBe("RQG.Dialog.Common.NoTarget");
     });

@@ -124,17 +124,17 @@ export function isCasterKindWhenUntargeted(targetKind: string): boolean {
   return casterKindsWhenUntargeted.includes(targetKind);
 }
 
+// Not a spirit: its spells are for beings in the Spirit World, which the caster isn't
 const casterWhenUnresistedKinds: readonly string[] = [
   SpellTargetKindEnum.Creature,
-  SpellTargetKindEnum.Spirit,
   SpellTargetKindEnum.HitLocation,
   SpellTargetKindEnum.SpellOrEffect,
 ];
 
 /**
  * Whether casting with nothing targeted means casting on the caster: a spell that can only go on
- * its caster or the caster's weapon, or an unresisted spell at a creature or the like, whose
- * target is the caster unless another is picked. For an object or a place, no target is a thing
+ * its caster or the caster's weapon, or an unresisted spell at a creature, a hit location or a
+ * spell, whose target is the caster unless another is picked. For an object or a place, no target is a thing
  * of its own, and a resisted spell's GM assigns actors.
  */
 export function noTargetMeansCaster(targetKind: string, resistedBy: SpellResistedByEnum): boolean {

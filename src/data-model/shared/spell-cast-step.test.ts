@@ -415,14 +415,15 @@ describe("buildSpellCastEntries", () => {
   });
 
   it("doesn't call a cast untargeted where no target means the caster", () => {
-    for (const kind of ["self", "creates", "weapon", "creature", "spirit", "hitLocation"]) {
+    for (const kind of ["self", "creates", "weapon", "creature", "hitLocation", "spellOrEffect"]) {
       expect(build(kind)[0], kind).toMatchObject({ actorUuid: "Actor.c", untargeted: false });
     }
     // Resisted, the GM assigns actors, so it still is
-    expect(build("spirit", SpellResistedByEnum.ResistanceRoll)[0]).toMatchObject({
+    expect(build("creature", SpellResistedByEnum.ResistanceRoll)[0]).toMatchObject({
       untargeted: true,
     });
-    for (const kind of ["object", "ritual", "area"]) {
+    // A spirit isn't the caster, and an object or a place isn't a being
+    for (const kind of ["spirit", "object", "ritual", "area"]) {
       expect(build(kind)[0], kind).toMatchObject({ untargeted: true });
     }
   });
