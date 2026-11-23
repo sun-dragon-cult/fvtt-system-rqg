@@ -2108,7 +2108,10 @@
       & .grid.skill-edit-mode.item-list {
         margin-bottom: 0.5rem;
       }
+    }
 
+    /* --- Skill rows, shared by the skills and sorcery tabs --- */
+    :is(.skills-tab-v2, .sorcery-tab-v2) {
       & .skill-row {
         display: contents;
 
@@ -2154,7 +2157,7 @@
       }
     }
 
-    /* --- Sorcery tab (V2): match skills-row hover/active highlight --- */
+    /* --- Sorcery tab (V2) --- */
     .sorcery-tab-v2 {
       & .power.flex-row {
         display: grid;
@@ -2168,28 +2171,8 @@
         }
       }
 
-      & .skill-row {
-        display: contents;
-
-        & > * {
-          padding: 0.125rem;
-          position: relative;
-          display: flex;
-          align-items: center;
-          width: 100%;
-        }
-
-        &:nth-child(odd) > * {
-          background: var(--rqg-table-alternate-background);
-        }
-
-        &:hover > * {
-          background: var(--rqg-row-hover);
-        }
-
-        &:active > * {
-          background: var(--rqg-row-active);
-        }
+      & .skill-row img.rune {
+        opacity: 0.85;
       }
     }
 
