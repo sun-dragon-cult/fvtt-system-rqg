@@ -187,6 +187,27 @@ export async function placeCancellable<T>(
   }
 }
 
+/** The pointer's canvas position, through `snap` unless Shift is held, as in Foundry's placement. */
+export function pointerPoint(snap: (point: Point) => Point): Point {
+  const position = { x: canvas!.mousePosition.x, y: canvas!.mousePosition.y };
+  return game.keyboard?.isModifierActive("SHIFT") ? position : snap(position);
+}
+
+/** Calls `redraw` when Shift is pressed or released; returns the function that stops listening. */
+export function onSnapToggle(redraw: () => void): () => void {
+  const onShift = (event: KeyboardEvent) => {
+    if (event.key === "Shift" && !event.repeat) {
+      redraw();
+    }
+  };
+  document.addEventListener("keydown", onShift);
+  document.addEventListener("keyup", onShift);
+  return () => {
+    document.removeEventListener("keydown", onShift);
+    document.removeEventListener("keyup", onShift);
+  };
+}
+
 /** A circle or square by Foundry's own Region placement: grid-snapped, the square rotatable. */
 async function placeShape(
   shape: Extract<SpellAreaShape, { kind: "circle" | "square" }>,
@@ -369,10 +390,7 @@ function pickPolygon(
   overlay.addChild(label);
 
   const points: Point[] = [];
-  const snapped = (): Point => {
-    const position = canvas!.mousePosition;
-    return canvas!.regions!.getSnappedPoint({ x: position.x, y: position.y });
-  };
+  const snapped = () => pointerPoint((point) => canvas!.regions!.getSnappedPoint(point));
   let drawnAt: Point | undefined;
   const draw = (pointer: Point) => {
     drawnAt = pointer;
@@ -392,8 +410,10 @@ function pickPolygon(
 
   return new Promise((resolve) => {
     let rightDownAt: Point | undefined;
+    const stopSnapToggle = onSnapToggle(() => draw(snapped()));
     const finish = (shape: PlacedAreaShape | undefined) => {
       document.removeEventListener("keydown", onKey, true);
+      stopSnapToggle();
       Hooks.off("canvasTearDown", cancel);
       signal?.removeEventListener("abort", cancel);
       coverage.destroy();

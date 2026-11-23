@@ -123,6 +123,48 @@ describe("RqgActiveEffect.applyChange", () => {
     expect(actor.getBestEmbeddedDocumentByRqid).not.toHaveBeenCalled();
   });
 
+  describe("token distances of spell effects", () => {
+    const tokenOn = (units: string) => ({ documentName: "Token", parent: { grid: { units } } });
+    const spellEffect = { system: { spell: { level: 1 } } };
+
+    it("passes a spell effect's light radius to core in the scene's units", async () => {
+      const { RqgActiveEffect, ActiveEffectStub } = await loadSubject();
+
+      const token = tokenOn("ft");
+      RqgActiveEffect.applyChange(
+        token as any,
+        routedChange("light.dim", "upgrade", "10", { effect: spellEffect }),
+      );
+
+      const passed = (ActiveEffectStub.applyChange.mock.calls as any[][])[0]![1];
+      expect(Number(passed.value)).toBeCloseTo(32.81, 2);
+      expect(passed.effect).toBe(spellEffect);
+    });
+
+    it("leaves a token effect that isn't a spell's in scene units", async () => {
+      const { RqgActiveEffect, ActiveEffectStub } = await loadSubject();
+
+      const change = routedChange("light.dim", "upgrade", "10", { effect: { system: {} } });
+      RqgActiveEffect.applyChange(tokenOn("ft") as any, change);
+
+      expect(ActiveEffectStub.applyChange).toHaveBeenCalledWith(
+        expect.anything(),
+        change,
+        undefined,
+      );
+    });
+
+    it("doesn't touch a spell effect's change to the actor", async () => {
+      const { RqgActiveEffect, ActiveEffectStub } = await loadSubject();
+
+      const actor = makeCharacterActor();
+      const change = routedChange("system.baseChance", "add", "10", { effect: spellEffect });
+      RqgActiveEffect.applyChange(actor, change);
+
+      expect(ActiveEffectStub.applyChange).toHaveBeenCalledWith(actor, change, undefined);
+    });
+  });
+
   it("routes an @rqid key to the matching embedded item, honouring the change's own mode", async () => {
     const { RqgActiveEffect } = await loadSubject();
 
