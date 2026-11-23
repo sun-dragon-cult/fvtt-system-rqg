@@ -27,6 +27,7 @@ import type { RqgItem } from "@items/rqg-item.ts";
 import type { RoutedSelector } from "./routed-key/routed-key.types";
 import { RqgActiveEffectDataModel } from "./data-model/rqg-active-effect-data-model";
 import { renameForSpellLevel } from "../system/spell-effects/spell-effect-name";
+import { tokenChangeInSceneUnits } from "../system/spell-effects/scene-distance";
 
 export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
   private static readonly logger = new RqgLogger("RqgActiveEffect");
@@ -288,11 +289,14 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     options?: ActiveEffect.ApplyChangeOptions,
   ): AnyMutableObject {
     const parsed = parseRoutedKey(change.key);
-    if (!parsed.routed) {
-      return super.applyChange(targetDoc, change, options);
-    }
-
     const effect = (change as { effect?: RqgActiveEffect }).effect;
+    if (!parsed.routed) {
+      return super.applyChange(
+        targetDoc,
+        RqgActiveEffect.#inSceneUnits(targetDoc, change, effect),
+        options,
+      );
+    }
 
     if ("error" in parsed) {
       RqgActiveEffect.#warnRoutedKey(effect, change, parsed.error.reason, parsed.error.detail);
@@ -300,6 +304,22 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     }
 
     return RqgActiveEffect.#applyRoutedChange(targetDoc, change, parsed, options);
+  }
+
+  /**
+   * Spell effect templates give token light and sight distances in meters, so they read the same on
+   * every scene; other effects keep core's scene units.
+   */
+  static #inSceneUnits(
+    targetDoc: ActiveEffect.ChangeTarget,
+    change: ActiveEffect.ChangeData,
+    effect: RqgActiveEffect | undefined,
+  ): ActiveEffect.ChangeData {
+    const token = targetDoc as { documentName?: string; parent?: { grid?: { units?: string } } };
+    if (token.documentName !== "Token" || !(effect?.system as RqgActiveEffectDataModel)?.spell) {
+      return change;
+    }
+    return tokenChangeInSceneUnits(change, token.parent?.grid?.units);
   }
 
   /**

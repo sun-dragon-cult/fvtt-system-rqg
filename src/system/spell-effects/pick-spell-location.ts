@@ -1,5 +1,5 @@
 import { localize } from "../util";
-import { drawReach, spellReach } from "./place-spell-area";
+import { drawReach, onSnapToggle, pointerPoint, spellReach } from "./place-spell-area";
 import { casterTokenOnScene } from "./spell-area-targets";
 import { nearestFreeCell, summonerToken, tokenCell } from "./token-cells";
 import { metersToPixels } from "./scene-distance";
@@ -108,10 +108,9 @@ export async function pickSpellLocation(
   }
 }
 
-/** The center of the grid space under the pointer. */
+/** The center of the grid space under the pointer, or the pointer itself while Shift is held. */
 function snappedPointer(): Point {
-  const position = canvas!.mousePosition;
-  return canvas!.grid!.getCenterPoint({ x: position.x, y: position.y });
+  return pointerPoint((point) => canvas!.grid!.getCenterPoint(point));
 }
 
 function clickPoint(
@@ -150,10 +149,14 @@ function clickPoint(
       }
       marker.endFill();
     }
+    // A marker wider than the light's reach would read as the light
+    const markerRadius = reach
+      ? Math.max(Math.min(size / 2, reach.radius), 4 / canvas!.stage!.scale.x)
+      : size / 2;
     marker
       .lineStyle(3, color, 0.9)
       .beginFill(color, 0.25)
-      .drawCircle(point.x, point.y, size / 2)
+      .drawCircle(point.x, point.y, markerRadius)
       .endFill();
     if (rotatable && !reach) {
       marker
@@ -171,9 +174,17 @@ function clickPoint(
   };
   return new Promise((resolve) => {
     let rightDownAt: Point | undefined;
+    const stopSnapToggle = onSnapToggle(() => draw(snappedPointer()));
+    // With a reach preview, the marker's least size is in screen pixels
+    const onPan = () => draw(last);
+    if (reach) {
+      Hooks.on("canvasPan", onPan);
+    }
     const finish = (point: PickedLocation | undefined) => {
       document.removeEventListener("keydown", onKey, true);
       view.removeEventListener("wheel", onWheel, true);
+      stopSnapToggle();
+      Hooks.off("canvasPan", onPan);
       Hooks.off("canvasTearDown", onTearDown);
       if (!overlay.destroyed) {
         overlay.destroy({ children: true });
