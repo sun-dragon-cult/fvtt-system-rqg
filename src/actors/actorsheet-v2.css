@@ -2190,6 +2190,10 @@
         &:active > * {
           background: var(--rqg-row-active);
         }
+
+        & img.rune {
+          opacity: 0.85;
+        }
       }
     }
 
