@@ -2033,6 +2033,11 @@
             flex: 1 1 100%;
           }
 
+          &.unusable {
+            opacity: 0.5;
+            border-style: dashed;
+          }
+
           & .allied-spirit-label {
             opacity: 0.8;
           }

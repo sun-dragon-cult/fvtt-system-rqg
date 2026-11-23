@@ -12,12 +12,14 @@ import {
   getBoundSpiritActorByUuid,
   getBoundSpiritActors,
   getBoundSpiritDrainWarnings,
+  getBoundSpiritsBlockedOnUnlinkedToken,
   getMagicPointDrawOrder,
   getMagicPointSourceOptions,
   getMagicPointSources,
   getMaxTransferableToStorage,
   getStorageItems,
   getTotalStoredMagicPoints,
+  isSpiritBlockedOnUnlinkedToken,
   moveSourceBefore,
   SELF_MAGIC_POINT_SOURCE,
   setMagicPointDrawOrder,
@@ -167,6 +169,25 @@ describe("getAlliedSpirit", () => {
     const ally = fakeAlly(4, 6, true);
     (globalThis as any).fromUuidSync.mockReturnValue(ally);
     expect(getAlliedSpirit(actor)).toBe(ally);
+  });
+
+  it("returns undefined for an unlinked token whose ally is a world actor", () => {
+    const actor = {
+      ...fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" }),
+      isToken: true,
+    };
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeAlly(4, 6, true));
+    expect(getAlliedSpirit(actor as any)).toBeUndefined();
+  });
+
+  it("returns the ally for an unlinked token whose ally is also a token actor", () => {
+    const actor = {
+      ...fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" }),
+      isToken: true,
+    };
+    const ally = Object.assign(fakeAlly(4, 6, true), { isToken: true });
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+    expect(getAlliedSpirit(actor as any)).toBe(ally);
   });
 });
 
@@ -831,6 +852,12 @@ describe("getBoundSpiritActors", () => {
 
     expect(getBoundSpiritActors(item as any)).toEqual([spirit1, spirit2]);
   });
+
+  it("omits a world-actor spirit when the item is on an unlinked token", () => {
+    const item = { ...boundSpiritItem("i1", "Ring"), parent: { isToken: true } };
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4, true));
+    expect(getBoundSpiritActors(item as any)).toEqual([]);
+  });
 });
 
 describe("getBoundSpiritActorByUuid", () => {
@@ -1224,5 +1251,48 @@ describe("confirmBoundSpiritDrain (#999)", () => {
     );
 
     expect(decision).toEqual({ proceed: false, avoidRelease: false });
+  });
+});
+
+describe("isSpiritBlockedOnUnlinkedToken", () => {
+  it("is true for a world-actor spirit linked from an unlinked token", () => {
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4));
+    expect(isSpiritBlockedOnUnlinkedToken({ isToken: true } as any, "Actor.spirit1")).toBe(true);
+  });
+
+  it("is false on a world actor", () => {
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4));
+    expect(isSpiritBlockedOnUnlinkedToken({ isToken: false } as any, "Actor.spirit1")).toBe(false);
+  });
+
+  it("is false when the spirit is also a token actor", () => {
+    (globalThis as any).fromUuidSync.mockReturnValue(
+      Object.assign(fakeSpirit(2, 4), { isToken: true }),
+    );
+    expect(isSpiritBlockedOnUnlinkedToken({ isToken: true } as any, "Actor.spirit1")).toBe(false);
+  });
+
+  it("is false when the spirit isn't usable anyway", () => {
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4, false));
+    expect(isSpiritBlockedOnUnlinkedToken({ isToken: true } as any, "Actor.spirit1")).toBe(false);
+  });
+});
+
+describe("getBoundSpiritsBlockedOnUnlinkedToken", () => {
+  it("lists the world-actor spirits in an unlinked token's equipped items", () => {
+    const ring = boundSpiritItem("i1", "Ring");
+    const stored = boundSpiritItem("i2", "Stored", "notCarried");
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4));
+    const actor = { isToken: true, items: [ring, stored] };
+
+    expect(getBoundSpiritsBlockedOnUnlinkedToken(actor as any)).toEqual([
+      { item: ring, spiritUuids: ["Actor.spirit1"] },
+    ]);
+  });
+
+  it("is empty for a world actor", () => {
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4));
+    const actor = { isToken: false, items: [boundSpiritItem("i1", "Ring")] };
+    expect(getBoundSpiritsBlockedOnUnlinkedToken(actor as any)).toEqual([]);
   });
 });

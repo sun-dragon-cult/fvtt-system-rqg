@@ -118,7 +118,9 @@ export interface RqgActorSheetV2Context {
   boundPriest: { uuid: string } | undefined;
   /** Spirits bound in this actor's own items (#999), per item, summarized alongside the Allied
    *  Spirit bond. See getBoundSpiritItems. */
-  boundSpirits: { itemName: string; spiritUuids: string[] }[];
+  boundSpirits: { itemName: string; spiritUuids: string[]; unusable?: boolean }[];
+  /** The linked Allied Spirit is a world actor and this sheet is an unlinked token (#1065). */
+  alliedSpiritUnusable: boolean;
   /** Number of usable bound-spirit items - see boundSpirits. */
   boundSpiritCount: number;
   /** CHA÷3, the RAW cap on bound spirits (RQG p.250) - GM-adjudicated, not enforced. */
