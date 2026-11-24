@@ -2870,7 +2870,8 @@
       "StatusConcentrating": "Concentrating",
       "StatusSpiritCombat": "In Spirit Combat",
       "StatusDiscorporate": "Discorporate",
-      "StatusPossessed": "Possessed"
+      "StatusPossessed": "Possessed",
+      "DetectionPowAura": "See POW Auras"
     },
     "Migration": {
       "Dialog": {

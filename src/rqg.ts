@@ -36,6 +36,7 @@ import { RqgActiveEffectConfig } from "./active-effect/rqg-active-effect-config"
 import { RqgTokenRuler } from "./combat/rqg-token-ruler";
 import { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior";
 import { RqgTokenLayer } from "./scene/rqg-token-layer";
+import { PowAuraDetectionMode } from "./scene/pow-aura-detection-mode";
 import { RqgCombatant } from "./combat/rqg-combatant";
 import { setConfigStatusEffects } from "./system/fvtt-type-compat";
 import { initCharacterPassiveRecovery } from "./actors/passive-recovery";
@@ -140,6 +141,7 @@ Hooks.once("init", () => {
   TextEditorHooks.init();
   RqgSettings.init();
   RqgTokenLayer.init();
+  PowAuraDetectionMode.init();
   ClickableScriptsRegionBehavior.init();
   SpellAreaRegionBehavior.init();
   RqgCombatant.init();
