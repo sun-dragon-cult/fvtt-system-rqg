@@ -256,6 +256,13 @@ declare global {
     interface FontDefinitions {
       Norse: Font.FamilyDefinition;
     }
+
+    namespace Canvas {
+      interface DetectionModes {
+        /** Second Sight and Soul Sight, registered by `PowAuraDetectionMode.init`. */
+        powAura: import("./scene/pow-aura-detection-mode").PowAuraDetectionMode;
+      }
+    }
   }
 
   // Since we never use these before `init` tell league types that they are never undefined
