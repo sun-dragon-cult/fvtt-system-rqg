@@ -91,9 +91,9 @@ describe("schemaToJsonSchema", () => {
       ),
     });
 
-    expect(schema.required).toEqual(["skillName"]);
-    expect(schema.type).toBe("object");
-    expect(schema.additionalProperties).toBe(false);
+    expect(schema["required"]).toEqual(["skillName"]);
+    expect(schema["type"]).toBe("object");
+    expect(schema["additionalProperties"]).toBe(false);
   });
 
   it("omits the required array entirely when every field is nullable", () => {
@@ -101,7 +101,7 @@ describe("schemaToJsonSchema", () => {
       bonus: new NumberFieldShim({ integer: true, nullable: true }),
     });
 
-    expect(schema.required).toBeUndefined();
+    expect(schema["required"]).toBeUndefined();
   });
 });
 

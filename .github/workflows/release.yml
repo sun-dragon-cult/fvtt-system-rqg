@@ -6,10 +6,22 @@ env:
 
 on:
   release:
-    types: [published]
+    types: [published, released]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag of an existing GitHub release (e.g. v6.1.1)"
+        required: true
+        type: string
+      dry_run:
+        description: "Run the Foundry Package Release API in dry-run mode (nothing is saved)"
+        required: true
+        default: true
+        type: boolean
 
 jobs:
-  release:
+  build:
+    if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -35,7 +47,12 @@ jobs:
         run: pnpm check:release
 
       - name: Verify No Deprecations Are Due
-        run: pnpm check:deprecations "${GITHUB_REF_NAME#v}"
+        run: |
+          if [ -f buildScripts/check-deprecations.ts ]; then
+            pnpm check:deprecations "${GITHUB_REF_NAME#v}"
+          else
+            echo "::warning::This tag predates buildScripts/check-deprecations.ts, so deprecations aren't checked"
+          fi
 
       - name: Build project
         run: pnpm build
@@ -73,17 +90,50 @@ jobs:
             exit 1
           fi
 
-      # Update the GitHub release with the manifest and module archive files.
-      - name: Update Release With Files
-        id: create_version_release
-        uses: ncipollo/release-action@v1
+      # Only attaches the files, so the release's pre-release and latest flags stay as they are
+      - name: Attach Files To Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >-
+          gh release upload "${{ github.event.release.tag_name }}" --clobber
+          "/tmp/${{ env.system-name }}.zip" "static/${{ env.manifest-file }}"
+
+  # Runs after the build (registering a release promoted while it was built), on promotion
+  # (skipping a release still being built), and by hand.
+  register:
+    needs: build
+    # build is skipped on every other event, so only a failed or cancelled build stops this
+    if: ${{ !cancelled() && needs.build.result != 'failure' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: >-
+        register-${{ github.event.release.tag_name || inputs.tag }}
+      cancel-in-progress: false
+
+    steps:
+      # A release uses the default branch's script, since an older tag may not have it. A manual
+      # run uses its branch's, to try a changed script.
+      - name: Checkout Registration Script
+        uses: actions/checkout@v7
         with:
-          allowUpdates: true
-          makeLatest: false
-          name: ${{ github.event.release.name }}
-          draft: ${{ github.event.release.unpublished }}
-          prerelease: ${{ github.event.release.prerelease }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "static/${{env.manifest-file}}, /tmp/${{env.system-name}}.zip"
-          tag: ${{ github.event.release.tag_name }}
-          body: ${{ github.event.release.body }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || github.event.repository.default_branch }}
+          sparse-checkout: buildScripts/register-foundry-release.ts
+          sparse-checkout-cone-mode: false
+
+      - name: Install Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Publish to Foundry Package Release API
+        env:
+          FOUNDRY_RELEASE_TOKEN: ${{ secrets.FOUNDRY_RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          TRIGGER: ${{ github.event.action }}
+          MANIFEST_FILE: ${{ env.manifest-file }}
+          SYSTEM_NAME: ${{ env.system-name }}
+        run: node buildScripts/register-foundry-release.ts
